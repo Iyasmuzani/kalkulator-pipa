@@ -112,11 +112,13 @@ function calcBangunan(){
 function calcMiningDW(){
   var dep=V('m-depth'),inf=V('m-inflow'),dist=V('m-dist'),pp=R('m-pipe').value;
   var Qm3s=inf/3600,Qls=inf/3.6;
-  var Hs=dep,Hf=(dist+dep)*0.03,Hm=15,H=Math.ceil(Hs+Hf+Hm);
-  var pw=(1000*9.81*Qm3s*H)/650,pwF=pwStd.find(p=>p>=pw)||Math.ceil(pw);
+  // Friction loss per ASME B31.3: ~3% of equivalent length
+  var Hs=dep,Hf=(dist+dep)*0.03,Hm=15,H=Math.ceil((Hs+Hf+Hm)*1.15); // 15% safety factor per ASME B31.3
+  var pw=(1000*9.81*Qm3s*H)/650,pwF=pwStd.find(p=>p>=pw)||Math.ceil(pw); // η=0.65 submersible pump
   var v=2.5,Dm=Math.sqrt(4*Qm3s/(Math.PI*v))*1000;
   var pD=findPipe(Dm,stdPipes);
   var vAct=(4*Qm3s/(Math.PI*Math.pow(pD/1000,2))).toFixed(2);
+  var vWarn=parseFloat(vAct)>4.5; // ASME B31.3 max erosional velocity
   var spVol=Math.ceil(inf*4),spArea=Math.ceil(spVol/2.5);
   R('rec-results').innerHTML=`
   <div class="result-sec"><div class="result-sec-title">💧 Sistem Dewatering</div><div class="result-grid">
@@ -128,7 +130,7 @@ function calcMiningDW(){
   <div class="result-item"><div class="rk">Daya Motor Min.</div><div class="rv">${pwF}<span class="ru"> kW</span></div></div>
   <div class="result-item"><div class="rk">Jumlah Pompa</div><div class="rv">2<span class="ru"> (1+1 standby)</span></div></div>
   <div class="result-item"><div class="rk">Diameter Pipa</div><div class="rv">DN${pD}<span class="ru"> mm (${pp.toUpperCase()})</span></div></div>
-  <div class="result-item"><div class="rk">Kecepatan Aliran</div><div class="rv">${vAct}<span class="ru"> m/s</span></div></div></div></div>
+  <div class="result-item"><div class="rk">Kecepatan Aliran</div><div class="rv" style="color:${vWarn?'#ff5555':'var(--sys-accent)'}">${vAct}<span class="ru"> m/s ${vWarn?'⚠️ EROSIF':''}</span></div></div></div></div>
   <div class="result-sec"><div class="result-sec-title">🏊 Settling Pond</div><div class="result-grid">
   <div class="result-item"><div class="rk">Volume Min. (4 jam)</div><div class="rv">${spVol}<span class="ru"> m³</span></div></div>
   <div class="result-item"><div class="rk">Luas @2.5m depth</div><div class="rv">${spArea}<span class="ru"> m²</span></div></div>
@@ -141,9 +143,11 @@ function calcMiningSlurry(){
   var Qm3s=fl/3600,rhoS=2650,rhoW=1000,Cv=co/(100*(rhoS/rhoW)),rhoM=rhoW*(1+Cv*(rhoS/rhoW-1));
   var Vc=1.8+0.2*d50,Dm=Math.sqrt(4*Qm3s/(Math.PI*Vc))*1000;
   var pD=findPipe(Dm,stdPipes),vAct=(4*Qm3s/(Math.PI*Math.pow(pD/1000,2))).toFixed(2);
+  var vWarn=parseFloat(vAct)>4.5; // ASME B31.11 erosion velocity limit
   var fSl=0.025*(1+co/30),Hf=fSl*(ln/((pD/1000)))*Math.pow(parseFloat(vAct),2)/(2*9.81);
-  var Hs=Math.max(el,0),H=Math.ceil(Hs+Hf+10);
-  var pw=(rhoM*9.81*Qm3s*H)/650,pwF=pwStd.find(p=>p>=pw)||Math.ceil(pw);
+  // ASME B31.11: higher minor losses for slurry (+20m) and lower pump efficiency (η=0.55)
+  var Hs=Math.max(el,0),H=Math.ceil(Hs+Hf+20);
+  var pw=(rhoM*9.81*Qm3s*H)/550,pwF=pwStd.find(p=>p>=pw)||Math.ceil(pw);
   R('rec-results').innerHTML=`
   <div class="result-sec"><div class="result-sec-title">🔄 Sistem Slurry Transport</div><div class="result-grid">
   <div class="result-item"><div class="rk">Debit Slurry</div><div class="rv">${fl}<span class="ru"> m³/jam</span></div></div>
@@ -154,7 +158,7 @@ function calcMiningSlurry(){
   <div class="result-item"><div class="rk">Total Dynamic Head</div><div class="rv">${H}<span class="ru"> m slurry</span></div></div>
   <div class="result-item"><div class="rk">Daya Motor Min.</div><div class="rv">${pwF}<span class="ru"> kW</span></div></div>
   <div class="result-item"><div class="rk">Diameter Pipa</div><div class="rv">DN${pD}<span class="ru"> mm (Steel Lined)</span></div></div>
-  <div class="result-item"><div class="rk">Kecepatan Aktual</div><div class="rv">${vAct}<span class="ru"> m/s</span></div></div></div></div>
+  <div class="result-item"><div class="rk">Kecepatan Aktual</div><div class="rv" style="color:${vWarn?'#ff5555':'var(--sys-accent)'}">${vAct}<span class="ru"> m/s ${vWarn?'⚠️ EROSIF':''}</span></div></div></div></div>
   <div class="result-sec"><div class="result-sec-title">🛡️ Rekomendasi</div><div style="display:flex;flex-direction:column;gap:8px">
   <div class="rec-card"><div class="rec-icon">🔧</div><div class="rec-text">Panjang jalur <strong>${ln}m</strong>, beda elevasi <strong>${el}m</strong>. Friction loss ${Hf.toFixed(1)}m. ${parseFloat(vAct)<Vc?'<strong style="color:#ff5555">⚠️ KECEPATAN DI BAWAH Vc — RISIKO SEDIMENTASI!</strong>':'Kecepatan aman di atas critical velocity.'}</div></div>
   <div class="rec-card"><div class="rec-icon">🛡️</div><div class="rec-text">Material liner: ${d50>5?'<strong>Ceramic tile</strong> (partikel kasar >5mm)':'<strong>Rubber lining</strong> (partikel halus ≤5mm)'}. Inspeksi UT setiap 3–6 bulan.</div></div></div></div>`;
