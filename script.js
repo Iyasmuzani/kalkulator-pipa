@@ -7,10 +7,10 @@ const systemConfig = {
   bangunan: {
     title: 'Sistem Perpipaan & Pompa Bangunan',
     sub: 'Panduan instalasi interaktif · Visualisasi komponen · Kalkulator',
-    badge: 'SNI 03-7065 · v2.1',
+    badge: 'SNI 8153:2025 · v2.1',
     icon: '💧',
     vizLabel: 'Diagram Potongan Bangunan — Klik komponen untuk detail',
-    guideIntro: 'Ikuti 8 tahap instalasi ini secara berurutan. Panduan mengacu pada <strong style="color:var(--sys-accent)">SNI 03-7065-2005</strong> tentang Tata Cara Perencanaan Sistem Plambing.',
+    guideIntro: 'Ikuti 8 tahap instalasi ini secara berurutan. Panduan mengacu pada <strong style="color:var(--sys-accent)">SNI 8153:2025</strong> tentang Tata Cara Perencanaan Sistem Plambing.',
     compData: () => bangunanCompData,
     guideData: () => bangunanGuideData,
     tagMap: {'roof-tank':'Tangki','ground-tank':'Tangki','pump':'Pompa','pressure-tank':'Tangki Tekan','prv':'Valve','gate-valve':'Valve','check-valve':'Valve','pressure-gauge':'Instrumen','water-meter':'Instrumen','floor-drain':'Drainase'}

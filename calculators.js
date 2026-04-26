@@ -7,9 +7,9 @@ function buildCalcForm(){
 
 function buildCalcBangunan(){
   document.getElementById('calc-form').innerHTML=`
-  <div class="form-title">📐 Data Bangunan</div>
+  <div class="form-title">📐 Data Bangunan <span style="font-size:10px;color:var(--text2);font-weight:400">(SNI 8153:2025)</span></div>
   <div class="form-group"><label class="form-label">Tipe Bangunan</label>
-  <select class="form-control" id="f-type"><option value="rumah">Rumah Tinggal</option><option value="apartemen">Apartemen</option><option value="hotel">Hotel</option><option value="kantor">Gedung Kantor</option><option value="rumahsakit">Rumah Sakit</option><option value="sekolah">Sekolah</option><option value="restoran">Restoran</option></select></div>
+  <select class="form-control" id="f-type"><option value="rumah">Rumah Tinggal</option><option value="apartemen">Apartemen / Rusun</option><option value="hotel">Hotel / Penginapan</option><option value="kantor">Gedung Kantor</option><option value="rumahsakit">Rumah Sakit</option><option value="puskesmas">Puskesmas / Klinik</option><option value="sekolah">Sekolah / Kampus</option><option value="masjid">Masjid / Tempat Ibadah</option><option value="restoran">Restoran / Food Court</option></select></div>
   <div class="form-group"><label class="form-label">Jumlah Lantai</label><input type="number" class="form-control" id="f-floors" min="1" max="50" value="4"></div>
   <div class="form-group"><label class="form-label">Jumlah Pengguna per hari</label><input type="number" class="form-control" id="f-users" min="1" value="30"></div>
   <div class="form-group"><label class="form-label">Tinggi per Lantai (m)</label><input type="number" class="form-control" id="f-height" min="2.5" max="8" step="0.1" value="3.5"></div>
@@ -67,13 +67,25 @@ function R(id){return document.getElementById(id);}
 function V(id){return parseFloat(R(id).value)||0;}
 
 function calcBangunan(){
-  var ws={rumah:{l:150,p:3},apartemen:{l:200,p:3.5},hotel:{l:300,p:4},kantor:{l:50,p:5},rumahsakit:{l:500,p:5},sekolah:{l:40,p:4},restoran:{l:100,p:6}};
+  // Kebutuhan air per SNI 8153:2025 Tabel 1
+  var ws={
+    rumah:     {l:120, p:2.5, name:'Rumah Tinggal',      unit:'L/org/hari'},
+    apartemen: {l:150, p:3.0, name:'Apartemen/Rusun',     unit:'L/org/hari'},
+    hotel:     {l:250, p:3.5, name:'Hotel/Penginapan',    unit:'L/tamu/hari'},
+    kantor:    {l:50,  p:5.0, name:'Gedung Kantor',       unit:'L/org/hari'},
+    rumahsakit:{l:400, p:4.0, name:'Rumah Sakit',         unit:'L/TT/hari'},
+    puskesmas: {l:200, p:3.5, name:'Puskesmas/Klinik',    unit:'L/org/hari'},
+    sekolah:   {l:40,  p:4.0, name:'Sekolah/Kampus',      unit:'L/siswa/hari'},
+    masjid:    {l:35,  p:6.0, name:'Masjid/T.Ibadah',     unit:'L/jamaah/hari'},
+    restoran:  {l:80,  p:5.0, name:'Restoran/Food Court',  unit:'L/kursi/hari'}
+  };
   var t=R('f-type').value,fl=V('f-floors'),us=V('f-users'),hf=V('f-height'),src=R('f-source').value,sys=R('f-system').value,pp=R('f-pipe').value;
   var s=ws[t],Qd=us*s.l,gt=Math.ceil(Qd*1.5/100)*100,rt=Math.ceil(Qd*0.3/100)*100;
   var Qls=Qd*s.p/86400,Qm3h=Qls*3.6,Qm3s=Qls/1000;
   var tH=fl*hf+8,fr=tH*0.22,H=Math.ceil(tH+fr+10);
   var pw=(1000*9.81*Qm3s*H)/(650),pwF=pwStd.find(p=>p>=pw)||Math.ceil(pw);
-  var Dm=Math.sqrt(4*Qm3s/(Math.PI*1.5))*1000;
+  // Kecepatan aliran desain 1.2 m/s (SNI 8153:2025: 0.6–2.0 m/s)
+  var Dm=Math.sqrt(4*Qm3s/(Math.PI*1.2))*1000;
   var ps=pp==='ppr'?[20,25,32,40,50,63,75,90,110,160]:[15,20,25,32,40,50,65,80,100,125,150,200];
   var pD=findPipe(Dm,ps),bD=findPipe(Dm*0.6,ps);
   var pt=Math.ceil(Qls*360/10)*10,wP=H/10,prv=wP>3.5,z=Math.ceil(fl/4);

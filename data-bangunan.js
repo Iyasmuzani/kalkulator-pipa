@@ -54,7 +54,7 @@ const bangunanCompData = {
 const bangunanGuideData=[
   {n:1,title:'Perencanaan & Desain Sistem',sub:'Perhitungan kebutuhan air, tata letak pipa, spesifikasi komponen',
    detail:'Tahap perencanaan adalah fondasi keberhasilan instalasi. Lakukan perhitungan kebutuhan air berdasarkan jumlah penghuni, pilih sistem distribusi, dan buat gambar kerja lengkap.',
-   checks:['Hitung kebutuhan air harian total (Qd) dalam liter/hari','Tentukan sistem distribusi: down-feed / up-feed / hybrid','Buat layout jalur pipa pada gambar denah dan potongan','Hitung kapasitas tangki bawah dan tangki atas','Tentukan spesifikasi pompa: debit (Q), head (H), daya (P)','Pilih diameter pipa utama dan cabang per lantai','Identifikasi lokasi shaft pipa vertikal (riser)','Verifikasi desain dengan SNI 03-7065-2005'],
+   checks:['Hitung kebutuhan air harian total (Qd) dalam liter/hari','Tentukan sistem distribusi: down-feed / up-feed / hybrid','Buat layout jalur pipa pada gambar denah dan potongan','Hitung kapasitas tangki bawah dan tangki atas','Tentukan spesifikasi pompa: debit (Q), head (H), daya (P)','Pilih diameter pipa utama dan cabang per lantai','Identifikasi lokasi shaft pipa vertikal (riser)','Verifikasi desain dengan SNI 8153:2025'],
    warn:'Pastikan desain disetujui konsultan MEP dan mendapat ijin teknis dari PDAM setempat.'},
   {n:2,title:'Persiapan Material & Alat',sub:'Pengadaan komponen sesuai spesifikasi BQ',
    detail:'Siapkan semua material sesuai spesifikasi. Pastikan semua produk bersertifikat SNI dan dari distributor resmi.',
