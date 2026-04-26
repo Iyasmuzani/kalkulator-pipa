@@ -2,7 +2,7 @@
 // ISO 21307:2017 (SHP/SLP/DLP) + DVS 2207-1
 // Corrected formulas per official standard
 
-// Rucika Black HDPE PE100 wall thickness table (mm) — ISO 4427 / SNI 4829
+// HDPE PE100 wall thickness table (mm) — ISO 4427 / SNI 4829
 // Format: {OD: {SDR: wall_thickness}}
 var rucikaPipes = {
   20:  {11:2.0},
@@ -28,18 +28,22 @@ var rucikaPipes = {
   450: {11:40.9, 13.6:33.1, 17:26.7, 21:21.5, 26:17.2},
   500: {11:45.5, 13.6:36.8, 17:29.7, 21:23.9, 26:19.1},
   560: {11:50.8, 13.6:41.2, 17:33.2, 21:26.7, 26:21.4},
-  630: {11:57.2, 13.6:46.3, 17:37.4, 21:30.0, 26:24.1}
+  630: {11:57.2, 13.6:46.3, 17:37.4, 21:30.0, 26:24.1},
+  710: {11:64.5, 13.6:52.2, 17:42.1, 21:33.9, 26:27.2},
+  800: {11:72.6, 13.6:58.8, 17:47.4, 21:38.1, 26:30.6},
+  900: {11:81.7, 13.6:66.1, 17:53.3, 21:42.9, 26:34.4},
+  1000: {11:90.8, 13.6:73.5, 17:59.3, 21:47.7, 26:38.2}
 };
 
 function buildFusionForm(){
-  // Build OD options from Rucika catalog
+  // Build OD options
   var odOpts = Object.keys(rucikaPipes).map(function(od){
-    return '<option value="'+od+'"'+(od==='315'?' selected':'')+'>DN'+od+' (Rucika)</option>';
+    return '<option value="'+od+'"'+(od==='315'?' selected':'')+'>DN'+od+'</option>';
   }).join('');
 
   document.getElementById('eng-form').innerHTML=`
   <div class="form-title">🔗 Kalkulator Butt Fusion HDPE <span style="font-size:10px;color:var(--text2);font-weight:400">ISO 21307 / DVS 2207</span></div>
-  <div class="form-group"><label class="form-label">Diameter Luar Pipa (OD) — Rucika Black PE100</label>
+  <div class="form-group"><label class="form-label">Diameter Luar Pipa (OD) — PE100</label>
   <select class="form-control" id="bf-od" onchange="updateSDRoptions()">${odOpts}</select></div>
   <div class="form-group"><label class="form-label">SDR / PN</label>
   <select class="form-control" id="bf-sdr"></select></div>
@@ -184,7 +188,7 @@ function calcISO21307(en, od, As, Ac, DP, mode, bead){
   var coolMin = Math.floor(coolSec_total / 60), coolSec = coolSec_total % 60;
 
   return `
-  <div class="eng-section"><div class="eng-section-title">📋 Data Pipa — Rucika Black PE100</div>
+  <div class="eng-section"><div class="eng-section-title">📋 Data Pipa — PE100</div>
   <div class="result-grid">
     <div class="result-item"><div class="rk">Diameter (OD)</div><div class="rv">${od}<span class="ru"> mm</span></div></div>
     <div class="result-item"><div class="rk">Wall Thickness (en)</div><div class="rv">${en}<span class="ru"> mm</span></div></div>
@@ -255,7 +259,7 @@ function calcDVS2207(en, od, As, Ac, DP, bead){
   var coolMin = Math.floor(coolingTime / 60), coolSec = coolingTime % 60;
 
   return `
-  <div class="eng-section"><div class="eng-section-title">📋 Data Pipa — Rucika Black PE100</div>
+  <div class="eng-section"><div class="eng-section-title">📋 Data Pipa — PE100</div>
   <div class="result-grid">
     <div class="result-item"><div class="rk">Diameter (OD)</div><div class="rv">${od}<span class="ru"> mm</span></div></div>
     <div class="result-item"><div class="rk">Wall Thickness (en)</div><div class="rv">${en}<span class="ru"> mm</span></div></div>
