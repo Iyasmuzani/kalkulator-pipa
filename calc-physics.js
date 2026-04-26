@@ -147,8 +147,8 @@ function buildFrictionForm(){
   <button class="calc-btn" onclick="calcFriction()">⚡ Hitung Friction Loss</button>`;
 }
 function calcFriction(){
-  var d=Vf('fr-d')/1000,L=Vf('fr-l'),Q=Vf('fr-q')/1000,eps=Vf('fr-e')/1000,T=Vf('fr-t');
-  var nu=1.004e-6*Math.pow(20/T,0.5); // simplified viscosity
+  // Kinematic viscosity of water (m²/s) based on empirical Poiseuille formula
+  var nu=1.78e-6/(1+0.0337*T+0.00022*T*T);
   var v=4*Q/(Math.PI*d*d);
   var Re=v*d/nu;
   var regime=Re<2300?'Laminar':Re<4000?'Transisi':'Turbulen';
@@ -194,9 +194,9 @@ function buildPipeLoadForm(){
 function calcPipeLoad(){
   var od=Vf('ld-od')/1000,H=Vf('ld-h'),Bd=Vf('ld-bd'),gamma=Vf('ld-soil'),Pl=Vf('ld-live');
   var type=E('ld-type').value;
-  // Marston load coefficient
+  // Marston load coefficient (fixed parenthesis)
   var ratio=H/Bd;
-  var Cd=1-Math.exp(-2*0.33*ratio)/(2*0.33); // Kμ'=0.33 typical
+  var Cd=(1-Math.exp(-2*0.33*ratio))/(2*0.33); // Kμ'=0.33 typical
   if(Cd<0)Cd=0.1;
   // Earth load per meter
   var We=Cd*gamma*Bd*Bd; // kN/m (rigid)
