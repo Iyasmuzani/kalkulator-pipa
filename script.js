@@ -18,10 +18,10 @@ const systemConfig = {
   tambang: {
     title: 'Sistem Perpipaan Tambang',
     sub: 'Dewatering · Slurry transport · Settling pond · Kalkulator',
-    badge: 'Kepmen ESDM · v1.0',
+    badge: 'ASME B31.3 · B31.11',
     icon: '⛏️',
     vizLabel: 'Diagram Potongan Pit Tambang — Klik komponen untuk detail',
-    guideIntro: 'Ikuti 7 tahap instalasi sistem perpipaan tambang. Panduan mengacu pada <strong style="color:var(--sys-accent)">Kepmen ESDM</strong> dan <strong style="color:var(--sys-accent)">ASTM D2241</strong>.',
+    guideIntro: 'Ikuti 7 tahap instalasi sistem perpipaan tambang. Panduan mengacu pada <strong style="color:var(--sys-accent)">Permen ESDM No. 26/2018</strong>, <strong style="color:var(--sys-accent)">ASME B31.3</strong> (Process Piping), dan <strong style="color:var(--sys-accent)">ASME B31.11</strong> (Slurry Transportation).',
     compData: () => tambangCompData,
     guideData: () => tambangGuideData,
     tagMap: {'dewater-pump':'Pompa','slurry-pump':'Pompa','hdpe-pipe':'Pipa','steel-pipe':'Pipa','settling-pond':'Kolam','butterfly-valve':'Valve','knife-gate':'Valve','flow-meter':'Instrumen','expansion-joint':'Fitting','wear-liner':'Pelindung'}
