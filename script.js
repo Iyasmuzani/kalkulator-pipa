@@ -201,3 +201,9 @@ function onCheck(step, item, cb) {
   const stepDone = [...stepChecks].every(x => x.checked);
   document.getElementById('sn-' + step).classList.toggle('done', stepDone);
 }
+
+// ==================== INIT ====================
+buildSVG();
+buildCompGrid();
+buildGuide();
+buildCalcForm();
