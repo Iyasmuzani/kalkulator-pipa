@@ -1,0 +1,87 @@
+// ==================== DATA DISTRIBUSI AIR ====================
+const distribusiCompData = {
+  'intake':{name:'Intake / Broncaptering',code:'ITK-01',icon:'🏔️',bg:'#001a2e',ac:'#6dd5ed',
+    desc:'Bangunan pengambilan air baku dari sumber (sungai, danau, mata air, atau sumur dalam). Dilengkapi screen/saringan kasar dan pengukuran debit untuk monitoring kapasitas sumber.',
+    specs:[['Tipe','River intake / Spring box / Deep well'],['Kapasitas','5 – 500 L/s'],['Screen','Bar screen 25mm + Traveling screen'],['Pengukuran','Parshall flume / V-notch weir'],['Proteksi','Trash rack + floating debris guard'],['Standar','Permen PUPR 27/2016']],
+    tips:['Pasang trash rack dengan jarak bar 25–50mm di hulu intake','Desain kapasitas intake 1.2× debit produksi (allowance maintenance)','Pasang flow measurement permanen untuk monitoring','Buat jalur bypass untuk maintenance tanpa henti produksi','Pasang pagar pengaman dan papan peringatan di area intake']},
+
+  'reservoir':{name:'Reservoir / Bak Penampung',code:'RSV-01',icon:'🏗️',bg:'#0a1a2e',ac:'#4da6ff',
+    desc:'Bak penampung air olahan berkapasitas besar untuk menyeimbangkan fluktuasi antara produksi WTP dan kebutuhan distribusi. Juga berfungsi sebagai penyimpan air pemadam kebakaran.',
+    specs:[['Material','Beton bertulang / Baja / GRP'],['Kapasitas','100 – 10.000 m³'],['Jumlah Kompartemen','Min. 2 (parallel)'],['Tinggi Air Max.','3 – 6 m'],['Free Board','Min. 30 cm'],['Standar','SNI 7511:2011']],
+    tips:['Desain kapasitas 15–25% kebutuhan harian','Buat 2 kompartemen minimum untuk perawatan bergantian','Pasang level sensor telemetri untuk monitoring jarak jauh','Buat overflow ke saluran drainase yang aman','Inspeksi dan pembersihan setiap 6 bulan']},
+
+  'booster-pump':{name:'Pompa Booster / Distribusi',code:'BPS-01',icon:'⚡',bg:'#001a0a',ac:'#00cc66',
+    desc:'Stasiun pompa distribusi yang mendorong air dari reservoir ke jaringan pipa distribusi. Menggunakan VFD untuk menyesuaikan tekanan dengan variasi kebutuhan.',
+    specs:[['Tipe','Horizontal split-case / End-suction'],['Debit','10 – 500 L/s'],['Head','20 – 80 m'],['Jumlah Unit','N+1 (min. 1 standby)'],['Kontrol','VFD + SCADA'],['Tegangan','380V 3-phase, 50Hz']],
+    tips:['Gunakan VFD untuk penghematan energi 20–40%','Pasang minimum N+1 unit (1 standby setiap N operasi)','Monitor tekanan discharge via SCADA/telemetri','Lakukan vibration analysis setiap 3 bulan','Pasang surge anticipator di discharge header']},
+
+  'pipa-transmisi':{name:'Pipa Transmisi (HDPE/Steel)',code:'PTH-01',icon:'🔷',bg:'#001a1a',ac:'#00aacc',
+    desc:'Pipa berdiameter besar untuk mengalirkan air dari sumber/WTP ke reservoir distribusi. Biasanya HDPE atau baja untuk jarak jauh dan tekanan tinggi.',
+    specs:[['Material','HDPE PE100 / Steel / DI'],['Diameter','DN200 – DN1200'],['Pressure Rating','PN10 / PN16 / PN25'],['Sambungan','Butt fusion / Flange / Welded'],['Kedalaman Tanam','Min. 80 cm dari permukaan'],['Standar','SNI 4829 / BS EN 12201']],
+    tips:['Lakukan soil investigation sebelum menentukan material','Pasang air valve di setiap titik tinggi jaringan','Pasang washout/blowoff di setiap titik rendah','Beri cover min. 80 cm, lebih dalam di jalur kendaraan berat','Pasang thrust block beton di setiap perubahan arah']},
+
+  'pipa-distribusi':{name:'Pipa Distribusi (PVC/HDPE)',code:'PDV-01',icon:'🔹',bg:'#0a0a1a',ac:'#6677dd',
+    desc:'Pipa jaringan distribusi yang mengantarkan air dari pipa transmisi ke sambungan rumah/pelanggan. Umumnya PVC atau HDPE diameter menengah.',
+    specs:[['Material','uPVC / HDPE / DI'],['Diameter','DN50 – DN300'],['Pressure Rating','PN10 (tipikal)'],['Sambungan','Solvent cement / Butt fusion / Push-fit'],['Kedalaman Tanam','60 – 100 cm'],['Standar','SNI 7511:2011 / Permen PUPR']],
+    tips:['Desain ring/loop system untuk keandalan tinggi','Kecepatan aliran optimal 0.6–1.5 m/s','Pasang valve setiap 200–500m untuk isolasi zona','Hindari dead-end — pasang washout di ujung buntu','Beri jarak min. 1m dari saluran air limbah']},
+
+  'gate-valve-net':{name:'Gate Valve Jaringan',code:'GVN-01',icon:'🔶',bg:'#1a1a00',ac:'#ccaa00',
+    desc:'Katup isolasi pada jaringan distribusi untuk membagi zona (DMA) dan mengisolasi segmen saat perbaikan tanpa mengganggu layanan keseluruhan.',
+    specs:[['Tipe','Resilient seated gate valve'],['Diameter','DN50 – DN600'],['Material','Ductile Iron GGG50'],['Tekanan Nominal','PN10 / PN16'],['Operasi','T-key / Handwheel / Actuator'],['Standar','BS EN 1074 / SNI 7553']],
+    tips:['Gunakan resilient seated (rubber) untuk zero-leakage','Pasang valve box/chamber untuk akses dari permukaan','Operasikan setiap valve min. sekali per tahun (exercise)','Beri tag/label dan catat posisi di GIS/peta jaringan','Pasang sesuai aturan N-valve: N = jumlah pipa di junction']},
+
+  'air-valve':{name:'Air Valve / Ventudara',code:'AVV-01',icon:'💨',bg:'#001a0a',ac:'#33cc99',
+    desc:'Katup otomatis untuk melepaskan udara terjebak saat pengisian pipa dan memasukkan udara saat pengosongan. Mencegah water hammer dan airlock yang menghambat aliran.',
+    specs:[['Tipe','Single / Double / Combination'],['Diameter','DN25 – DN150'],['Material Body','Ductile Iron / SS316'],['Tekanan Kerja','PN10 / PN16'],['Orifice','Large (filling) + Small (operating)'],['Standar','BS EN 1074-4 / AWWA C512']],
+    tips:['Pasang di setiap titik tinggi (high point) jaringan','Gunakan combination type untuk fungsi ganda','Pasang isolation valve di bawah air valve','Inspeksi dan bersihkan setiap 6 bulan','Pasang di atas ground level dalam chamber ventilasi']},
+
+  'prv-net':{name:'PRV Jaringan Distribusi',code:'PRN-01',icon:'⚖️',bg:'#1a001a',ac:'#cc66cc',
+    desc:'Pressure Reducing Valve untuk mengatur tekanan zona distribusi. Membagi jaringan menjadi DMA (District Metered Area) dengan tekanan yang sesuai untuk setiap zona.',
+    specs:[['Tipe','Pilot-operated globe valve'],['Diameter','DN50 – DN300'],['Range Setting','1.5 – 8 bar'],['Material','Ductile Iron / SS'],['Akurasi','±0.2 bar'],['Standar','BS EN 1567 / AWWA C530']],
+    tips:['Setting tekanan outlet 1.5–3 bar untuk zona residensial','Pasang strainer Y di sisi upstream','Pasang pressure gauge upstream dan downstream','Sediakan bypass line untuk maintenance','Monitor dengan data logger untuk optimasi tekanan']},
+
+  'water-meter-bulk':{name:'Water Meter Induk (Bulk)',code:'WMI-01',icon:'📊',bg:'#0a0a2e',ac:'#5566ff',
+    desc:'Meter air berdiameter besar untuk mengukur debit pada titik-titik kunci jaringan: outlet reservoir, inlet DMA, dan titik transfer antar zona.',
+    specs:[['Tipe','Electromagnetic / Ultrasonic / Woltman'],['Diameter','DN50 – DN600'],['Akurasi','±0.5% (EMF) / ±1% (mekanikal)'],['Output','Pulse / 4–20mA / Modbus / GPRS'],['Tekanan Kerja','PN10 / PN16'],['Standar','ISO 4064 / SNI 2547']],
+    tips:['Gunakan electromagnetic untuk akurasi terbaik','Pasang data logger dengan telemetri GPRS/4G','Hitung NRW (Non-Revenue Water) per DMA secara bulanan','Kalibrasi setiap 2 tahun oleh laboratorium terakreditasi','Pasang isolation valve di kedua sisi untuk penggantian']},
+
+  'hydrant':{name:'Hidran Kebakaran',code:'HYD-01',icon:'🔴',bg:'#2e0a0a',ac:'#ff4444',
+    desc:'Titik pengambilan air untuk pemadam kebakaran yang terhubung langsung ke jaringan distribusi. Harus mampu menyediakan debit dan tekanan minimum sesuai standar.',
+    specs:[['Tipe','Pillar hydrant / Underground hydrant'],['Diameter','DN100 / DN150'],['Outlet','2×DN65 + 1×DN100'],['Debit Min.','38 L/s (ISO) / 500 gpm (NFPA)'],['Tekanan Min.','1.5 bar di titik tertinggi'],['Standar','SNI 03-1745 / BS EN 14384']],
+    tips:['Pasang setiap 200m di area komersial, 400m di residensial','Cat warna sesuai kode debit: merah/oranye/hijau/biru','Uji debit dan tekanan setiap 6 bulan','Pasang di area yang mudah diakses mobil pemadam','Beri ruang bebas 1m di sekitar hidran']}
+};
+
+const distribusiGuideData=[
+  {n:1,title:'Perencanaan Master Plan Jaringan',sub:'Studi kelayakan, demand forecast, dan desain jaringan',
+   detail:'Master plan jaringan distribusi air adalah dokumen perencanaan jangka panjang (20–25 tahun) yang menjadi acuan seluruh pembangunan dan pengembangan jaringan.',
+   checks:['Kumpulkan data demografi dan proyeksi pertumbuhan penduduk','Hitung kebutuhan air: domestik, non-domestik, dan kebakaran','Tentukan sumber air baku dan kapasitas produksi WTP','Desain jaringan distribusi dengan software hydraulic modeling','Tentukan zona tekanan (DMA) berdasarkan topografi','Hitung diameter pipa transmisi dan distribusi utama','Identifikasi lokasi reservoir, booster pump, dan PRV','Buat estimasi biaya investasi dan rencana tahapan pembangunan'],
+   warn:'Gunakan software hydraulic modeling (EPANET/WaterGEMS) untuk verifikasi desain. Desain manual tidak direkomendasikan.'},
+  {n:2,title:'Survei & Pemetaan Topografi',sub:'Pengukuran lapangan, identifikasi hambatan, dan alignment pipa',
+   detail:'Survei topografi detail menentukan akurasi desain dan kelancaran pelaksanaan konstruksi. Gunakan GPS geodetik dan total station.',
+   checks:['Survei topografi jalur pipa dengan interval kontur 0.5m','Identifikasi crossing: jalan, sungai, rel kereta, utilitas lain','Lakukan soil investigation di titik-titik kritis','Cek status lahan dan perizinan ROW (Right of Way)','Identifikasi lokasi titik tinggi dan rendah jaringan','Tandai posisi valve, air valve, dan fitting di lapangan','Buat gambar shop drawing berdasarkan hasil survei','Koordinasi dengan instansi terkait (PU, PLN, Telkom, dll)'],
+   warn:'Pastikan semua izin galian dan crossing sudah diperoleh SEBELUM mobilisasi alat berat.'},
+  {n:3,title:'Pengadaan Material & Mobilisasi',sub:'Pembelian pipa, fitting, valve, dan mobilisasi peralatan',
+   detail:'Pengadaan material pipa harus sesuai spesifikasi teknis dan lulus uji dari laboratorium terakreditasi.',
+   checks:['Pipa: PVC/HDPE/DI sesuai spesifikasi dan SNI','Fitting: elbow, tee, reducer, flange, adaptor','Valve: gate valve, air valve, PRV, butterfly valve','Instrumen: flow meter, pressure gauge, data logger','Sambungan rumah: saddle clamp, service pipe, meter box','Peralatan: excavator, vibro roller, fusion machine','Verify sertifikat produk: SNI, ISO, uji lab','Mobilisasi dan penempatan material di sepanjang jalur'],
+   warn:'Tolak pipa yang tidak memiliki sertifikat SNI dan uji lab terakreditasi. Simpan pipa PVC di tempat teduh.'},
+  {n:4,title:'Instalasi Pipa Transmisi',sub:'Pemasangan pipa berdiameter besar dari sumber ke reservoir',
+   detail:'Pipa transmisi adalah tulang punggung jaringan. Kegagalan pipa transmisi berarti seluruh area layanan terdampak.',
+   checks:['Galian parit sesuai standar: lebar D+600mm, kedalaman sesuai','Buat bedding pasir/kerikil halus 10–15 cm','Turunkan pipa ke galian dengan sling/belt (bukan rantai)','Lakukan penyambungan sesuai metode (fusion/solvent/flange)','Pasang thrust block di setiap belokan, tee, dan dead-end','Install air valve di setiap titik tinggi jaringan','Install washout/blowoff di setiap titik rendah','Uji tekan 1.5× tekanan kerja, min. 2 jam (BS EN 805)','Backfill bertahap: seleksi material, compaction 95%','Pasang marker tape 30 cm di atas pipa'],
+   warn:'Jangan melakukan uji tekan sebelum thrust block cukup umur (min. 3 hari untuk beton). Pipa tanpa uji tekan DILARANG ditimbun.'},
+  {n:5,title:'Instalasi Pipa Distribusi & Sambungan Rumah',sub:'Jaringan distribusi ke pelanggan akhir',
+   detail:'Instalasi pipa distribusi menyentuh area publik dan pemukiman. Koordinasi dengan warga dan pengelolaan lalu lintas sangat penting.',
+   checks:['Galian pipa distribusi: kedalaman min. 60cm','Pasang pipa distribusi sesuai alignment desain','Sambungkan ke pipa transmisi melalui tee/saddle','Pasang gate valve setiap 200–500m untuk isolasi zona','Instalasi sambungan rumah dengan saddle clamp','Pasang meter box dan water meter di setiap sambungan','Uji tekan per segmen sesuai standar','Flushing dan sterilisasi pipa (chlorination)','Backfill dan perbaikan permukaan jalan/trotoar','Update peta jaringan (GIS) dengan data as-built'],
+   warn:'Kedalaman pipa distribusi MINIMUM 60 cm. Di bawah jalan kendaraan berat, minimum 100 cm dengan casing.'},
+  {n:6,title:'Instalasi Valve, Fitting & Appurtenances',sub:'Pemasangan katup, air valve, PRV, dan hidran',
+   detail:'Appurtenances (kelengkapan jaringan) menentukan kemampuan operasional dan efisiensi pengelolaan jaringan.',
+   checks:['Pasang gate valve di setiap junction (aturan N-valve)','Pasang air valve di setiap titik tertinggi','Pasang washout valve di setiap titik terendah','Install PRV untuk zona dengan tekanan berlebih','Pasang bulk water meter di inlet setiap DMA','Pasang hidran sesuai spacing standar','Buat valve chamber/box dengan akses yang baik','Beri tag identifikasi pada setiap valve dan meter','Update database aset di GIS/SCADA'],
+   warn:'Catat koordinat GPS setiap valve dan appurtenances. Valve yang tidak tercatat di peta = valve yang hilang.'},
+  {n:7,title:'Uji Tekan & Flushing Jaringan',sub:'Hydrostatic test, disinfeksi, dan uji kualitas air',
+   detail:'Pengujian jaringan distribusi mengacu pada SNI 7511:2011 dan BS EN 805:2025 untuk memastikan keandalan dan keamanan.',
+   checks:['Uji tekan per segmen: 1.5× tekanan kerja, 2 jam min.','Tandai dan perbaiki semua titik kebocoran','Flushing jaringan dengan kecepatan min. 0.75 m/s','Disinfeksi dengan chlorine 50 mg/L selama 24 jam','Flushing ulang hingga residual chlorine < 0.5 mg/L','Ambil sampel air untuk uji bakteriologi','Verifikasi tekanan di titik-titik kritis jaringan','Uji debit hidran dan bandingkan dengan standar','Dokumentasikan semua hasil uji dalam laporan','Serahterima pekerjaan dengan berita acara'],
+   warn:'Air TIDAK BOLEH dialirkan ke pelanggan sebelum LULUS uji bakteriologi. Pelanggaran = risiko kesehatan publik.'},
+  {n:8,title:'Operasi & Pemeliharaan Jaringan',sub:'Monitoring NRW, manajemen tekanan, dan perbaikan kebocoran',
+   detail:'Operasi jaringan distribusi air yang baik fokus pada 3 hal: kontinuitas layanan, kualitas air, dan efisiensi (minimasi NRW/kehilangan air).',
+   checks:['Monitor tekanan dan debit per DMA via telemetri/SCADA','Hitung NRW bulanan per DMA (target < 20%)','Lakukan leak detection survey rutin (acoustic/correlator)','Perbaiki kebocoran dalam max. 24 jam setelah terdeteksi','Flushing jaringan berkala di area dead-end','Kalibrasi water meter sesuai jadwal','Analisis kualitas air harian: sisa chlor, kekeruhan, pH','Operasikan setiap valve min. 1× per tahun','Update peta jaringan dan database aset','Buat laporan bulanan: kinerja operasi, NRW, keluhan pelanggan'],
+   warn:'NRW di atas 40% menunjukkan masalah serius. Prioritaskan pembentukan DMA dan active leak detection.'}
+];

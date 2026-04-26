@@ -1,0 +1,83 @@
+// ==================== DATA TAMBANG ====================
+const tambangCompData = {
+  'dewater-pump':{name:'Pompa Dewatering (Submersible)',code:'DWP-01',icon:'🔌',bg:'#1a0e00',ac:'#ff8c42',
+    desc:'Pompa submersible yang direndam langsung di sump pit untuk memompa air tanah keluar dari area penambangan. Beroperasi 24/7 dalam kondisi ekstrem dengan partikel abrasif.',
+    specs:[['Tipe','Submersible centrifugal / axial'],['Debit','50 – 2.000 m³/jam'],['Total Head','20 – 250 m'],['Daya Motor','15 – 500 kW'],['Material Impeller','High-chrome / SS316'],['IP Rating','IP68 (fully submersible)']],
+    tips:['Pasang level sensor otomatis di sump pit untuk start/stop','Gunakan impeller high-chrome untuk ketahanan terhadap partikel','Sediakan pompa standby (min. N+1 redundancy)','Pasang vibration monitoring untuk early warning kerusakan bearing','Jadwalkan inspeksi impeller dan wear ring setiap 3 bulan']},
+
+  'slurry-pump':{name:'Pompa Slurry (Centrifugal)',code:'SLP-01',icon:'🔄',bg:'#1a1000',ac:'#ffb347',
+    desc:'Pompa sentrifugal khusus untuk memindahkan campuran air dan material padat (slurry/tailing). Dirancang dengan wear liner yang bisa diganti untuk memperpanjang umur pompa.',
+    specs:[['Tipe','Horizontal centrifugal slurry'],['Konsentrasi Solid','10 – 65% berat'],['Ukuran Partikel Max.','25 – 75 mm'],['Material Wet-end','High-chrome A05 / Rubber'],['Seal Type','Expeller seal / Gland packing'],['Standar','ISO 14414 / HI Standards']],
+    tips:['Pilih material wet-end sesuai jenis slurry (chrome vs rubber)','Operasikan pada BEP (Best Efficiency Point) ± 10%','Monitor ketebalan wear liner secara berkala','Pasang pressure gauge di suction dan discharge','Hindari operasi kering lebih dari 30 detik']},
+
+  'hdpe-pipe':{name:'Pipa HDPE (Dewatering)',code:'HPL-01',icon:'🔵',bg:'#001a2e',ac:'#4da6ff',
+    desc:'Pipa HDPE (High Density Polyethylene) untuk jalur dewatering. Ringan, fleksibel, tahan korosi, dan mudah disambung dengan metode butt fusion atau electrofusion.',
+    specs:[['Material','PE100 / PE4710'],['Diameter','DN63 – DN1200'],['Pressure Rating','PN10 / PN16 / PN20'],['SDR','SDR11 / SDR17 / SDR21'],['Standar','SNI 4829 / AS/NZS 4130'],['Umur Rencana','50 tahun (kondisi standar)']],
+    tips:['Sambung dengan butt fusion sesuai WPS yang disetujui','Lakukan uji tekan sebelum backfill (1.5× tekanan kerja, 2 jam)','Beri padding pasir 10 cm di dasar galian dan 30 cm di atas pipa','Pasang tracer wire untuk pipa yang ditanam','Hindari paparan UV berkepanjangan sebelum pemasangan']},
+
+  'steel-pipe':{name:'Pipa Baja Karbon (Slurry)',code:'STP-01',icon:'⚫',bg:'#1a1a1a',ac:'#aaaaaa',
+    desc:'Pipa baja karbon untuk transport slurry/tailing bertekanan tinggi. Dilengkapi internal rubber lining atau ceramic lining untuk ketahanan aus.',
+    specs:[['Material','Carbon steel ASTM A106 Gr.B'],['Diameter','DN100 – DN600'],['Schedule','Sch40 / Sch80 / Sch120'],['Lining','Rubber / Ceramic / Polyurethane'],['Sambungan','Flange / Victaulic / Welded'],['Standar','ASTM A106 / ASME B31.3']],
+    tips:['Gunakan rubber lining untuk slurry kasar, ceramic untuk halus','Inspeksi ketebalan dinding (UT) setiap 6 bulan','Pasang spool piece di titik strategis untuk pergantian cepat','Beri kemiringan minimal 3° pada jalur horizontal','Minimalisir jumlah elbow — gunakan long radius bend']},
+
+  'settling-pond':{name:'Settling Pond / Kolam Pengendapan',code:'SPD-01',icon:'🏊',bg:'#0a1a0a',ac:'#66cc66',
+    desc:'Kolam pengendapan untuk memisahkan partikel solid dari air sebelum dibuang atau diresirkulasi. Dirancang dengan waktu tinggal (retention time) yang cukup.',
+    specs:[['Retention Time','4 – 24 jam'],['Jumlah Stage','2 – 4 kolam seri'],['Kedalaman','1.5 – 3 m'],['Liner','HDPE geomembrane 1–2 mm'],['Outlet','Overflow weir + clarity tube'],['Standar','Permen LHK / AMDAL']],
+    tips:['Desain minimal 2 kolam paralel untuk maintenance bergantian','Pasang baffle wall untuk mencegah short-circuiting','Monitor TSS (Total Suspended Solid) outlet setiap hari','Keruk endapan secara berkala sebelum penuh 50%','Pasang floating boom di kolam terakhir untuk oil/grease']},
+
+  'butterfly-valve':{name:'Butterfly Valve',code:'BFV-01',icon:'🦋',bg:'#0a0a1a',ac:'#7788ff',
+    desc:'Katup isolasi berdiameter besar untuk sistem dewatering. Desain quarter-turn memungkinkan operasi cepat. Lebih ringan dan compact dibanding gate valve.',
+    specs:[['Tipe','Wafer / Lug / Double flange'],['Diameter','DN100 – DN1200'],['Material Disc','Ductile Iron / SS316'],['Seat','EPDM / NBR / PTFE'],['Tekanan Nominal','PN10 / PN16'],['Operasi','Lever / Gearbox / Actuator']],
+    tips:['Gunakan EPDM seat untuk air bersih, NBR untuk slurry ringan','Untuk DN300+, gunakan gearbox untuk kemudahan operasi','Pasang di antara 2 flange dengan gasket full-face','Jangan gunakan untuk throttling precise — gunakan globe valve','Lubrikasi stem seal setiap 6 bulan']},
+
+  'knife-gate':{name:'Knife Gate Valve',code:'KGV-01',icon:'🔪',bg:'#1a0a0a',ac:'#ff6666',
+    desc:'Katup gerbang pisau untuk isolasi aliran slurry/lumpur. Desain uni-directional dengan blade tajam yang memotong melalui material solid.',
+    specs:[['Tipe','Rising stem / Non-rising stem'],['Diameter','DN50 – DN600'],['Material Blade','SS304 / SS316 / Hardox'],['Seat','Metal / Elastomer'],['Tekanan Kerja','PN10 (slurry service)'],['Operasi','Handwheel / Pneumatic / Hydraulic']],
+    tips:['Pasang dengan arah aliran sesuai tanda panah di body','Gunakan pneumatic actuator untuk operasi jarak jauh','Flush valve dengan air bersih sebelum menutup penuh','Periksa kondisi blade dan seat setiap 3 bulan','Pilih metal seat untuk slurry abrasif > 40% solid']},
+
+  'flow-meter':{name:'Electromagnetic Flow Meter',code:'FLM-01',icon:'📡',bg:'#001a1a',ac:'#00cccc',
+    desc:'Flow meter elektromagnetik untuk mengukur debit air dan slurry secara akurat. Tidak ada bagian bergerak, cocok untuk media yang mengandung partikel solid.',
+    specs:[['Tipe','Full-bore electromagnetic'],['Diameter','DN25 – DN1200'],['Akurasi','±0.5% (air) / ±1% (slurry)'],['Konduktivitas Min.','5 µS/cm'],['Liner','PTFE / Hard rubber / PFA'],['Output','4–20mA / HART / Modbus']],
+    tips:['Pasang minimal 5D upstream dan 3D downstream pipa lurus','Gunakan hard rubber liner untuk slurry abrasif','Pastikan pipa selalu terisi penuh (full-pipe condition)','Kalibrasi setiap 1–2 tahun dengan portable clamp-on meter','Grounding kedua flange dan pipa ke bumi untuk akurasi']},
+
+  'expansion-joint':{name:'Expansion Joint / Flexible Joint',code:'EXJ-01',icon:'🔗',bg:'#1a1a00',ac:'#cccc00',
+    desc:'Sambungan fleksibel untuk mengakomodasi pergerakan pipa akibat ekspansi termal, getaran pompa, atau pergerakan tanah di area tambang.',
+    specs:[['Tipe','Rubber bellows / Metal bellows'],['Diameter','DN50 – DN600'],['Pressure Rating','PN10 / PN16'],['Axial Movement','±15 – ±50 mm'],['Lateral Movement','±5 – ±25 mm'],['Material Flange','Ductile Iron / Carbon Steel']],
+    tips:['Pasang di sisi suction dan discharge pompa untuk isolasi getaran','Gunakan control rod untuk membatasi gerakan berlebih','Periksa kondisi bellows setiap 6 bulan (cek retak/aus)','Untuk jalur slurry, gunakan rubber bellows bukan metal','Jangan gunakan sebagai pengganti alignment pipa yang benar']},
+
+  'wear-liner':{name:'Wear Liner / Pelapis Tahan Aus',code:'WLR-01',icon:'🛡️',bg:'#1a0a00',ac:'#cc6633',
+    desc:'Pelapis internal pipa untuk melindungi dinding pipa dari abrasi slurry. Tersedia dalam material keramik, rubber, atau polyurethane sesuai karakteristik slurry.',
+    specs:[['Material','Alumina ceramic / Rubber / PU'],['Kekerasan','1400 HV (ceramic) / 60 Shore A (rubber)'],['Ketebalan','6 – 25 mm'],['Metode Pemasangan','Adhesive / Mechanical lock / Vulcanized'],['Umur Pakai','6 – 36 bulan (tergantung slurry)'],['Standar','ASTM G75 (uji abrasi)']],
+    tips:['Pilih ceramic untuk slurry halus kecepatan tinggi','Pilih rubber untuk slurry kasar kecepatan rendah','Monitor ketebalan liner dengan UT setiap 3 bulan','Ganti liner saat tersisa 25% dari ketebalan awal','Pasang inspection port di elbow dan tee untuk pengecekan']}
+};
+
+const tambangGuideData=[
+  {n:1,title:'Survei Geologi & Hidrologi',sub:'Pengumpulan data lapangan untuk desain sistem dewatering',
+   detail:'Survei geologi dan hidrologi adalah fondasi desain sistem perpipaan tambang. Data yang akurat menentukan kapasitas pompa dan ukuran pipa yang tepat.',
+   checks:['Lakukan survei topografi dan pemetaan pit area','Identifikasi sumber air masuk (groundwater, surface runoff, hujan)','Ukur debit inflow air tanah dengan pumping test','Analisis kualitas air: pH, TSS, konduktivitas, logam berat','Tentukan lokasi sump pit dan jalur discharge','Survei jarak dan elevasi dari pit ke settling pond','Identifikasi potensi pergerakan tanah (slope stability)','Koordinasi dengan tim geoteknik dan lingkungan'],
+   warn:'Gunakan data hidrologi minimal 5 tahun untuk desain kapasitas puncak. Data curah hujan 25-tahunan wajib.'},
+  {n:2,title:'Desain Sistem Dewatering / Slurry',sub:'Perhitungan kapasitas pompa, diameter pipa, dan layout jaringan',
+   detail:'Desain harus memperhitungkan variasi debit musiman, ekspansi pit, dan rencana penambangan jangka panjang.',
+   checks:['Hitung debit desain: inflow + curah hujan puncak','Tentukan TDH (Total Dynamic Head) termasuk static + friction','Pilih jenis pompa: submersible/slurry sesuai aplikasi','Hitung diameter pipa berdasarkan kecepatan optimal','Desain settling pond: volume, retention time, staging','Buat P&ID (Piping and Instrumentation Diagram)','Hitung kebutuhan listrik dan backup genset','Review desain oleh engineer bersertifikat PII/BNSP'],
+   warn:'Faktor keamanan minimal 1.5× untuk debit desain. Untuk slurry, gunakan kecepatan critical settling velocity.'},
+  {n:3,title:'Instalasi Pompa Dewatering',sub:'Pemasangan pompa submersible di sump pit',
+   detail:'Instalasi pompa di lingkungan tambang memerlukan perhatian khusus terhadap keselamatan, akses, dan ketahanan terhadap kondisi ekstrem.',
+   checks:['Bangun sump pit dengan kedalaman dan volume yang cukup','Pasang guide rail system untuk pompa submersible','Instalasi kabel power dengan armoured cable','Pasang panel kontrol dengan VFD (Variable Frequency Drive)','Hubungkan discharge pipe ke header utama','Pasang check valve dan isolation valve di discharge','Instalasi level sensor: low/high/alarm','Pasang flow meter di outlet sump area','Test run: verifikasi debit, head, dan ampere motor'],
+   warn:'KESELAMATAN: Pastikan area sump pit memiliki akses darurat, ventilasi, dan working at height permit.'},
+  {n:4,title:'Pemasangan Jalur Pipa HDPE/Baja',sub:'Instalasi jalur pipa dari pit ke settling pond/discharge',
+   detail:'Jalur pipa tambang melewati terrain berat dan harus mampu mengakomodasi pergerakan tanah serta perubahan layout pit.',
+   checks:['Clearing dan grading jalur pipa sesuai alignment','Gali parit: lebar min. D+600mm, kedalaman min. D+300mm','Buat bedding pasir 150mm di dasar galian','Lakukan butt fusion (HDPE) atau welding (baja) sesuai WPS','Uji tekan hidrostatik: 1.5× PN selama minimum 2 jam','Pasang thrust block di setiap belokan dan perubahan diameter','Install expansion joint di titik-titik strategis','Pasang pipa dengan kemiringan min. 2% ke arah drainage','Backfill dengan material seleksi, compaction 95% MDD','Pasang marker post setiap 100m dan di setiap belokan'],
+   warn:'Semua pekerjaan pengelasan harus oleh welder bersertifikat. NDT (radiography) minimal 10% dari total sambungan las.'},
+  {n:5,title:'Instalasi Sistem Slurry',sub:'Khusus untuk transport material solid/tailing',
+   detail:'Sistem slurry memerlukan perhatian khusus karena sifat abrasif material. Desain harus meminimalkan wear dan memudahkan penggantian komponen.',
+   checks:['Pasang slurry pump pada pondasi beton yang kuat','Install rubber/ceramic lined pipe pada jalur utama','Pasang knife gate valve di setiap titik isolasi','Gunakan long radius elbow (min. 5D) untuk belokan','Pasang wear indicator/port untuk monitoring ketebalan','Install flushing connection di setiap titik rendah','Pasang sampling point untuk analisis konsentrasi slurry','Test run: verifikasi flow rate, pressure, dan settling'],
+   warn:'JANGAN biarkan slurry mengendap di dalam pipa. Pastikan kecepatan selalu di atas critical velocity (Vc).'},
+  {n:6,title:'Commissioning & Uji Sistem',sub:'Pengujian terintegrasi seluruh komponen',
+   detail:'Commissioning harus dilakukan secara bertahap: individual equipment test → loop test → integrated test.',
+   checks:['Hydrostatic test seluruh jalur pipa','Verifikasi semua instrumen: flow meter, level sensor, pressure gauge','Test sequence kontrol otomatis pompa (start/stop/alarm)','Uji kapasitas settling pond: inlet vs outlet TSS','Verifikasi sistem alarm dan emergency shutdown','Test backup power (genset) dengan switchover otomatis','Uji debit aktual vs debit desain','Dokumentasikan semua hasil uji dalam commissioning report','Pelatihan operator lapangan'],
+   warn:'Siapkan contingency plan untuk kegagalan sistem selama commissioning. Air tidak boleh meluap ke area penambangan.'},
+  {n:7,title:'Operasi & Pemeliharaan Tambang',sub:'SOP harian, jadwal PM, dan manajemen spare parts',
+   detail:'Kondisi tambang yang keras memerlukan frekuensi maintenance yang lebih tinggi dibanding sistem konvensional.',
+   checks:['Buat SOP operasi harian: inspeksi visual, pembacaan instrumen','Monitor debit dan tekanan setiap shift','Inspeksi wear liner dan impeller setiap 3 bulan','Kalibrasi flow meter dan pressure gauge setiap 6 bulan','Keruk settling pond saat endapan mencapai 50% volume','Stock spare parts kritis: impeller, seal, bearing, liner','Analisis kualitas air outlet harian (pH, TSS, logam berat)','Buat laporan bulanan: kinerja sistem, konsumsi energi','Review dan update rencana dewatering sesuai progress pit'],
+   warn:'Simpan log operasi dan maintenance minimal selama masa operasi tambang. Diperlukan untuk pelaporan AMDAL.'}
+];
