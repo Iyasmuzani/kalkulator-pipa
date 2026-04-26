@@ -15,7 +15,7 @@ function buildCalcBangunan(){
   <div class="form-group"><label class="form-label">Tinggi per Lantai (m)</label><input type="number" class="form-control" id="f-height" min="2.5" max="8" step="0.1" value="3.5"></div>
   <div class="form-group"><label class="form-label">Sumber Air</label><select class="form-control" id="f-source"><option value="pdam">PDAM</option><option value="sumur">Sumur Bor</option><option value="keduanya">PDAM + Sumur</option></select></div>
   <div class="form-group"><label class="form-label">Sistem Distribusi</label><select class="form-control" id="f-system"><option value="downfeed">Down-feed (Gravitasi)</option><option value="upfeed">Up-feed (Booster)</option><option value="hybrid">Hybrid</option></select></div>
-  <div class="form-group"><label class="form-label">Material Pipa</label><select class="form-control" id="f-pipe"><option value="ppr">PPR PN20</option><option value="pvc">uPVC Class AW</option><option value="galvanis">Baja Galvanis</option><option value="hdpe">HDPE</option></select></div>
+  <div class="form-group"><label class="form-label">Material Pipa</label><select class="form-control" id="f-pipe"><option value="ppr10">PPR PN10 (Cold water)</option><option value="ppr16">PPR PN16 (Cold/warm)</option><option value="ppr20">PPR PN20 (Cold + Hot)</option><option value="pvc">uPVC Class AW</option><option value="galvanis">Baja Galvanis</option><option value="hdpe">HDPE</option></select></div>
   <button class="calc-btn" onclick="calcBangunan()">⚡ Hitung Rekomendasi</button>`;
 }
 
@@ -86,10 +86,11 @@ function calcBangunan(){
   var pw=(1000*9.81*Qm3s*H)/(650),pwF=pwStd.find(p=>p>=pw)||Math.ceil(pw);
   // Kecepatan aliran desain 1.2 m/s (SNI 8153:2025: 0.6–2.0 m/s)
   var Dm=Math.sqrt(4*Qm3s/(Math.PI*1.2))*1000;
-  var ps=pp==='ppr'?[20,25,32,40,50,63,75,90,110,160]:[15,20,25,32,40,50,65,80,100,125,150,200];
+  var isPPR=pp.startsWith('ppr');
+  var ps=isPPR?[20,25,32,40,50,63,75,90,110,160]:[15,20,25,32,40,50,65,80,100,125,150,200];
   var pD=findPipe(Dm,ps),bD=findPipe(Dm*0.6,ps);
   var pt=Math.ceil(Qls*360/10)*10,wP=H/10,prv=wP>3.5,z=Math.ceil(fl/4);
-  var pm={'ppr':'PPR PN20','pvc':'uPVC Class AW','galvanis':'Baja Galvanis','hdpe':'HDPE PN12.5'};
+  var pm={'ppr10':'PPR PN10','ppr16':'PPR PN16','ppr20':'PPR PN20','pvc':'uPVC Class AW','galvanis':'Baja Galvanis','hdpe':'HDPE PN12.5'};
   R('rec-results').innerHTML=`
   <div class="result-sec"><div class="result-sec-title">📊 Kebutuhan Air — ${us} pengguna</div><div class="result-grid">
   <div class="result-item"><div class="rk">Konsumsi Harian</div><div class="rv">${(Qd/1000).toFixed(2)}<span class="ru"> m³/hari</span></div></div>
