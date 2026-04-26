@@ -13,7 +13,7 @@ const systemConfig = {
     guideIntro: 'Ikuti 8 tahap instalasi ini secara berurutan. Panduan mengacu pada <strong style="color:var(--sys-accent)">SNI 8153:2025</strong> tentang Tata Cara Perencanaan Sistem Plambing.',
     compData: () => bangunanCompData,
     guideData: () => bangunanGuideData,
-    tagMap: {'roof-tank':'Tangki','ground-tank':'Tangki','pump':'Pompa','pressure-tank':'Tangki Tekan','prv':'Valve','gate-valve':'Valve','check-valve':'Valve','pressure-gauge':'Instrumen','water-meter':'Instrumen','floor-drain':'Drainase'}
+    tagMap: { 'roof-tank': 'Tangki', 'ground-tank': 'Tangki', 'pump': 'Pompa', 'pressure-tank': 'Tangki Tekan', 'prv': 'Valve', 'gate-valve': 'Valve', 'check-valve': 'Valve', 'pressure-gauge': 'Instrumen', 'water-meter': 'Instrumen', 'floor-drain': 'Drainase' }
   },
   tambang: {
     title: 'Sistem Perpipaan Tambang',
@@ -24,7 +24,7 @@ const systemConfig = {
     guideIntro: 'Ikuti 7 tahap instalasi sistem perpipaan tambang. Panduan mengacu pada <strong style="color:var(--sys-accent)">Permen ESDM No. 26/2018</strong>, <strong style="color:var(--sys-accent)">ASME B31.3</strong> (Process Piping), dan <strong style="color:var(--sys-accent)">ASME B31.11</strong> (Slurry Transportation).',
     compData: () => tambangCompData,
     guideData: () => tambangGuideData,
-    tagMap: {'dewater-pump':'Pompa','slurry-pump':'Pompa','hdpe-pipe':'Pipa','steel-pipe':'Pipa','settling-pond':'Kolam','butterfly-valve':'Valve','knife-gate':'Valve','flow-meter':'Instrumen','expansion-joint':'Fitting','wear-liner':'Pelindung'}
+    tagMap: { 'dewater-pump': 'Pompa', 'slurry-pump': 'Pompa', 'hdpe-pipe': 'Pipa', 'steel-pipe': 'Pipa', 'settling-pond': 'Kolam', 'butterfly-valve': 'Valve', 'knife-gate': 'Valve', 'flow-meter': 'Instrumen', 'expansion-joint': 'Fitting', 'wear-liner': 'Pelindung' }
   },
   distribusi: {
     title: 'Sistem Perpipaan Jaringan Distribusi Air',
@@ -35,7 +35,7 @@ const systemConfig = {
     guideIntro: 'Ikuti 8 tahap instalasi jaringan distribusi air. Panduan mengacu pada <strong style="color:var(--sys-accent)">SNI 7511:2011</strong> dan <strong style="color:var(--sys-accent)">BS EN 805:2025</strong>.',
     compData: () => distribusiCompData,
     guideData: () => distribusiGuideData,
-    tagMap: {'intake':'Sumber','reservoir':'Penampung','booster-pump':'Pompa','pipa-transmisi':'Pipa','pipa-distribusi':'Pipa','gate-valve-net':'Valve','air-valve':'Valve','prv-net':'Valve','water-meter-bulk':'Instrumen','hydrant':'Hidran'}
+    tagMap: { 'intake': 'Sumber', 'reservoir': 'Penampung', 'booster-pump': 'Pompa', 'pipa-transmisi': 'Pipa', 'pipa-distribusi': 'Pipa', 'gate-valve-net': 'Valve', 'air-valve': 'Valve', 'prv-net': 'Valve', 'water-meter-bulk': 'Instrumen', 'hydrant': 'Hidran' }
   }
 };
 
@@ -78,7 +78,7 @@ function switchToEngTools() {
   document.getElementById('eng-panel').style.display = 'block';
   document.getElementById('hdr-title').textContent = 'Engineering Tools';
   document.getElementById('hdr-sub').textContent = 'Butt fusion HDPE · Pressure loss · Buoyancy · Water hammer · Friction · Pipe load';
-  document.getElementById('hdr-badge').textContent = 'ISO 21307 · DVS 2207';
+  document.getElementById('hdr-badge').textContent = '';
   document.getElementById('hdr-icon').textContent = '🔬';
   switchEngTool(currentEngTool);
 }
@@ -93,7 +93,7 @@ function exitEngTools() {
 function switchEngTool(tool) {
   currentEngTool = tool;
   document.querySelectorAll('.eng-tab').forEach((b, i) => {
-    const tools = ['fusion','pressloss','buoyancy','waterhammer','friction','pipeload'];
+    const tools = ['fusion', 'pressloss', 'buoyancy', 'waterhammer', 'friction', 'pipeload'];
     b.classList.toggle('active', tools[i] === tool);
   });
   const builders = {
@@ -138,7 +138,7 @@ function resetCalcResults() {
 
 // ==================== TAB SWITCHING ====================
 function switchTab(t) {
-  const tabNames = ['visualisasi','komponen','panduan','kalkulator'];
+  const tabNames = ['visualisasi', 'komponen', 'panduan', 'kalkulator'];
   document.querySelectorAll('.tab').forEach((el, i) => {
     el.classList.toggle('active', tabNames[i] === t);
   });
