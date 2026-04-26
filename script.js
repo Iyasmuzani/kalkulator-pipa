@@ -43,6 +43,10 @@ const systemConfig = {
 function switchSystem(sys) {
   currentSystem = sys;
   document.documentElement.setAttribute('data-system', sys);
+  // Hide eng tools, show normal UI
+  document.getElementById('eng-panel').style.display = 'none';
+  document.querySelector('.tabs').style.display = '';
+  document.querySelector('.content').style.display = '';
   document.querySelectorAll('.sys-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('sys-' + sys).classList.add('active');
 
@@ -61,6 +65,53 @@ function switchSystem(sys) {
   buildGuide();
   buildCalcForm();
   resetCalcResults();
+}
+
+// ==================== ENGINEERING TOOLS ====================
+let currentEngTool = 'fusion';
+
+function switchToEngTools() {
+  document.querySelectorAll('.sys-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sys-engineering').classList.add('active');
+  document.querySelector('.tabs').style.display = 'none';
+  document.querySelector('.content').style.display = 'none';
+  document.getElementById('eng-panel').style.display = 'block';
+  document.getElementById('hdr-title').textContent = 'Engineering Tools';
+  document.getElementById('hdr-sub').textContent = 'Butt fusion HDPE · Pressure loss · Buoyancy · Water hammer · Friction · Pipe load';
+  document.getElementById('hdr-badge').textContent = 'ISO 21307 · DVS 2207';
+  document.getElementById('hdr-icon').textContent = '🔬';
+  switchEngTool(currentEngTool);
+}
+
+function exitEngTools() {
+  document.getElementById('eng-panel').style.display = 'none';
+  document.querySelector('.tabs').style.display = '';
+  document.querySelector('.content').style.display = '';
+  switchSystem(currentSystem);
+}
+
+function switchEngTool(tool) {
+  currentEngTool = tool;
+  document.querySelectorAll('.eng-tab').forEach((b, i) => {
+    const tools = ['fusion','pressloss','buoyancy','waterhammer','friction','pipeload'];
+    b.classList.toggle('active', tools[i] === tool);
+  });
+  const builders = {
+    fusion: buildFusionForm,
+    pressloss: buildPressLossForm,
+    buoyancy: buildBuoyancyForm,
+    waterhammer: buildWaterHammerForm,
+    friction: buildFrictionForm,
+    pipeload: buildPipeLoadForm
+  };
+  if (builders[tool]) builders[tool]();
+  document.getElementById('eng-results').innerHTML = `
+    <div class="rec-placeholder">
+      <div style="font-size:48px;opacity:.2">🔬</div>
+      <div style="font-size:13px;color:var(--text2);max-width:220px;line-height:1.7;text-align:center">
+        Isi parameter di panel kiri, lalu klik <strong style="color:#00e5ff">Hitung</strong>
+      </div>
+    </div>`;
 }
 
 function resetCompPanel() {

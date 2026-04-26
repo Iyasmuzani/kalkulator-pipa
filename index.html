@@ -44,6 +44,13 @@
         <div class="sys-desc">Jaringan transmisi & distribusi</div>
       </div>
     </div>
+    <div class="sys-btn sys-eng" onclick="switchToEngTools()" id="sys-engineering">
+      <div class="sys-icon">🔬</div>
+      <div>
+        <div class="sys-label">Engineering Tools</div>
+        <div class="sys-desc">Butt fusion & fisika pipa</div>
+      </div>
+    </div>
   </div>
 
   <!-- TABS -->
@@ -125,6 +132,29 @@
 
   </div><!-- end .content -->
 
+  <!-- ===== ENGINEERING TOOLS PANEL ===== -->
+  <div class="eng-panel" id="eng-panel" style="display:none">
+    <div class="eng-subtabs" id="eng-subtabs">
+      <button class="eng-tab active" onclick="switchEngTool('fusion')">🔗 Butt Fusion HDPE</button>
+      <button class="eng-tab" onclick="switchEngTool('pressloss')">📉 Pressure Loss</button>
+      <button class="eng-tab" onclick="switchEngTool('buoyancy')">🌊 Buoyancy</button>
+      <button class="eng-tab" onclick="switchEngTool('waterhammer')">💥 Water Hammer</button>
+      <button class="eng-tab" onclick="switchEngTool('friction')">🔧 Friction Loss</button>
+      <button class="eng-tab" onclick="switchEngTool('pipeload')">⚖️ Pipe Load</button>
+    </div>
+    <div class="rec-layout">
+      <div class="rec-form" id="eng-form"></div>
+      <div class="rec-results" id="eng-results">
+        <div class="rec-placeholder">
+          <div style="font-size:48px;opacity:.2">🔬</div>
+          <div style="font-size:13px;color:var(--text2);max-width:220px;line-height:1.7;text-align:center">
+            Pilih tool di atas, isi parameter, lalu klik <strong style="color:#00e5ff">Hitung</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL -->
   <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
     <div class="modal" id="modal-content"></div>
@@ -135,6 +165,8 @@
   <script src="data-distribusi.js"></script>
   <script src="svg-generators.js"></script>
   <script src="calculators.js"></script>
+  <script src="calc-fusion.js"></script>
+  <script src="calc-physics.js"></script>
   <script src="script.js"></script>
 </body>
 
