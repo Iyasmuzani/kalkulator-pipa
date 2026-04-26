@@ -176,61 +176,133 @@ function calcFriction(){
   </div></div>`;
 }
 
-// ===== 5. PIPE LOAD (Marston) =====
+// ===== 5. PIPE LOAD & DEFLECTION (AWWA M23) =====
 function buildPipeLoadForm(){
+  var sdrOpts = [7.4, 9, 11, 13.6, 17, 21, 26].map(s=>`<option value="${s}" ${s===17?'selected':''}>SDR ${s}</option>`).join('');
   E('eng-form').innerHTML=`
-  <div class="form-title">⚖️ Pipe Load <span style="font-size:10px;color:var(--text2);font-weight:400">Marston + Live Load</span></div>
-  <div class="form-group"><label class="form-label">Diameter Luar (OD) mm</label><input type="number" class="form-control" id="ld-od" min="50" max="2000" value="315"></div>
+  <div class="form-title">⚖️ Pipe Load & Defleksi <span style="font-size:10px;color:var(--text2);font-weight:400">AWWA M23 / Modified Iowa</span></div>
   <div class="form-group"><label class="form-label">Tipe Pipa</label>
-  <select class="form-control" id="ld-type"><option value="flexible" selected>Flexible (HDPE/PVC)</option><option value="rigid">Rigid (Beton/DI/Baja)</option></select></div>
-  <div class="form-group"><label class="form-label">Kedalaman Tanam (m)</label><input type="number" class="form-control" id="ld-h" min="0.3" max="10" step="0.1" value="1.2"></div>
-  <div class="form-group"><label class="form-label">Lebar Galian (m)</label><input type="number" class="form-control" id="ld-bd" min="0.3" max="5" step="0.1" value="0.6"></div>
-  <div class="form-group"><label class="form-label">Jenis Tanah</label>
-  <select class="form-control" id="ld-soil"><option value="18">Tanah Biasa γ=18 kN/m³</option><option value="20">Tanah Padat γ=20 kN/m³</option><option value="16">Tanah Lunak γ=16 kN/m³</option></select></div>
-  <div class="form-group"><label class="form-label">Beban Permukaan</label>
-  <select class="form-control" id="ld-live"><option value="0">Tanpa beban lalu lintas</option><option value="10">Pedestrian (10 kN)</option><option value="50">Kendaraan Ringan (50 kN)</option><option value="100">Truk (100 kN)</option><option value="200">Heavy Equipment (200 kN)</option></select></div>
-  <button class="calc-btn" onclick="calcPipeLoad()">⚡ Hitung Pipe Load</button>`;
+  <select class="form-control" id="ld-type" onchange="toggleLdSDR()"><option value="flexible" selected>Flexible (HDPE)</option><option value="rigid">Rigid (Beton/Baja)</option></select></div>
+  <div class="form-group"><label class="form-label">Diameter Luar (OD) mm</label><input type="number" class="form-control" id="ld-od" min="50" max="2000" value="315"></div>
+  <div class="form-group" id="ld-sdr-wrap"><label class="form-label">SDR Pipa (Kekakuan)</label>
+  <select class="form-control" id="ld-sdr">${sdrOpts}</select></div>
+  <div class="form-group"><label class="form-label">Kedalaman Tanam (H) m</label><input type="number" class="form-control" id="ld-h" min="0.3" max="15" step="0.1" value="1.5"></div>
+  <div class="form-group"><label class="form-label">Lebar Galian (Bd) m</label><input type="number" class="form-control" id="ld-bd" min="0.3" max="5" step="0.1" value="0.8"></div>
+  
+  <div class="form-group"><label class="form-label">Kepadatan Tanah Sekeliling (E')</label>
+  <select class="form-control" id="ld-soil-e">
+    <option value="2000">Ringan / Uncompacted (E' = 2 MPa)</option>
+    <option value="7000" selected>Sedang / 85% Proctor (E' = 7 MPa)</option>
+    <option value="14000">Padat / >90% Proctor (E' = 14 MPa)</option>
+    <option value="20000">Sangat Padat / Kerikil (E' = 20 MPa)</option>
+  </select></div>
+  <div class="form-group"><label class="form-label">Beban Lalu Lintas (Live Load)</label>
+  <select class="form-control" id="ld-live">
+    <option value="0">Tanpa beban (Taman/Lahan kosong)</option>
+    <option value="10">Pedestrian / Ringan (10 kN)</option>
+    <option value="72">Truk H-20 (72 kN / roda belakang)</option>
+    <option value="100">Alat Berat (100 kN)</option>
+  </select></div>
+  <div class="form-group"><label class="form-label">Deflection Lag Factor (Dl)</label>
+  <select class="form-control" id="ld-dl"><option value="1.0">1.0 (Jangka Pendek)</option><option value="1.5" selected>1.5 (Jangka Panjang / Creep)</option></select></div>
+  <button class="calc-btn" onclick="calcPipeLoad()">⚡ Hitung Pipe Load & Defleksi</button>`;
 }
+
+function toggleLdSDR(){
+  var isFlex = E('ld-type').value === 'flexible';
+  E('ld-sdr-wrap').style.display = isFlex ? 'block' : 'none';
+  E('ld-dl').disabled = !isFlex;
+  E('ld-soil-e').disabled = !isFlex;
+}
+
 function calcPipeLoad(){
-  var od=Vf('ld-od')/1000,H=Vf('ld-h'),Bd=Vf('ld-bd'),gamma=Vf('ld-soil'),Pl=Vf('ld-live');
-  var type=E('ld-type').value;
-  // Marston load coefficient (fixed parenthesis)
-  var ratio=H/Bd;
-  var Cd=(1-Math.exp(-2*0.33*ratio))/(2*0.33); // Kμ'=0.33 typical
-  if(Cd<0)Cd=0.1;
-  // Earth load per meter
-  var We=Cd*gamma*Bd*Bd; // kN/m (rigid)
-  if(type==='flexible') We=Cd*gamma*od*Bd; // flexible
-  // Live load (Boussinesq simplified)
-  var Wl=0;
-  if(Pl>0){
-    var If=1/(1+2*H/Math.sqrt(od*0.6)); // impact factor simplified
-    Wl=Pl*If/(Bd*1.5); // kN/m distributed
+  var type = E('ld-type').value;
+  var od = Vf('ld-od') / 1000; // meter
+  var sdr = Vf('ld-sdr');
+  var H = Vf('ld-h');
+  var Bd = Vf('ld-bd');
+  var E_soil = Vf('ld-soil-e'); // kPa
+  var P_live = Vf('ld-live'); // kN (point load)
+  var Dl = Vf('ld-dl');
+  
+  var gamma = 18; // kN/m³ typical soil weight
+  
+  // 1. DEAD LOAD (Wd)
+  var Wd = 0;
+  var Cd = 0;
+  if(type === 'rigid') {
+    // Marston equation for rigid ditch condition
+    var ratio = H / Bd;
+    var K_mu = 0.15; // typical clay/sand
+    Cd = (1 - Math.exp(-2 * K_mu * ratio)) / (2 * K_mu);
+    Wd = Cd * gamma * Bd * Bd; // kN/m
+  } else {
+    // AWWA M23 recommends Prism Load for flexible pipes (conservative)
+    Wd = gamma * H * od; // kN/m
   }
-  var Wtotal=We+Wl;
-  // Deflection estimate for flexible pipe
-  var deflPct=0;
-  if(type==='flexible'){
-    var Ep_pipe=0.8; // GPa for HDPE, short term
-    var en=od/(17); // assume SDR17
-    var EI=Ep_pipe*1e6*en*en*en/12;
-    var Es=gamma*100; // soil modulus kPa rough
-    deflPct=(0.1*Wtotal*1000)/(EI+0.061*Es*od*1000)*100;
-    if(deflPct>10)deflPct=10;
+  
+  // 2. LIVE LOAD (Wl) - Boussinesq point load approximation
+  var Wl = 0;
+  var Pl_kPa = 0;
+  if(P_live > 0) {
+    var If = 1.0;
+    if(H < 0.6) If = 1.3;
+    else if(H < 0.9) If = 1.2;
+    else if(H < 1.2) If = 1.1;
+    
+    // Boussinesq pressure directly under point load (R=0)
+    // Pz = (3 * P * If) / (2 * PI * H^2)
+    Pl_kPa = (3 * P_live * If) / (2 * Math.PI * H * H); 
+    Wl = Pl_kPa * od; // kN/m
   }
+  
+  var Wtotal = Wd + Wl; // kN/m
+  
+  // 3. DEFLECTION (Modified Iowa Equation)
+  var deflPct = 0;
+  var K_bed = 0.1; // Bedding constant (typical)
+  var PS_kpa = 0; // Pipe stiffness
+  
+  if(type === 'flexible') {
+    var en = od / sdr; // meter
+    var D_mean = od - en; // meter
+    var Ep = 800000; // kPa (HDPE Modulus of Elasticity, short-medium term)
+    var I_pipe = (en * en * en) / 12; // m^4/m
+    
+    // Ring Stiffness (8*E*I / D^3) in kPa
+    var ringStiffness = (8 * Ep * I_pipe) / (D_mean * D_mean * D_mean);
+    PS_kpa = ringStiffness; 
+    
+    // Modified Iowa: dX = (Dl * K * Wc) / (RingStiffness + 0.061 * E')
+    // Note: Wc in kN/m, Stiffness in kPa. Result in meters.
+    var dX = (Dl * K_bed * Wtotal) / (ringStiffness + 0.061 * E_soil);
+    deflPct = (dX / D_mean) * 100;
+  }
+  
   E('eng-results').innerHTML=`
-  <div class="eng-section"><div class="eng-section-title">⚖️ Hasil Pipe Load</div>
+  <div class="eng-section"><div class="eng-section-title">⚖️ Analisis Beban Tanah & Lalin</div>
   <div class="result-grid">
-    <div class="result-item"><div class="rk">Beban Tanah</div><div class="rv">${We.toFixed(2)}<span class="ru"> kN/m</span></div></div>
-    <div class="result-item"><div class="rk">Beban Lalu Lintas</div><div class="rv">${Wl.toFixed(2)}<span class="ru"> kN/m</span></div></div>
-    <div class="result-item"><div class="rk">Beban Total</div><div class="rv" style="color:#00e5ff">${Wtotal.toFixed(2)}<span class="ru"> kN/m</span></div></div>
-    <div class="result-item"><div class="rk">Marston Cd</div><div class="rv">${Cd.toFixed(3)}</div></div>
+    <div class="result-item"><div class="rk">Beban Mati (Earth Load)</div><div class="rv">${Wd.toFixed(2)}<span class="ru"> kN/m</span></div></div>
+    <div class="result-item"><div class="rk">Beban Lalin (Live Load)</div><div class="rv">${Wl.toFixed(2)}<span class="ru"> kN/m</span></div></div>
+    <div class="result-item"><div class="rk">Total Beban ($W_c$)</div><div class="rv" style="color:#00e5ff">${Wtotal.toFixed(2)}<span class="ru"> kN/m</span></div></div>
+    <div class="result-item"><div class="rk">Tekanan Lalin Ekivalen</div><div class="rv">${Pl_kPa.toFixed(1)}<span class="ru"> kPa</span></div></div>
+  </div></div>
+
+  ${type==='flexible'?`
+  <div class="eng-section"><div class="eng-section-title">📐 Prediksi Defleksi (Modified Iowa)</div>
+  <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
+    ΔX = (Dl × K × Wc) / (8 EI/D³ + 0.061 E')
   </div>
-  ${type==='flexible'?`<div class="result-grid" style="margin-top:8px">
-    <div class="result-item"><div class="rk">Defleksi Estimasi</div><div class="rv" style="color:${deflPct>5?'#ff5555':'#00ff9d'}">${deflPct.toFixed(1)}<span class="ru"> %</span></div></div>
-    <div class="result-item"><div class="rk">Batas Max.</div><div class="rv">5<span class="ru"> % (AWWA)</span></div></div>
+  <div class="result-grid">
+    <div class="result-item"><div class="rk">Modulus Tanah (E')</div><div class="rv">${(E_soil/1000).toFixed(1)}<span class="ru"> MPa</span></div></div>
+    <div class="result-item"><div class="rk">Kekakuan Pipa (8EI/D³)</div><div class="rv">${PS_kpa.toFixed(1)}<span class="ru"> kPa</span></div></div>
+    <div class="result-item"><div class="rk">Lag Factor (Dl)</div><div class="rv">${Dl}</div></div>
+    <div class="result-item"><div class="rk">Est. Defleksi (ΔX/D)</div><div class="rv" style="color:${deflPct>5?'#ff5555':'#00ff9d'};font-weight:700">${deflPct.toFixed(2)}<span class="ru"> %</span></div></div>
   </div>
-  ${deflPct>5?'<div class="fusion-warn">⚠️ Defleksi > 5%! Perbaiki bedding, compaction, atau gunakan pipa SDR lebih rendah.</div>':''}`:
-  `<div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed">💡 Pipa rigid: verifikasi kekuatan crushing dengan three-edge bearing test.</div>`}
-  </div>`;
+  ${deflPct>5?`
+  <div class="fusion-warn" style="margin-top:10px">⚠️ <strong>Defleksi > 5%! (Batas aman AWWA)</strong><br>
+  Solusi: 1) Gunakan tanah urug yang lebih baik (E' lebih besar) dan padatkan >90% Proctor. 2) Turunkan nilai SDR pipa (dinding lebih tebal). 3) Tambah kedalaman tanam jika beban dominan adalah lalu lintas.</div>`:''}
+  </div>` :
+  `<div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-top:10px">💡 Pipa Rigid (beton/baja) dihitung berdasarkan Marston (Cd = ${Cd.toFixed(2)}). Bandingkan Total Beban ${Wtotal.toFixed(2)} kN/m dengan kuat hancur (Crushing Strength) dari pabrikan. Defleksi tidak dihitung.</div>`}
+  `;
 }
