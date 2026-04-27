@@ -182,7 +182,6 @@ function calcISO21307(en, od, As, Ac, DP, mode, bead){
   var F_bead = (IP_bead * As / 1000).toFixed(1); // kN
   var F_fuse = (IP_fuse * As / 1000).toFixed(1); // kN
 
-  var beadTime = Math.round(en * 0.5 + 5);
   var heatMin = Math.floor(heatSoakTime / 60), heatSec = heatSoakTime % 60;
   var coolSec_total = coolingTime;
   var coolMin = Math.floor(coolSec_total / 60), coolSec = coolSec_total % 60;
@@ -208,7 +207,7 @@ function calcISO21307(en, od, As, Ac, DP, mode, bead){
   </div>
   <table class="fusion-table">
   <tr><th>Tahap</th><th>IP (MPa)</th><th>Gauge P (bar)</th><th>Waktu</th><th>Keterangan</th></tr>
-  <tr><td>🔴 Bead-up</td><td class="fusion-val">0.17 ±0.02</td><td class="fusion-val">${GP_bead.toFixed(1)}</td><td class="fusion-val">~${beadTime}s</td><td>Bead terbentuk ≥${bead}mm</td></tr>
+  <tr><td>🔴 Bead-up</td><td class="fusion-val">0.17 ±0.02</td><td class="fusion-val">${GP_bead.toFixed(1)}</td><td class="fusion-val">—</td><td>Bead terbentuk ≥${bead}mm</td></tr>
   <tr><td>🟡 Heat Soak</td><td class="fusion-val">≤ 0.02</td><td class="fusion-val">${GP_heat.toFixed(1)}</td><td class="fusion-val">${heatMin}m ${heatSec}s</td><td>13.5 × en = ${heatSoakTime}s</td></tr>
   <tr><td>⚡ Changeover</td><td colspan="2" style="color:var(--warn)">Secepat mungkin</td><td class="fusion-val">≤ ${changeoverMax}s</td><td>3 + 0.03×dn</td></tr>
   <tr><td>🟢 Fusion Join</td><td class="fusion-val" style="color:${mode==='SHP'?'#ff8c42':'#00e5ff'}">${IP_fuse}</td><td class="fusion-val" style="color:${mode==='SHP'?'#ff8c42':'#00e5ff'}">${GP_fuse.toFixed(1)}</td><td class="fusion-val">${pressBuildup}s buildup</td><td>Force: ${F_fuse} kN</td></tr>
@@ -254,7 +253,6 @@ function calcDVS2207(en, od, As, Ac, DP, bead){
   var GP_join = gaugeP(IP_join, As, Ac, DP);
 
   var F_join = (IP_join * As / 1000).toFixed(1); // kN
-  var beadTime = Math.round(en * 0.5 + 5);
   var heatMin = Math.floor(heatSoakTime / 60), heatSec = heatSoakTime % 60;
   var coolMin = Math.floor(coolingTime / 60), coolSec = coolingTime % 60;
 
@@ -279,7 +277,7 @@ function calcDVS2207(en, od, As, Ac, DP, bead){
   </div>
   <table class="fusion-table">
   <tr><th>Tahap</th><th>IP (N/mm²)</th><th>Gauge P (bar)</th><th>Waktu</th><th>Keterangan</th></tr>
-  <tr><td>🔴 Alignment</td><td class="fusion-val">0.15</td><td class="fusion-val">${GP_bead.toFixed(1)}</td><td class="fusion-val">~${beadTime}s</td><td>Bead terbentuk ≥${bead}mm</td></tr>
+  <tr><td>🔴 Alignment</td><td class="fusion-val">0.15</td><td class="fusion-val">${GP_bead.toFixed(1)}</td><td class="fusion-val">—</td><td>Bead terbentuk ≥${bead}mm</td></tr>
   <tr><td>🟡 Heating</td><td class="fusion-val">≤ 0.02</td><td class="fusion-val">${GP_heat.toFixed(1)}</td><td class="fusion-val">${heatMin}m ${heatSec}s</td><td>10 × en = ${heatSoakTime}s</td></tr>
   <tr><td>⚡ Changeover</td><td colspan="2" style="color:var(--warn)">Secepat mungkin</td><td class="fusion-val">≤ ${changeoverMax}s</td><td>Per DVS tabel</td></tr>
   <tr><td>🟢 Joining</td><td class="fusion-val">0.15 ±0.01</td><td class="fusion-val">${GP_join.toFixed(1)}</td><td class="fusion-val">${pressBuildup}s buildup</td><td>Force: ${F_join} kN</td></tr>
