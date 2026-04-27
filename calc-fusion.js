@@ -169,21 +169,21 @@ function calcISO21307(en, od, As, Ac, DP, mode, bead) {
     coolingTime = Math.round((0.015 * en * en - 0.47 * en + 20) * 60);
   }
 
-// Calculate gauge pressures
-var GP_bead = gaugeP(IP_bead, As, Ac, DP);
-var GP_heat = gaugeP(IP_heat, As, Ac, DP);
-var GP_fuse = gaugeP(IP_fuse, As, Ac, DP);
-var GP_cool = mode === 'DLP' ? gaugeP(IP_cool, As, Ac, DP) : GP_fuse;
+  // Calculate gauge pressures
+  var GP_bead = gaugeP(IP_bead, As, Ac, DP);
+  var GP_heat = gaugeP(IP_heat, As, Ac, DP);
+  var GP_fuse = gaugeP(IP_fuse, As, Ac, DP);
+  var GP_cool = mode === 'DLP' ? gaugeP(IP_cool, As, Ac, DP) : GP_fuse;
 
-// Force calculations
-var F_bead = (IP_bead * As / 1000).toFixed(1); // kN
-var F_fuse = (IP_fuse * As / 1000).toFixed(1); // kN
+  // Force calculations
+  var F_bead = (IP_bead * As / 1000); // kN
+  var F_fuse = (IP_fuse * As / 1000); // kN
 
-var heatMin = Math.floor(heatSoakTime / 60), heatSec = heatSoakTime % 60;
-var coolSec_total = coolingTime;
-var coolMin = Math.floor(coolSec_total / 60), coolSec = coolSec_total % 60;
+  var heatMin = Math.floor(heatSoakTime / 60), heatSec = heatSoakTime % 60;
+  var coolSec_total = coolingTime;
+  var coolMin = Math.floor(coolSec_total / 60), coolSec = coolSec_total % 60;
 
-return `
+  return `
   <div class="eng-section"><div class="eng-section-title">📋 Data Pipa — PE100</div>
   <div class="result-grid">
     <div class="result-item"><div class="rk">Diameter (OD)</div><div class="rv">${od}<span class="ru"> mm</span></div></div>
