@@ -7,7 +7,7 @@ const distribusiCompData = {
 
   'reservoir':{name:'Reservoir / Bak Penampung',code:'RSV-01',icon:'🏗️',bg:'#0a1a2e',ac:'#4da6ff',
     desc:'Bak penampung air olahan berkapasitas besar untuk menyeimbangkan fluktuasi antara produksi WTP dan kebutuhan distribusi. Juga berfungsi sebagai penyimpan air pemadam kebakaran.',
-    specs:[['Material','Beton bertulang / Baja / GRP'],['Kapasitas','100 – 10.000 m³'],['Jumlah Kompartemen','Min. 2 (parallel)'],['Tinggi Air Max.','3 – 6 m'],['Free Board','Min. 30 cm'],['Standar','SNI 7511:2011']],
+    specs:[['Material','Beton bertulang / Baja / GRP'],['Kapasitas','100 – 10.000 m³'],['Jumlah Kompartemen','Min. 2 (parallel)'],['Tinggi Air Max.','3 – 6 m'],['Free Board','Min. 30 cm'],['Standar','SNI 7504:2011']],
     tips:['Desain kapasitas 15–25% kebutuhan harian','Buat 2 kompartemen minimum untuk perawatan bergantian','Pasang level sensor telemetri untuk monitoring jarak jauh','Buat overflow ke saluran drainase yang aman','Inspeksi dan pembersihan setiap 6 bulan']},
 
   'booster-pump':{name:'Pompa Booster / Distribusi',code:'BPS-01',icon:'⚡',bg:'#001a0a',ac:'#00cc66',
@@ -27,7 +27,7 @@ const distribusiCompData = {
 
   'gate-valve-net':{name:'Gate Valve Jaringan',code:'GVN-01',icon:'🔶',bg:'#1a1a00',ac:'#ccaa00',
     desc:'Katup isolasi pada jaringan distribusi untuk membagi zona (DMA) dan mengisolasi segmen saat perbaikan tanpa mengganggu layanan keseluruhan.',
-    specs:[['Tipe','Resilient seated gate valve'],['Diameter','DN50 – DN600'],['Material','Ductile Iron GGG50'],['Tekanan Nominal','PN10 / PN16'],['Operasi','T-key / Handwheel / Actuator'],['Standar','BS EN 1074 / SNI 7553']],
+    specs:[['Tipe','Resilient seated gate valve'],['Diameter','DN50 – DN600'],['Material','Ductile Iron GGG50'],['Tekanan Nominal','PN10 / PN16'],['Operasi','T-key / Handwheel / Actuator'],['Standar','BS EN 1074-2 / ISO 7259']],
     tips:['Gunakan resilient seated (rubber) untuk zero-leakage','Pasang valve box/chamber untuk akses dari permukaan','Operasikan setiap valve min. sekali per tahun (exercise)','Beri tag/label dan catat posisi di GIS/peta jaringan','Pasang sesuai aturan N-valve: N = jumlah pipa di junction']},
 
   'air-valve':{name:'Air Valve / Ventudara',code:'AVV-01',icon:'💨',bg:'#001a0a',ac:'#33cc99',
