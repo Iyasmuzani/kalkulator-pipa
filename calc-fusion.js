@@ -155,21 +155,19 @@ function calcISO21307(en, od, As, Ac, DP, mode, bead) {
     pressBuildup = 'Not Specified';
 
     coolingTime = Math.round((0.43 * en) * 60);
-
+  } else { // DLP
+    if (en < 22) return '<div class="fusion-warn">⚠️ DLP hanya untuk wall thickness > 22mm. Ketebalan saat ini: ' + en + 'mm. Gunakan SLP atau SHP.</div>';
+    Thp = 232.5; // ±7,5°C per ISO 21307
+    IP_bead = 0.15; // ±0.02 MPa
+    IP_heat = 0.02;
+    IP_fuse = 0.15; // ±0.02 MPa
+    IP_cool = 0.025; // reduced cooling pressure
+    fuseLabel = 'Dual Low Pressure';
+    heatSoakTime = Math.round(10 * en + 60);
+    changeoverMax = 10;
+    pressBuildup = 'Not Specified';
+    coolingTime = Math.round((0.015 * en * en - 0.47 * en + 20) * 60);
   }
-} else { // DLP
-  if (en < 22) return '<div class="fusion-warn">⚠️ DLP hanya untuk wall thickness > 22mm. Ketebalan saat ini: ' + en + 'mm. Gunakan SLP atau SHP.</div>';
-  Thp = 232.5; // ±7,5°C per ISO 21307
-  IP_bead = 0.15; // ±0.02 MPa
-  IP_heat = 0.02;
-  IP_fuse = 0.15; // ±0.02 MPa
-  IP_cool = 0.025; // reduced cooling pressure
-  fuseLabel = 'Dual Low Pressure';
-  heatSoakTime = Math.round(10 * en + 60);
-  changeoverMax = 10;
-  pressBuildup = 'Not Specified';
-  coolingTime = Math.round((0.015 * en * en - 0.47 * en + 20) * 60);
-}
 
 // Calculate gauge pressures
 var GP_bead = gaugeP(IP_bead, As, Ac, DP);
@@ -206,13 +204,13 @@ return `
   </div>
   <table class="fusion-table">
   <tr><th>Tahap</th><th>IP (MPa)</th><th>Gauge P (bar)</th><th>Waktu</th><th>Keterangan</th></tr>
-  <tr><td>🔴 Bead-up</td><td class="fusion-val">0.17 ±0.02</td><td class="fusion-val">${GP_bead.toFixed(1)}</td><td class="fusion-val">—</td><td>Bead terbentuk ≥${bead}mm</td></tr>
+  <tr><td>🔴 Bead-up</td><td class="fusion-val">${IP_bead} ±0.02</td><td class="fusion-val">${GP_bead.toFixed(1)}</td><td class="fusion-val">—</td><td>Bead terbentuk ≥${bead}mm</td></tr>
   <tr><td>🟡 Heat Soak</td><td class="fusion-val">≤ 0.02</td><td class="fusion-val">${GP_heat.toFixed(1)}</td><td class="fusion-val">${heatMin}m ${heatSec}s</td><td>13.5 × en = ${heatSoakTime}s</td></tr>
   <tr><td>⚡ Changeover</td><td colspan="2" style="color:var(--warn)">Secepat mungkin</td><td class="fusion-val">≤ ${changeoverMax}s</td><td>3 + 0.03×dn</td></tr>
-  <tr><td>🟢 Fusion Join</td><td class="fusion-val" style="color:${mode === 'SHP' ? '#ff8c42' : '#00e5ff'}">${IP_fuse}</td><td class="fusion-val" style="color:${mode === 'SHP' ? '#ff8c42' : '#00e5ff'}">${GP_fuse.toFixed(1)}</td><td class="fusion-val">${pressBuildup}s buildup</td><td>Force: ${F_fuse} kN</td></tr>
-  ${mode === 'DLP' ? `<tr><td>🔵 Cooling P2</td><td class="fusion-val">${IP_cool}</td><td class="fusion-val">${GP_cool.toFixed(1)}</td><td>—</td><td>Reduced pressure phase</td></tr>` : ''}
-  <tr><td>❄️ Cooling</td><td colspan="2">Pertahankan tekanan join</td><td class="fusion-val">${coolMin}m ${coolSec}s</td><td>${en < 18 ? '(en+3) min' : '0.015en²−0.47en+20 min'}</td></tr>
-  <tr><td>🌡️ Heater Plate</td><td colspan="2" class="fusion-val">${Thp}°C ± 10</td><td>—</td><td>Cek dengan pyrometer</td></tr>
+  <tr><td>🟢 Fusion Join</td><td class="fusion-val" style="color:${mode === 'SHP' ? '#ff8c42' : '#00e5ff'}">${IP_fuse}</td><td class="fusion-val" style="color:${mode === 'SHP' ? '#ff8c42' : '#00e5ff'}">${GP_fuse.toFixed(1)}</td><td class="fusion-val">${pressBuildup}s buildup${mode === 'DLP' ? '<br>+ 10s hold' : ''}</td><td>Force: ${F_fuse} kN</td></tr>
+  ${mode === 'DLP' ? `<tr><td>🔵 Cooling P2</td><td class="fusion-val">${IP_cool}</td><td class="fusion-val">${GP_cool.toFixed(1)}</td><td class="fusion-val">${coolMin}m ${coolSec}s</td><td>Reduced pressure phase</td></tr>` : ''}
+  ${mode === 'DLP' ? '' : `<tr><td>❄️ Cooling</td><td colspan="2">Pertahankan tekanan join</td><td class="fusion-val">${coolMin}m ${coolSec}s</td><td>${en < 18 ? '(en+3) min' : '0.015en²−0.47en+20 min'}</td></tr>`}
+  <tr><td>🌡️ Heater Plate</td><td colspan="2" class="fusion-val">${Thp}°C ${mode === 'SHP' ? '± 15' : (mode === 'DLP' ? '± 7.5' : '± 10')}</td><td>—</td><td>Cek dengan pyrometer</td></tr>
   </table>
   <div class="fusion-warn">⚠️ Selalu verifikasi dengan tabel resmi ISO 21307:2017 dan rekomendasi pabrikan mesin. Parameter untuk OD ${od}mm, en ${en}mm, Ac ${Ac} mm².</div>
   </div>`;
