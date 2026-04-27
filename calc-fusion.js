@@ -176,8 +176,8 @@ function calcISO21307(en, od, As, Ac, DP, mode, bead) {
   var GP_cool = mode === 'DLP' ? gaugeP(IP_cool, As, Ac, DP) : GP_fuse;
 
   // Force calculations
-  var F_bead = (IP_bead * As / 1000); // kN
-  var F_fuse = (IP_fuse * As / 1000); // kN
+  var F_bead = (IP_bead * As / 1000).toFixed(2); // kN
+  var F_fuse = (IP_fuse * As / 1000).toFixed(2); // kN
 
   var heatMin = Math.floor(heatSoakTime / 60), heatSec = heatSoakTime % 60;
   var coolSec_total = coolingTime;
