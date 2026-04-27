@@ -15,21 +15,33 @@ function buildPressLossForm() {
   <div class="form-group"><label class="form-label">Panjang Pipa (m)</label><input type="number" class="form-control" id="pl-l" min="1" max="50000" value="100"></div>
   <div class="form-group"><label class="form-label">Debit (L/s)</label><input type="number" class="form-control" id="pl-q" min="0.1" max="5000" step="0.1" value="5"></div>
   <div class="form-group"><label class="form-label">C-Factor</label><input type="number" class="form-control" id="pl-c" min="50" max="160" value="150"></div>
+  <div class="form-group"><label class="form-label">Panjang per Batang Pipa (m)</label><input type="number" class="form-control" id="pl-pipe-len" min="1" max="250" value="12" title="Untuk menghitung jumlah sambungan butt fusion otomatis"></div>
+  <div class="form-group"><label class="form-label">K-Factor Butt Fusion / Sambungan</label><input type="number" class="form-control" id="pl-k-weld" min="0" max="1" step="0.01" value="0.05" title="Koefisien rugi-rugi minor akibat bead di dalam pipa. Tipikal ~0.05"></div>
   <button class="calc-btn" onclick="calcPressLoss()">⚡ Hitung Pressure Loss</button>`;
 }
 function updateCfactor() { E('pl-c').value = E('pl-mat').value; }
 function calcPressLoss() {
   var d = Vf('pl-d') / 1000, L = Vf('pl-l'), Q = Vf('pl-q') / 1000, C = Vf('pl-c');
+  var pipeLen = Vf('pl-pipe-len');
+  var kWeld = Vf('pl-k-weld');
+
   var v = 4 * Q / (Math.PI * d * d);
-  var hf = 10.67 * Math.pow(Q, 1.852) / (Math.pow(C, 1.852) * Math.pow(d, 4.87)) * L;
+  var hf_major = 10.67 * Math.pow(Q, 1.852) / (Math.pow(C, 1.852) * Math.pow(d, 4.87)) * L;
+  
+  var joints = pipeLen > 0 ? Math.floor(L / pipeLen) : 0;
+  var hf_minor = joints * kWeld * (v * v) / (2 * 9.81);
+  var hf = hf_major + hf_minor;
+
   var pBar = hf * 9.81 / 100;
   var hfPer100 = hf / L * 100;
   E('eng-results').innerHTML = `
   <div class="eng-section"><div class="eng-section-title">📉 Hasil Pressure Loss</div>
   <div class="result-grid">
     <div class="result-item"><div class="rk">Kecepatan Aliran</div><div class="rv">${v.toFixed(2)}<span class="ru"> m/s</span></div></div>
-    <div class="result-item"><div class="rk">Head Loss Total</div><div class="rv">${hf.toFixed(2)}<span class="ru"> m</span></div></div>
-    <div class="result-item"><div class="rk">Pressure Loss</div><div class="rv">${pBar.toFixed(3)}<span class="ru"> bar</span></div></div>
+    <div class="result-item"><div class="rk">Head Loss Mayor (Gesekan)</div><div class="rv">${hf_major.toFixed(2)}<span class="ru"> m</span></div></div>
+    <div class="result-item" style="background:rgba(255,140,66,0.1);border-color:var(--warn)"><div class="rk">Head Loss Minor (${joints} Joints)</div><div class="rv">${hf_minor.toFixed(3)}<span class="ru"> m</span></div></div>
+    <div class="result-item" style="grid-column: span 2;"><div class="rk">Head Loss Total</div><div class="rv" style="font-size:24px">${hf.toFixed(2)}<span class="ru"> m</span></div></div>
+    <div class="result-item"><div class="rk">Pressure Drop Total</div><div class="rv">${pBar.toFixed(3)}<span class="ru"> bar</span></div></div>
     <div class="result-item"><div class="rk">Head Loss /100m</div><div class="rv">${hfPer100.toFixed(3)}<span class="ru"> m/100m</span></div></div>
   </div>
   ${v > 2.5 ? '<div class="fusion-warn">⚠️ Kecepatan > 2.5 m/s — pertimbangkan diameter lebih besar</div>' : ''}
