@@ -15,22 +15,45 @@ function buildPressLossForm() {
   <div class="form-group"><label class="form-label">Panjang Pipa (m)</label><input type="number" class="form-control" id="pl-l" min="1" max="50000" value="100"></div>
   <div class="form-group"><label class="form-label">Debit (L/s)</label><input type="number" class="form-control" id="pl-q" min="0.1" max="5000" step="0.1" value="5"></div>
   <div class="form-group"><label class="form-label">C-Factor</label><input type="number" class="form-control" id="pl-c" min="50" max="160" value="150"></div>
-  <div class="form-group"><label class="form-label">Panjang per Batang Pipa (m)</label><input type="number" class="form-control" id="pl-pipe-len" min="1" max="250" value="12" title="Untuk menghitung jumlah sambungan butt fusion otomatis"></div>
-  <div class="form-group"><label class="form-label">K-Factor Butt Fusion / Sambungan</label><input type="number" class="form-control" id="pl-k-weld" min="0" max="1" step="0.01" value="0.05" title="Koefisien rugi-rugi minor akibat bead di dalam pipa. Tipikal ~0.05"></div>
+  
+  <div class="form-title" style="margin-top:15px; font-size:12px; margin-bottom:8px">🔧 Komponen Minor Losses</div>
+  
+  <div id="pl-hdpe-minor">
+    <div class="form-group"><label class="form-label">Panjang per Batang Pipa (m)</label><input type="number" class="form-control" id="pl-pipe-len" min="1" max="250" value="12" title="Untuk menghitung jumlah sambungan butt fusion otomatis"></div>
+    <div class="form-group"><label class="form-label">K-Factor Butt Fusion / Sambungan</label><input type="number" class="form-control" id="pl-k-weld" min="0" max="1" step="0.01" value="0.05" title="Koefisien rugi-rugi minor akibat bead di dalam pipa. Tipikal ~0.05"></div>
+  </div>
+
+  <div class="form-group"><label class="form-label">Total K-Factor Fitting & Katup (Opsional)</label><input type="number" class="form-control" id="pl-k-fittings" min="0" max="1000" step="0.1" value="0" title="Total akumulasi K dari semua fitting. Cth: 2 Elbow 90° (K=0.3) = 0.6">
+  <div style="font-size:10.5px; color:var(--text2); margin-top:4px">Referensi K: Elbow 90°=0.3 | Tee Lurus=0.2 | Tee Belok=1.0 | Gate Valve=0.2</div>
+  </div>
+
   <button class="calc-btn" onclick="calcPressLoss()">⚡ Hitung Pressure Loss</button>`;
 }
-function updateCfactor() { E('pl-c').value = E('pl-mat').value; }
+function updateCfactor() { 
+  E('pl-c').value = E('pl-mat').value; 
+  var sel = E('pl-mat');
+  var isHDPE = sel.options[sel.selectedIndex].text.includes('HDPE');
+  E('pl-hdpe-minor').style.display = isHDPE ? 'block' : 'none';
+}
 function calcPressLoss() {
   var d = Vf('pl-d') / 1000, L = Vf('pl-l'), Q = Vf('pl-q') / 1000, C = Vf('pl-c');
-  var pipeLen = Vf('pl-pipe-len');
-  var kWeld = Vf('pl-k-weld');
+  
+  var sel = E('pl-mat');
+  var isHDPE = sel ? sel.options[sel.selectedIndex].text.includes('HDPE') : true;
+
+  var pipeLen = isHDPE ? Vf('pl-pipe-len') : 0;
+  var kWeld = isHDPE ? Vf('pl-k-weld') : 0;
+  var kFittings = Vf('pl-k-fittings');
 
   var v = 4 * Q / (Math.PI * d * d);
   var hf_major = 10.67 * Math.pow(Q, 1.852) / (Math.pow(C, 1.852) * Math.pow(d, 4.87)) * L;
   
-  var joints = pipeLen > 0 ? Math.floor(L / pipeLen) : 0;
-  var hf_minor = joints * kWeld * (v * v) / (2 * 9.81);
-  var hf = hf_major + hf_minor;
+  var joints = (pipeLen > 0 && isHDPE) ? Math.floor(L / pipeLen) : 0;
+  var hf_minor_weld = joints * kWeld * (v * v) / (2 * 9.81);
+  var hf_minor_fittings = kFittings * (v * v) / (2 * 9.81);
+  var hf_minor_total = hf_minor_weld + hf_minor_fittings;
+  
+  var hf = hf_major + hf_minor_total;
 
   var pBar = hf * 9.81 / 100;
   var hfPer100 = hf / L * 100;
@@ -39,11 +62,12 @@ function calcPressLoss() {
   <div class="result-grid">
     <div class="result-item"><div class="rk">Kecepatan Aliran</div><div class="rv">${v.toFixed(2)}<span class="ru"> m/s</span></div></div>
     <div class="result-item"><div class="rk">Head Loss Mayor (Gesekan)</div><div class="rv">${hf_major.toFixed(2)}<span class="ru"> m</span></div></div>
-    <div class="result-item" style="background:rgba(255,140,66,0.1);border-color:var(--warn)"><div class="rk">Head Loss Minor (${joints} Joints)</div><div class="rv">${hf_minor.toFixed(3)}<span class="ru"> m</span></div></div>
+    <div class="result-item" style="background:rgba(255,140,66,0.1);border-color:var(--warn)"><div class="rk">Head Loss Minor Total</div><div class="rv">${hf_minor_total.toFixed(3)}<span class="ru"> m</span></div></div>
     <div class="result-item" style="grid-column: span 2;"><div class="rk">Head Loss Total</div><div class="rv" style="font-size:24px">${hf.toFixed(2)}<span class="ru"> m</span></div></div>
     <div class="result-item"><div class="rk">Pressure Drop Total</div><div class="rv">${pBar.toFixed(3)}<span class="ru"> bar</span></div></div>
     <div class="result-item"><div class="rk">Head Loss /100m</div><div class="rv">${hfPer100.toFixed(3)}<span class="ru"> m/100m</span></div></div>
   </div>
+  ${isHDPE ? `<div style="font-size:11px;color:var(--text2);margin-top:8px"><em>*Minor loss termasuk ${joints} sambungan butt-fusion</em></div>` : ''}
   ${v > 2.5 ? '<div class="fusion-warn">⚠️ Kecepatan > 2.5 m/s — pertimbangkan diameter lebih besar</div>' : ''}
   ${v < 0.5 ? '<div class="fusion-warn">⚠️ Kecepatan < 0.5 m/s — risiko sedimentasi</div>' : ''}
   </div>`;
