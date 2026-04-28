@@ -29,15 +29,15 @@ function buildPressLossForm() {
 
   <button class="calc-btn" onclick="calcPressLoss()">⚡ Hitung Pressure Loss</button>`;
 }
-function updateCfactor() { 
-  E('pl-c').value = E('pl-mat').value; 
+function updateCfactor() {
+  E('pl-c').value = E('pl-mat').value;
   var sel = E('pl-mat');
   var isHDPE = sel.options[sel.selectedIndex].text.includes('HDPE');
   E('pl-hdpe-minor').style.display = isHDPE ? 'block' : 'none';
 }
 function calcPressLoss() {
   var d = Vf('pl-d') / 1000, L = Vf('pl-l'), Q = Vf('pl-q') / 1000, C = Vf('pl-c');
-  
+
   var sel = E('pl-mat');
   var isHDPE = sel ? sel.options[sel.selectedIndex].text.includes('HDPE') : true;
 
@@ -47,12 +47,12 @@ function calcPressLoss() {
 
   var v = 4 * Q / (Math.PI * d * d);
   var hf_major = 10.67 * Math.pow(Q, 1.852) / (Math.pow(C, 1.852) * Math.pow(d, 4.87)) * L;
-  
+
   var joints = (pipeLen > 0 && isHDPE) ? Math.floor(L / pipeLen) : 0;
   var hf_minor_weld = joints * kWeld * (v * v) / (2 * 9.81);
   var hf_minor_fittings = kFittings * (v * v) / (2 * 9.81);
   var hf_minor_total = hf_minor_weld + hf_minor_fittings;
-  
+
   var hf = hf_major + hf_minor_total;
 
   var pBar = hf * 9.81 / 100;
