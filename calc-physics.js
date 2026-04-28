@@ -183,6 +183,12 @@ function buildFrictionForm() {
   <button class="calc-btn" onclick="calcFriction()">⚡ Hitung Friction Loss</button>`;
 }
 function calcFriction() {
+  var d = Vf('fr-d') / 1000;
+  var L = Vf('fr-l');
+  var Q = Vf('fr-q') / 1000;
+  var eps = Vf('fr-e') / 1000;
+  var T = Vf('fr-t');
+  
   // Kinematic viscosity of water (m²/s) based on empirical Poiseuille formula
   var nu = 1.78e-6 / (1 + 0.0337 * T + 0.00022 * T * T);
   var v = 4 * Q / (Math.PI * d * d);
