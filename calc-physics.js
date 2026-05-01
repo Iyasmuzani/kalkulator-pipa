@@ -348,3 +348,59 @@ function calcPipeLoad() {
       `<div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-top:10px">💡 Pipa Rigid (beton/baja) dihitung berdasarkan Marston (Cd = ${Cd.toFixed(2)}). Bandingkan Total Beban ${Wtotal.toFixed(2)} kN/m dengan kuat hancur (Crushing Strength) dari pabrikan. Defleksi tidak dihitung.</div>`}
   `;
 }
+
+// ===== 6. RAINFALL INTENSITY & RUNOFF (SNI 8153:2025) =====
+function buildRainfallForm() {
+  E('eng-form').innerHTML = `
+  <div class="form-title">🌧️ Curah Hujan & Runoff <span style="font-size:10px;color:var(--text2);font-weight:400">SNI 8153:2025</span></div>
+  <div class="form-group"><label class="form-label">Curah Hujan Maks. Harian (R₂₄) mm</label><input type="number" class="form-control" id="rf-r24" min="10" max="1000" value="130" title="Contoh data BMKG: 130 mm/hari"></div>
+  <div class="form-group"><label class="form-label">Durasi / Waktu Konsentrasi (menit)</label><input type="number" class="form-control" id="rf-t" min="1" max="1440" value="60" title="Standar SNI: Untuk atap biasanya 5-15 menit, luas besar bisa >60 menit"></div>
+  <div class="form-group"><label class="form-label">Luas Area Tangkapan (m²)</label><input type="number" class="form-control" id="rf-a" min="1" max="1000000" value="500"></div>
+  <div class="form-group"><label class="form-label">Koefisien Limpasan (C)</label>
+  <select class="form-control" id="rf-c">
+    <option value="0.95" selected>Atap Kedap Air (0.75 - 0.95)</option>
+    <option value="0.85">Perkerasan Beton/Aspal (0.70 - 0.95)</option>
+    <option value="0.40">Daerah Perumahan / Taman (0.30 - 0.50)</option>
+    <option value="0.20">Tanah Terbuka / Hutan (0.10 - 0.30)</option>
+  </select></div>
+  <div class="form-group"><label class="form-label">Custom Koefisien (Opsional)</label><input type="number" class="form-control" id="rf-c-custom" min="0" max="1" step="0.01" value="" placeholder="Isi untuk override dropdown di atas"></div>
+  <button class="calc-btn" onclick="calcRainfall()">⚡ Hitung Debit Hujan</button>`;
+}
+
+function calcRainfall() {
+  var R24 = Vf('rf-r24');
+  var t_menit = Vf('rf-t');
+  var A_m2 = Vf('rf-a');
+  var C_drop = parseFloat(E('rf-c').value);
+  var C_cust = E('rf-c-custom').value;
+  var C = (C_cust && !isNaN(parseFloat(C_cust))) ? parseFloat(C_cust) : C_drop;
+
+  var t_jam = t_menit / 60;
+  var I = (R24 / 24) * Math.pow(24 / t_jam, 2/3); // mm/jam
+  var Q_Ls = (C * I * A_m2) / 3600;
+  var Q_m3h = Q_Ls * 3.6;
+
+  E('eng-results').innerHTML = `
+  <div class="eng-section"><div class="eng-section-title">🌧️ Hasil Intensitas Curah Hujan</div>
+  <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
+    I = (R₂₄ / 24) × (24 / t)^(2/3)
+  </div>
+  <div class="result-grid">
+    <div class="result-item"><div class="rk">Intensitas Hujan (I)</div><div class="rv">${I.toFixed(2)}<span class="ru"> mm/jam</span></div></div>
+    <div class="result-item"><div class="rk">Durasi Hujan (t)</div><div class="rv">${t_jam.toFixed(2)}<span class="ru"> jam</span></div></div>
+  </div></div>
+
+  <div class="eng-section"><div class="eng-section-title">🌊 Debit Limpasan (Runoff)</div>
+  <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
+    Q = (C × I × A) / 3600
+  </div>
+  <div class="result-grid">
+    <div class="result-item"><div class="rk">Debit Max (Q)</div><div class="rv" style="color:#00e5ff;font-size:24px">${Q_Ls.toFixed(2)}<span class="ru"> L/s</span></div></div>
+    <div class="result-item"><div class="rk">Debit Volumetrik</div><div class="rv">${Q_m3h.toFixed(2)}<span class="ru"> m³/jam</span></div></div>
+    <div class="result-item"><div class="rk">Koef. Limpasan (C)</div><div class="rv">${C}</div></div>
+    <div class="result-item"><div class="rk">Luas Area (A)</div><div class="rv">${A_m2.toLocaleString()}<span class="ru"> m²</span></div></div>
+  </div>
+  <div class="fusion-warn" style="margin-top:10px">💡 <strong>Tips SNI 8153:2025</strong><br>
+  Debit limpasan ini menentukan dimensi pipa talang (vertical leader) dan drainase mendatar. Pastikan memilih pipa dengan kapasitas aliran yang > <strong>${Q_Ls.toFixed(2)} L/s</strong>.</div>
+  </div>`;
+}

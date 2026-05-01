@@ -77,7 +77,7 @@ function switchToEngTools() {
   document.querySelector('.content').style.display = 'none';
   document.getElementById('eng-panel').style.display = 'block';
   document.getElementById('hdr-title').textContent = 'Engineering Tools';
-  document.getElementById('hdr-sub').textContent = 'Butt fusion HDPE · Pressure loss · Buoyancy · Water hammer · Friction · Pipe load';
+  document.getElementById('hdr-sub').textContent = 'Butt fusion HDPE · Pressure loss · Buoyancy · Water hammer · Friction · Pipe load · Curah Hujan';
   document.getElementById('hdr-badge').textContent = '';
   document.getElementById('hdr-icon').textContent = '🔬';
   switchEngTool(currentEngTool);
@@ -93,7 +93,7 @@ function exitEngTools() {
 function switchEngTool(tool) {
   currentEngTool = tool;
   document.querySelectorAll('.eng-tab').forEach((b, i) => {
-    const tools = ['fusion', 'pressloss', 'buoyancy', 'waterhammer', 'friction', 'pipeload'];
+    const tools = ['fusion', 'pressloss', 'buoyancy', 'waterhammer', 'friction', 'pipeload', 'rainfall'];
     b.classList.toggle('active', tools[i] === tool);
   });
   const builders = {
@@ -102,7 +102,8 @@ function switchEngTool(tool) {
     buoyancy: buildBuoyancyForm,
     waterhammer: buildWaterHammerForm,
     friction: buildFrictionForm,
-    pipeload: buildPipeLoadForm
+    pipeload: buildPipeLoadForm,
+    rainfall: buildRainfallForm
   };
   if (builders[tool]) builders[tool]();
   document.getElementById('eng-results').innerHTML = `
