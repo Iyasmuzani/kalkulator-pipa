@@ -188,7 +188,7 @@ function calcFriction() {
   var Q = Vf('fr-q') / 1000;
   var eps = Vf('fr-e') / 1000;
   var T = Vf('fr-t');
-  
+
   // Kinematic viscosity of water (m²/s) based on empirical Poiseuille formula
   var nu = 1.78e-6 / (1 + 0.0337 * T + 0.00022 * T * T);
   var v = 4 * Q / (Math.PI * d * d);
@@ -358,10 +358,10 @@ function buildRainfallForm() {
   <div class="form-group"><label class="form-label">Luas Area Tangkapan (m²)</label><input type="number" class="form-control" id="rf-a" min="1" max="1000000" value="500"></div>
   <div class="form-group"><label class="form-label">Koefisien Limpasan (C)</label>
   <select class="form-control" id="rf-c">
-    <option value="0.95" selected>Atap Kedap Air (0.75 - 0.95)</option>
-    <option value="0.85">Perkerasan Beton/Aspal (0.70 - 0.95)</option>
-    <option value="0.40">Daerah Perumahan / Taman (0.30 - 0.50)</option>
-    <option value="0.20">Tanah Terbuka / Hutan (0.10 - 0.30)</option>
+    <option value="1.0" selected>Atap Miring (> 3°) - 1.0</option>
+    <option value="0.8">Atap Rata (0° s.d. 3°) - 0.8</option>
+    <option value="0.6">Atap Gravel - 0.6</option>
+    <option value="0.3">Green roof - 0.3</option>
   </select></div>
   <div class="form-group"><label class="form-label">Custom Koefisien (Opsional)</label><input type="number" class="form-control" id="rf-c-custom" min="0" max="1" step="0.01" value="" placeholder="Isi untuk override dropdown di atas"></div>
   <button class="calc-btn" onclick="calcRainfall()">⚡ Hitung Debit Hujan</button>`;
@@ -376,7 +376,7 @@ function calcRainfall() {
   var C = (C_cust && !isNaN(parseFloat(C_cust))) ? parseFloat(C_cust) : C_drop;
 
   var t_jam = t_menit / 60;
-  var I = (R24 / 24) * Math.pow(24 / t_jam, 2/3); // mm/jam
+  var I = (R24 / 24) * Math.pow(24 / t_jam, 2 / 3); // mm/jam
   var Q_Ls = (C * I * A_m2) / 3600;
   var Q_m3h = Q_Ls * 3.6;
 
