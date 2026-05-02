@@ -141,8 +141,14 @@ function calcMiningDW(){
 function calcMiningSlurry(){
   var fl=V('s-flow'),co=V('s-conc'),ln=V('s-len'),el=V('s-elev'),d50=V('s-d50');
   var Qm3s=fl/3600,rhoS=2650,rhoW=1000,Cv=co/(100*(rhoS/rhoW)),rhoM=rhoW*(1+Cv*(rhoS/rhoW-1));
-  var Vc=1.8+0.2*d50,Dm=Math.sqrt(4*Qm3s/(Math.PI*Vc))*1000;
-  var pD=findPipe(Dm,stdPipes),vAct=(4*Qm3s/(Math.PI*Math.pow(pD/1000,2))).toFixed(2);
+  var Ss = rhoS / rhoW;
+  var FL = d50 < 0.2 ? 0.9 : (d50 < 1.0 ? 1.1 : (d50 < 2.0 ? 1.2 : 1.35));
+  var K = FL * Math.sqrt(2 * 9.81 * (Ss - 1));
+  var Dm = Math.pow(4 * Qm3s / (Math.PI * K), 0.4) * 1000;
+  var validPipes = stdPipes.filter(p => p <= Dm);
+  var pD = validPipes.length > 0 ? validPipes[validPipes.length - 1] : stdPipes[0];
+  var Vc = K * Math.sqrt(pD / 1000);
+  var vAct = (4*Qm3s/(Math.PI*Math.pow(pD/1000,2))).toFixed(2);
   var vWarn=parseFloat(vAct)>4.5; // ASME B31.11 erosion velocity limit
   var fSl=0.025*(1+co/30),Hf=fSl*(ln/((pD/1000)))*Math.pow(parseFloat(vAct),2)/(2*9.81);
   // ASME B31.11: higher minor losses for slurry (+20m) and lower pump efficiency (η=0.55)
