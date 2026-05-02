@@ -91,11 +91,19 @@ function calcBangunan(){
     'ppr16': { s: [20,25,32,40,50,63,75,90,110,160], r: 0.729, l: 'OD' },
     'ppr20': { s: [20,25,32,40,50,63,75,90,110,160], r: 0.667, l: 'OD' },
     'hdpe':  { s: [20,25,32,40,50,63,75,90,110,160,200], r: 0.853, l: 'OD' },
-    'pvc':   { s: [15,20,25,32,40,50,65,80,100,125,150,200], r: 1.0, l: 'DN' },
-    'galvanis': { s: [15,20,25,32,40,50,65,80,100,125,150,200], r: 1.0, l: 'DN' }
+    'pvc':   { s: [16,20,25,35,40,50,65,75,100,125,150,200,250,300], id: [19,22.4,28,37.4,43.4,55.4,70.8,82.8,105.8,129.2,152.2,199.4,246.4,293.6], l: 'DN' },
+    'galvanis': { s: [15,20,25,32,40,50,65,80,100,125,150,200,250,300], r: 1.0, l: 'DN' }
   };
   var spec = pSpecs[pp];
-  var pD=findPipe(Dm/spec.r, spec.s), bD=findPipe((Dm*0.6)/spec.r, spec.s);
+  var pD, bD;
+  if(spec.id){
+    var iP=spec.id.findIndex(v=>v>=Dm), iB=spec.id.findIndex(v=>v>=Dm*0.6);
+    pD=spec.s[iP>=0?iP:spec.s.length-1];
+    bD=spec.s[iB>=0?iB:spec.s.length-1];
+  } else {
+    pD=findPipe(Dm/spec.r, spec.s);
+    bD=findPipe((Dm*0.6)/spec.r, spec.s);
+  }
   var pt=Math.ceil(Qls*360/10)*10,wP=H/10,prv=wP>3.5,z=Math.ceil(fl/4);
   var pm={'ppr10':'PPR PN10','ppr16':'PPR PN16','ppr20':'PPR PN20','pvc':'uPVC Class AW','galvanis':'Baja Galvanis','hdpe':'HDPE PN12.5'};
   R('rec-results').innerHTML=`
