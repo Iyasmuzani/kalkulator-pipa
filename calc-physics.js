@@ -477,7 +477,7 @@ function calcTensile() {
 
   html += `</table></div>
   <div class="fusion-warn" style="margin-top:10px">💡 <strong>Catatan Teknis:</strong><br>
-  Tabel ini digunakan untuk mengetahui beban tarik maksimum saat proses penarikan pipa (misal: <em>Horizontal Directional Drilling (HDD)</em>). Ketebalan mengacu pada standar minimum pipa PE100 ISO 4427.</div>`;
+  Tabel ini digunakan untuk mengetahui beban tarik maksimum saat proses penarikan pipa (misal: <em>Horizontal Directional Drilling (HDD)</em>). Ketebalan mengacu pada standar minimum pipa PE100 SNI 4829:2015.</div>`;
   
   E('eng-results').innerHTML = html;
 }
