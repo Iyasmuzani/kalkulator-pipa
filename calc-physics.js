@@ -404,3 +404,80 @@ function calcRainfall() {
   Debit limpasan ini menentukan dimensi pipa talang (vertical leader) dan drainase mendatar. Pastikan memilih pipa dengan kapasitas aliran yang > <strong>${Q_Ls.toFixed(2)} L/s</strong>.</div>
   </div>`;
 }
+
+function buildTensileForm() {
+  var dOpts = [20,25,32,40,50,63,75,90,110,125,140,160,180,200,225,250,280,315,355,400,450,500,560,630,710,800,900,1000,1200];
+  E('eng-form').innerHTML = `
+  <div class="eng-section-title">💪 Tensile Yield HDPE Rucika</div>
+  <div class="form-group"><label class="form-label">Tegangan (Tensile Strength) (MPa)</label><input type="number" class="form-control" id="ts-sigma" min="1" max="100" value="20" title="Kuat tarik (Tensile strength at yield). Standar untuk HDPE PE100 umumnya 20 MPa"></div>
+  <div class="form-group"><label class="form-label">Diameter Pipa (OD) (mm)</label>
+  <select class="form-control" id="ts-od">
+    ${dOpts.map(d => `<option value="${d}" ${d==90?'selected':''}>DN ${d} mm</option>`).join('')}
+  </select></div>
+  <button class="calc-btn" onclick="calcTensile()">⚡ Hitung Gaya Tarik</button>`;
+}
+
+function calcTensile() {
+  var sigma = parseFloat(E('ts-sigma').value);
+  var od = parseFloat(E('ts-od').value);
+  
+  var sdrList = [
+    { sdr: 9, pn: 'PN20' },
+    { sdr: 11, pn: 'PN16' },
+    { sdr: 13.6, pn: 'PN12.5' },
+    { sdr: 17, pn: 'PN10' },
+    { sdr: 21, pn: 'PN8' },
+    { sdr: 26, pn: 'PN6.3' }
+  ];
+
+  function getThickness(od, sdr) {
+    const e = {
+      '11': {20:1.9, 25:2.3, 32:2.9, 40:3.7, 50:4.6, 63:5.8, 75:6.8, 90:8.2, 110:10.0, 125:11.4, 140:12.7, 160:14.6, 180:16.4, 200:18.2, 225:20.5, 250:22.7, 280:25.4, 315:28.6, 355:32.2, 400:36.3, 450:40.9, 500:45.4, 560:50.8, 630:57.2, 710:64.5, 800:72.6, 900:81.7, 1000:90.2, 1200:99.4},
+      '9': {20:2.3, 25:2.8, 32:3.6, 40:4.5, 50:5.6, 63:7.1, 75:8.4, 90:10.1, 110:12.3, 125:14.0, 140:15.7, 160:17.9, 180:20.1, 200:22.4, 225:25.2, 250:27.9, 280:31.3, 315:35.2, 355:39.7, 400:44.7, 450:50.3, 500:55.8, 560:62.2, 630:70.0, 710:79.3, 800:89.3, 900:100.4, 1000:111.5, 1200:133.8},
+      '13.6': {50:3.7, 63:4.7, 75:5.5, 90:6.6, 110:8.1, 125:9.2, 140:10.3, 160:11.8, 180:13.3, 200:14.7, 225:16.6, 250:18.4, 280:20.5, 315:23.2, 355:26.1, 400:29.4, 450:33.1, 500:36.8, 560:41.2, 630:46.3, 710:52.2, 800:58.8, 900:66.2, 1000:72.5, 1200:88.2},
+      '17': {50:3.0, 63:3.8, 75:4.5, 90:5.4, 110:6.6, 125:7.4, 140:8.3, 160:9.5, 180:10.7, 200:11.9, 225:13.4, 250:14.8, 280:16.6, 315:18.7, 355:21.1, 400:23.7, 450:26.7, 500:29.6, 560:33.2, 630:37.3, 710:42.1, 800:47.4, 900:53.3, 1000:59.3, 1200:67.9},
+      '21': {75:3.6, 90:4.3, 110:5.3, 125:6.0, 140:6.7, 160:7.7, 180:8.6, 200:9.6, 225:10.8, 250:11.9, 280:13.4, 315:15.0, 355:16.9, 400:19.1, 450:21.5, 500:23.9, 560:26.7, 630:30.0, 710:33.9, 800:38.1, 900:42.9, 1000:47.7, 1200:57.2},
+      '26': {90:3.5, 110:4.3, 125:4.8, 140:5.4, 160:6.2, 180:6.9, 200:7.7, 225:8.6, 250:9.6, 280:10.7, 315:12.1, 355:13.6, 400:15.3, 450:17.2, 500:19.1, 560:21.4, 630:24.1, 710:27.2, 800:30.6, 900:34.4, 1000:38.2, 1200:45.9}
+    };
+    if(e[sdr] && e[sdr][od]) return e[sdr][od];
+    return Math.ceil((od/sdr)*10)/10;
+  }
+
+  let html = `<div class="eng-section"><div class="eng-section-title">📊 Gaya Tarik Maksimum (ton)</div>
+  <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
+    σ = ${sigma} MPa | Pipa OD ${od} mm<br>
+    F = A × σ / 10000 (ton)
+  </div>
+  <table style="width:100%; border-collapse:collapse; color:#fff; font-size:12px; text-align:center; margin-top:10px">
+    <tr style="background:rgba(255,255,255,0.1); border-bottom:1px solid #4da6ff">
+      <th style="padding:8px; border:1px solid rgba(255,255,255,0.1)">SDR (PN)</th>
+      <th style="padding:8px; border:1px solid rgba(255,255,255,0.1)">Tebal e (mm)</th>
+      <th style="padding:8px; border:1px solid rgba(255,255,255,0.1)">Gaya Tarik (ton)</th>
+    </tr>`;
+
+  sdrList.forEach(item => {
+    if (item.sdr === 21 && od < 75) return;
+    if (item.sdr === 26 && od < 90) return;
+    if (item.sdr === 17 && od < 50) return;
+    if (item.sdr === 13.6 && od < 50) return;
+
+    let e = getThickness(od, item.sdr);
+    let id = od - 2 * e;
+    let area = (Math.PI / 4) * (Math.pow(od, 2) - Math.pow(id, 2));
+    
+    let force_ton = (area * sigma) / 10000;
+    let force_display = force_ton < 100 ? force_ton.toFixed(1) : Math.round(force_ton);
+
+    html += `<tr>
+      <td style="padding:8px; border:1px solid rgba(255,255,255,0.1)">SDR ${item.sdr} (${item.pn})</td>
+      <td style="padding:8px; border:1px solid rgba(255,255,255,0.1)">${e.toFixed(1)}</td>
+      <td style="padding:8px; border:1px solid rgba(255,255,255,0.1); color:#00e5ff; font-weight:bold">${force_display}</td>
+    </tr>`;
+  });
+
+  html += `</table></div>
+  <div class="fusion-warn" style="margin-top:10px">💡 <strong>Catatan Teknis:</strong><br>
+  Tabel ini digunakan untuk mengetahui beban tarik maksimum saat proses penarikan pipa (misal: <em>Horizontal Directional Drilling (HDD)</em>). Ketebalan mengacu pada standar minimum pipa PE100 ISO 4427.</div>`;
+  
+  E('eng-results').innerHTML = html;
+}
