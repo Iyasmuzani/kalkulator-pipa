@@ -75,11 +75,18 @@ function calcPressLoss() {
 
 // ===== 2. BUOYANCY =====
 function buildBuoyancyForm() {
+  var odOpts = Object.keys(rucikaPipes).map(function (od) {
+    return '<option value="' + od + '"' + (od === '315' ? ' selected' : '') + '>DN' + od + ' mm</option>';
+  }).join('');
+
   E('eng-form').innerHTML = `
   <div class="form-title">🌊 Buoyancy Pipa HDPE <span style="font-size:10px;color:var(--text2);font-weight:400">Instalasi Underwater</span></div>
-  <div class="form-group"><label class="form-label">Diameter Luar (OD) mm</label><input type="number" class="form-control" id="by-od" min="50" max="2000" value="315"></div>
-  <div class="form-group"><label class="form-label">SDR</label>
-  <select class="form-control" id="by-sdr"><option value="11">SDR 11</option><option value="17" selected>SDR 17</option><option value="21">SDR 21</option><option value="26">SDR 26</option></select></div>
+  <div class="form-group"><label class="form-label">Diameter Luar Pipa (OD) mm</label>
+  <select class="form-control" id="by-od" onchange="updateBuoyancySDR()">${odOpts}</select></div>
+  <div class="form-group"><label class="form-label">SDR / PN</label>
+  <select class="form-control" id="by-sdr"></select></div>
+  <div class="form-group"><label class="form-label">Tebal Dinding (en) — mm</label>
+  <input type="number" class="form-control" id="by-en" readonly style="background:rgba(0,229,255,.05);color:#00e5ff;font-weight:700"></div>
   <div class="form-group"><label class="form-label">Panjang Pipa (m)</label><input type="number" class="form-control" id="by-len" min="1" max="10000" value="100"></div>
   <div class="form-group"><label class="form-label">Densitas Air (kg/m³)</label>
   <select class="form-control" id="by-rho"><option value="1000">Air Tawar (1000)</option><option value="1025">Air Laut (1025)</option></select></div>
@@ -87,10 +94,40 @@ function buildBuoyancyForm() {
   <select class="form-control" id="by-cond"><option value="empty">Kosong (tanpa air)</option><option value="full">Penuh air</option></select></div>
   <div class="form-group"><label class="form-label">Safety Factor Ballast</label><input type="number" class="form-control" id="by-sf" min="1" max="2" step="0.05" value="1.1"></div>
   <button class="calc-btn" onclick="calcBuoyancy()">⚡ Hitung Buoyancy</button>`;
+  updateBuoyancySDR();
 }
+
+function updateBuoyancySDR() {
+  var od = document.getElementById('by-od').value;
+  var pipe = rucikaPipes[od];
+  if (!pipe) return;
+  var sel = document.getElementById('by-sdr');
+  var pnMap = { 7.4: 'PN25', 9: 'PN20', 11: 'PN16', 13.6: 'PN12.5', 17: 'PN10', 21: 'PN8', 26: 'PN6.3' };
+  sel.innerHTML = Object.keys(pipe).map(function (sdr) {
+    return '<option value="' + sdr + '"' + (sdr === '17' ? ' selected' : '') + '>SDR ' + sdr + ' (' + pnMap[sdr] + ')</option>';
+  }).join('');
+  updateBuoyancyEN();
+}
+
+function updateBuoyancyEN() {
+  var od = document.getElementById('by-od').value;
+  var sdr = document.getElementById('by-sdr').value;
+  var pipe = rucikaPipes[od];
+  if (pipe && pipe[sdr]) {
+    document.getElementById('by-en').value = pipe[sdr];
+  } else {
+    document.getElementById('by-en').value = (od / sdr).toFixed(1);
+  }
+}
+
+document.addEventListener('change', function (e) {
+  if (e.target.id === 'by-sdr') updateBuoyancyEN();
+});
+
 function calcBuoyancy() {
-  var od = Vf('by-od') / 1000, sdr = Vf('by-sdr'), len = Vf('by-len'), rhoW = Vf('by-rho'), sf = Vf('by-sf');
-  var en = od / sdr, id = od - 2 * en;
+  var od = Vf('by-od') / 1000, sdr = parseFloat(E('by-sdr').value), len = Vf('by-len'), rhoW = Vf('by-rho'), sf = Vf('by-sf');
+  var en = Vf('by-en') / 1000;
+  var id = od - 2 * en;
   var rhoPE = 950; // kg/m³ HDPE
   var Apipe = Math.PI / 4 * (od * od - id * id);
   var Awater = Math.PI / 4 * id * id;
