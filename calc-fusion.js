@@ -221,7 +221,7 @@ function calcISO21307(en, od, As, Ac, DP, mode, bead, temp) {
   <tr><td>⚡ Changeover</td><td colspan="2" style="color:var(--warn)">Secepat mungkin</td><td class="fusion-val">≤ ${changeoverMax}s</td><td>3 + 0.03×dn</td></tr>
   <tr><td>🟢 Fusion Join</td><td class="fusion-val" style="color:${mode === 'SHP' ? '#ff8c42' : '#00e5ff'}">${IP_fuse}</td><td class="fusion-val" style="color:${mode === 'SHP' ? '#ff8c42' : '#00e5ff'}">${GP_fuse.toFixed(1)}</td><td class="fusion-val">${typeof pressBuildup === 'number' ? pressBuildup + 's buildup' : pressBuildup}</td><td>Force: ${F_fuse} kN</td></tr>
   ${mode === 'DLP' ? `<tr><td>🔵 Cooling P2</td><td class="fusion-val">${IP_cool}</td><td class="fusion-val">${GP_cool.toFixed(1)}</td><td class="fusion-val">${coolMin}m ${coolSec}s</td><td>Reduced pressure phase${tempNotes}</td></tr>` : ''}
-  ${mode === 'DLP' ? '' : `<tr><td>❄️ Cooling</td><td colspan="2">Pertahankan tekanan join</td><td class="fusion-val">${coolMin}m ${coolSec}s</td><td>${en < 18 ? '(en+3) min' : '0.015en²−0.47en+20 min'}${tempNotes}</td></tr>`}
+  ${mode === 'DLP' ? '' : `<tr><td>❄️ Cooling</td><td class="fusion-val" style="color:${mode === 'SHP' ? '#ff8c42' : '#00e5ff'}">${IP_fuse}</td><td class="fusion-val" style="color:${mode === 'SHP' ? '#ff8c42' : '#00e5ff'}">${GP_fuse.toFixed(1)}</td><td class="fusion-val">${coolMin}m ${coolSec}s</td><td>Pertahankan tekanan join. ${en < 18 ? '(en+3) min' : '0.015en²−0.47en+20 min'}${tempNotes}</td></tr>`}
   <tr><td>🌡️ Heater Plate</td><td colspan="2" class="fusion-val">${Thp}°C ${mode === 'SHP' ? '± 15' : (mode === 'DLP' ? '± 7.5' : '± 10')}</td><td>—</td><td>Cek dengan pyrometer</td></tr>
   </table>
   <div class="fusion-warn">⚠️ Selalu verifikasi dengan tabel resmi ISO 21307:2017 dan rekomendasi pabrikan mesin. Parameter untuk OD ${od}mm, en ${en}mm, Ac ${Ac} mm².</div>
@@ -290,7 +290,7 @@ function calcDVS2207(en, od, As, Ac, DP, bead) {
   <tr><td>🟡 Heating</td><td class="fusion-val">≤ 0.02</td><td class="fusion-val">${GP_heat.toFixed(1)}</td><td class="fusion-val">${heatMin}m ${heatSec}s</td><td>10 × en = ${heatSoakTime}s</td></tr>
   <tr><td>⚡ Changeover</td><td colspan="2" style="color:var(--warn)">Secepat mungkin</td><td class="fusion-val">≤ ${changeoverMax}s</td><td>Per DVS tabel</td></tr>
   <tr><td>🟢 Joining</td><td class="fusion-val">0.15 ±0.01</td><td class="fusion-val">${GP_join.toFixed(1)}</td><td class="fusion-val">${pressBuildup}s buildup</td><td>Force: ${F_join} kN</td></tr>
-  <tr><td>❄️ Cooling</td><td colspan="2">Pertahankan tekanan join</td><td class="fusion-val">${coolMin}m ${coolSec}s</td><td>10×en+10 = ${coolingTime}s</td></tr>
+  <tr><td>❄️ Cooling</td><td class="fusion-val">0.15 ±0.01</td><td class="fusion-val">${GP_join.toFixed(1)}</td><td class="fusion-val">${coolMin}m ${coolSec}s</td><td>Pertahankan tekanan join. 10×en+10 = ${coolingTime}s</td></tr>
   <tr><td>🌡️ Heater Plate</td><td colspan="2" class="fusion-val">${Thp}°C</td><td>—</td><td>PE100: 220°C</td></tr>
   </table>
   <div class="fusion-warn">⚠️ Selalu verifikasi dengan tabel resmi DVS 2207-1 dan WPS yang disetujui. Parameter untuk OD ${od}mm, en ${en}mm, Ac ${Ac} mm².</div>
