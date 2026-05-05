@@ -126,6 +126,25 @@
     .radio-btn.ada.active, .radio-btn.sesuai.active { background: #d4edda !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .radio-btn.tidak.active, .radio-btn.tsesuai.active { background: #f8d7da !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   }
+
+  /* RESPONSIVE / MOBILE */
+  @media (max-width: 768px) {
+    .page { padding: 16px 12px 40px; }
+    .doc-header { flex-direction: column; text-align: center; gap: 12px; padding: 16px; }
+    .doc-header > div:nth-child(2) { display: none; } /* Sembunyikan garis separator vertical */
+    .project-grid { grid-template-columns: 1fr; gap: 12px; }
+    .ttd-grid { grid-template-columns: 1fr; gap: 24px; padding: 16px; }
+    .rd-item { grid-template-columns: 1fr; gap: 12px; padding: 12px 14px; }
+    .rd-card-header { flex-wrap: wrap; }
+    .rd-loc-input { min-width: 100%; margin-top: 8px; }
+    .progress-stats { flex-wrap: wrap; justify-content: center; }
+    .toolbar { flex-wrap: wrap; }
+    .doc-no { width: 100%; margin-left: 0; text-align: left; margin-top: 8px; }
+    
+    /* Buat tabel bisa di-scroll horizontal */
+    .section-card { overflow-x: auto; }
+    .check-table { min-width: 600px; }
+  }
 </style>
 </head>
 <body>
