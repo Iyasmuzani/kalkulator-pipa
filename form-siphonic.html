@@ -722,7 +722,7 @@
 
     <!-- TOOLBAR -->
     <div class="toolbar">
-      <button class="btn-primary" onclick="window.print()">&#128438; Cetak / Export PDF</button>
+      <button class="btn-primary" onclick="cetakPDF()">&#128438; Cetak / Export PDF</button>
       <button class="btn-secondary" onclick="saveState()">&#128190; Simpan</button>
       <button class="btn-secondary" onclick="clearAll()">&#8635; Reset</button>
       <span class="doc-no" id="doc-no-display">No. Dok: <input id="docNo" placeholder="RC-SYF-CKL-___"
@@ -1053,6 +1053,27 @@
       document.getElementById('cntOk').textContent = ok;
       document.getElementById('cntNot').textContent = not;
       document.getElementById('cntNA').textContent = na;
+    }
+
+    function cetakPDF() {
+      const exportName = "Form Checklist Pekerjaan Syfon System";
+      const originalTitle = document.title;
+      let topOriginalTitle = "";
+      
+      // Set title sementara agar default nama file PDF berubah
+      document.title = exportName;
+      try {
+        topOriginalTitle = window.top.document.title;
+        window.top.document.title = exportName;
+      } catch (e) {}
+
+      window.print();
+
+      // Kembalikan title seperti semula
+      document.title = originalTitle;
+      try {
+        if (topOriginalTitle) window.top.document.title = topOriginalTitle;
+      } catch (e) {}
     }
 
     function saveState() {
