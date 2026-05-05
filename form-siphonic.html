@@ -1,487 +1,1090 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Form Checklist Syfon System – Rucika</title>
-<style>
-  :root {
-    --blue-50: #E6F1FB; --blue-100: #B5D4F4; --blue-600: #185FA5; --blue-800: #0C447C; --blue-900: #042C53;
-    --teal-50: #E1F5EE; --teal-600: #0F6E56; --teal-800: #085041;
-    --red-50: #FCEBEB; --red-600: #A32D2D; --red-800: #791F1F;
-    --amber-50: #FAEEDA; --amber-600: #854F0B; --amber-800: #633806;
-    --green-50: #EAF3DE; --green-600: #3B6D11; --green-800: #27500A;
-    --gray-50: #F1EFE8; --gray-100: #D3D1C7; --gray-200: #B4B2A9; --gray-600: #5F5E5A; --gray-900: #2C2C2A;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; color: #1a1a1a; background: #f5f5f2; }
-  
-  .page { max-width: 960px; margin: 0 auto; padding: 24px 16px 60px; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Checklist Syfon System – Rucika</title>
+  <style>
+    :root {
+      --blue-50: #E6F1FB;
+      --blue-100: #B5D4F4;
+      --blue-600: #185FA5;
+      --blue-800: #0C447C;
+      --blue-900: #042C53;
+      --teal-50: #E1F5EE;
+      --teal-600: #0F6E56;
+      --teal-800: #085041;
+      --red-50: #FCEBEB;
+      --red-600: #A32D2D;
+      --red-800: #791F1F;
+      --amber-50: #FAEEDA;
+      --amber-600: #854F0B;
+      --amber-800: #633806;
+      --green-50: #EAF3DE;
+      --green-600: #3B6D11;
+      --green-800: #27500A;
+      --gray-50: #F1EFE8;
+      --gray-100: #D3D1C7;
+      --gray-200: #B4B2A9;
+      --gray-600: #5F5E5A;
+      --gray-900: #2C2C2A;
+    }
 
-  /* HEADER */
-  .doc-header { background: var(--blue-800); color: white; border-radius: 10px; padding: 20px 24px; margin-bottom: 20px; display: flex; align-items: center; gap: 20px; }
-  .logo-block { display: flex; flex-direction: column; gap: 2px; }
-  .logo-main { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: white; }
-  .logo-sub { font-size: 11px; color: rgba(255,255,255,0.65); letter-spacing: 1.5px; text-transform: uppercase; }
-  .header-title { flex: 1; }
-  .header-title h1 { font-size: 16px; font-weight: 600; color: white; line-height: 1.3; }
-  .header-title p { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  /* PROJECT INFO */
-  .project-card { background: white; border-radius: 10px; border: 1px solid #e0e0db; padding: 18px 20px; margin-bottom: 16px; }
-  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--gray-600); margin-bottom: 12px; }
-  .project-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px; }
-  .field-row { display: flex; flex-direction: column; gap: 4px; }
-  .field-row label { font-size: 12px; color: var(--gray-600); }
-  .field-row input { border: none; border-bottom: 1.5px solid #d0d0cc; padding: 4px 0; font-size: 14px; width: 100%; background: transparent; outline: none; }
-  .field-row input:focus { border-bottom-color: var(--blue-600); }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 14px;
+      color: #1a1a1a;
+      background: #f5f5f2;
+    }
 
-  /* PROGRESS */
-  .progress-bar-wrap { background: white; border-radius: 10px; border: 1px solid #e0e0db; padding: 14px 20px; margin-bottom: 16px; }
-  .progress-stats { display: flex; gap: 16px; align-items: center; }
-  .stat-pill { display: flex; align-items: center; gap: 6px; font-size: 13px; }
-  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .dot-ok { background: #3B6D11; }
-  .dot-not { background: #A32D2D; }
-  .dot-na { background: #B4B2A9; }
-  .dot-pending { background: #e0e0db; border: 1px solid #ccc; }
-  .progress-track { flex: 1; height: 6px; background: #e8e8e4; border-radius: 3px; overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--blue-600); border-radius: 3px; transition: width 0.3s; }
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+    }
 
-  /* SECTIONS */
-  .section-card { background: white; border-radius: 10px; border: 1px solid #e0e0db; margin-bottom: 16px; overflow: hidden; }
-  .section-header { padding: 14px 20px; background: var(--gray-50); border-bottom: 1px solid #e0e0db; display: flex; align-items: center; gap: 10px; }
-  .section-header h2 { font-size: 13px; font-weight: 600; color: var(--gray-900); }
-  .section-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--blue-50); color: var(--blue-800); font-weight: 500; }
+    /* HEADER */
+    .doc-header {
+      background: var(--blue-800);
+      color: white;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
 
-  /* DOK/MATERIAL TABLE */
-  .check-table { width: 100%; border-collapse: collapse; }
-  .check-table th { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; color: var(--gray-600); padding: 8px 12px; background: #fafaf8; border-bottom: 1px solid #e8e8e4; text-align: left; }
-  .check-table td { padding: 8px 12px; border-bottom: 1px solid #f0f0ec; vertical-align: middle; }
-  .check-table tr:last-child td { border-bottom: none; }
-  .check-table td:first-child { font-size: 13px; color: #1a1a1a; }
-  .radio-group { display: flex; gap: 8px; }
-  .radio-btn { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 5px; border: 1px solid #ddd; font-size: 12px; cursor: pointer; transition: all 0.15s; user-select: none; background: white; }
-  .radio-btn:hover { border-color: var(--blue-600); }
-  .radio-btn input[type=radio] { display: none; }
-  .radio-btn.ada.active { background: var(--green-50); border-color: var(--green-600); color: var(--green-800); font-weight: 500; }
-  .radio-btn.tidak.active { background: var(--red-50); border-color: var(--red-600); color: var(--red-800); font-weight: 500; }
-  .radio-btn.sesuai.active { background: var(--green-50); border-color: var(--green-600); color: var(--green-800); font-weight: 500; }
-  .radio-btn.tsesuai.active { background: var(--red-50); border-color: var(--red-600); color: var(--red-800); font-weight: 500; }
-  .radio-btn.na.active { background: var(--gray-50); border-color: var(--gray-200); color: var(--gray-600); font-weight: 500; }
-  .notes-input { border: none; border-bottom: 1px solid #e0e0db; width: 100%; font-size: 12px; padding: 2px 0; background: transparent; outline: none; color: #444; }
-  .notes-input:focus { border-bottom-color: var(--blue-600); }
+    .logo-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
 
-  /* RD CARDS */
-  .rd-container { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
-  .rd-card { border: 1px solid #e0e0db; border-radius: 8px; overflow: hidden; }
-  .rd-card-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--blue-50); border-bottom: 1px solid #d0e4f5; }
-  .rd-badge { background: var(--blue-800); color: white; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 5px; white-space: nowrap; }
-  .rd-loc-input { flex: 1; border: none; background: transparent; font-size: 13px; color: var(--blue-800); outline: none; }
-  .rd-loc-input::placeholder { color: #a0b8cc; }
-  .rd-status-dot { width: 8px; height: 8px; border-radius: 50%; background: #ddd; margin-left: auto; flex-shrink: 0; }
-  .rd-delete { background: none; border: none; color: var(--red-600); cursor: pointer; font-size: 16px; padding: 0 4px; line-height: 1; opacity: 0.6; }
-  .rd-delete:hover { opacity: 1; }
-  .rd-items { padding: 4px 0; }
-  .rd-item { display: grid; grid-template-columns: 220px 1fr 160px; align-items: center; gap: 8px; padding: 7px 14px; border-bottom: 1px solid #f5f5f2; }
-  .rd-item:last-child { border-bottom: none; }
-  .rd-item-label { font-size: 12px; color: #1a1a1a; line-height: 1.4; }
-  .rd-item-notes { font-size: 12px; }
+    .logo-main {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: white;
+    }
 
-  /* ADD RD BUTTON */
-  .add-rd-btn { display: flex; align-items: center; gap: 8px; border: 1.5px dashed #c0c0bc; background: none; border-radius: 8px; padding: 10px 16px; font-size: 13px; color: var(--gray-600); cursor: pointer; transition: all 0.15s; width: 100%; justify-content: center; }
-  .add-rd-btn:hover { border-color: var(--blue-600); color: var(--blue-600); background: var(--blue-50); }
+    .logo-sub {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.65);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
 
-  /* CATATAN & TTD */
-  .ttd-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; padding: 16px 20px; }
-  .ttd-box { border: 1px solid #e0e0db; border-radius: 8px; padding: 12px; }
-  .ttd-role { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--gray-600); margin-bottom: 8px; }
-  .ttd-name-input { width: 100%; border: none; border-bottom: 1px solid #ddd; font-size: 13px; padding: 2px 0; background: transparent; outline: none; margin-bottom: 8px; }
-  .ttd-date-input { width: 100%; border: none; border-bottom: 1px solid #ddd; font-size: 12px; padding: 2px 0; background: transparent; outline: none; color: var(--gray-600); }
-  .ttd-line { height: 40px; border-bottom: 1px solid #ddd; margin-bottom: 6px; }
+    .header-title {
+      flex: 1;
+    }
 
-  .catatan-area { padding: 0 20px 16px; }
-  .catatan-area textarea { width: 100%; border: 1px solid #e0e0db; border-radius: 6px; padding: 10px 12px; font-size: 13px; resize: vertical; min-height: 80px; outline: none; font-family: inherit; color: #1a1a1a; }
-  .catatan-area textarea:focus { border-color: var(--blue-600); }
+    .header-title h1 {
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      line-height: 1.3;
+    }
 
-  /* TOOLBAR */
-  .toolbar { display: flex; gap: 10px; margin-bottom: 16px; align-items: center; }
-  .btn-primary { background: var(--blue-800); color: white; border: none; border-radius: 7px; padding: 9px 18px; font-size: 13px; font-weight: 500; cursor: pointer; }
-  .btn-primary:hover { background: var(--blue-600); }
-  .btn-secondary { background: white; color: var(--gray-900); border: 1px solid #d0d0cc; border-radius: 7px; padding: 9px 18px; font-size: 13px; cursor: pointer; }
-  .btn-secondary:hover { background: var(--gray-50); }
-  .doc-no { margin-left: auto; font-size: 11px; color: var(--gray-600); }
+    .header-title p {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 2px;
+    }
 
-  /* PRINT */
-  @media print {
-    body { background: white; font-size: 11px; }
-    .page { padding: 10px; max-width: 100%; }
-    .toolbar { display: none; }
-    .add-rd-btn { display: none; }
-    .rd-delete { display: none; }
-    .doc-header { background: var(--blue-800) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .section-card { break-inside: avoid; page-break-inside: avoid; }
-    .rd-card { break-inside: avoid; }
-    .radio-btn { border: 1px solid #ccc !important; }
-    .radio-btn.ada.active, .radio-btn.sesuai.active { background: #d4edda !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .radio-btn.tidak.active, .radio-btn.tsesuai.active { background: #f8d7da !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  }
+    /* PROJECT INFO */
+    .project-card {
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #e0e0db;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
 
-  /* RESPONSIVE / MOBILE */
-  @media (max-width: 768px) {
-    .page { padding: 16px 12px 40px; }
-    .doc-header { flex-direction: column; text-align: center; gap: 12px; padding: 16px; }
-    .doc-header > div:nth-child(2) { display: none; } /* Sembunyikan garis separator vertical */
-    .project-grid { grid-template-columns: 1fr; gap: 12px; }
-    .ttd-grid { grid-template-columns: 1fr; gap: 24px; padding: 16px; }
-    .rd-item { grid-template-columns: 1fr; gap: 12px; padding: 12px 14px; }
-    .rd-card-header { flex-wrap: wrap; }
-    .rd-loc-input { min-width: 100%; margin-top: 8px; }
-    .progress-stats { flex-wrap: wrap; justify-content: center; }
-    .toolbar { flex-wrap: wrap; }
-    .doc-no { width: 100%; margin-left: 0; text-align: left; margin-top: 8px; }
-    
-    /* Buat tabel bisa di-scroll horizontal */
-    .section-card { overflow-x: auto; }
-    .check-table { min-width: 600px; }
-  }
-</style>
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      margin-bottom: 12px;
+    }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 20px;
+    }
+
+    .field-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field-row label {
+      font-size: 12px;
+      color: var(--gray-600);
+    }
+
+    .field-row input {
+      border: none;
+      border-bottom: 1.5px solid #d0d0cc;
+      padding: 4px 0;
+      font-size: 14px;
+      width: 100%;
+      background: transparent;
+      outline: none;
+    }
+
+    .field-row input:focus {
+      border-bottom-color: var(--blue-600);
+    }
+
+    /* PROGRESS */
+    .progress-bar-wrap {
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #e0e0db;
+      padding: 14px 20px;
+      margin-bottom: 16px;
+    }
+
+    .progress-stats {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-ok {
+      background: #3B6D11;
+    }
+
+    .dot-not {
+      background: #A32D2D;
+    }
+
+    .dot-na {
+      background: #B4B2A9;
+    }
+
+    .dot-pending {
+      background: #e0e0db;
+      border: 1px solid #ccc;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 6px;
+      background: #e8e8e4;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--blue-600);
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
+
+    /* SECTIONS */
+    .section-card {
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #e0e0db;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .section-header {
+      padding: 14px 20px;
+      background: var(--gray-50);
+      border-bottom: 1px solid #e0e0db;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-header h2 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    .section-badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--blue-50);
+      color: var(--blue-800);
+      font-weight: 500;
+    }
+
+    /* DOK/MATERIAL TABLE */
+    .check-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .check-table th {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      padding: 8px 12px;
+      background: #fafaf8;
+      border-bottom: 1px solid #e8e8e4;
+      text-align: left;
+    }
+
+    .check-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f0f0ec;
+      vertical-align: middle;
+    }
+
+    .check-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .check-table td:first-child {
+      font-size: 13px;
+      color: #1a1a1a;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .radio-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+      background: white;
+    }
+
+    .radio-btn:hover {
+      border-color: var(--blue-600);
+    }
+
+    .radio-btn input[type=radio] {
+      display: none;
+    }
+
+    .radio-btn.ada.active {
+      background: var(--green-50);
+      border-color: var(--green-600);
+      color: var(--green-800);
+      font-weight: 500;
+    }
+
+    .radio-btn.tidak.active {
+      background: var(--red-50);
+      border-color: var(--red-600);
+      color: var(--red-800);
+      font-weight: 500;
+    }
+
+    .radio-btn.sesuai.active {
+      background: var(--green-50);
+      border-color: var(--green-600);
+      color: var(--green-800);
+      font-weight: 500;
+    }
+
+    .radio-btn.tsesuai.active {
+      background: var(--red-50);
+      border-color: var(--red-600);
+      color: var(--red-800);
+      font-weight: 500;
+    }
+
+    .radio-btn.na.active {
+      background: var(--gray-50);
+      border-color: var(--gray-200);
+      color: var(--gray-600);
+      font-weight: 500;
+    }
+
+    .notes-input {
+      border: none;
+      border-bottom: 1px solid #e0e0db;
+      width: 100%;
+      font-size: 12px;
+      padding: 2px 0;
+      background: transparent;
+      outline: none;
+      color: #444;
+    }
+
+    .notes-input:focus {
+      border-bottom-color: var(--blue-600);
+    }
+
+    /* RD CARDS */
+    .rd-container {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .rd-card {
+      border: 1px solid #e0e0db;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .rd-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: var(--blue-50);
+      border-bottom: 1px solid #d0e4f5;
+    }
+
+    .rd-badge {
+      background: var(--blue-800);
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 5px;
+      white-space: nowrap;
+    }
+
+    .rd-loc-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 13px;
+      color: var(--blue-800);
+      outline: none;
+    }
+
+    .rd-loc-input::placeholder {
+      color: #a0b8cc;
+    }
+
+    .rd-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ddd;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .rd-delete {
+      background: none;
+      border: none;
+      color: var(--red-600);
+      cursor: pointer;
+      font-size: 16px;
+      padding: 0 4px;
+      line-height: 1;
+      opacity: 0.6;
+    }
+
+    .rd-delete:hover {
+      opacity: 1;
+    }
+
+    .rd-items {
+      padding: 4px 0;
+    }
+
+    .rd-item {
+      display: grid;
+      grid-template-columns: 220px 1fr 160px;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-bottom: 1px solid #f5f5f2;
+    }
+
+    .rd-item:last-child {
+      border-bottom: none;
+    }
+
+    .rd-item-label {
+      font-size: 12px;
+      color: #1a1a1a;
+      line-height: 1.4;
+    }
+
+    .rd-item-notes {
+      font-size: 12px;
+    }
+
+    /* ADD RD BUTTON */
+    .add-rd-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1.5px dashed #c0c0bc;
+      background: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: all 0.15s;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .add-rd-btn:hover {
+      border-color: var(--blue-600);
+      color: var(--blue-600);
+      background: var(--blue-50);
+    }
+
+    /* CATATAN & TTD */
+    .ttd-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      padding: 16px 20px;
+    }
+
+    .ttd-box {
+      border: 1px solid #e0e0db;
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .ttd-role {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray-600);
+      margin-bottom: 8px;
+    }
+
+    .ttd-name-input {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid #ddd;
+      font-size: 13px;
+      padding: 2px 0;
+      background: transparent;
+      outline: none;
+      margin-bottom: 8px;
+    }
+
+    .ttd-date-input {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid #ddd;
+      font-size: 12px;
+      padding: 2px 0;
+      background: transparent;
+      outline: none;
+      color: var(--gray-600);
+    }
+
+    .ttd-line {
+      height: 40px;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 6px;
+    }
+
+    .catatan-area {
+      padding: 0 20px 16px;
+    }
+
+    .catatan-area textarea {
+      width: 100%;
+      border: 1px solid #e0e0db;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 13px;
+      resize: vertical;
+      min-height: 80px;
+      outline: none;
+      font-family: inherit;
+      color: #1a1a1a;
+    }
+
+    .catatan-area textarea:focus {
+      border-color: var(--blue-600);
+    }
+
+    /* TOOLBAR */
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      align-items: center;
+    }
+
+    .btn-primary {
+      background: var(--blue-800);
+      color: white;
+      border: none;
+      border-radius: 7px;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-600);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--gray-900);
+      border: 1px solid #d0d0cc;
+      border-radius: 7px;
+      padding: 9px 18px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      background: var(--gray-50);
+    }
+
+    .doc-no {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--gray-600);
+    }
+
+    /* PRINT */
+    @media print {
+      body {
+        background: white;
+        font-size: 11px;
+      }
+
+      .page {
+        padding: 10px;
+        max-width: 100%;
+      }
+
+      .toolbar {
+        display: none;
+      }
+
+      .add-rd-btn {
+        display: none;
+      }
+
+      .rd-delete {
+        display: none;
+      }
+
+      .doc-header {
+        background: var(--blue-800) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .section-card {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .rd-card {
+        break-inside: avoid;
+      }
+
+      .radio-btn {
+        border: 1px solid #ccc !important;
+      }
+
+      .radio-btn.ada.active,
+      .radio-btn.sesuai.active {
+        background: #d4edda !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .radio-btn.tidak.active,
+      .radio-btn.tsesuai.active {
+        background: #f8d7da !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+
+    /* RESPONSIVE / MOBILE */
+    @media (max-width: 768px) {
+      .page {
+        padding: 16px 12px 40px;
+      }
+
+      .doc-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+        padding: 16px;
+      }
+
+      .doc-header>div:nth-child(2) {
+        display: none;
+      }
+
+      /* Sembunyikan garis separator vertical */
+      .project-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .ttd-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 16px;
+      }
+
+      .rd-item {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 12px 14px;
+      }
+
+      .rd-card-header {
+        flex-wrap: wrap;
+      }
+
+      .rd-loc-input {
+        min-width: 100%;
+        margin-top: 8px;
+      }
+
+      .progress-stats {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .toolbar {
+        flex-wrap: wrap;
+      }
+
+      .doc-no {
+        width: 100%;
+        margin-left: 0;
+        text-align: left;
+        margin-top: 8px;
+      }
+
+      /* Buat tabel bisa di-scroll horizontal */
+      .section-card {
+        overflow-x: auto;
+      }
+
+      .check-table {
+        min-width: 600px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="page">
+  <div class="page">
 
-  <!-- TOOLBAR -->
-  <div class="toolbar">
-    <button class="btn-primary" onclick="window.print()">&#128438; Cetak / Export PDF</button>
-    <button class="btn-secondary" onclick="saveState()">&#128190; Simpan</button>
-    <button class="btn-secondary" onclick="clearAll()">&#8635; Reset</button>
-    <span class="doc-no" id="doc-no-display">No. Dok: <input id="docNo" placeholder="RC-SYF-CKL-___" style="border:none;border-bottom:1px solid #ccc;font-size:11px;width:150px;outline:none;" /></span>
-  </div>
-
-  <!-- HEADER -->
-  <div class="doc-header">
-    <div class="logo-block">
-      <div class="logo-main">RUCIKA</div>
-      <div class="logo-sub">Syfon System</div>
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <button class="btn-primary" onclick="window.print()">&#128438; Cetak / Export PDF</button>
+      <button class="btn-secondary" onclick="saveState()">&#128190; Simpan</button>
+      <button class="btn-secondary" onclick="clearAll()">&#8635; Reset</button>
+      <span class="doc-no" id="doc-no-display">No. Dok: <input id="docNo" placeholder="RC-SYF-CKL-___"
+          style="border:none;border-bottom:1px solid #ccc;font-size:11px;width:150px;outline:none;" /></span>
     </div>
-    <div style="width:1px;height:44px;background:rgba(255,255,255,0.2);"></div>
-    <div class="header-title">
-      <h1>Form Checklist Pekerjaan Syfon Sistem</h1>
-      <p>Inspeksi Instalasi Per-Titik Roof Drain &amp; Sistem Perpipaan</p>
-    </div>
-  </div>
 
-  <!-- PROJECT INFO -->
-  <div class="project-card">
-    <div class="section-label">Informasi Proyek</div>
-    <div class="project-grid">
-      <div class="field-row"><label>Nama Project</label><input id="projName" placeholder="—" /></div>
-      <div class="field-row"><label>Tanggal Inspeksi</label><input id="projDate" type="date" /></div>
-      <div class="field-row"><label>Lokasi</label><input id="projLoc" placeholder="—" /></div>
-      <div class="field-row"><label>Kontraktor</label><input id="projKont" placeholder="—" /></div>
-      <div class="field-row"><label>No. Shop Drawing Ref.</label><input id="projSD" placeholder="—" /></div>
-      <div class="field-row"><label>No. Hydraulic Calc. Ref.</label><input id="projHC" placeholder="—" /></div>
-    </div>
-  </div>
-
-  <!-- PROGRESS -->
-  <div class="progress-bar-wrap">
-    <div class="progress-stats">
-      <span style="font-size:13px;font-weight:500;color:#1a1a1a;margin-right:4px;">Progress Checklist</span>
-      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-      <span id="progressLabel" style="font-size:12px;color:#666;white-space:nowrap;">0 / 0 item</span>
-      <span class="stat-pill"><span class="dot dot-ok"></span><span id="cntOk">0</span> sesuai</span>
-      <span class="stat-pill"><span class="dot dot-not"></span><span id="cntNot">0</span> tidak sesuai</span>
-      <span class="stat-pill"><span class="dot dot-na"></span><span id="cntNA">0</span> N/A</span>
-    </div>
-  </div>
-
-  <!-- SECTION 1: DOKUMEN & MATERIAL -->
-  <div class="section-card">
-    <div class="section-header">
-      <h2>1. Dokumen &amp; Material</h2>
-      <span class="section-badge">General</span>
-    </div>
-    <table class="check-table">
-      <thead>
-        <tr>
-          <th style="width:240px;">Item</th>
-          <th>Status</th>
-          <th>Keterangan</th>
-        </tr>
-      </thead>
-      <tbody id="dokTable"></tbody>
-    </table>
-  </div>
-
-  <!-- SECTION 2: ROOF DRAIN PER TITIK -->
-  <div class="section-card">
-    <div class="section-header">
-      <h2>2. Inspeksi Per Titik Roof Drain</h2>
-      <span class="section-badge" id="rdCountBadge">0 titik RD</span>
-    </div>
-    <div class="rd-container" id="rdContainer"></div>
-    <div style="padding: 0 20px 16px;">
-      <button class="add-rd-btn" onclick="addRD()">
-        <span style="font-size:18px;line-height:1;">+</span> Tambah Titik Roof Drain
-      </button>
-    </div>
-  </div>
-
-  <!-- SECTION 3: JALUR PIPA -->
-  <div class="section-card">
-    <div class="section-header"><h2>3. Jalur Pipa</h2><span class="section-badge">General</span></div>
-    <table class="check-table">
-      <thead><tr><th style="width:280px;">Item Inspeksi</th><th>Kondisi</th><th>Keterangan</th></tr></thead>
-      <tbody id="pipaTable"></tbody>
-    </table>
-  </div>
-
-  <!-- SECTION 4: JALUR DISCHARGE -->
-  <div class="section-card">
-    <div class="section-header"><h2>4. Jalur Discharge</h2><span class="section-badge">General</span></div>
-    <table class="check-table">
-      <thead><tr><th style="width:280px;">Item Inspeksi</th><th>Kondisi</th><th>Keterangan</th></tr></thead>
-      <tbody id="dischargeTable"></tbody>
-    </table>
-  </div>
-
-  <!-- SECTION 5: COMMISSIONING -->
-  <div class="section-card">
-    <div class="section-header"><h2>5. Commissioning &amp; Testing</h2><span class="section-badge">General</span></div>
-    <table class="check-table">
-      <thead><tr><th style="width:280px;">Item</th><th>Status</th><th>Keterangan / Hasil</th></tr></thead>
-      <tbody id="commTable"></tbody>
-    </table>
-  </div>
-
-  <!-- CATATAN -->
-  <div class="section-card">
-    <div class="section-header"><h2>Catatan Umum</h2></div>
-    <div class="catatan-area" style="padding-top:12px;">
-      <textarea id="catatanUmum" placeholder="Tuliskan temuan, rekomendasi tindak lanjut, atau catatan penting lainnya..."></textarea>
-    </div>
-  </div>
-
-  <!-- TANDA TANGAN -->
-  <div class="section-card">
-    <div class="section-header"><h2>Tanda Tangan &amp; Persetujuan</h2></div>
-    <div class="ttd-grid">
-      <div class="ttd-box">
-        <div class="ttd-role">Inspektur – Technical Service</div>
-        <div class="ttd-line"></div>
-        <input class="ttd-name-input" placeholder="Nama Lengkap" />
-        <input class="ttd-date-input" type="date" />
+    <!-- HEADER -->
+    <div class="doc-header">
+      <div class="logo-block">
+        <div class="logo-main">RUCIKA</div>
+        <div class="logo-sub">Syfon System</div>
       </div>
-      <div class="ttd-box">
-        <div class="ttd-role">PIC Lapangan – Kontraktor</div>
-        <div class="ttd-line"></div>
-        <input class="ttd-name-input" placeholder="Nama Lengkap" />
-        <input class="ttd-date-input" type="date" />
-      </div>
-      <div class="ttd-box">
-        <div class="ttd-role">Pengawas / MK</div>
-        <div class="ttd-line"></div>
-        <input class="ttd-name-input" placeholder="Nama Lengkap" />
-        <input class="ttd-date-input" type="date" />
+      <div style="width:1px;height:44px;background:rgba(255,255,255,0.2);"></div>
+      <div class="header-title">
+        <h1>Form Checklist Pekerjaan Syfon Sistem</h1>
+        <p>Inspeksi Instalasi Per-Titik Roof Drain &amp; Sistem Perpipaan</p>
       </div>
     </div>
+
+    <!-- PROJECT INFO -->
+    <div class="project-card">
+      <div class="section-label">Informasi Proyek</div>
+      <div class="project-grid">
+        <div class="field-row"><label>Nama Project</label><input id="projName" placeholder="—" /></div>
+        <div class="field-row"><label>Tanggal Inspeksi</label><input id="projDate" type="date" /></div>
+        <div class="field-row"><label>Lokasi</label><input id="projLoc" placeholder="—" /></div>
+        <div class="field-row"><label>Kontraktor</label><input id="projKont" placeholder="—" /></div>
+        <div class="field-row"><label>No. Shop Drawing Ref.</label><input id="projSD" placeholder="—" /></div>
+        <div class="field-row"><label>No. Hydraulic Calc. Ref.</label><input id="projHC" placeholder="—" /></div>
+      </div>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-bar-wrap">
+      <div class="progress-stats">
+        <span style="font-size:13px;font-weight:500;color:#1a1a1a;margin-right:4px;">Progress Checklist</span>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+        <span id="progressLabel" style="font-size:12px;color:#666;white-space:nowrap;">0 / 0 item</span>
+        <span class="stat-pill"><span class="dot dot-ok"></span><span id="cntOk">0</span> sesuai</span>
+        <span class="stat-pill"><span class="dot dot-not"></span><span id="cntNot">0</span> tidak sesuai</span>
+        <span class="stat-pill"><span class="dot dot-na"></span><span id="cntNA">0</span> N/A</span>
+      </div>
+    </div>
+
+    <!-- SECTION 1: DOKUMEN & MATERIAL -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>1. Dokumen &amp; Material</h2>
+        <span class="section-badge">General</span>
+      </div>
+      <table class="check-table">
+        <thead>
+          <tr>
+            <th style="width:240px;">Item</th>
+            <th>Status</th>
+            <th>Keterangan</th>
+          </tr>
+        </thead>
+        <tbody id="dokTable"></tbody>
+      </table>
+    </div>
+
+    <!-- SECTION 2: ROOF DRAIN PER TITIK -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>2. Inspeksi Per Titik Roof Drain</h2>
+        <span class="section-badge" id="rdCountBadge">0 titik RD</span>
+      </div>
+      <div class="rd-container" id="rdContainer"></div>
+      <div style="padding: 0 20px 16px;">
+        <button class="add-rd-btn" onclick="addRD()">
+          <span style="font-size:18px;line-height:1;">+</span> Tambah Titik Roof Drain
+        </button>
+      </div>
+    </div>
+
+    <!-- SECTION 3: JALUR PIPA -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>3. Jalur Pipa</h2><span class="section-badge">General</span>
+      </div>
+      <table class="check-table">
+        <thead>
+          <tr>
+            <th style="width:280px;">Item Inspeksi</th>
+            <th>Kondisi</th>
+            <th>Keterangan</th>
+          </tr>
+        </thead>
+        <tbody id="pipaTable"></tbody>
+      </table>
+    </div>
+
+    <!-- SECTION 4: JALUR DISCHARGE -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>4. Jalur Discharge</h2><span class="section-badge">General</span>
+      </div>
+      <table class="check-table">
+        <thead>
+          <tr>
+            <th style="width:280px;">Item Inspeksi</th>
+            <th>Kondisi</th>
+            <th>Keterangan</th>
+          </tr>
+        </thead>
+        <tbody id="dischargeTable"></tbody>
+      </table>
+    </div>
+
+    <!-- SECTION 5: COMMISSIONING -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>5. Commissioning &amp; Testing</h2><span class="section-badge">General</span>
+      </div>
+      <table class="check-table">
+        <thead>
+          <tr>
+            <th style="width:280px;">Item</th>
+            <th>Status</th>
+            <th>Keterangan / Hasil</th>
+          </tr>
+        </thead>
+        <tbody id="commTable"></tbody>
+      </table>
+    </div>
+
+    <!-- CATATAN -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>Catatan Umum</h2>
+      </div>
+      <div class="catatan-area" style="padding-top:12px;">
+        <textarea id="catatanUmum"
+          placeholder="Tuliskan temuan, rekomendasi tindak lanjut, atau catatan penting lainnya..."></textarea>
+      </div>
+    </div>
+
+    <!-- TANDA TANGAN -->
+    <div class="section-card">
+      <div class="section-header">
+        <h2>Tanda Tangan &amp; Persetujuan</h2>
+      </div>
+      <div class="ttd-grid">
+        <div class="ttd-box">
+          <div class="ttd-role">Inspektur – Technical Service</div>
+          <div class="ttd-line"></div>
+          <input class="ttd-name-input" placeholder="Nama Lengkap" />
+          <input class="ttd-date-input" type="date" />
+        </div>
+        <div class="ttd-box">
+          <div class="ttd-role">PIC Lapangan – Kontraktor</div>
+          <div class="ttd-line"></div>
+          <input class="ttd-name-input" placeholder="Nama Lengkap" />
+          <input class="ttd-date-input" type="date" />
+        </div>
+        <div class="ttd-box">
+          <div class="ttd-role">Pengawas / MK</div>
+          <div class="ttd-line"></div>
+          <input class="ttd-name-input" placeholder="Nama Lengkap" />
+          <input class="ttd-date-input" type="date" />
+        </div>
+      </div>
+    </div>
+
   </div>
 
-</div>
+  <script>
+    const DOK_ITEMS = [
+      "Isometric Drawing",
+      "Shop Drawing (Approved / Stamped)",
+      "Hydraulic Calculation Sheet",
+      "Material Submittal / Approval Sheet",
+      "Datasheet Pipa & Fitting (SDR, MRS, standar SNI/JIS)",
+      "Roof Outlet / RD Unit",
+      "Rivet / Angkur Bracket",
+      "Pipa dan Fitting Rucika (JIS/HDPE)",
+      "Sealant Bostik S736"
+    ];
 
-<script>
-const DOK_ITEMS = [
-  "Isometric Drawing",
-  "Shop Drawing (Approved / Stamped)",
-  "Hydraulic Calculation Sheet",
-  "Material Submittal / Approval Sheet",
-  "Datasheet Pipa & Fitting (SDR, MRS, standar SNI/JIS)",
-  "Roof Outlet / RD Unit",
-  "Rivet / Angkur Bracket",
-  "Pipa dan Fitting Rucika (JIS/HDPE)",
-  "Sealant Bostik S736"
-];
+    const PIPA_ITEMS = [
+      "Kesesuaian routing jalur & panjang pipa dengan desain",
+      "Slope pipa horizontal (near-level sesuai desain sifon)",
+      "Diameter tailpipe sesuai desain",
+      "Diameter pipa vertikal sesuai desain",
+      "Diameter pipa horizontal sesuai desain",
+      "Posisi reducer sesuai desain",
+      "Jenis metode sambungan (butt fusion / EF / mechanical / solvent cement)",
+      "Kualitas sambungan (visual check)",
+      "Desain & posisi fixed bracket",
+      "Desain & posisi sliding bracket (akomodasi thermal expansion)",
+      "Jarak antar bracket sesuai standar",
+      "Clearance pipa terhadap struktur bangunan",
+      "Insulasi pipa (bila di area AC / potensi kondensasi)"
+    ];
 
-const PIPA_ITEMS = [
-  "Kesesuaian routing jalur & panjang pipa dengan desain",
-  "Slope pipa horizontal (near-level sesuai desain sifon)",
-  "Diameter tailpipe sesuai desain",
-  "Diameter pipa vertikal sesuai desain",
-  "Diameter pipa horizontal sesuai desain",
-  "Posisi reducer sesuai desain",
-  "Jenis metode sambungan (butt fusion / EF / mechanical)",
-  "Kualitas visual hasil sambungan (weld bead check)",
-  "Desain & posisi fixed bracket",
-  "Desain & posisi sliding bracket (akomodasi thermal expansion)",
-  "Jarak antar bracket sesuai standar",
-  "Clearance pipa terhadap struktur bangunan",
-  "Insulasi pipa (bila di area AC / potensi kondensasi)"
-];
+    const DISCHARGE_ITEMS = [
+      "Level outlet discharge terhadap U-ditch / saluran eksisting",
+      "Arah discharge sesuai arah aliran eksisting",
+      "Koneksi ke sistem drainase eksisting (rapat, tidak bocor)",
+      "Overflow provision tersedia (jika sifon gagal primer)",
+      "Ukuran bak kontrol sesuai desain"
+    ];
 
-const DISCHARGE_ITEMS = [
-  "Level outlet discharge terhadap U-ditch / saluran eksisting",
-  "Arah discharge sesuai arah aliran eksisting",
-  "Koneksi ke sistem drainase eksisting (rapat, tidak bocor)",
-  "Overflow provision tersedia (jika sifon gagal primer)",
-  "Ukuran bak kontrol sesuai desain"
-];
+    const COMM_ITEMS = [
+      "Flushing test (pembersihan jalur pipa sebelum commissioning)",
+      "Pressure / leak test sambungan",
+      "Hydraulic performance observation (sifon berhasil primer saat flow)",
+      "Verifikasi as-built drawing setelah instalasi selesai"
+    ];
 
-const COMM_ITEMS = [
-  "Flushing test (pembersihan jalur pipa sebelum commissioning)",
-  "Pressure / leak test sambungan",
-  "Hydraulic performance observation (sifon berhasil primer saat flow)",
-  "Verifikasi as-built drawing setelah instalasi selesai"
-];
+    const RD_ITEMS = [
+      "Jenis & Ukuran RD sesuai desain (spek roof outlet)",
+      "Kualitas instalasi RD (kerapian, kekokohan)",
+      "Kedalaman RD / rim level terhadap permukaan atap",
+      "Kondisi waterproofing membrane di sekitar RD",
+      "Pemasangan clamping ring / flange (terpasang & kencang)",
+      "Strainer / saringan RD terpasang dan tidak terhalang",
+      "Anti-vortex baffle terpasang (sesuai spek)",
+      "Arah slope lantai/atap menuju RD (air mengalir ke RD)",
+      "Luas catchment area sesuai perhitungan hidraulik",
+      "Diameter tailpipe sesuai desain untuk RD ini",
+      "Posisi reducer pada jalur RD ini sesuai desain",
+      "Jarak RD ke pintu / lubang (antisipasi overflow)",
+      "Potensi material pengotor di area catchment"
+    ];
 
-const RD_ITEMS = [
-  "Jenis & Ukuran RD sesuai desain (spek roof outlet)",
-  "Kualitas instalasi RD (kerapian, kekokohan)",
-  "Kedalaman RD / rim level terhadap permukaan atap",
-  "Kondisi waterproofing membrane di sekitar RD",
-  "Pemasangan clamping ring / flange (terpasang & kencang)",
-  "Strainer / saringan RD terpasang dan tidak terhalang",
-  "Anti-vortex baffle terpasang (sesuai spek)",
-  "Arah slope lantai/atap menuju RD (air mengalir ke RD)",
-  "Luas catchment area sesuai perhitungan hidraulik",
-  "Diameter tailpipe sesuai desain untuk RD ini",
-  "Posisi reducer pada jalur RD ini sesuai desain",
-  "Jarak RD ke pintu / lubang (antisipasi overflow)",
-  "Potensi material pengotor di area catchment"
-];
+    let rdCount = 0;
+    const rdData = {};
 
-let rdCount = 0;
-const rdData = {};
-
-function makeRadioGroup(id, type) {
-  if (type === 'dok') {
-    return `<div class="radio-group">
+    function makeRadioGroup(id, type) {
+      if (type === 'dok') {
+        return `<div class="radio-group">
       <label class="radio-btn ada" onclick="setVal(this,'ada')"><input type="radio" name="${id}"> Ada</label>
       <label class="radio-btn tidak" onclick="setVal(this,'tidak')"><input type="radio" name="${id}"> Tidak Ada</label>
     </div>`;
-  }
-  return `<div class="radio-group">
+      }
+      return `<div class="radio-group">
     <label class="radio-btn sesuai" onclick="setVal(this,'sesuai')"><input type="radio" name="${id}"> Sesuai</label>
     <label class="radio-btn tsesuai" onclick="setVal(this,'tsesuai')"><input type="radio" name="${id}"> Tidak Sesuai</label>
     <label class="radio-btn na" onclick="setVal(this,'na')"><input type="radio" name="${id}"> N/A</label>
   </div>`;
-}
+    }
 
-function setVal(el, val) {
-  const name = el.querySelector('input').name;
-  document.querySelectorAll(`[name="${name}"]`).forEach(r => {
-    const btn = r.parentElement;
-    btn.classList.remove('active');
-  });
-  el.classList.add('active');
-  updateProgress();
-}
+    function setVal(el, val) {
+      const name = el.querySelector('input').name;
+      document.querySelectorAll(`[name="${name}"]`).forEach(r => {
+        const btn = r.parentElement;
+        btn.classList.remove('active');
+      });
+      el.classList.add('active');
+      updateProgress();
+    }
 
-function buildTable(tbodyId, items, type) {
-  const tbody = document.getElementById(tbodyId);
-  items.forEach((item, i) => {
-    const id = `${tbodyId}_${i}`;
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
+    function buildTable(tbodyId, items, type) {
+      const tbody = document.getElementById(tbodyId);
+      items.forEach((item, i) => {
+        const id = `${tbodyId}_${i}`;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
       <td>${item}</td>
       <td>${makeRadioGroup(id, type)}</td>
       <td><input class="notes-input" placeholder="—" /></td>`;
-    tbody.appendChild(tr);
-  });
-}
+        tbody.appendChild(tr);
+      });
+    }
 
-function addRD() {
-  rdCount++;
-  const id = rdCount;
-  const container = document.getElementById('rdContainer');
-  const card = document.createElement('div');
-  card.className = 'rd-card';
-  card.id = `rd-card-${id}`;
+    function addRD() {
+      rdCount++;
+      const id = rdCount;
+      const container = document.getElementById('rdContainer');
+      const card = document.createElement('div');
+      card.className = 'rd-card';
+      card.id = `rd-card-${id}`;
 
-  let itemsHtml = RD_ITEMS.map((item, i) => {
-    const rid = `rd${id}_item${i}`;
-    return `<div class="rd-item">
+      let itemsHtml = RD_ITEMS.map((item, i) => {
+        const rid = `rd${id}_item${i}`;
+        return `<div class="rd-item">
       <div class="rd-item-label">${item}</div>
       <div>${makeRadioGroup(rid, 'rd')}</div>
       <input class="notes-input rd-item-notes" placeholder="catatan..." />
     </div>`;
-  }).join('');
+      }).join('');
 
-  card.innerHTML = `
+      card.innerHTML = `
     <div class="rd-card-header">
-      <span class="rd-badge">RD-${String(id).padStart(2,'0')}</span>
+      <span class="rd-badge">RD-${String(id).padStart(2, '0')}</span>
       <input class="rd-loc-input" placeholder="Lokasi / Label titik (contoh: Grid A3, Atap Selatan, Level 3...)" />
       <button class="rd-delete" onclick="removeRD(${id})" title="Hapus RD ini">&#10005;</button>
     </div>
     <div class="rd-items">${itemsHtml}</div>`;
 
-  container.appendChild(card);
-  updateRDBadge();
-  updateProgress();
-}
+      container.appendChild(card);
+      updateRDBadge();
+      updateProgress();
+    }
 
-function removeRD(id) {
-  const card = document.getElementById(`rd-card-${id}`);
-  if (card) card.remove();
-  updateRDBadge();
-  updateProgress();
-}
+    function removeRD(id) {
+      const card = document.getElementById(`rd-card-${id}`);
+      if (card) card.remove();
+      updateRDBadge();
+      updateProgress();
+    }
 
-function updateRDBadge() {
-  const count = document.querySelectorAll('.rd-card').length;
-  document.getElementById('rdCountBadge').textContent = `${count} titik RD`;
-}
+    function updateRDBadge() {
+      const count = document.querySelectorAll('.rd-card').length;
+      document.getElementById('rdCountBadge').textContent = `${count} titik RD`;
+    }
 
-function updateProgress() {
-  const all = document.querySelectorAll('.radio-btn');
-  const active = document.querySelectorAll('.radio-btn.active');
-  const ok = document.querySelectorAll('.radio-btn.ada.active, .radio-btn.sesuai.active').length;
-  const not = document.querySelectorAll('.radio-btn.tidak.active, .radio-btn.tsesuai.active').length;
-  const na = document.querySelectorAll('.radio-btn.na.active').length;
+    function updateProgress() {
+      const all = document.querySelectorAll('.radio-btn');
+      const active = document.querySelectorAll('.radio-btn.active');
+      const ok = document.querySelectorAll('.radio-btn.ada.active, .radio-btn.sesuai.active').length;
+      const not = document.querySelectorAll('.radio-btn.tidak.active, .radio-btn.tsesuai.active').length;
+      const na = document.querySelectorAll('.radio-btn.na.active').length;
 
-  // Count unique radio groups
-  const names = new Set(Array.from(document.querySelectorAll('.radio-btn input')).map(r => r.name));
-  const answered = new Set(Array.from(document.querySelectorAll('.radio-btn.active input')).map(r => r.name));
-  const total = names.size;
-  const done = answered.size;
+      // Count unique radio groups
+      const names = new Set(Array.from(document.querySelectorAll('.radio-btn input')).map(r => r.name));
+      const answered = new Set(Array.from(document.querySelectorAll('.radio-btn.active input')).map(r => r.name));
+      const total = names.size;
+      const done = answered.size;
 
-  const pct = total > 0 ? Math.round(done / total * 100) : 0;
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressLabel').textContent = `${done} / ${total} item (${pct}%)`;
-  document.getElementById('cntOk').textContent = ok;
-  document.getElementById('cntNot').textContent = not;
-  document.getElementById('cntNA').textContent = na;
-}
+      const pct = total > 0 ? Math.round(done / total * 100) : 0;
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressLabel').textContent = `${done} / ${total} item (${pct}%)`;
+      document.getElementById('cntOk').textContent = ok;
+      document.getElementById('cntNot').textContent = not;
+      document.getElementById('cntNA').textContent = na;
+    }
 
-function saveState() {
-  try {
-    const data = { html: document.querySelector('.page').innerHTML };
-    localStorage.setItem('rucika_syfon_checklist', JSON.stringify({ saved: new Date().toISOString() }));
-    alert('Untuk menyimpan permanen: gunakan Ctrl+S (File > Save As HTML) di browser Anda, atau Export PDF via tombol Cetak.');
-  } catch(e) {}
-}
+    function saveState() {
+      try {
+        const data = { html: document.querySelector('.page').innerHTML };
+        localStorage.setItem('rucika_syfon_checklist', JSON.stringify({ saved: new Date().toISOString() }));
+        alert('Untuk menyimpan permanen: gunakan Ctrl+S (File > Save As HTML) di browser Anda, atau Export PDF via tombol Cetak.');
+      } catch (e) { }
+    }
 
-function clearAll() {
-  if (confirm('Reset semua data checklist? Tindakan ini tidak bisa dibatalkan.')) {
-    document.querySelectorAll('.radio-btn.active').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.notes-input, .rd-loc-input').forEach(el => el.value = '');
-    document.querySelectorAll('#rdContainer .rd-card').forEach(el => el.remove());
-    rdCount = 0;
-    updateRDBadge();
+    function clearAll() {
+      if (confirm('Reset semua data checklist? Tindakan ini tidak bisa dibatalkan.')) {
+        document.querySelectorAll('.radio-btn.active').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.notes-input, .rd-loc-input').forEach(el => el.value = '');
+        document.querySelectorAll('#rdContainer .rd-card').forEach(el => el.remove());
+        rdCount = 0;
+        updateRDBadge();
+        updateProgress();
+        ['projName', 'projDate', 'projLoc', 'projKont', 'projSD', 'projHC', 'catatanUmum'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+      }
+    }
+
+    // Init
+    buildTable('dokTable', DOK_ITEMS, 'dok');
+    buildTable('pipaTable', PIPA_ITEMS, 'gen');
+    buildTable('dischargeTable', DISCHARGE_ITEMS, 'gen');
+    buildTable('commTable', COMM_ITEMS, 'gen');
     updateProgress();
-    ['projName','projDate','projLoc','projKont','projSD','projHC','catatanUmum'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = '';
-    });
-  }
-}
-
-// Init
-buildTable('dokTable', DOK_ITEMS, 'dok');
-buildTable('pipaTable', PIPA_ITEMS, 'gen');
-buildTable('dischargeTable', DISCHARGE_ITEMS, 'gen');
-buildTable('commTable', COMM_ITEMS, 'gen');
-updateProgress();
-</script>
+  </script>
 </body>
+
 </html>
