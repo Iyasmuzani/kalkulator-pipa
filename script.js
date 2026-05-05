@@ -43,8 +43,9 @@ const systemConfig = {
 function switchSystem(sys) {
   currentSystem = sys;
   document.documentElement.setAttribute('data-system', sys);
-  // Hide eng tools, show normal UI
+  // Hide eng and library tools, show normal UI
   document.getElementById('eng-panel').style.display = 'none';
+  if (document.getElementById('library-panel')) document.getElementById('library-panel').style.display = 'none';
   document.querySelector('.tabs').style.display = '';
   document.querySelector('.content').style.display = '';
   document.querySelectorAll('.sys-btn').forEach(b => b.classList.remove('active'));
@@ -75,6 +76,7 @@ function switchToEngTools() {
   document.getElementById('sys-engineering').classList.add('active');
   document.querySelector('.tabs').style.display = 'none';
   document.querySelector('.content').style.display = 'none';
+  if (document.getElementById('library-panel')) document.getElementById('library-panel').style.display = 'none';
   document.getElementById('eng-panel').style.display = 'block';
   document.getElementById('hdr-title').textContent = 'Engineering Tools';
   document.getElementById('hdr-sub').textContent = 'Butt fusion HDPE · Pressure loss · Buoyancy · Water hammer · Friction · Pipe load · Curah Hujan';
@@ -114,6 +116,33 @@ function switchEngTool(tool) {
         Isi parameter di panel kiri, lalu klik <strong style="color:#00e5ff">Hitung</strong>
       </div>
     </div>`;
+}
+
+// ==================== LIBRARY & FORMS ====================
+function switchToLibrary() {
+  document.querySelectorAll('.sys-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sys-library').classList.add('active');
+  document.querySelector('.tabs').style.display = 'none';
+  document.querySelector('.content').style.display = 'none';
+  document.getElementById('eng-panel').style.display = 'none';
+  if (document.getElementById('library-panel')) document.getElementById('library-panel').style.display = 'block';
+  
+  document.getElementById('hdr-title').textContent = 'Library & Form';
+  document.getElementById('hdr-sub').textContent = 'Kumpulan dokumen, checklist, dan form standar';
+  document.getElementById('hdr-badge').textContent = '';
+  document.getElementById('hdr-icon').textContent = '📚';
+  
+  switchLibraryForm('siphonic');
+}
+
+function switchLibraryForm(formId) {
+  document.querySelectorAll('#library-subtabs .eng-tab').forEach(b => b.classList.remove('active'));
+  // Assume the only tab right now is siphonic, we can add more logic later
+  document.querySelector('#library-subtabs .eng-tab').classList.add('active');
+  
+  if (formId === 'siphonic') {
+    document.getElementById('library-iframe').src = 'form-siphonic.html';
+  }
 }
 
 function resetCompPanel() {
