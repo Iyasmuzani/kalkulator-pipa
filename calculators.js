@@ -227,7 +227,7 @@ function buildCalcSiphonic() {
   document.getElementById('calc-form').innerHTML = `
   <div class="form-title">🌧️ Data Siphonic Roof Drain <span style="font-size:10px;color:var(--text2);font-weight:400">(BS 8490 · Preliminary)</span></div>
   <div style="background:rgba(255,170,0,.08);border:1px solid rgba(255,170,0,.2);border-radius:7px;padding:8px 10px;margin-bottom:12px;font-size:10px;color:#ffd080;line-height:1.6">
-    ⚠️ <strong>Preliminary sizing only.</strong> Desain final siphonic WAJIB menggunakan software hidraulik khusus produsen (Rucika Syfon System).
+    ⚠️ <strong>Preliminary sizing only.</strong> Desain final siphonic WAJIB menggunakan software hidraulik khusus produsen sistem siphonic.
   </div>
   <div class="form-group"><label class="form-label">Luas Catchment Atap (m²)</label><input type="number" class="form-control" id="sf-area" min="50" max="50000" value="1000"></div>
   <div class="form-group"><label class="form-label">Intensitas Hujan Desain (mm/jam)</label>
@@ -243,8 +243,9 @@ function buildCalcSiphonic() {
   <div class="form-group"><label class="form-label">Jumlah Titik Roof Outlet</label><input type="number" class="form-control" id="sf-outlets" min="2" max="50" value="4"></div>
   <div class="form-group"><label class="form-label">Material Pipa</label>
   <select class="form-control" id="sf-pipe">
-    <option value="aw">PVC JIS AW (Rucika) — PN 6</option>
-    <option value="vp">PVC JIS VP (Rucika) — PN 10</option>
+    <option value="vp">PVC JIS VP/AW PN 10</option>
+    <option value="hdpe10">HDPE PN 10</option>
+    <option value="hdpe8">HDPE PN 8</option>
   </select></div>
   <div class="form-group"><label class="form-label">Panjang Collecting Pipe (m)</label><input type="number" class="form-control" id="sf-colLen" min="5" max="100" step="1" value="30"></div>
   <button class="calc-btn" onclick="calcSiphonic()">⚡ Hitung Preliminary Sizing</button>`;
@@ -275,14 +276,16 @@ function calcSiphonic() {
   // Downpipe diameter
   var DdnCalc = Math.sqrt(4 * Qm3s / (Math.PI * vDown)) * 1000;
 
-  // PVC JIS standard sizes (OD mm) and ID approximation
-  var pvcSizes = pipeType === 'aw'
-    ? [40, 50, 65, 75, 100, 125, 150, 200, 250, 300]
-    : [40, 50, 65, 75, 100, 125, 150, 200, 250, 300];
-  var idRatio = pipeType === 'aw' ? 0.92 : 0.88; // AW thinner wall
+  // PVC JIS and HDPE standard sizes (OD mm)
+  var pvcSizes = [40, 50, 65, 75, 100, 125, 150, 200, 250, 300];
+  var hdpeSizes = [50, 63, 75, 90, 110, 160, 200, 250, 315];
+  var sizes = pipeType === 'vp' ? pvcSizes : hdpeSizes;
+  
+  // Approximate ID ratio based on material and PN
+  var idRatio = pipeType === 'hdpe8' ? 0.90 : 0.88; 
 
-  var DcolOD = pvcSizes.find(s => s * idRatio >= DcolCalc) || pvcSizes[pvcSizes.length - 1];
-  var DdnOD = pvcSizes.find(s => s * idRatio >= DdnCalc) || pvcSizes[pvcSizes.length - 1];
+  var DcolOD = sizes.find(s => s * idRatio >= DcolCalc) || sizes[sizes.length - 1];
+  var DdnOD = sizes.find(s => s * idRatio >= DdnCalc) || sizes[sizes.length - 1];
   var DcolID = DcolOD * idRatio;
   var DdnID = DdnOD * idRatio;
 
@@ -313,7 +316,7 @@ function calcSiphonic() {
   var areaPerOut = A / nOut;
   var outletWarn = areaPerOut > 350;
 
-  var pipeName = pipeType === 'aw' ? 'PVC JIS AW (Rucika)' : 'PVC JIS VP (Rucika)';
+  var pipeName = pipeType === 'vp' ? 'PVC JIS VP/AW PN 10' : (pipeType === 'hdpe10' ? 'HDPE PN 10' : 'HDPE PN 8');
 
   R('rec-results').innerHTML = `
   <div class="result-sec"><div class="result-sec-title">🌧️ Debit Air Hujan — ${A.toLocaleString()} m² atap</div><div class="result-grid">
@@ -338,6 +341,6 @@ function calcSiphonic() {
   <div class="rec-card"><div class="rec-icon">🔵</div><div class="rec-text">Material: <strong>${pipeName}</strong>. Roughness k=0.007mm. Jumlah downpipe rekomendasi: <strong>${nDown}</strong>. ${nDown>1?'Bagi collecting pipe menjadi '+nDown+' zona, masing-masing ke 1 downpipe.':''}</div></div>
   ${outletWarn?'<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text">Area per outlet <strong>'+Math.round(areaPerOut)+' m²</strong> melebihi rekomendasi 350 m²/outlet. Tambahkan outlet untuk performa optimal.</div></div>':''}
   ${!headOK?'<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text"><strong>Available head tidak cukup!</strong> Perbesar diameter pipa, kurangi panjang collecting pipe, atau tambah downpipe untuk mengurangi head loss.</div></div>':''}
-  <div class="rec-card"><div class="rec-icon">📌</div><div class="rec-text">Hasil ini bersifat <strong>preliminary sizing</strong>. Desain final WAJIB diverifikasi menggunakan software hidraulik khusus dari <strong>Rucika Syfon System</strong> dan engineer berpengalaman.</div></div>
+  <div class="rec-card"><div class="rec-icon">📌</div><div class="rec-text">Hasil ini bersifat <strong>preliminary sizing</strong>. Desain final WAJIB diverifikasi menggunakan software hidraulik khusus dari <strong>produsen siphonic system</strong> dan engineer berpengalaman.</div></div>
   </div></div>`;
 }

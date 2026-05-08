@@ -202,7 +202,7 @@ ${[190,240,290,340].map(y=>`<line x1="446" y1="${y}" x2="454" y2="${y}" stroke="
 <g class="hotspot" id="hp-transition-fitting" onclick="selectComp('transition-fitting')"><rect x="438" y="368" width="24" height="18" rx="3" fill="#0c1e30" stroke="#039be5" stroke-width="1.5"/><text x="450" y="380" text-anchor="middle" fill="#039be5" font-size="5.5" font-family="monospace">TRF</text></g>
 <g class="hotspot" id="hp-clamp-bracket" onclick="selectComp('clamp-bracket')"><rect x="335" y="130" width="18" height="20" rx="2" fill="#101828" stroke="#546e7a" stroke-width="1.2"/><text x="344" y="143" text-anchor="middle" fill="#546e7a" font-size="6" font-family="monospace">🔩</text><text x="344" y="160" text-anchor="middle" fill="#546e7a" font-size="5.5" font-family="monospace">CLAMP</text></g>
 <g class="hotspot" id="hp-overflow-system" onclick="selectComp('overflow-system')"><rect x="80" y="50" width="38" height="20" rx="3" fill="#1a1008" stroke="#ff8f00" stroke-width="1.5"/><text x="99" y="63" text-anchor="middle" fill="#ff8f00" font-size="6" font-family="monospace">OVF</text></g>
-<g class="hotspot" id="hp-pipe-material" onclick="selectComp('pipe-material')"><rect x="290" y="182" width="60" height="16" rx="3" fill="#061830" stroke="#1565c0" stroke-width="1.2"/><text x="320" y="193" text-anchor="middle" fill="#1565c0" font-size="6.5" font-family="monospace">PVC JIS</text></g>
+<g class="hotspot" id="hp-pipe-material" onclick="selectComp('pipe-material')"><rect x="290" y="182" width="60" height="16" rx="3" fill="#061830" stroke="#1565c0" stroke-width="1.2"/><text x="320" y="193" text-anchor="middle" fill="#1565c0" font-size="6.5" font-family="monospace">PIPA</text></g>
 <g class="hotspot" id="hp-discharge-point" onclick="selectComp('discharge-point')"><rect x="510" y="408" width="42" height="26" rx="4" fill="#0a1a10" stroke="#2e7d32" stroke-width="1.5"/><text x="531" y="421" text-anchor="middle" fill="#2e7d32" font-size="7" font-family="monospace" font-weight="bold">DSC</text><text x="531" y="430" text-anchor="middle" fill="rgba(46,125,50,.5)" font-size="5" font-family="monospace">OUTLET</text></g>
 <g transform="translate(60,450)"><rect x="0" y="0" width="210" height="90" rx="5" fill="rgba(6,14,26,.92)" stroke="rgba(0,188,212,.18)"/>
 <text x="105" y="14" text-anchor="middle" fill="rgba(0,188,212,.45)" font-size="8" font-family="monospace">LEGENDA — SIPHONIC SYSTEM</text>
@@ -212,6 +212,6 @@ ${[190,240,290,340].map(y=>`<line x1="446" y1="${y}" x2="454" y2="${y}" stroke="
 <line x1="8" y1="70" x2="30" y2="70" stroke="#0288d1" stroke-width="3"/><text x="36" y="73" fill="#7a9ab8" font-size="7" font-family="monospace">Downpipe · Discharge</text>
 <line x1="8" y1="84" x2="30" y2="84" stroke="#ff8f00" stroke-width="1.5" stroke-dasharray="4,3"/><text x="36" y="87" fill="#7a9ab8" font-size="7" font-family="monospace">Overflow (gravity backup)</text>
 </g>
-<text x="555" y="525" text-anchor="end" fill="rgba(0,188,212,.18)" font-size="8" font-family="monospace" font-weight="bold">Rucika Syfon System</text>
+<text x="555" y="525" text-anchor="end" fill="rgba(0,188,212,.18)" font-size="8" font-family="monospace" font-weight="bold">Siphonic Roof Drain</text>
 <text x="555" y="535" text-anchor="end" fill="rgba(0,188,212,.1)" font-size="6.5" font-family="monospace">BS 8490 · EN 1253-2</text>
 </svg>`;}

@@ -39,11 +39,11 @@ const systemConfig = {
   },
   siphonic: {
     title: 'Sistem Drainase Atap Siphonic',
-    sub: 'Rucika Syfon System · Visualisasi · Komponen · Kalkulator',
+    sub: 'Sistem Siphonic · Visualisasi · Komponen · Kalkulator',
     badge: 'BS 8490 · EN 1253-2',
     icon: '🌧️',
     vizLabel: 'Diagram Sistem Siphonic Roof Drain — Klik komponen untuk detail',
-    guideIntro: 'Ikuti 8 tahap instalasi sistem drainase siphonic. Panduan mengacu pada <strong style="color:var(--sys-accent)">BS 8490:2007</strong> (Siphonic Roof Drainage) dan <strong style="color:var(--sys-accent)">EN 1253-2</strong> (Roof Outlets). Produk acuan: <strong style="color:var(--sys-accent)">Rucika Syfon System</strong>.',
+    guideIntro: 'Ikuti 8 tahap instalasi sistem drainase siphonic. Panduan mengacu pada <strong style="color:var(--sys-accent)">BS 8490:2007</strong> (Siphonic Roof Drainage) dan <strong style="color:var(--sys-accent)">EN 1253-2</strong> (Roof Outlets).',
     compData: () => siphonicCompData,
     guideData: () => siphonicGuideData,
     tagMap: { 'siphonic-outlet': 'Outlet', 'anti-vortex': 'Outlet', 'tail-pipe': 'Pipa', 'collecting-pipe': 'Pipa', 'downpipe': 'Pipa', 'transition-fitting': 'Fitting', 'clamp-bracket': 'Support', 'overflow-system': 'Safety', 'pipe-material': 'Material', 'discharge-point': 'Outlet' }

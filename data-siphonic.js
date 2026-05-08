@@ -1,5 +1,5 @@
 // ==================== DATA SIPHONIC ROOF DRAIN ====================
-// Acuan: Rucika Syfon System · BS 8490:2007 · EN 1253-2
+// Acuan: Siphonic System · BS 8490:2007 · EN 1253-2
 const siphonicCompData = {
   'siphonic-outlet':{name:'Roof Outlet Siphonic',code:'SRO-01',icon:'🌧️',bg:'#041828',ac:'#00bcd4',
     desc:'Outlet atap khusus siphonic dengan desain anti-vortex terintegrasi. Komponen kritis yang mencegah masuknya udara ke dalam sistem perpipaan sehingga tercapai aliran full-bore (100% terisi air). Diproduksi sesuai EN 1253-2 untuk performa hidraulik optimal.',
@@ -13,23 +13,23 @@ const siphonicCompData = {
 
   'tail-pipe':{name:'Tail Pipe',code:'TPP-01',icon:'📏',bg:'#071520',ac:'#0097a7',
     desc:'Pipa pendek vertikal yang menghubungkan langsung dari roof outlet ke collecting pipe horizontal. Panjang tail pipe sangat kritis terhadap performa priming sistem siphonic.',
-    specs:[['Material','PVC JIS VP / AW (Rucika)'],['Diameter','Sama dengan outlet (DN56–DN110)'],['Panjang Tipikal','200–500 mm dari outlet'],['Orientasi','Vertikal ke bawah dari outlet'],['Sambungan Atas','Solvent cement ke outlet adaptor'],['Sambungan Bawah','Ke tee/elbow collecting pipe']],
+    specs:[['Material','PVC JIS VP/AW PN 10 / HDPE PN 10 / HDPE PN 8'],['Diameter','Sama dengan outlet (DN56–DN110)'],['Panjang Tipikal','200–500 mm dari outlet'],['Orientasi','Vertikal ke bawah dari outlet'],['Sambungan Atas','Sesuai material pipa ke outlet adaptor'],['Sambungan Bawah','Ke tee/elbow collecting pipe']],
     tips:['Panjang tail pipe harus seragam untuk semua outlet dalam satu sistem','Pastikan sambungan ke outlet rapat dan bebas kebocoran udara','Gunakan solvent cement PVC yang sesuai standar — jangan lem biasa','Tail pipe terlalu panjang akan menambah head loss berlebih','Support/klem tail pipe di titik dekat sambungan atas dan bawah']},
 
   'collecting-pipe':{name:'Collecting Pipe (Horizontal)',code:'CLP-01',icon:'➡️',bg:'#0a2030',ac:'#00acc1',
     desc:'Pipa horizontal yang mengumpulkan air dari beberapa roof outlet menuju downpipe. Keunggulan utama siphonic: collecting pipe dipasang TANPA KEMIRINGAN (level/datar), memberikan fleksibilitas routing dan penghematan ruang ceiling.',
-    specs:[['Material','PVC JIS AW (Rucika)'],['Diameter','DN50 – DN150 (tergantung debit)'],['Kemiringan','TANPA SLOPE — 100% horizontal'],['Kecepatan Aliran','1.0 – 6.0 m/s (full-bore)'],['Self-Cleaning','Otomatis pada v ≥ 1.0 m/s'],['Panjang Maks','Sesuai perhitungan head loss']],
-    tips:['JANGAN beri kemiringan — collecting pipe HARUS dipasang datar (level)','Gunakan waterpass/laser level untuk memastikan kerataan instalasi','Semua sambungan HARUS kedap udara — kebocoran udara akan merusak efek siphonic','Support bracket setiap 1.0–1.5 m sesuai diameter pipa','Perhatikan ekspansi termal PVC: tambahkan expansion coupling tiap 6 m']},
+    specs:[['Material','PVC JIS VP/AW PN 10 / HDPE PN 10 / HDPE PN 8'],['Diameter','DN50 – DN150 (tergantung debit)'],['Kemiringan','TANPA SLOPE — 100% horizontal'],['Kecepatan Aliran','1.0 – 6.0 m/s (full-bore)'],['Self-Cleaning','Otomatis pada v ≥ 1.0 m/s'],['Panjang Maks','Sesuai perhitungan head loss']],
+    tips:['JANGAN beri kemiringan — collecting pipe HARUS dipasang datar (level)','Gunakan waterpass/laser level untuk memastikan kerataan instalasi','Semua sambungan HARUS kedap udara — kebocoran udara akan merusak efek siphonic','Support bracket setiap 1.0–1.5 m sesuai diameter pipa','Perhatikan ekspansi termal pipa: tambahkan expansion coupling jika diperlukan']},
 
   'downpipe':{name:'Downpipe (Vertikal)',code:'DWP-01',icon:'⬇️',bg:'#041a28',ac:'#0288d1',
     desc:'Pipa vertikal yang membawa air dari collecting pipe turun ke titik pembuangan di ground level. Tinggi downpipe menciptakan hydraulic head yang menjadi driving force utama efek siphonic.',
-    specs:[['Material','PVC JIS AW (Rucika)'],['Diameter','DN75 – DN150'],['Kecepatan Aliran','2.2 – 6.0 m/s'],['Hydraulic Head','= Tinggi bangunan (driving force)'],['Support','Clamp bracket tiap 2.0 m'],['Sambungan Bawah','Transition ke gravity drainage']],
+    specs:[['Material','PVC JIS VP/AW PN 10 / HDPE PN 10 / HDPE PN 8'],['Diameter','DN75 – DN150'],['Kecepatan Aliran','2.2 – 6.0 m/s'],['Hydraulic Head','= Tinggi bangunan (driving force)'],['Support','Clamp bracket tiap 2.0 m'],['Sambungan Bawah','Transition ke gravity drainage']],
     tips:['Downpipe adalah sumber hydraulic head — tinggi bangunan = kapasitas sistem','Pasang fire collar di setiap penetrasi lantai (floor slab)','Support clamp di setiap 2.0 m dan di dekat setiap sambungan','Pastikan jalur downpipe lurus vertikal — hindari offset jika mungkin','Jika perlu offset, hitung tambahan head loss dan sesuaikan desain']},
 
   'transition-fitting':{name:'Transition Fitting (Siphonic → Gravity)',code:'TRF-01',icon:'🔀',bg:'#0c1e30',ac:'#039be5',
     desc:'Fitting transisi yang menghubungkan sistem siphonic (full-bore, bertekanan negatif) ke sistem drainase gravity konvensional. Biasanya berupa reducer atau tee khusus yang memungkinkan udara masuk untuk memutus efek siphonic.',
     specs:[['Fungsi','Break siphonic → open-channel gravity flow'],['Tipe','Reducer / Atmospheric break'],['Lokasi','Bagian bawah downpipe, sebelum ground drain'],['Material','PVC JIS / Cast Iron'],['Desain','Pembesaran diameter + ventilasi udara'],['Standar','BS 8490 Clause 6.4']],
-    tips:['Transition WAJIB dipasang sebelum air masuk ke sistem gravity konvensional','Jangan sambung langsung downpipe siphonic ke pipa drainase tanah','Pastikan ada atmospheric break untuk mencegah siphonic effect menjalar','Lokasi transisi harus mudah diakses untuk inspeksi','Desain transisi mengacu pada rekomendasi produsen (Rucika)']},
+    tips:['Transition WAJIB dipasang sebelum air masuk ke sistem gravity konvensional','Jangan sambung langsung downpipe siphonic ke pipa drainase tanah','Pastikan ada atmospheric break untuk mencegah siphonic effect menjalar','Lokasi transisi harus mudah diakses untuk inspeksi','Desain transisi mengacu pada rekomendasi produsen']},
 
   'clamp-bracket':{name:'Clamp & Bracket Support',code:'CLB-01',icon:'🔩',bg:'#101828',ac:'#546e7a',
     desc:'Sistem penopang pipa yang menjaga posisi dan alignment collecting pipe dan downpipe. Kualitas support sangat menentukan performa jangka panjang karena pipa harus tetap rata (untuk collecting pipe) dan lurus (untuk downpipe).',
@@ -41,10 +41,10 @@ const siphonicCompData = {
     specs:[['Fungsi','Backup drainage saat siphonic overloaded'],['Prinsip','Gravity flow konvensional'],['Kapasitas','Min. 50% kapasitas sistem primer'],['Tipe','Scupper, side outlet, atau gravity drain'],['Elevasi','Lebih tinggi dari siphonic outlet'],['Standar','BS 8490 Clause 7 — mandatory']],
     tips:['Overflow bukan opsional — WAJIB ada sesuai BS 8490','Elevasi overflow harus lebih tinggi dari outlet siphonic (10–25 mm)','Kapasitas overflow minimal 50% dari kapasitas siphonic primer','Pastikan overflow terhubung ke sistem drainase terpisah dari siphonic','Inspeksi overflow berkala — jangan sampai tersumbat saat dibutuhkan']},
 
-  'pipe-material':{name:'Material Pipa PVC JIS',code:'PVC-JIS',icon:'🔵',bg:'#061830',ac:'#1565c0',
-    desc:'Pipa PVC JIS VP/AW produksi Rucika yang digunakan untuk seluruh jalur perpipaan siphonic (tail pipe, collecting pipe, downpipe). Dipilih karena permukaan dalam yang halus (low roughness), ringan, tahan korosi, dan mudah diinstalasi dengan solvent cement.',
-    specs:[['Produk','Rucika JIS VP / AW'],['Material','uPVC (Unplasticized PVC)'],['Standar','JIS K 6741'],['Roughness (k)','0.007 mm (sangat halus)'],['Tekanan Kerja','VP: 10 kgf/cm² / AW: 6 kgf/cm²'],['Diameter','DN40 – DN200']],
-    tips:['Gunakan HANYA solvent cement yang sesuai standar JIS — bukan lem PVC biasa','Bersihkan dan prime permukaan pipa sebelum aplikasi solvent cement','Biarkan sambungan curing minimal 24 jam sebelum uji tekan','Simpan pipa di tempat teduh — PVC degradasi jika terpapar UV langsung','Potong pipa tegak lurus menggunakan pipe cutter, BUKAN gergaji']},
+  'pipe-material':{name:'Material Pipa Siphonic',code:'PIP-SF',icon:'🔵',bg:'#061830',ac:'#1565c0',
+    desc:'Material perpipaan yang digunakan untuk jalur siphonic (tail pipe, collecting pipe, downpipe). Dipilih material yang kuat menahan tekanan negatif (vakum) dan memiliki permukaan dalam yang halus (low roughness) untuk efisiensi aliran.',
+    specs:[['Material 1','PVC JIS VP/AW PN 10'],['Material 2','HDPE PN 10'],['Material 3','HDPE PN 8'],['Tekanan Kerja','Mampu menahan tekanan negatif siphonic'],['Sambungan PVC','Solvent cement grade JIS'],['Sambungan HDPE','Butt fusion / Electrofusion']],
+    tips:['Untuk HDPE, pastikan metode penyambungan fusion dilakukan dengan sempurna untuk mencegah kebocoran udara','PVC JIS memiliki k (roughness) yang lebih rendah, namun HDPE lebih tahan terhadap benturan','Pilih material yang konsisten untuk seluruh jaringan utama','Gunakan fitting transisi yang tepat jika menghubungkan material berbeda']},
 
   'discharge-point':{name:'Discharge Point / Outlet',code:'DSC-01',icon:'🏁',bg:'#0a1a10',ac:'#2e7d32',
     desc:'Titik pembuangan akhir air hujan dari sistem siphonic ke saluran drainase gedung, saluran kota, atau bak kontrol. Desain discharge harus mencegah backflow dan memungkinkan inspeksi.',
@@ -57,10 +57,10 @@ const siphonicGuideData=[
    detail:'Tahap desain adalah fondasi sistem siphonic. Perhitungan hidraulik yang salah akan membuat sistem gagal berfungsi. Sistem siphonic memerlukan analisis yang jauh lebih presisi dibanding gravity drain konvensional.',
    checks:['Ukur luas total catchment area atap yang akan didrainase','Tentukan intensitas hujan desain (mm/jam) berdasarkan data BMG lokal','Identifikasi lokasi dan jumlah titik roof outlet siphonic','Tentukan routing collecting pipe dan posisi downpipe','Hitung debit air hujan: Q = C × I × A / 3600 (L/s)','Lakukan perhitungan head loss menggunakan software siphonic','Pastikan available head (tinggi bangunan) > total head loss','Verifikasi desain oleh engineer berpengalaman siphonic system'],
    warn:'Desain siphonic WAJIB menggunakan software hidraulik khusus. Rule-of-thumb gravity drain TIDAK berlaku untuk siphonic.'},
-  {n:2,title:'Persiapan Material & Quality Control',sub:'Pengadaan produk Rucika Syfon System, verifikasi kualitas',
-   detail:'Semua komponen siphonic harus dari satu produsen (Rucika Syfon System) untuk menjamin kompatibilitas. Material substitusi atau campuran merek tidak diperbolehkan.',
-   checks:['Roof outlet siphonic Rucika — sesuai ukuran desain','Pipa PVC JIS VP/AW Rucika — diameter sesuai perhitungan','Fitting PVC JIS: tee, elbow, reducer — sesuai routing','Solvent cement JIS grade dan primer/cleaner','Clamp & bracket stainless steel — cukup untuk seluruh jalur','Transition fitting siphonic ke gravity','Sealant waterproofing untuk penetrasi atap','Verifikasi sertifikat produk dan kesesuaian dengan BQ'],
-   warn:'JANGAN campur komponen dari produsen berbeda. Sistem siphonic hanya berfungsi optimal jika semua komponen kompatibel.'},
+  {n:2,title:'Persiapan Material & Quality Control',sub:'Pengadaan komponen siphonic, verifikasi kualitas',
+   detail:'Semua komponen siphonic harus kompatibel untuk menjamin performa sistem. Material substitusi atau campuran merek yang tidak direkomendasikan tidak diperbolehkan.',
+   checks:['Roof outlet siphonic — sesuai ukuran desain','Pipa (PVC JIS VP/AW PN 10 / HDPE PN 10 / HDPE PN 8) — diameter sesuai perhitungan','Fitting — sesuai material dan routing','Metode sambungan (Solvent cement / Fusion) — siapkan peralatan','Clamp & bracket stainless steel — cukup untuk seluruh jalur','Transition fitting siphonic ke gravity','Sealant waterproofing untuk penetrasi atap','Verifikasi sertifikat produk dan kesesuaian dengan BQ'],
+   warn:'JANGAN campur komponen tanpa verifikasi. Sistem siphonic hanya berfungsi optimal jika semua komponen kompatibel dan terinstal sempurna.'},
   {n:3,title:'Pemasangan Roof Outlet di Atap',sub:'Instalasi outlet siphonic, integrasi waterproofing, dan leaf guard',
    detail:'Pemasangan outlet adalah pekerjaan paling kritis. Outlet harus level, kedap air terhadap membran waterproofing, dan posisi anti-vortex plate harus benar.',
    checks:['Buat bukaan di slab atap sesuai ukuran outlet','Pasang outlet body ke slab dengan flange clamp','Integrasikan collar outlet dengan membran waterproofing atap','Pastikan outlet terpasang LEVEL — gunakan waterpass presisi','Pasang anti-vortex plate/air baffle ke dalam body outlet','Pasang leaf guard dome (stainless steel)','Uji kebocoran di sekeliling outlet — siram air dan amati','Verifikasi elevasi outlet sesuai desain (relative to finished roof level)'],
