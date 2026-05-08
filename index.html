@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panduan Sistem Perpipaan Interaktif</title>
-  <meta name="description" content="Panduan interaktif sistem perpipaan bangunan, tambang, dan jaringan distribusi air. Visualisasi komponen, panduan instalasi, dan kalkulator teknis.">
+  <meta name="description" content="Panduan interaktif sistem perpipaan bangunan, tambang, jaringan distribusi air, dan drainase atap siphonic. Visualisasi komponen, panduan instalasi, dan kalkulator teknis.">
   <link rel="stylesheet" href="style.css?v=3">
 </head>
 
@@ -42,6 +42,13 @@
       <div>
         <div class="sys-label">Distribusi Air</div>
         <div class="sys-desc">Jaringan transmisi & distribusi</div>
+      </div>
+    </div>
+    <div class="sys-btn sys-siphonic" onclick="switchSystem('siphonic')" id="sys-siphonic">
+      <div class="sys-icon">🌧️</div>
+      <div>
+        <div class="sys-label">Drainase Atap</div>
+        <div class="sys-desc">Siphonic roof drain system</div>
       </div>
     </div>
     <div class="sys-btn sys-eng" onclick="switchToEngTools()" id="sys-engineering">
@@ -187,6 +194,7 @@
   <script src="data-bangunan.js?v=3"></script>
   <script src="data-tambang.js?v=3"></script>
   <script src="data-distribusi.js?v=3"></script>
+  <script src="data-siphonic.js?v=1"></script>
   <script src="svg-generators.js?v=3"></script>
   <script src="calculators.js?v=3"></script>
   <script src="calc-fusion.js?v=4"></script>

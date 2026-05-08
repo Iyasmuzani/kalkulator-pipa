@@ -99,6 +99,7 @@ body{
 [data-system="bangunan"] { --sys-accent:#00d4ff; --sys-accent-rgb:0,212,255; }
 [data-system="tambang"]  { --sys-accent:#ff8c42; --sys-accent-rgb:255,140,66; }
 [data-system="distribusi"]{ --sys-accent:#6dd5ed; --sys-accent-rgb:109,213,237; }
+[data-system="siphonic"]  { --sys-accent:#00bcd4; --sys-accent-rgb:0,188,212; }
 
 /* TABS */
 .tabs{
@@ -407,6 +408,12 @@ select.form-control option{background:var(--bg2)}
 .sys-eng{border-color:rgba(0,229,255,.25)!important}
 .sys-eng.active{background:rgba(0,229,255,.12)!important;border-color:rgba(0,229,255,.5)!important}
 .sys-eng .sys-label{color:#00e5ff!important}
+.sys-siphonic{border-color:rgba(0,188,212,.25)!important}
+.sys-siphonic.active{background:rgba(0,188,212,.12)!important;border-color:rgba(0,188,212,.5)!important}
+.sys-siphonic .sys-label{color:#00bcd4!important}
+.sys-lib{border-color:rgba(170,102,255,.25)!important}
+.sys-lib.active{background:rgba(170,102,255,.12)!important;border-color:rgba(170,102,255,.5)!important}
+.sys-lib .sys-label{color:#aa66ff!important}
 .eng-panel{padding:0 1.5rem 2rem}
 .eng-subtabs{display:flex;gap:6px;padding:1rem 0;overflow-x:auto;flex-wrap:wrap}
 .eng-tab{background:var(--bg3);border:1px solid rgba(0,229,255,.12);color:var(--text2);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:12px;white-space:nowrap;transition:all .2s}

@@ -2,6 +2,7 @@ function buildSVG(){
   const w=document.getElementById('viz-svg-wrap');
   if(currentSystem==='bangunan') w.innerHTML=svgBangunan();
   else if(currentSystem==='tambang') w.innerHTML=svgTambang();
+  else if(currentSystem==='siphonic') w.innerHTML=svgSiphonic();
   else w.innerHTML=svgDistribusi();
 }
 function svgBangunan(){
@@ -152,4 +153,65 @@ ${[200,280,360].map(y=>[260,300,340,380,420].map(x=>`<rect x="${x-3}" y="${y+15}
 <line x1="8" y1="42" x2="35" y2="42" stroke="#6677dd" stroke-width="2.5"/><text x="41" y="45" fill="#7a9ab8" font-size="7" font-family="monospace">Pipa distribusi</text>
 <line x1="8" y1="56" x2="35" y2="56" stroke="#00cc66" stroke-width="2"/><text x="41" y="59" fill="#7a9ab8" font-size="7" font-family="monospace">Discharge pompa</text>
 </g>
+</svg>`;}
+
+function svgSiphonic(){
+return `<svg viewBox="0 0 620 560" width="100%" style="max-height:540px">
+<defs><pattern id="sp" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0L0 0 0 20" fill="none" stroke="rgba(0,188,212,0.1)" stroke-width=".5"/></pattern>
+<linearGradient id="roofG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="rgba(0,188,212,.08)"/><stop offset="1" stop-color="rgba(0,100,130,.15)"/></linearGradient></defs>
+<rect width="620" height="560" fill="url(#sp)"/>
+${[80,160,240,320,400,480,560].map(x=>`<line x1="${x}" y1="5" x2="${x-8}" y2="28" stroke="rgba(0,188,212,.12)" stroke-width="1.5"/>`).join('')}
+<text x="310" y="18" text-anchor="middle" fill="rgba(0,188,212,.22)" font-size="8" font-family="monospace">▼ ▼ ▼  CURAH HUJAN DESAIN  ▼ ▼ ▼</text>
+<rect x="60" y="45" width="500" height="430" fill="none" stroke="rgba(0,188,212,.18)" stroke-width="1.5" rx="3"/>
+<text x="22" y="60" fill="rgba(0,188,212,.25)" font-size="8" font-family="monospace">ATAP</text>
+<text x="22" y="168" fill="rgba(0,188,212,.18)" font-size="8" font-family="monospace">CEIL</text>
+<text x="22" y="395" fill="rgba(0,188,212,.18)" font-size="8" font-family="monospace">GND</text>
+<rect x="60" y="45" width="500" height="20" fill="url(#roofG)" stroke="rgba(0,188,212,.22)"/>
+<text x="310" y="58" text-anchor="middle" fill="rgba(0,188,212,.35)" font-size="8" font-family="monospace">FLAT ROOF — CATCHMENT AREA</text>
+<line x1="100" y1="38" x2="520" y2="38" stroke="rgba(0,188,212,.12)" stroke-width="1"/><line x1="100" y1="35" x2="100" y2="41" stroke="rgba(0,188,212,.12)"/><line x1="520" y1="35" x2="520" y2="41" stroke="rgba(0,188,212,.12)"/>
+<text x="310" y="36" text-anchor="middle" fill="rgba(0,188,212,.18)" font-size="6.5" font-family="monospace">LUAS ATAP (A m²)</text>
+<line x1="60" y1="170" x2="560" y2="170" stroke="rgba(0,188,212,.08)" stroke-dasharray="6,4"/>
+<line x1="60" y1="400" x2="560" y2="400" stroke="rgba(0,188,212,.12)" stroke-width="1.5"/>
+<text x="570" y="404" fill="rgba(0,188,212,.18)" font-size="7" font-family="monospace">GL±0</text>
+<line x1="150" y1="140" x2="450" y2="140" stroke="#00acc1" stroke-width="4.5" opacity=".3"/>
+<line x1="150" y1="140" x2="450" y2="140" stroke="#00acc1" stroke-width="2.5" opacity=".75"/>
+<text x="300" y="133" text-anchor="middle" fill="rgba(0,172,193,.4)" font-size="7" font-family="monospace">COLLECTING PIPE — NO SLOPE (LEVEL)</text>
+<line x1="180" y1="65" x2="180" y2="140" stroke="#0097a7" stroke-width="2.5" opacity=".65"/>
+<line x1="310" y1="65" x2="310" y2="140" stroke="#0097a7" stroke-width="2.5" opacity=".65"/>
+<line x1="440" y1="65" x2="440" y2="140" stroke="#0097a7" stroke-width="2.5" opacity=".65"/>
+<line x1="450" y1="140" x2="450" y2="375" stroke="#0288d1" stroke-width="4.5" opacity=".25"/>
+<line x1="450" y1="140" x2="450" y2="375" stroke="#0288d1" stroke-width="2.8" opacity=".75"/>
+<text x="468" y="265" fill="#0288d1" font-size="7" font-family="monospace" transform="rotate(90,468,265)">DOWNPIPE — HYDRAULIC HEAD</text>
+<line x1="490" y1="145" x2="490" y2="370" stroke="rgba(2,136,209,.15)" stroke-width="1"/>
+<line x1="487" y1="145" x2="493" y2="145" stroke="rgba(2,136,209,.15)"/><line x1="487" y1="370" x2="493" y2="370" stroke="rgba(2,136,209,.15)"/>
+<text x="500" y="260" fill="rgba(2,136,209,.2)" font-size="6" font-family="monospace" transform="rotate(90,500,260)">H (m)</text>
+<line x1="450" y1="375" x2="450" y2="400" stroke="#039be5" stroke-width="3.5" opacity=".45"/>
+<line x1="450" y1="400" x2="530" y2="400" stroke="#2e7d32" stroke-width="2.5" opacity=".55"/>
+<line x1="530" y1="400" x2="530" y2="430" stroke="#2e7d32" stroke-width="2.5" opacity=".35" stroke-dasharray="4,3"/>
+<line x1="100" y1="72" x2="100" y2="400" stroke="rgba(255,143,0,.25)" stroke-width="2" stroke-dasharray="5,4"/>
+<text x="88" y="240" fill="rgba(255,143,0,.2)" font-size="7" font-family="monospace" transform="rotate(90,88,240)">OVERFLOW (GRAVITY)</text>
+${[200,240,280,350,390,430].map(x=>`<line x1="${x}" y1="136" x2="${x}" y2="144" stroke="rgba(84,110,122,.35)" stroke-width="1.5"/>`).join('')}
+${[190,240,290,340].map(y=>`<line x1="446" y1="${y}" x2="454" y2="${y}" stroke="rgba(84,110,122,.35)" stroke-width="1.5"/>`).join('')}
+<g class="hotspot" id="hp-siphonic-outlet" onclick="selectComp('siphonic-outlet')"><rect x="160" y="43" width="40" height="24" rx="3" fill="#041828" stroke="#00bcd4" stroke-width="1.5"/><circle cx="180" cy="52" r="5.5" fill="rgba(0,188,212,.08)" stroke="#00bcd4" stroke-width="1"/><text x="180" y="61" text-anchor="middle" fill="#00bcd4" font-size="5.5" font-family="monospace">RD-01</text></g>
+<g class="hotspot" onclick="selectComp('siphonic-outlet')"><rect x="290" y="43" width="40" height="24" rx="3" fill="#041828" stroke="#00bcd4" stroke-width="1.5"/><circle cx="310" cy="52" r="5.5" fill="rgba(0,188,212,.08)" stroke="#00bcd4" stroke-width="1"/><text x="310" y="61" text-anchor="middle" fill="#00bcd4" font-size="5.5" font-family="monospace">RD-02</text></g>
+<g class="hotspot" onclick="selectComp('siphonic-outlet')"><rect x="420" y="43" width="40" height="24" rx="3" fill="#041828" stroke="#00bcd4" stroke-width="1.5"/><circle cx="440" cy="52" r="5.5" fill="rgba(0,188,212,.08)" stroke="#00bcd4" stroke-width="1"/><text x="440" y="61" text-anchor="middle" fill="#00bcd4" font-size="5.5" font-family="monospace">RD-03</text></g>
+<g class="hotspot" id="hp-anti-vortex" onclick="selectComp('anti-vortex')"><circle cx="310" cy="52" r="3.5" fill="#0a1a2a" stroke="#26c6da" stroke-width="1.2"/><text x="310" y="77" text-anchor="middle" fill="#26c6da" font-size="5.5" font-family="monospace">AVP</text></g>
+<g class="hotspot" id="hp-tail-pipe" onclick="selectComp('tail-pipe')"><rect x="173" y="85" width="14" height="30" rx="2" fill="#071520" stroke="#0097a7" stroke-width="1.2"/><text x="180" y="125" text-anchor="middle" fill="#0097a7" font-size="6" font-family="monospace">TAIL</text></g>
+<g class="hotspot" id="hp-collecting-pipe" onclick="selectComp('collecting-pipe')"><rect x="220" y="134" width="80" height="12" rx="3" fill="#0a2030" stroke="#00acc1" stroke-width="1.2"/><text x="260" y="143" text-anchor="middle" fill="#00acc1" font-size="6" font-family="monospace">COLLECTING</text></g>
+<g class="hotspot" id="hp-downpipe" onclick="selectComp('downpipe')"><rect x="443" y="210" width="14" height="55" rx="2" fill="#041a28" stroke="#0288d1" stroke-width="1.5"/><text x="450" y="285" text-anchor="middle" fill="#0288d1" font-size="6.5" font-family="monospace">DOWN</text></g>
+<g class="hotspot" id="hp-transition-fitting" onclick="selectComp('transition-fitting')"><rect x="438" y="368" width="24" height="18" rx="3" fill="#0c1e30" stroke="#039be5" stroke-width="1.5"/><text x="450" y="380" text-anchor="middle" fill="#039be5" font-size="5.5" font-family="monospace">TRF</text></g>
+<g class="hotspot" id="hp-clamp-bracket" onclick="selectComp('clamp-bracket')"><rect x="335" y="130" width="18" height="20" rx="2" fill="#101828" stroke="#546e7a" stroke-width="1.2"/><text x="344" y="143" text-anchor="middle" fill="#546e7a" font-size="6" font-family="monospace">🔩</text><text x="344" y="160" text-anchor="middle" fill="#546e7a" font-size="5.5" font-family="monospace">CLAMP</text></g>
+<g class="hotspot" id="hp-overflow-system" onclick="selectComp('overflow-system')"><rect x="80" y="50" width="38" height="20" rx="3" fill="#1a1008" stroke="#ff8f00" stroke-width="1.5"/><text x="99" y="63" text-anchor="middle" fill="#ff8f00" font-size="6" font-family="monospace">OVF</text></g>
+<g class="hotspot" id="hp-pipe-material" onclick="selectComp('pipe-material')"><rect x="290" y="182" width="60" height="16" rx="3" fill="#061830" stroke="#1565c0" stroke-width="1.2"/><text x="320" y="193" text-anchor="middle" fill="#1565c0" font-size="6.5" font-family="monospace">PVC JIS</text></g>
+<g class="hotspot" id="hp-discharge-point" onclick="selectComp('discharge-point')"><rect x="510" y="408" width="42" height="26" rx="4" fill="#0a1a10" stroke="#2e7d32" stroke-width="1.5"/><text x="531" y="421" text-anchor="middle" fill="#2e7d32" font-size="7" font-family="monospace" font-weight="bold">DSC</text><text x="531" y="430" text-anchor="middle" fill="rgba(46,125,50,.5)" font-size="5" font-family="monospace">OUTLET</text></g>
+<g transform="translate(60,450)"><rect x="0" y="0" width="210" height="90" rx="5" fill="rgba(6,14,26,.92)" stroke="rgba(0,188,212,.18)"/>
+<text x="105" y="14" text-anchor="middle" fill="rgba(0,188,212,.45)" font-size="8" font-family="monospace">LEGENDA — SIPHONIC SYSTEM</text>
+<line x1="8" y1="28" x2="30" y2="28" stroke="#00bcd4" stroke-width="2.5"/><text x="36" y="31" fill="#7a9ab8" font-size="7" font-family="monospace">Roof outlet siphonic</text>
+<line x1="8" y1="42" x2="30" y2="42" stroke="#0097a7" stroke-width="2"/><text x="36" y="45" fill="#7a9ab8" font-size="7" font-family="monospace">Tail pipe</text>
+<line x1="8" y1="56" x2="30" y2="56" stroke="#00acc1" stroke-width="2.5"/><text x="36" y="59" fill="#7a9ab8" font-size="7" font-family="monospace">Collecting pipe (no slope)</text>
+<line x1="8" y1="70" x2="30" y2="70" stroke="#0288d1" stroke-width="3"/><text x="36" y="73" fill="#7a9ab8" font-size="7" font-family="monospace">Downpipe · Discharge</text>
+<line x1="8" y1="84" x2="30" y2="84" stroke="#ff8f00" stroke-width="1.5" stroke-dasharray="4,3"/><text x="36" y="87" fill="#7a9ab8" font-size="7" font-family="monospace">Overflow (gravity backup)</text>
+</g>
+<text x="555" y="525" text-anchor="end" fill="rgba(0,188,212,.18)" font-size="8" font-family="monospace" font-weight="bold">Rucika Syfon System</text>
+<text x="555" y="535" text-anchor="end" fill="rgba(0,188,212,.1)" font-size="6.5" font-family="monospace">BS 8490 · EN 1253-2</text>
 </svg>`;}

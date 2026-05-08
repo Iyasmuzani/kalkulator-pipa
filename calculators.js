@@ -2,6 +2,7 @@
 function buildCalcForm() {
   if (currentSystem === 'bangunan') buildCalcBangunan();
   else if (currentSystem === 'tambang') buildCalcTambang();
+  else if (currentSystem === 'siphonic') buildCalcSiphonic();
   else buildCalcDistribusi();
 }
 
@@ -219,4 +220,124 @@ function calcDistribusi() {
   <div class="result-item"><div class="rk">Air Valve</div><div class="rv">~${nAV}<span class="ru"> unit</span></div></div>
   <div class="result-item"><div class="rk">Hidran</div><div class="rv">~${nHyd}<span class="ru"> unit</span></div></div>
   <div class="result-item"><div class="rk">Bulk Meter</div><div class="rv">${nDMA}<span class="ru"> unit</span></div></div></div></div>`;
+}
+
+// ==================== SIPHONIC ROOF DRAIN CALCULATOR ====================
+function buildCalcSiphonic() {
+  document.getElementById('calc-form').innerHTML = `
+  <div class="form-title">🌧️ Data Siphonic Roof Drain <span style="font-size:10px;color:var(--text2);font-weight:400">(BS 8490 · Preliminary)</span></div>
+  <div style="background:rgba(255,170,0,.08);border:1px solid rgba(255,170,0,.2);border-radius:7px;padding:8px 10px;margin-bottom:12px;font-size:10px;color:#ffd080;line-height:1.6">
+    ⚠️ <strong>Preliminary sizing only.</strong> Desain final siphonic WAJIB menggunakan software hidraulik khusus produsen (Rucika Syfon System).
+  </div>
+  <div class="form-group"><label class="form-label">Luas Catchment Atap (m²)</label><input type="number" class="form-control" id="sf-area" min="50" max="50000" value="1000"></div>
+  <div class="form-group"><label class="form-label">Intensitas Hujan Desain (mm/jam)</label>
+  <select class="form-control" id="sf-rain">
+    <option value="150">150 mm/jam — Indonesia Barat (umum)</option>
+    <option value="175">175 mm/jam — Indonesia Tengah</option>
+    <option value="200" selected>200 mm/jam — Indonesia Timur / kritis</option>
+    <option value="250">250 mm/jam — Ekstrem / safety factor tinggi</option>
+    <option value="custom">Custom (isi manual)</option>
+  </select></div>
+  <div class="form-group" id="sf-rain-custom-wrap" style="display:none"><label class="form-label">Intensitas Custom (mm/jam)</label><input type="number" class="form-control" id="sf-rain-custom" min="50" max="500" value="200"></div>
+  <div class="form-group"><label class="form-label">Tinggi Bangunan / Available Head (m)</label><input type="number" class="form-control" id="sf-height" min="3" max="100" step="0.5" value="15"></div>
+  <div class="form-group"><label class="form-label">Jumlah Titik Roof Outlet</label><input type="number" class="form-control" id="sf-outlets" min="2" max="50" value="4"></div>
+  <div class="form-group"><label class="form-label">Material Pipa</label>
+  <select class="form-control" id="sf-pipe">
+    <option value="aw">PVC JIS AW (Rucika) — PN 6</option>
+    <option value="vp">PVC JIS VP (Rucika) — PN 10</option>
+  </select></div>
+  <div class="form-group"><label class="form-label">Panjang Collecting Pipe (m)</label><input type="number" class="form-control" id="sf-colLen" min="5" max="100" step="1" value="30"></div>
+  <button class="calc-btn" onclick="calcSiphonic()">⚡ Hitung Preliminary Sizing</button>`;
+  document.getElementById('sf-rain').addEventListener('change', function(){
+    document.getElementById('sf-rain-custom-wrap').style.display = this.value === 'custom' ? 'block' : 'none';
+  });
+}
+
+function calcSiphonic() {
+  var A = V('sf-area');
+  var rainSel = R('sf-rain').value;
+  var I = rainSel === 'custom' ? V('sf-rain-custom') : parseFloat(rainSel);
+  var H = V('sf-height'), nOut = V('sf-outlets'), colLen = V('sf-colLen');
+  var pipeType = R('sf-pipe').value;
+
+  // Runoff coefficient C=1.0 for impervious roof
+  var C = 1.0;
+  // Q = C × I × A / 3600 (L/s)
+  var Qtotal = C * I * A / 3600;
+  var Qperout = Qtotal / nOut;
+  var Qm3s = Qtotal / 1000;
+
+  // Siphonic target velocity: 3.0 m/s for collecting, 4.0 m/s for downpipe
+  var vCol = 3.0, vDown = 4.0;
+
+  // Collecting pipe diameter: D = sqrt(4Q / πv) × 1000
+  var DcolCalc = Math.sqrt(4 * Qm3s / (Math.PI * vCol)) * 1000;
+  // Downpipe diameter
+  var DdnCalc = Math.sqrt(4 * Qm3s / (Math.PI * vDown)) * 1000;
+
+  // PVC JIS standard sizes (OD mm) and ID approximation
+  var pvcSizes = pipeType === 'aw'
+    ? [40, 50, 65, 75, 100, 125, 150, 200, 250, 300]
+    : [40, 50, 65, 75, 100, 125, 150, 200, 250, 300];
+  var idRatio = pipeType === 'aw' ? 0.92 : 0.88; // AW thinner wall
+
+  var DcolOD = pvcSizes.find(s => s * idRatio >= DcolCalc) || pvcSizes[pvcSizes.length - 1];
+  var DdnOD = pvcSizes.find(s => s * idRatio >= DdnCalc) || pvcSizes[pvcSizes.length - 1];
+  var DcolID = DcolOD * idRatio;
+  var DdnID = DdnOD * idRatio;
+
+  // Actual velocities
+  var vColAct = (4 * Qm3s / (Math.PI * Math.pow(DcolID / 1000, 2))).toFixed(2);
+  var vDnAct = (4 * Qm3s / (Math.PI * Math.pow(DdnID / 1000, 2))).toFixed(2);
+
+  // Head loss estimation (simplified Darcy-Weisbach)
+  // f ≈ 0.02 for PVC (smooth pipe), k = 0.007mm
+  var f = 0.02;
+  var hfCol = f * (colLen / (DcolID / 1000)) * Math.pow(parseFloat(vColAct), 2) / (2 * 9.81);
+  var hfDown = f * (H / (DdnID / 1000)) * Math.pow(parseFloat(vDnAct), 2) / (2 * 9.81);
+  // Minor losses: ~30% of friction losses for siphonic systems
+  var hMinor = (hfCol + hfDown) * 0.3;
+  // Outlet loss: ~0.5 m per outlet head loss (typical siphonic outlet)
+  var hOutlet = 0.5;
+  var hTotal = hfCol + hfDown + hMinor + hOutlet;
+  var headOK = H > hTotal;
+  var headMargin = H - hTotal;
+
+  // Velocity checks
+  var vColWarn = parseFloat(vColAct) < 1.0 || parseFloat(vColAct) > 6.0;
+  var vDnWarn = parseFloat(vDnAct) < 2.2 || parseFloat(vDnAct) > 6.0;
+
+  // Number of downpipes recommendation
+  var nDown = Qtotal > 25 ? Math.ceil(Qtotal / 25) : 1;
+  // Max area per outlet (typical: 200-350 m² per outlet)
+  var areaPerOut = A / nOut;
+  var outletWarn = areaPerOut > 350;
+
+  var pipeName = pipeType === 'aw' ? 'PVC JIS AW (Rucika)' : 'PVC JIS VP (Rucika)';
+
+  R('rec-results').innerHTML = `
+  <div class="result-sec"><div class="result-sec-title">🌧️ Debit Air Hujan — ${A.toLocaleString()} m² atap</div><div class="result-grid">
+  <div class="result-item"><div class="rk">Debit Total (Q)</div><div class="rv">${Qtotal.toFixed(2)}<span class="ru"> L/s</span></div></div>
+  <div class="result-item"><div class="rk">Debit per Outlet</div><div class="rv">${Qperout.toFixed(2)}<span class="ru"> L/s</span></div></div>
+  <div class="result-item"><div class="rk">Intensitas Hujan</div><div class="rv">${I}<span class="ru"> mm/jam</span></div></div>
+  <div class="result-item"><div class="rk">Jumlah Outlet</div><div class="rv">${nOut}<span class="ru"> titik</span></div></div></div></div>
+
+  <div class="result-sec"><div class="result-sec-title">🔧 Dimensi Pipa Siphonic</div><div class="result-grid">
+  <div class="result-item"><div class="rk">Collecting Pipe</div><div class="rv">OD${DcolOD}<span class="ru"> mm ${pipeName.split(' ')[0]}</span></div></div>
+  <div class="result-item"><div class="rk">Downpipe</div><div class="rv">OD${DdnOD}<span class="ru"> mm ${pipeName.split(' ')[0]}</span></div></div>
+  <div class="result-item"><div class="rk">V. Collecting</div><div class="rv" style="color:${vColWarn?'#ff5555':'var(--sys-accent)'}">${vColAct}<span class="ru"> m/s ${vColWarn?'⚠️':''}</span></div></div>
+  <div class="result-item"><div class="rk">V. Downpipe</div><div class="rv" style="color:${vDnWarn?'#ff5555':'var(--sys-accent)'}">${vDnAct}<span class="ru"> m/s ${vDnWarn?'⚠️':''}</span></div></div></div></div>
+
+  <div class="result-sec"><div class="result-sec-title">📐 Head Loss Check</div><div class="result-grid">
+  <div class="result-item"><div class="rk">Available Head</div><div class="rv">${H}<span class="ru"> m</span></div></div>
+  <div class="result-item"><div class="rk">Total Head Loss</div><div class="rv" style="color:${headOK?'var(--sys-accent)':'#ff5555'}">${hTotal.toFixed(2)}<span class="ru"> m</span></div></div>
+  <div class="result-item"><div class="rk">Status</div><div class="rv" style="color:${headOK?'#00ff9d':'#ff5555'};font-size:13px">${headOK?'✅ OK — CUKUP':'❌ HEAD KURANG'}</div></div>
+  <div class="result-item"><div class="rk">Margin</div><div class="rv" style="color:${headMargin>2?'#00ff9d':headMargin>0?'#ffaa00':'#ff5555'}">${headMargin.toFixed(2)}<span class="ru"> m</span></div></div></div></div>
+
+  <div class="result-sec"><div class="result-sec-title">📋 Rekomendasi Sistem</div><div style="display:flex;flex-direction:column;gap:8px">
+  <div class="rec-card"><div class="rec-icon">🔵</div><div class="rec-text">Material: <strong>${pipeName}</strong>. Roughness k=0.007mm. Jumlah downpipe rekomendasi: <strong>${nDown}</strong>. ${nDown>1?'Bagi collecting pipe menjadi '+nDown+' zona, masing-masing ke 1 downpipe.':''}</div></div>
+  ${outletWarn?'<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text">Area per outlet <strong>'+Math.round(areaPerOut)+' m²</strong> melebihi rekomendasi 350 m²/outlet. Tambahkan outlet untuk performa optimal.</div></div>':''}
+  ${!headOK?'<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text"><strong>Available head tidak cukup!</strong> Perbesar diameter pipa, kurangi panjang collecting pipe, atau tambah downpipe untuk mengurangi head loss.</div></div>':''}
+  <div class="rec-card"><div class="rec-icon">📌</div><div class="rec-text">Hasil ini bersifat <strong>preliminary sizing</strong>. Desain final WAJIB diverifikasi menggunakan software hidraulik khusus dari <strong>Rucika Syfon System</strong> dan engineer berpengalaman.</div></div>
+  </div></div>`;
 }
