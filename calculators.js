@@ -17,6 +17,7 @@ function buildCalcBangunan() {
   <div class="form-group"><label class="form-label">Sumber Air</label><select class="form-control" id="f-source"><option value="pdam">PDAM</option><option value="sumur">Sumur Bor</option><option value="keduanya">PDAM + Sumur</option></select></div>
   <div class="form-group"><label class="form-label">Sistem Distribusi</label><select class="form-control" id="f-system"><option value="downfeed">Down-feed (Gravitasi)</option><option value="upfeed">Up-feed (Booster)</option><option value="hybrid">Hybrid</option></select></div>
   <div class="form-group"><label class="form-label">Material Pipa</label><select class="form-control" id="f-pipe"><option value="ppr10">PPR PN10 (Cold water)</option><option value="ppr16">PPR PN16 (Cold/warm)</option><option value="ppr20">PPR PN20 (Cold + Hot)</option><option value="pvc">uPVC Class AW</option><option value="galvanis">Baja Galvanis</option><option value="hdpe">HDPE</option></select></div>
+  <div class="form-group"><label class="form-label">Kecepatan Aliran (m/s)</label><input type="number" class="form-control" id="f-velocity" min="0.6" max="2.0" step="0.1" value="1.5"></div>
   <button class="calc-btn" onclick="calcBangunan()">⚡ Hitung Rekomendasi</button>`;
 }
 
@@ -85,8 +86,9 @@ function calcBangunan() {
   var Qls = Qd * s.p / 86400, Qm3h = Qls * 3.6, Qm3s = Qls / 1000;
   var tH = fl * hf + 8, fr = tH * 0.22, H = Math.ceil(tH + fr + 10);
   var pw = (1000 * 9.81 * Qm3s * H) / (650), pwF = pwStd.find(p => p >= pw) || Math.ceil(pw);
-  // Kecepatan aliran desain 1.2 m/s (SNI 8153:2025: 0.6–2.0 m/s)
-  var Dm = Math.sqrt(4 * Qm3s / (Math.PI * 1.2)) * 1000;
+  // Kecepatan aliran desain (SNI 8153:2025: 0.6–2.0 m/s)
+  var vDes = V('f-velocity') || 1.5;
+  var Dm = Math.sqrt(4 * Qm3s / (Math.PI * vDes)) * 1000;
   var pSpecs = {
     'ppr10': { s: [20, 25, 32, 40, 50, 63, 75, 90, 110, 160], id: [15.6, 20.4, 26.2, 32.6, 40.8, 51.4, 61.4, 73.6, 90, 128], l: 'OD' },
     'ppr16': { s: [20, 25, 32, 40, 50, 63, 75, 90, 110, 160], id: [14.4, 18, 23.2, 29, 36.2, 45.8, 54.4, 65.4, 79.8, 114.2], l: 'OD' },
@@ -249,7 +251,7 @@ function buildCalcSiphonic() {
   </select></div>
   <div class="form-group"><label class="form-label">Panjang Collecting Pipe (m)</label><input type="number" class="form-control" id="sf-colLen" min="5" max="100" step="1" value="30"></div>
   <button class="calc-btn" onclick="calcSiphonic()">⚡ Hitung Preliminary Sizing</button>`;
-  document.getElementById('sf-rain').addEventListener('change', function(){
+  document.getElementById('sf-rain').addEventListener('change', function () {
     document.getElementById('sf-rain-custom-wrap').style.display = this.value === 'custom' ? 'block' : 'none';
   });
 }
@@ -280,9 +282,9 @@ function calcSiphonic() {
   var pvcSizes = [40, 50, 65, 75, 100, 125, 150, 200, 250, 300];
   var hdpeSizes = [50, 63, 75, 90, 110, 160, 200, 250, 315];
   var sizes = pipeType === 'vp' ? pvcSizes : hdpeSizes;
-  
+
   // Approximate ID ratio based on material and PN
-  var idRatio = pipeType === 'hdpe8' ? 0.90 : 0.88; 
+  var idRatio = pipeType === 'hdpe8' ? 0.90 : 0.88;
 
   var DcolOD = sizes.find(s => s * idRatio >= DcolCalc) || sizes[sizes.length - 1];
   var DdnOD = sizes.find(s => s * idRatio >= DdnCalc) || sizes[sizes.length - 1];
@@ -328,19 +330,19 @@ function calcSiphonic() {
   <div class="result-sec"><div class="result-sec-title">🔧 Dimensi Pipa Siphonic</div><div class="result-grid">
   <div class="result-item"><div class="rk">Collecting Pipe</div><div class="rv">OD${DcolOD}<span class="ru"> mm ${pipeName.split(' ')[0]}</span></div></div>
   <div class="result-item"><div class="rk">Downpipe</div><div class="rv">OD${DdnOD}<span class="ru"> mm ${pipeName.split(' ')[0]}</span></div></div>
-  <div class="result-item"><div class="rk">V. Collecting</div><div class="rv" style="color:${vColWarn?'#ff5555':'var(--sys-accent)'}">${vColAct}<span class="ru"> m/s ${vColWarn?'⚠️':''}</span></div></div>
-  <div class="result-item"><div class="rk">V. Downpipe</div><div class="rv" style="color:${vDnWarn?'#ff5555':'var(--sys-accent)'}">${vDnAct}<span class="ru"> m/s ${vDnWarn?'⚠️':''}</span></div></div></div></div>
+  <div class="result-item"><div class="rk">V. Collecting</div><div class="rv" style="color:${vColWarn ? '#ff5555' : 'var(--sys-accent)'}">${vColAct}<span class="ru"> m/s ${vColWarn ? '⚠️' : ''}</span></div></div>
+  <div class="result-item"><div class="rk">V. Downpipe</div><div class="rv" style="color:${vDnWarn ? '#ff5555' : 'var(--sys-accent)'}">${vDnAct}<span class="ru"> m/s ${vDnWarn ? '⚠️' : ''}</span></div></div></div></div>
 
   <div class="result-sec"><div class="result-sec-title">📐 Head Loss Check</div><div class="result-grid">
   <div class="result-item"><div class="rk">Available Head</div><div class="rv">${H}<span class="ru"> m</span></div></div>
-  <div class="result-item"><div class="rk">Total Head Loss</div><div class="rv" style="color:${headOK?'var(--sys-accent)':'#ff5555'}">${hTotal.toFixed(2)}<span class="ru"> m</span></div></div>
-  <div class="result-item"><div class="rk">Status</div><div class="rv" style="color:${headOK?'#00ff9d':'#ff5555'};font-size:13px">${headOK?'✅ OK — CUKUP':'❌ HEAD KURANG'}</div></div>
-  <div class="result-item"><div class="rk">Margin</div><div class="rv" style="color:${headMargin>2?'#00ff9d':headMargin>0?'#ffaa00':'#ff5555'}">${headMargin.toFixed(2)}<span class="ru"> m</span></div></div></div></div>
+  <div class="result-item"><div class="rk">Total Head Loss</div><div class="rv" style="color:${headOK ? 'var(--sys-accent)' : '#ff5555'}">${hTotal.toFixed(2)}<span class="ru"> m</span></div></div>
+  <div class="result-item"><div class="rk">Status</div><div class="rv" style="color:${headOK ? '#00ff9d' : '#ff5555'};font-size:13px">${headOK ? '✅ OK — CUKUP' : '❌ HEAD KURANG'}</div></div>
+  <div class="result-item"><div class="rk">Margin</div><div class="rv" style="color:${headMargin > 2 ? '#00ff9d' : headMargin > 0 ? '#ffaa00' : '#ff5555'}">${headMargin.toFixed(2)}<span class="ru"> m</span></div></div></div></div>
 
   <div class="result-sec"><div class="result-sec-title">📋 Rekomendasi Sistem</div><div style="display:flex;flex-direction:column;gap:8px">
-  <div class="rec-card"><div class="rec-icon">🔵</div><div class="rec-text">Material: <strong>${pipeName}</strong>. Roughness k=0.007mm. Jumlah downpipe rekomendasi: <strong>${nDown}</strong>. ${nDown>1?'Bagi collecting pipe menjadi '+nDown+' zona, masing-masing ke 1 downpipe.':''}</div></div>
-  ${outletWarn?'<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text">Area per outlet <strong>'+Math.round(areaPerOut)+' m²</strong> melebihi rekomendasi 350 m²/outlet. Tambahkan outlet untuk performa optimal.</div></div>':''}
-  ${!headOK?'<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text"><strong>Available head tidak cukup!</strong> Perbesar diameter pipa, kurangi panjang collecting pipe, atau tambah downpipe untuk mengurangi head loss.</div></div>':''}
+  <div class="rec-card"><div class="rec-icon">🔵</div><div class="rec-text">Material: <strong>${pipeName}</strong>. Roughness k=0.007mm. Jumlah downpipe rekomendasi: <strong>${nDown}</strong>. ${nDown > 1 ? 'Bagi collecting pipe menjadi ' + nDown + ' zona, masing-masing ke 1 downpipe.' : ''}</div></div>
+  ${outletWarn ? '<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text">Area per outlet <strong>' + Math.round(areaPerOut) + ' m²</strong> melebihi rekomendasi 350 m²/outlet. Tambahkan outlet untuk performa optimal.</div></div>' : ''}
+  ${!headOK ? '<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text"><strong>Available head tidak cukup!</strong> Perbesar diameter pipa, kurangi panjang collecting pipe, atau tambah downpipe untuk mengurangi head loss.</div></div>' : ''}
   <div class="rec-card"><div class="rec-icon">📌</div><div class="rec-text">Hasil ini bersifat <strong>preliminary sizing</strong>. Desain final WAJIB diverifikasi menggunakan software hidraulik khusus dari <strong>produsen siphonic system</strong> dan engineer berpengalaman.</div></div>
   </div></div>`;
 }
