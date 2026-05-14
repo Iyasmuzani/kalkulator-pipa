@@ -231,7 +231,10 @@ function buildCalcSiphonic() {
   <div style="background:rgba(255,170,0,.08);border:1px solid rgba(255,170,0,.2);border-radius:7px;padding:8px 10px;margin-bottom:12px;font-size:10px;color:#ffd080;line-height:1.6">
     ⚠️ <strong>Preliminary sizing only.</strong> Desain final siphonic WAJIB menggunakan software hidraulik khusus produsen sistem siphonic.
   </div>
-  <div class="form-group"><label class="form-label">Luas Catchment Atap (m²)</label><input type="number" class="form-control" id="sf-area" min="50" max="50000" value="1000"></div>
+  <div class="form-group" style="display:flex;gap:10px;">
+    <div style="flex:1"><label class="form-label">Panjang Atap (m)</label><input type="number" class="form-control" id="sf-length" min="5" max="500" value="40"></div>
+    <div style="flex:1"><label class="form-label">Lebar Atap (m)</label><input type="number" class="form-control" id="sf-width" min="5" max="500" value="25"></div>
+  </div>
   <div class="form-group"><label class="form-label">Intensitas Hujan Desain (mm/jam)</label>
   <select class="form-control" id="sf-rain">
     <option value="150">150 mm/jam — Indonesia Barat (umum)</option>
@@ -257,7 +260,8 @@ function buildCalcSiphonic() {
 }
 
 function calcSiphonic() {
-  var A = V('sf-area');
+  var L = V('sf-length'), W = V('sf-width');
+  var A = L * W;
   var rainSel = R('sf-rain').value;
   var I = rainSel === 'custom' ? V('sf-rain-custom') : parseFloat(rainSel);
   var H = V('sf-height'), nOut = V('sf-outlets'), colLen = V('sf-colLen');
@@ -320,29 +324,86 @@ function calcSiphonic() {
 
   var pipeName = pipeType === 'vp' ? 'PVC JIS VP/AW PN 10' : (pipeType === 'hdpe10' ? 'HDPE PN 10' : 'HDPE PN 8');
 
-  R('rec-results').innerHTML = `
-  <div class="result-sec"><div class="result-sec-title">🌧️ Debit Air Hujan — ${A.toLocaleString()} m² atap</div><div class="result-grid">
-  <div class="result-item"><div class="rk">Debit Total (Q)</div><div class="rv">${Qtotal.toFixed(2)}<span class="ru"> L/s</span></div></div>
-  <div class="result-item"><div class="rk">Debit per Outlet</div><div class="rv">${Qperout.toFixed(2)}<span class="ru"> L/s</span></div></div>
-  <div class="result-item"><div class="rk">Intensitas Hujan</div><div class="rv">${I}<span class="ru"> mm/jam</span></div></div>
-  <div class="result-item"><div class="rk">Jumlah Outlet</div><div class="rv">${nOut}<span class="ru"> titik</span></div></div></div></div>
+  // --- SVG Layout Generation ---
+  var aspect = L / W;
+  var cols = Math.round(Math.sqrt(nOut * aspect));
+  var rows = Math.ceil(nOut / cols);
+  if (cols === 0) cols = 1;
+  if (rows === 0) rows = 1;
+
+  var svgMaxW = 600, svgMaxH = 350, padding = 25;
+  var svgW, svgH;
+  if (aspect > svgMaxW / svgMaxH) {
+    svgW = svgMaxW - 2 * padding;
+    svgH = svgW / aspect;
+  } else {
+    svgH = svgMaxH - 2 * padding;
+    svgW = svgH * aspect;
+  }
+  
+  var viewBoxW = svgW + 2 * padding;
+  var viewBoxH = svgH + 2 * padding;
+  
+  var cellW = svgW / cols;
+  var cellH = svgH / rows;
+  var svgPoints = '';
+  
+  for (var i = 0; i < nOut; i++) {
+    var r = Math.floor(i / cols);
+    var c = i % cols;
+    var itemsInThisRow = Math.min(cols, nOut - r * cols);
+    var rowStartX = padding + (svgW - (itemsInThisRow * cellW)) / 2;
+    var px = rowStartX + c * cellW + cellW / 2;
+    var py = padding + r * cellH + cellH / 2;
+    
+    var rInfluence = Math.min(cellW, cellH) / 2.2;
+    svgPoints += \`
+      <circle cx="\${px}" cy="\${py}" r="\${rInfluence}" fill="rgba(0,188,212,0.06)" stroke="rgba(0,188,212,0.3)" stroke-dasharray="4,4"/>
+      <circle cx="\${px}" cy="\${py}" r="6" fill="#041828" stroke="#00bcd4" stroke-width="2"/>
+      <circle cx="\${px}" cy="\${py}" r="2" fill="#00bcd4"/>
+      <text x="\${px}" y="\${py+16}" text-anchor="middle" fill="#00bcd4" font-size="10" font-family="monospace">RD-\${i+1}</text>
+    \`;
+  }
+
+  var svgLayout = \`
+  <div class="result-sec" style="margin-top:16px;">
+    <div class="result-sec-title">📍 Visualisasi Layout Roof Outlet (\${L}m × \${W}m)</div>
+    <div style="background:#030d1a; border:1px solid rgba(0,188,212,0.2); border-radius:6px; padding:15px; text-align:center;">
+      <svg viewBox="0 0 \${viewBoxW} \${viewBoxH}" width="100%" style="max-height:300px; display:block; margin:0 auto;">
+        <rect x="\${padding}" y="\${padding}" width="\${svgW}" height="\${svgH}" fill="rgba(0,188,212,0.03)" stroke="rgba(0,188,212,0.3)" stroke-width="1.5" rx="2"/>
+        <text x="\${viewBoxW/2}" y="\${padding - 10}" text-anchor="middle" fill="rgba(0,188,212,0.6)" font-size="11" font-family="monospace">Panjang: \${L} m</text>
+        <text x="\${padding - 10}" y="\${viewBoxH/2}" text-anchor="middle" fill="rgba(0,188,212,0.6)" font-size="11" font-family="monospace" transform="rotate(-90, \${padding - 10}, \${viewBoxH/2})">Lebar: \${W} m</text>
+        \${svgPoints}
+      </svg>
+      <div style="font-size:11px; color:#7a9ab8; margin-top:10px;">* Area lingkaran putus-putus menunjukkan estimasi jangkauan area tangkapan per roof drain.</div>
+    </div>
+  </div>\`;
+
+  R('rec-results').innerHTML = \`
+  <div class="result-sec"><div class="result-sec-title">🌧️ Debit Air Hujan — \${A.toLocaleString()} m² atap</div><div class="result-grid">
+  <div class="result-item"><div class="rk">Debit Total (Q)</div><div class="rv">\${Qtotal.toFixed(2)}<span class="ru"> L/s</span></div></div>
+  <div class="result-item"><div class="rk">Debit per Outlet</div><div class="rv">\${Qperout.toFixed(2)}<span class="ru"> L/s</span></div></div>
+  <div class="result-item"><div class="rk">Intensitas Hujan</div><div class="rv">\${I}<span class="ru"> mm/jam</span></div></div>
+  <div class="result-item"><div class="rk">Jumlah Outlet</div><div class="rv">\${nOut}<span class="ru"> titik</span></div></div></div></div>
 
   <div class="result-sec"><div class="result-sec-title">🔧 Dimensi Pipa Siphonic</div><div class="result-grid">
-  <div class="result-item"><div class="rk">Collecting Pipe</div><div class="rv">OD${DcolOD}<span class="ru"> mm ${pipeName.split(' ')[0]}</span></div></div>
-  <div class="result-item"><div class="rk">Downpipe</div><div class="rv">OD${DdnOD}<span class="ru"> mm ${pipeName.split(' ')[0]}</span></div></div>
-  <div class="result-item"><div class="rk">V. Collecting</div><div class="rv" style="color:${vColWarn ? '#ff5555' : 'var(--sys-accent)'}">${vColAct}<span class="ru"> m/s ${vColWarn ? '⚠️' : ''}</span></div></div>
-  <div class="result-item"><div class="rk">V. Downpipe</div><div class="rv" style="color:${vDnWarn ? '#ff5555' : 'var(--sys-accent)'}">${vDnAct}<span class="ru"> m/s ${vDnWarn ? '⚠️' : ''}</span></div></div></div></div>
+  <div class="result-item"><div class="rk">Collecting Pipe</div><div class="rv">OD\${DcolOD}<span class="ru"> mm \${pipeName.split(' ')[0]}</span></div></div>
+  <div class="result-item"><div class="rk">Downpipe</div><div class="rv">OD\${DdnOD}<span class="ru"> mm \${pipeName.split(' ')[0]}</span></div></div>
+  <div class="result-item"><div class="rk">V. Collecting</div><div class="rv" style="color:\${vColWarn ? '#ff5555' : 'var(--sys-accent)'}">\${vColAct}<span class="ru"> m/s \${vColWarn ? '⚠️' : ''}</span></div></div>
+  <div class="result-item"><div class="rk">V. Downpipe</div><div class="rv" style="color:\${vDnWarn ? '#ff5555' : 'var(--sys-accent)'}">\${vDnAct}<span class="ru"> m/s \${vDnWarn ? '⚠️' : ''}</span></div></div></div></div>
 
   <div class="result-sec"><div class="result-sec-title">📐 Head Loss Check</div><div class="result-grid">
-  <div class="result-item"><div class="rk">Available Head</div><div class="rv">${H}<span class="ru"> m</span></div></div>
-  <div class="result-item"><div class="rk">Total Head Loss</div><div class="rv" style="color:${headOK ? 'var(--sys-accent)' : '#ff5555'}">${hTotal.toFixed(2)}<span class="ru"> m</span></div></div>
-  <div class="result-item"><div class="rk">Status</div><div class="rv" style="color:${headOK ? '#00ff9d' : '#ff5555'};font-size:13px">${headOK ? '✅ OK — CUKUP' : '❌ HEAD KURANG'}</div></div>
-  <div class="result-item"><div class="rk">Margin</div><div class="rv" style="color:${headMargin > 2 ? '#00ff9d' : headMargin > 0 ? '#ffaa00' : '#ff5555'}">${headMargin.toFixed(2)}<span class="ru"> m</span></div></div></div></div>
+  <div class="result-item"><div class="rk">Available Head</div><div class="rv">\${H}<span class="ru"> m</span></div></div>
+  <div class="result-item"><div class="rk">Total Head Loss</div><div class="rv" style="color:\${headOK ? 'var(--sys-accent)' : '#ff5555'}">\${hTotal.toFixed(2)}<span class="ru"> m</span></div></div>
+  <div class="result-item"><div class="rk">Status</div><div class="rv" style="color:\${headOK ? '#00ff9d' : '#ff5555'};font-size:13px">\${headOK ? '✅ OK — CUKUP' : '❌ HEAD KURANG'}</div></div>
+  <div class="result-item"><div class="rk">Margin</div><div class="rv" style="color:\${headMargin > 2 ? '#00ff9d' : headMargin > 0 ? '#ffaa00' : '#ff5555'}">\${headMargin.toFixed(2)}<span class="ru"> m</span></div></div></div></div>
+  
+  \${svgLayout}
 
-  <div class="result-sec"><div class="result-sec-title">📋 Rekomendasi Sistem</div><div style="display:flex;flex-direction:column;gap:8px">
-  <div class="rec-card"><div class="rec-icon">🔵</div><div class="rec-text">Material: <strong>${pipeName}</strong>. Roughness k=0.007mm. Jumlah downpipe rekomendasi: <strong>${nDown}</strong>. ${nDown > 1 ? 'Bagi collecting pipe menjadi ' + nDown + ' zona, masing-masing ke 1 downpipe.' : ''}</div></div>
-  ${outletWarn ? '<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text">Area per outlet <strong>' + Math.round(areaPerOut) + ' m²</strong> melebihi rekomendasi 350 m²/outlet. Tambahkan outlet untuk performa optimal.</div></div>' : ''}
-  ${!headOK ? '<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text"><strong>Available head tidak cukup!</strong> Perbesar diameter pipa, kurangi panjang collecting pipe, atau tambah downpipe untuk mengurangi head loss.</div></div>' : ''}
+  <div class="result-sec" style="margin-top:16px"><div class="result-sec-title">📋 Rekomendasi Sistem</div><div style="display:flex;flex-direction:column;gap:8px">
+  <div class="rec-card"><div class="rec-icon">🔵</div><div class="rec-text">Material: <strong>\${pipeName}</strong>. Roughness k=0.007mm. Jumlah downpipe rekomendasi: <strong>\${nDown}</strong>. \${nDown > 1 ? 'Bagi collecting pipe menjadi ' + nDown + ' zona, masing-masing ke 1 downpipe.' : ''}</div></div>
+  \${outletWarn ? '<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text">Area per outlet <strong>' + Math.round(areaPerOut) + ' m²</strong> melebihi rekomendasi 350 m²/outlet. Tambahkan outlet untuk performa optimal.</div></div>' : ''}
+  \${!headOK ? '<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text"><strong>Available head tidak cukup!</strong> Perbesar diameter pipa, kurangi panjang collecting pipe, atau tambah downpipe untuk mengurangi head loss.</div></div>' : ''}
   <div class="rec-card"><div class="rec-icon">📌</div><div class="rec-text">Hasil ini bersifat <strong>preliminary sizing</strong>. Desain final WAJIB diverifikasi menggunakan software hidraulik khusus dari <strong>produsen siphonic system</strong> dan engineer berpengalaman.</div></div>
-  </div></div>`;
+  </div></div>\`;
 }
