@@ -209,7 +209,7 @@ function selectComp(id) {
   if (el) el.classList.add('selected');
   document.getElementById('comp-panel').innerHTML = `
     <div class="cp-header">
-      <div class="cp-icon" style="background:${d.bg};border:1.5px solid ${d.ac}">${d.icon}</div>
+      <div class="cp-icon" style="background:${d.bg};border:1.5px solid ${d.ac};color:${d.ac}">${d.icon}</div>
       <div>
         <div class="cp-name">${d.name}</div>
         <div class="cp-code" style="color:${d.ac}">${d.code}</div>
@@ -230,7 +230,7 @@ function buildCompGrid() {
   document.getElementById('comp-grid').innerHTML = Object.entries(data).map(([id, d]) => {
     const rgb = parseInt(d.ac.slice(1, 3), 16) + ',' + parseInt(d.ac.slice(3, 5), 16) + ',' + parseInt(d.ac.slice(5, 7), 16);
     return `<div class="comp-card" onclick="openModal('${id}')">
-      <div class="cc-icon">${d.icon}</div>
+      <div class="cc-icon" style="color:${d.ac}">${d.icon}</div>
       <div class="cc-name">${d.name}</div>
       <div class="cc-code" style="color:${d.ac}">${d.code}</div>
       <div class="cc-desc">${d.desc.slice(0, 110)}...</div>
@@ -244,7 +244,7 @@ function openModal(id) {
   document.getElementById('modal-content').innerHTML = `
     <button class="modal-close" onclick="document.getElementById('modal-overlay').classList.remove('open')">✕</button>
     <div class="cp-header" style="margin-top:4px">
-      <div class="cp-icon" style="background:${d.bg};border:1.5px solid ${d.ac}">${d.icon}</div>
+      <div class="cp-icon" style="background:${d.bg};border:1.5px solid ${d.ac};color:${d.ac}">${d.icon}</div>
       <div><div class="cp-name">${d.name}</div><div class="cp-code" style="color:${d.ac}">${d.code}</div></div>
     </div>
     <div class="cp-desc">${d.desc}</div>

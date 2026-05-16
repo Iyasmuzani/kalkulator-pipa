@@ -1,51 +1,51 @@
 // ==================== DATA DISTRIBUSI AIR ====================
 const distribusiCompData = {
-  'intake':{name:'Intake / Broncaptering',code:'ITK-01',icon:'🏔️',bg:'#001a2e',ac:'#6dd5ed',
+  'intake':{name:'Intake / Broncaptering',code:'ITK-01',icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>',bg:'#001a2e',ac:'#6dd5ed',
     desc:'Bangunan pengambilan air baku dari sumber (sungai, danau, mata air, atau sumur dalam). Dilengkapi screen/saringan kasar dan pengukuran debit untuk monitoring kapasitas sumber.',
     specs:[['Tipe','River intake / Spring box / Deep well'],['Kapasitas','5 – 500 L/s'],['Screen','Bar screen 25mm + Traveling screen'],['Pengukuran','Parshall flume / V-notch weir'],['Proteksi','Trash rack + floating debris guard'],['Standar','Permen PUPR 27/2016']],
     tips:['Pasang trash rack dengan jarak bar 25–50mm di hulu intake','Desain kapasitas intake 1.2× debit produksi (allowance maintenance)','Pasang flow measurement permanen untuk monitoring','Buat jalur bypass untuk maintenance tanpa henti produksi','Pasang pagar pengaman dan papan peringatan di area intake']},
 
-  'reservoir':{name:'Reservoir / Bak Penampung',code:'RSV-01',icon:'🏗️',bg:'#0a1a2e',ac:'#4da6ff',
+  'reservoir':{name:'Reservoir / Bak Penampung',code:'RSV-01',icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M2 8h20"/><path d="M12 4v4"/></svg>',bg:'#0a1a2e',ac:'#4da6ff',
     desc:'Bak penampung air olahan berkapasitas besar untuk menyeimbangkan fluktuasi antara produksi WTP dan kebutuhan distribusi. Juga berfungsi sebagai penyimpan air pemadam kebakaran.',
     specs:[['Material','Beton bertulang / Baja / GRP'],['Kapasitas','100 – 10.000 m³'],['Jumlah Kompartemen','Min. 2 (parallel)'],['Tinggi Air Max.','3 – 6 m'],['Free Board','Min. 30 cm'],['Standar','SNI 7504:2011']],
     tips:['Desain kapasitas 15–25% kebutuhan harian','Buat 2 kompartemen minimum untuk perawatan bergantian','Pasang level sensor telemetri untuk monitoring jarak jauh','Buat overflow ke saluran drainase yang aman','Inspeksi dan pembersihan setiap 6 bulan']},
 
-  'booster-pump':{name:'Pompa Booster / Distribusi',code:'BPS-01',icon:'⚡',bg:'#001a0a',ac:'#00cc66',
+  'booster-pump':{name:'Pompa Booster / Distribusi',code:'BPS-01',icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 4v16"/><path d="M4 12h16"/></svg>',bg:'#001a0a',ac:'#00cc66',
     desc:'Stasiun pompa distribusi yang mendorong air dari reservoir ke jaringan pipa distribusi. Menggunakan VFD untuk menyesuaikan tekanan dengan variasi kebutuhan.',
     specs:[['Tipe','Horizontal split-case / End-suction'],['Debit','10 – 500 L/s'],['Head','20 – 80 m'],['Jumlah Unit','N+1 (min. 1 standby)'],['Kontrol','VFD + SCADA'],['Tegangan','380V 3-phase, 50Hz']],
     tips:['Gunakan VFD untuk penghematan energi 20–40%','Pasang minimum N+1 unit (1 standby setiap N operasi)','Monitor tekanan discharge via SCADA/telemetri','Lakukan vibration analysis setiap 3 bulan','Pasang surge anticipator di discharge header']},
 
-  'pipa-transmisi':{name:'Pipa Transmisi (HDPE/Steel)',code:'PTH-01',icon:'🔷',bg:'#001a1a',ac:'#00aacc',
+  'pipa-transmisi':{name:'Pipa Transmisi (HDPE/Steel)',code:'PTH-01',icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 14h20v4H2z"/><path d="M2 6h20v4H2z"/></svg>',bg:'#001a1a',ac:'#00aacc',
     desc:'Pipa berdiameter besar untuk mengalirkan air dari sumber/WTP ke reservoir distribusi. Biasanya HDPE atau baja untuk jarak jauh dan tekanan tinggi.',
     specs:[['Material','HDPE PE100 / Steel / DI'],['Diameter','DN200 – DN1200'],['Pressure Rating','PN10 / PN16 / PN25'],['Sambungan','Butt fusion / Flange / Welded'],['Kedalaman Tanam','Min. 80 cm dari permukaan'],['Standar','SNI 4829 / BS EN 12201']],
     tips:['Lakukan soil investigation sebelum menentukan material','Pasang air valve di setiap titik tinggi jaringan','Pasang washout/blowoff di setiap titik rendah','Beri cover min. 80 cm, lebih dalam di jalur kendaraan berat','Pasang thrust block beton di setiap perubahan arah']},
 
-  'pipa-distribusi':{name:'Pipa Distribusi (PVC/HDPE)',code:'PDV-01',icon:'🔹',bg:'#0a0a1a',ac:'#6677dd',
+  'pipa-distribusi':{name:'Pipa Distribusi (PVC/HDPE)',code:'PDV-01',icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 14h20v4H2z"/><path d="M2 6h20v4H2z"/></svg>',bg:'#0a0a1a',ac:'#6677dd',
     desc:'Pipa jaringan distribusi yang mengantarkan air dari pipa transmisi ke sambungan rumah/pelanggan. Umumnya PVC atau HDPE diameter menengah.',
     specs:[['Material','uPVC / HDPE / DI'],['Diameter','DN50 – DN300'],['Pressure Rating','PN10 (tipikal)'],['Sambungan','Solvent cement / Butt fusion / Push-fit'],['Kedalaman Tanam','60 – 100 cm'],['Standar','SNI 7511:2011 / Permen PUPR']],
     tips:['Desain ring/loop system untuk keandalan tinggi','Kecepatan aliran optimal 0.6–1.5 m/s','Pasang valve setiap 200–500m untuk isolasi zona','Hindari dead-end — pasang washout di ujung buntu','Beri jarak min. 1m dari saluran air limbah']},
 
-  'gate-valve-net':{name:'Gate Valve Jaringan',code:'GVN-01',icon:'🔶',bg:'#1a1a00',ac:'#ccaa00',
+  'gate-valve-net':{name:'Gate Valve Jaringan',code:'GVN-01',icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 12h-4"/><path d="M7 12H3"/><path d="M11 8v8"/><path d="M15 8L9 16"/><path d="M15 16L9 8"/></svg>',bg:'#1a1a00',ac:'#ccaa00',
     desc:'Katup isolasi pada jaringan distribusi untuk membagi zona (DMA) dan mengisolasi segmen saat perbaikan tanpa mengganggu layanan keseluruhan.',
     specs:[['Tipe','Resilient seated gate valve'],['Diameter','DN50 – DN600'],['Material','Ductile Iron GGG50'],['Tekanan Nominal','PN10 / PN16'],['Operasi','T-key / Handwheel / Actuator'],['Standar','BS EN 1074-2 / ISO 7259']],
     tips:['Gunakan resilient seated (rubber) untuk zero-leakage','Pasang valve box/chamber untuk akses dari permukaan','Operasikan setiap valve min. sekali per tahun (exercise)','Beri tag/label dan catat posisi di GIS/peta jaringan','Pasang sesuai aturan N-valve: N = jumlah pipa di junction']},
 
-  'air-valve':{name:'Air Valve / Ventudara',code:'AVV-01',icon:'💨',bg:'#001a0a',ac:'#33cc99',
+  'air-valve':{name:'Air Valve / Ventudara',code:'AVV-01',icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 12h-4"/><path d="M7 12H3"/><path d="M11 8v8"/><path d="M15 8L9 16"/><path d="M15 16L9 8"/></svg>',bg:'#001a0a',ac:'#33cc99',
     desc:'Katup otomatis untuk melepaskan udara terjebak saat pengisian pipa dan memasukkan udara saat pengosongan. Mencegah water hammer dan airlock yang menghambat aliran.',
     specs:[['Tipe','Single / Double / Combination'],['Diameter','DN25 – DN150'],['Material Body','Ductile Iron / SS316'],['Tekanan Kerja','PN10 / PN16'],['Orifice','Large (filling) + Small (operating)'],['Standar','BS EN 1074-4 / AWWA C512']],
     tips:['Pasang di setiap titik tinggi (high point) jaringan','Gunakan combination type untuk fungsi ganda','Pasang isolation valve di bawah air valve','Inspeksi dan bersihkan setiap 6 bulan','Pasang di atas ground level dalam chamber ventilasi']},
 
-  'prv-net':{name:'PRV Jaringan Distribusi',code:'PRN-01',icon:'⚖️',bg:'#1a001a',ac:'#cc66cc',
+  'prv-net':{name:'PRV Jaringan Distribusi',code:'PRN-01',icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 12h-4"/><path d="M7 12H3"/><path d="M11 8v8"/><path d="M15 8L9 16"/><path d="M15 16L9 8"/></svg>',bg:'#1a001a',ac:'#cc66cc',
     desc:'Pressure Reducing Valve untuk mengatur tekanan zona distribusi. Membagi jaringan menjadi DMA (District Metered Area) dengan tekanan yang sesuai untuk setiap zona.',
     specs:[['Tipe','Pilot-operated globe valve'],['Diameter','DN50 – DN300'],['Range Setting','1.5 – 8 bar'],['Material','Ductile Iron / SS'],['Akurasi','±0.2 bar'],['Standar','BS EN 1567 / AWWA C530']],
     tips:['Setting tekanan outlet 1.5–3 bar untuk zona residensial','Pasang strainer Y di sisi upstream','Pasang pressure gauge upstream dan downstream','Sediakan bypass line untuk maintenance','Monitor dengan data logger untuk optimasi tekanan']},
 
-  'water-meter-bulk':{name:'Water Meter Induk (Bulk)',code:'WMI-01',icon:'📊',bg:'#0a0a2e',ac:'#5566ff',
+  'water-meter-bulk':{name:'Water Meter Induk (Bulk)',code:'WMI-01',icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 12l3-3"/><path d="M12 16v.01"/></svg>',bg:'#0a0a2e',ac:'#5566ff',
     desc:'Meter air berdiameter besar untuk mengukur debit pada titik-titik kunci jaringan: outlet reservoir, inlet DMA, dan titik transfer antar zona.',
     specs:[['Tipe','Electromagnetic / Ultrasonic / Woltman'],['Diameter','DN50 – DN600'],['Akurasi','±0.5% (EMF) / ±1% (mekanikal)'],['Output','Pulse / 4–20mA / Modbus / GPRS'],['Tekanan Kerja','PN10 / PN16'],['Standar','ISO 4064 / SNI 2547']],
     tips:['Gunakan electromagnetic untuk akurasi terbaik','Pasang data logger dengan telemetri GPRS/4G','Hitung NRW (Non-Revenue Water) per DMA secara bulanan','Kalibrasi setiap 2 tahun oleh laboratorium terakreditasi','Pasang isolation valve di kedua sisi untuk penggantian']},
 
-  'hydrant':{name:'Hidran Kebakaran',code:'HYD-01',icon:'🔴',bg:'#2e0a0a',ac:'#ff4444',
+  'hydrant':{name:'Hidran Kebakaran',code:'HYD-01',icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>',bg:'#2e0a0a',ac:'#ff4444',
     desc:'Titik pengambilan air untuk pemadam kebakaran yang terhubung langsung ke jaringan distribusi. Harus mampu menyediakan debit dan tekanan minimum sesuai standar.',
     specs:[['Tipe','Pillar hydrant / Underground hydrant'],['Diameter','DN100 / DN150'],['Outlet','2×DN65 + 1×DN100'],['Debit Min.','38 L/s (ISO) / 500 gpm (NFPA)'],['Tekanan Min.','1.5 bar di titik tertinggi'],['Standar','SNI 03-1745 / BS EN 14384']],
     tips:['Pasang setiap 200m di area komersial, 400m di residensial','Cat warna sesuai kode debit: merah/oranye/hijau/biru','Uji debit dan tekanan setiap 6 bulan','Pasang di area yang mudah diakses mobil pemadam','Beri ruang bebas 1m di sekitar hidran']}
