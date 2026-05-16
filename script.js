@@ -160,12 +160,134 @@ function switchToLibrary() {
 
 function switchLibraryForm(formId) {
   document.querySelectorAll('#library-subtabs .eng-tab').forEach(b => b.classList.remove('active'));
-  // Assume the only tab right now is siphonic, we can add more logic later
-  document.querySelector('#library-subtabs .eng-tab').classList.add('active');
-  
+  const activeBtn = document.querySelector('#library-subtabs .eng-tab[data-lib="' + formId + '"]');
+  if (activeBtn) activeBtn.classList.add('active');
+
+  const iframeWrap = document.getElementById('library-content');
+  const standarWrap = document.getElementById('library-standar');
+
   if (formId === 'siphonic') {
+    iframeWrap.style.display = 'block';
+    standarWrap.style.display = 'none';
     document.getElementById('library-iframe').src = 'form-siphonic.html';
+  } else if (formId === 'standar') {
+    iframeWrap.style.display = 'none';
+    standarWrap.style.display = 'block';
+    renderStandarAcuan();
   }
+}
+
+// ==================== STANDAR ACUAN PIPA PLASTIK ====================
+const pipeStandards = {
+  'HDPE (High-Density Polyethylene)': {
+    color: '#00bcd4',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="6"/><line x1="8" y1="6" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="18"/></svg>',
+    items: [
+      { std: 'SNI 4829.1:2022', title: 'Pipa PE untuk Air Minum — Bagian 1: Umum', scope: 'Klasifikasi, terminologi, dan persyaratan umum pipa PE untuk transportasi air minum.', type: 'SNI' },
+      { std: 'SNI 4829.2:2022', title: 'Pipa PE untuk Air Minum — Bagian 2: Pipa', scope: 'Spesifikasi pipa PE100/PE80 (dimensi, tekanan, toleransi). Termasuk SDR 7.4 s.d. SDR 41.', type: 'SNI' },
+      { std: 'SNI 4829.3:2022', title: 'Pipa PE untuk Air Minum — Bagian 3: Fitting', scope: 'Spesifikasi fitting compression, butt fusion, electrofusion, dan spigot end.', type: 'SNI' },
+      { std: 'SNI 4829.5:2022', title: 'Pipa PE untuk Air Minum — Bagian 5: Fitness for Purpose', scope: 'Persyaratan kesesuaian penggunaan, ketahanan tekanan jangka panjang (MRS/LPL).', type: 'SNI' },
+      { std: 'ISO 4427-1:2019', title: 'PE Piping Systems — Part 1: General', scope: 'Standar internasional acuan untuk sistem perpipaan PE untuk air minum.', type: 'ISO' },
+      { std: 'ISO 4427-2:2019', title: 'PE Piping Systems — Part 2: Pipes', scope: 'Dimensi pipa PE DN10–DN2000, ketebalan dinding minimum per SDR.', type: 'ISO' },
+      { std: 'ISO 4427-3:2019', title: 'PE Piping Systems — Part 3: Fittings', scope: 'Spesifikasi fitting PE untuk sambungan mekanis dan fusion.', type: 'ISO' },
+      { std: 'ISO 4427-5:2019', title: 'PE Piping Systems — Part 5: Fitness for Purpose', scope: 'Uji kesesuaian jangka panjang: hydrostatic pressure, slow crack growth, RCP.', type: 'ISO' },
+      { std: 'ISO 21307:2017', title: 'Plastics Pipes — Butt Fusion Jointing Procedures', scope: 'Parameter butt fusion (suhu, tekanan, waktu) untuk pipa PE. Acuan utama installer.', type: 'ISO' },
+      { std: 'DVS 2207-1:2015', title: 'Welding of Thermoplastics — Heated Tool Butt Welding (PE)', scope: 'Standar Jerman untuk pengelasan butt fusion PE100. Parameter detail per ketebalan dinding.', type: 'DVS' },
+      { std: 'ISO 12176-1:2017', title: 'Plastics Pipes — Equipment for Fusion Jointing — Part 1: Butt Fusion', scope: 'Spesifikasi alat butt fusion (mesin, heater plate, facing tool).', type: 'ISO' },
+      { std: 'ISO 12176-2:2008', title: 'Plastics Pipes — Equipment for Fusion Jointing — Part 2: Electrofusion', scope: 'Spesifikasi alat electrofusion (kontrol unit, barcode scanner).', type: 'ISO' },
+      { std: 'ISO 13953:2001', title: 'PE Pipes — Determination of Tensile Strength', scope: 'Metode uji kuat tarik sambungan butt fusion (Tensile Test).', type: 'ISO' },
+      { std: 'ISO 13954:1997', title: 'PE Pipes — Peel Decohesion Test for Electrofusion', scope: 'Metode uji kekuatan sambungan electrofusion.', type: 'ISO' },
+      { std: 'AWWA M55', title: 'PE Pipe — Design and Installation', scope: 'Manual desain dan instalasi pipa PE untuk air (flotation, deflection, thrust restraint).', type: 'AWWA' },
+      { std: 'AWWA C906', title: 'PE Pressure Pipe and Fittings, 4 in. through 65 in.', scope: 'Standar material dan pengujian pipa PE bertekanan diameter besar.', type: 'AWWA' },
+      { std: 'AS/NZS 4130:2018', title: 'PE Pipes for Pressure Applications', scope: 'Standar Australia/NZ untuk pipa PE bertekanan (series 1 & 2).', type: 'AS/NZS' },
+    ]
+  },
+  'PVC (Polyvinyl Chloride)': {
+    color: '#7c4dff',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10h20v4H2z"/><path d="M2 6h20v4H2z"/><path d="M12 10v4"/></svg>',
+    items: [
+      { std: 'SNI 0084:2019', title: 'Pipa PVC untuk Air Minum', scope: 'Spesifikasi pipa PVC-U tekanan (kelas AW & D) untuk distribusi air minum.', type: 'SNI' },
+      { std: 'SNI 8058:2015', title: 'Pipa PVC untuk Saluran Air Limbah dan Ventilasi Gedung', scope: 'Pipa PVC-U non-tekanan untuk sistem plumbing saniter gedung.', type: 'SNI' },
+      { std: 'JIS K 6741:2016', title: 'Unplasticized PVC Pipes (VP, VU)', scope: 'Standar Jepang untuk pipa PVC-U. VP = tekanan, VU = non-tekanan. Banyak digunakan di Indonesia.', type: 'JIS' },
+      { std: 'JIS K 6742:2016', title: 'Unplasticized PVC Pipes Fittings', scope: 'Fitting PVC-U (elbow, tee, socket) sesuai standar JIS.', type: 'JIS' },
+      { std: 'JIS K 6743:2016', title: 'Unplasticized PVC Valves', scope: 'Katup PVC-U (ball valve, check valve) standar JIS.', type: 'JIS' },
+      { std: 'ISO 1452-1:2009', title: 'PVC-U Piping Systems for Water Supply — Part 1: General', scope: 'Standar internasional sistem perpipaan PVC-U untuk suplai air.', type: 'ISO' },
+      { std: 'ISO 1452-2:2009', title: 'PVC-U Piping Systems for Water Supply — Part 2: Pipes', scope: 'Dimensi, ketebalan, dan pengujian pipa PVC-U bertekanan.', type: 'ISO' },
+      { std: 'ISO 1452-3:2009', title: 'PVC-U Piping Systems for Water Supply — Part 3: Fittings', scope: 'Spesifikasi fitting PVC-U injection moulded dan fabricated.', type: 'ISO' },
+      { std: 'ASTM D1785', title: 'PVC Plastic Pipe, Schedule 40, 80, 120', scope: 'Standar AS untuk pipa PVC jadwal/schedule. Tekanan & dimensi.', type: 'ASTM' },
+      { std: 'ASTM D2241', title: 'PVC Pressure-Rated Pipe (SDR Series)', scope: 'Pipa PVC berdasarkan SDR (Standard Dimension Ratio).', type: 'ASTM' },
+      { std: 'AS/NZS 1477:2017', title: 'PVC Pipes and Fittings for Pressure Applications', scope: 'Standar Australia/NZ untuk pipa PVC bertekanan (Series 1 & 2, DN15–DN750).', type: 'AS/NZS' },
+      { std: 'BS EN 1401-1:2019', title: 'PVC-U Piping Systems for Non-Pressure Underground Drainage', scope: 'Sistem perpipaan PVC-U non-tekanan untuk drainase bawah tanah.', type: 'BS EN' },
+    ]
+  },
+  'PVC-O (Oriented PVC)': {
+    color: '#ff6d00',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12"/><path d="M6 12h12"/></svg>',
+    items: [
+      { std: 'ISO 16422:2014', title: 'PVC-O Piping Systems for Water Supply — Pipes', scope: 'Standar utama pipa PVC-O (oriented). Klasifikasi kelas 315, 400, 450, 500.', type: 'ISO' },
+      { std: 'ISO 16422-2:2014', title: 'PVC-O Piping Systems — Part 2: Fittings', scope: 'Spesifikasi fitting untuk sistem perpipaan PVC-O.', type: 'ISO' },
+      { std: 'ISO 16422-5:2023', title: 'PVC-O Piping Systems — Part 5: Fitness for Purpose', scope: 'Pengujian jangka panjang pipa PVC-O termasuk ketahanan impak dan fatigue.', type: 'ISO' },
+      { std: 'AS/NZS 4441:2019', title: 'Oriented PVC-O Pipes for Pressure Applications', scope: 'Standar Australia/NZ untuk pipa PVC-O, DN100–DN600.', type: 'AS/NZS' },
+      { std: 'EN 17176-1:2019', title: 'PVC-O Piping Systems for Water Supply — Part 1: General', scope: 'Standar Eropa untuk PVC-O: terminologi, klasifikasi, persyaratan umum.', type: 'EN' },
+      { std: 'EN 17176-2:2019', title: 'PVC-O Piping Systems for Water Supply — Part 2: Pipes', scope: 'Dimensi, tekanan kerja, dan pengujian pipa PVC-O kelas 315–500.', type: 'EN' },
+      { std: 'PAS 27:2017 (UK)', title: 'Oriented PVC Pipes — Specification', scope: 'Spesifikasi publik Inggris untuk pipa PVC-O dalam aplikasi air bertekanan.', type: 'PAS' },
+    ]
+  },
+  'PPR (Polypropylene Random Copolymer)': {
+    color: '#00e676',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>',
+    items: [
+      { std: 'SNI 19-6956-2003', title: 'Pipa Polipropilena untuk Air Panas dan Dingin', scope: 'Spesifikasi pipa PP-R untuk instalasi air panas dan dingin di gedung.', type: 'SNI' },
+      { std: 'ISO 15874-1:2013', title: 'PP Piping Systems for Hot and Cold Water — Part 1: General', scope: 'Standar internasional sistem perpipaan PP-R untuk air panas/dingin.', type: 'ISO' },
+      { std: 'ISO 15874-2:2013', title: 'PP Piping Systems — Part 2: Pipes', scope: 'Spesifikasi dimensi dan pengujian pipa PP-R (PN10, PN16, PN20, PN25).', type: 'ISO' },
+      { std: 'ISO 15874-3:2013', title: 'PP Piping Systems — Part 3: Fittings', scope: 'Spesifikasi fitting PP-R (elbow, tee, socket fusion, butt fusion).', type: 'ISO' },
+      { std: 'ISO 15874-5:2013', title: 'PP Piping Systems — Part 5: Fitness for Purpose', scope: 'Pengujian kesesuaian: ketahanan tekanan pada suhu tinggi, bending, dll.', type: 'ISO' },
+      { std: 'DIN 8077:2008', title: 'PP Pipes — General Quality Requirements and Testing', scope: 'Standar Jerman untuk persyaratan mutu umum dan pengujian pipa PP.', type: 'DIN' },
+      { std: 'DIN 8078:2008', title: 'PP Pipes — Dimensions', scope: 'Dimensi standar pipa PP-R menurut DIN (DN20 – DN160).', type: 'DIN' },
+      { std: 'DVS 2207-11:2008', title: 'Welding of Thermoplastics — PP Socket Fusion', scope: 'Parameter socket fusion untuk pipa PP-R (suhu, waktu, kedalaman insersi).', type: 'DVS' },
+      { std: 'DVS 2207-1:2015', title: 'Welding of Thermoplastics — Heated Tool Butt Welding', scope: 'Parameter butt fusion untuk PP-R diameter besar.', type: 'DVS' },
+      { std: 'EN 15874-2:2013', title: 'PP Piping Systems for Hot and Cold Water Installation', scope: 'Standar Eropa untuk instalasi PP-R dalam gedung (air panas/dingin).', type: 'EN' },
+    ]
+  }
+};
+
+function renderStandarAcuan() {
+  const container = document.getElementById('library-standar');
+  const svgBook = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:5px;opacity:.6"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>';
+
+  let html = '<div style="margin-bottom:16px;font-family:\'Space Grotesk\',sans-serif;font-size:18px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--sys-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h6"/></svg> Referensi Standar Acuan — Pipa Plastik</div>';
+  html += '<div style="font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.6">Kumpulan standar nasional dan internasional yang menjadi acuan desain, manufaktur, pengujian, dan instalasi pipa plastik. Disusun per kategori material.</div>';
+
+  for (const [category, data] of Object.entries(pipeStandards)) {
+    const rgb = parseInt(data.color.slice(1,3),16)+','+parseInt(data.color.slice(3,5),16)+','+parseInt(data.color.slice(5,7),16);
+    html += `<div class="std-category" style="margin-bottom:24px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 14px;background:rgba(${rgb},.08);border:1px solid rgba(${rgb},.2);border-radius:8px">
+        <span style="color:${data.color}">${data.icon}</span>
+        <span style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:${data.color}">${category}</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--text2);font-family:'JetBrains Mono',monospace">${data.items.length} dokumen</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px">`;
+
+    for (const item of data.items) {
+      const typeColors = {
+        'SNI':'#ff6d00','ISO':'#00bcd4','JIS':'#e91e63','DVS':'#9c27b0','AWWA':'#2196f3',
+        'ASTM':'#ff5722','AS/NZS':'#4caf50','BS EN':'#3f51b5','DIN':'#795548','EN':'#607d8b',
+        'PAS':'#ff9800','BS':'#3f51b5'
+      };
+      const tc = typeColors[item.type] || '#888';
+      html += `<div class="std-card" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px 14px;transition:all .2s;cursor:default" onmouseenter="this.style.borderColor='rgba(${rgb},.3)';this.style.background='rgba(${rgb},.04)'" onmouseleave="this.style.borderColor='rgba(255,255,255,.06)';this.style.background='rgba(255,255,255,.03)'">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:${data.color}">${item.std}</span>
+          <span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(${parseInt(tc.slice(1,3),16)},${parseInt(tc.slice(3,5),16)},${parseInt(tc.slice(5,7),16)},.15);color:${tc};font-weight:600;letter-spacing:.5px">${item.type}</span>
+        </div>
+        <div style="font-size:12.5px;color:#e0e0e0;font-weight:600;margin-bottom:4px;line-height:1.4">${item.title}</div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.5">${item.scope}</div>
+      </div>`;
+    }
+    html += '</div></div>';
+  }
+
+  container.innerHTML = html;
 }
 
 function resetCompPanel() {
