@@ -8,7 +8,7 @@ const systemConfig = {
     title: 'Sistem Perpipaan & Pompa Bangunan',
     sub: 'Panduan instalasi interaktif · Visualisasi komponen · Kalkulator',
     badge: 'SNI 8153:2025 · v2.1',
-    icon: '💧',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>',
     vizLabel: 'Diagram Potongan Bangunan — Klik komponen untuk detail',
     guideIntro: 'Ikuti 8 tahap instalasi ini secara berurutan. Panduan mengacu pada <strong style="color:var(--sys-accent)">SNI 8153:2025</strong> tentang Tata Cara Perencanaan Sistem Plambing.',
     compData: () => bangunanCompData,
@@ -19,7 +19,7 @@ const systemConfig = {
     title: 'Sistem Perpipaan Tambang',
     sub: 'Dewatering · Slurry transport · Settling pond · Kalkulator',
     badge: 'ASME B31.3 · B31.11',
-    icon: '⛏️',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.531 12.469 6.619 20.38a1 1 0 1 1-1.414-1.414l7.912-7.912"/><path d="M15.686 4.314A12.5 12.5 0 0 0 5.461 2.958 1 1 0 0 0 5.58 4.71a22 22 0 0 1 6.318 3.393"/><path d="M17.7 3.7a1 1 0 0 0-1.4 0l-4.6 4.6a1 1 0 0 0 0 1.4l2.6 2.6a1 1 0 0 0 1.4 0l4.6-4.6a1 1 0 0 0 0-1.4z"/><path d="M19.686 8.314a12.501 12.501 0 0 1 1.356 10.225 1 1 0 0 1-1.751-.119 22 22 0 0 0-3.393-6.319"/></svg>',
     vizLabel: 'Diagram Potongan Pit Tambang — Klik komponen untuk detail',
     guideIntro: 'Ikuti 7 tahap instalasi sistem perpipaan tambang. Panduan mengacu pada <strong style="color:var(--sys-accent)">Permen ESDM No. 26/2018</strong>, <strong style="color:var(--sys-accent)">ASME B31.3</strong> (Process Piping), dan <strong style="color:var(--sys-accent)">ASME B31.11</strong> (Slurry Transportation).',
     compData: () => tambangCompData,
@@ -30,7 +30,7 @@ const systemConfig = {
     title: 'Sistem Perpipaan Jaringan Distribusi Air',
     sub: 'Transmisi · Distribusi · DMA · NRW management · Kalkulator',
     badge: 'SNI 7511 · v1.0',
-    icon: '🌐',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>',
     vizLabel: 'Layout Jaringan Distribusi Air — Klik komponen untuk detail',
     guideIntro: 'Ikuti 8 tahap instalasi jaringan distribusi air. Panduan mengacu pada <strong style="color:var(--sys-accent)">SNI 7511:2011</strong> dan <strong style="color:var(--sys-accent)">BS EN 805:2025</strong>.',
     compData: () => distribusiCompData,
@@ -41,7 +41,7 @@ const systemConfig = {
     title: 'Sistem Drainase Atap Siphonic',
     sub: 'Sistem Siphonic · Visualisasi · Komponen · Kalkulator',
     badge: 'BS 8490 · EN 1253-2',
-    icon: '🌧️',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></svg>',
     vizLabel: 'Diagram Sistem Siphonic Roof Drain — Klik komponen untuk detail',
     guideIntro: 'Ikuti 8 tahap instalasi sistem drainase siphonic. Panduan mengacu pada <strong style="color:var(--sys-accent)">BS 8490:2007</strong> (Siphonic Roof Drainage) dan <strong style="color:var(--sys-accent)">EN 1253-2</strong> (Roof Outlets).',
     compData: () => siphonicCompData,
@@ -76,7 +76,7 @@ function switchSystem(sys) {
   document.getElementById('hdr-title').textContent = cfg.title;
   document.getElementById('hdr-sub').textContent = cfg.sub;
   document.getElementById('hdr-badge').textContent = cfg.badge;
-  document.getElementById('hdr-icon').textContent = cfg.icon;
+  document.getElementById('hdr-icon').innerHTML = cfg.icon;
   document.getElementById('viz-label').textContent = cfg.vizLabel;
   document.getElementById('guide-intro-text').innerHTML = cfg.guideIntro;
 
@@ -103,7 +103,7 @@ function switchToEngTools() {
   document.getElementById('hdr-title').textContent = 'Engineering Tools';
   document.getElementById('hdr-sub').textContent = 'Butt fusion HDPE · Pressure loss · Buoyancy · Water hammer · Friction · Pipe load · Curah Hujan';
   document.getElementById('hdr-badge').textContent = '';
-  document.getElementById('hdr-icon').textContent = '🔬';
+  document.getElementById('hdr-icon').innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>';
   switchEngTool(currentEngTool);
 }
 
@@ -153,7 +153,7 @@ function switchToLibrary() {
   document.getElementById('hdr-title').textContent = 'Library & Form';
   document.getElementById('hdr-sub').textContent = 'Kumpulan dokumen, checklist, dan form standar';
   document.getElementById('hdr-badge').textContent = '';
-  document.getElementById('hdr-icon').textContent = '📚';
+  document.getElementById('hdr-icon').innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>';
   
   switchLibraryForm('siphonic');
 }
