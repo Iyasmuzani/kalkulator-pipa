@@ -60,6 +60,8 @@ body{
   display:flex;gap:8px;
   backdrop-filter:blur(8px);
   overflow:visible; /* changed from overflow-x:auto to allow dropdown to show */
+  position: relative;
+  z-index: 90;
 }
 .sys-btn{
   display:flex;align-items:center;gap:10px;
