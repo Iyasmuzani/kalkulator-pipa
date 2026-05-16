@@ -125,6 +125,7 @@ function calcBangunan() {
   <div class="result-item"><div class="rk">Pipa Cabang</div><div class="rv">${spec.l}${bD}<span class="ru"> mm</span></div></div>
   <div class="result-item"><div class="rk">PRV Diperlukan</div><div class="rv" style="color:${prv ? '#ffaa00' : '#00ff9d'}">${prv ? 'YA - ' + z + ' zona' : 'TIDAK'}</div></div>
   <div class="result-item"><div class="rk">Material</div><div class="rv" style="font-size:13px">${pm[pp]}</div></div></div></div>`;
+  if (typeof animateValues === 'function') animateValues();
 }
 
 function calcMiningDW() {
@@ -154,6 +155,7 @@ function calcMiningDW() {
   <div class="result-item"><div class="rk">Luas @2.5m depth</div><div class="rv">${spArea}<span class="ru"> m²</span></div></div>
   <div class="result-item"><div class="rk">Jumlah Kolam</div><div class="rv">2<span class="ru"> (paralel)</span></div></div>
   <div class="result-item"><div class="rk">Jarak Discharge</div><div class="rv">${dist}<span class="ru"> m</span></div></div></div></div>`;
+  if (typeof animateValues === 'function') animateValues();
 }
 
 function calcMiningSlurry() {
@@ -186,6 +188,7 @@ function calcMiningSlurry() {
   <div class="result-sec"><div class="result-sec-title">🛡️ Rekomendasi</div><div style="display:flex;flex-direction:column;gap:8px">
   <div class="rec-card"><div class="rec-icon">🔧</div><div class="rec-text">Panjang jalur <strong>${ln}m</strong>, beda elevasi <strong>${el}m</strong>. Friction loss ${Hf.toFixed(1)}m. ${parseFloat(vAct) < Vc ? '<strong style="color:#ff5555">⚠️ KECEPATAN DI BAWAH Vc — RISIKO SEDIMENTASI!</strong>' : 'Kecepatan aman di atas critical velocity.'}</div></div>
   <div class="rec-card"><div class="rec-icon">🛡️</div><div class="rec-text">Material liner: ${d50 > 5 ? '<strong>Ceramic tile</strong> (partikel kasar >5mm)' : '<strong>Rubber lining</strong> (partikel halus ≤5mm)'}. Inspeksi UT setiap 3–6 bulan.</div></div></div></div>`;
+  if (typeof animateValues === 'function') animateValues();
 }
 
 function calcDistribusi() {
@@ -222,6 +225,7 @@ function calcDistribusi() {
   <div class="result-item"><div class="rk">Air Valve</div><div class="rv">~${nAV}<span class="ru"> unit</span></div></div>
   <div class="result-item"><div class="rk">Hidran</div><div class="rv">~${nHyd}<span class="ru"> unit</span></div></div>
   <div class="result-item"><div class="rk">Bulk Meter</div><div class="rv">${nDMA}<span class="ru"> unit</span></div></div></div></div>`;
+  if (typeof animateValues === 'function') animateValues();
 }
 
 // ==================== SIPHONIC ROOF DRAIN CALCULATOR ====================
@@ -406,4 +410,5 @@ function calcSiphonic() {
   ${!headOK ? '<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text"><strong>Available head tidak cukup!</strong> Perbesar diameter pipa, kurangi panjang collecting pipe, atau tambah downpipe untuk mengurangi head loss.</div></div>' : ''}
   <div class="rec-card"><div class="rec-icon">📌</div><div class="rec-text">Hasil ini bersifat <strong>preliminary sizing</strong>. Desain final WAJIB diverifikasi menggunakan software hidraulik khusus dari <strong>produsen siphonic system</strong> dan engineer berpengalaman.</div></div>
   </div></div>`;
+  if (typeof animateValues === 'function') animateValues();
 }

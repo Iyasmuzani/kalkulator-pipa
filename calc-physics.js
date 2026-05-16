@@ -71,6 +71,7 @@ function calcPressLoss() {
   ${v > 2.5 ? '<div class="fusion-warn">⚠️ Kecepatan > 2.5 m/s — pertimbangkan diameter lebih besar</div>' : ''}
   ${v < 0.5 ? '<div class="fusion-warn">⚠️ Kecepatan < 0.5 m/s — risiko sedimentasi</div>' : ''}
   </div>`;
+  if (typeof animateValues === 'function') animateValues();
 }
 
 // ===== 2. BUOYANCY =====
@@ -162,6 +163,7 @@ function calcBuoyancy() {
     <div class="result-item"><div class="rk">Spacing ±50kg blok</div><div class="rv">setiap ${spacing > 0 ? spacing : 1}<span class="ru"> m</span></div></div>
   </div>`: ''}
   </div>`;
+  if (typeof animateValues === 'function') animateValues();
 }
 
 // ===== 3. WATER HAMMER (Joukowsky) =====
@@ -205,6 +207,7 @@ function calcWaterHammer() {
   </div></div>
   ${Ptotal > Pw * 1.5 ? '<div class="fusion-warn">⚠️ Surge pressure > 150% tekanan kerja! Pasang surge anticipator, air valve, atau slow-closing valve.</div>' : ''}
   ${mat === 'hdpe' ? '<div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed">💡 HDPE memiliki elastisitas tinggi — wave celerity lebih rendah dan meredam water hammer lebih baik dibanding pipa kaku.</div>' : ''}`;
+  if (typeof animateValues === 'function') animateValues();
 }
 
 // ===== 4. FRICTION LOSS (Darcy-Weisbach) =====
@@ -253,6 +256,7 @@ function calcFriction() {
     <div class="result-item"><div class="rk">Gradient</div><div class="rv">${(hf / L * 1000).toFixed(2)}<span class="ru"> m/km</span></div></div>
     <div class="result-item"><div class="rk">Kekasaran ε</div><div class="rv">${(eps * 1000).toFixed(4)}<span class="ru"> mm</span></div></div>
   </div></div>`;
+  if (typeof animateValues === 'function') animateValues();
 }
 
 // ===== 5. PIPE LOAD & DEFLECTION (AWWA M23) =====
@@ -384,6 +388,7 @@ function calcPipeLoad() {
   </div>` :
       `<div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-top:10px">💡 Pipa Rigid (beton/baja) dihitung berdasarkan Marston (Cd = ${Cd.toFixed(2)}). Bandingkan Total Beban ${Wtotal.toFixed(2)} kN/m dengan kuat hancur (Crushing Strength) dari pabrikan. Defleksi tidak dihitung.</div>`}
   `;
+  if (typeof animateValues === 'function') animateValues();
 }
 
 // ===== 6. RAINFALL INTENSITY & RUNOFF (SNI 8153:2025) =====
@@ -440,6 +445,7 @@ function calcRainfall() {
   <div class="fusion-warn" style="margin-top:10px">💡 <strong>Tips SNI 8153:2025</strong><br>
   Debit limpasan ini menentukan dimensi pipa talang (vertical leader) dan drainase mendatar. Pastikan memilih pipa dengan kapasitas aliran yang > <strong>${Q_Ls.toFixed(2)} L/s</strong>.</div>
   </div>`;
+  if (typeof animateValues === 'function') animateValues();
 }
 
 function buildTensileForm() {
@@ -517,4 +523,5 @@ function calcTensile() {
   Tabel ini digunakan untuk mengetahui beban tarik maksimum saat proses penarikan pipa (misal: <em>Horizontal Directional Drilling (HDD)</em>). Ketebalan mengacu pada standar minimum pipa PE100 SNI 4829:2015.</div>`;
   
   E('eng-results').innerHTML = html;
+  if (typeof animateValues === 'function') animateValues();
 }
