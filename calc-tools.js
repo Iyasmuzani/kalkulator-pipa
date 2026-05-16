@@ -32,10 +32,10 @@ function buildUnitConverterForm() {
   let opts = cats.map(c => `<option value="${c}">${c}</option>`).join('');
   document.getElementById('eng-form').innerHTML = `
   <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg> Unit Converter</div>
-  <div class="form-group"><label>Kategori</label><select id="uc-cat" onchange="ucCatChange()">${opts}</select></div>
-  <div class="form-group"><label>Dari</label><select id="uc-from"></select></div>
-  <div class="form-group"><label>Nilai</label><input type="number" id="uc-val" value="1" oninput="calcUnitConvert()"></div>
-  <div class="form-group"><label>Ke</label><select id="uc-to" onchange="calcUnitConvert()"></select></div>
+  <div class="form-group"><label class="form-label">Kategori</label><select id="uc-cat" class="form-control" onchange="ucCatChange()">${opts}</select></div>
+  <div class="form-group"><label class="form-label">Dari</label><select id="uc-from" class="form-control"></select></div>
+  <div class="form-group"><label class="form-label">Nilai</label><input type="number" id="uc-val" class="form-control" value="1" oninput="calcUnitConvert()"></div>
+  <div class="form-group"><label class="form-label">Ke</label><select id="uc-to" class="form-control" onchange="calcUnitConvert()"></select></div>
   <button class="calc-btn" onclick="calcUnitConvert()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Konversi</button>`;
   ucCatChange();
 }
@@ -151,7 +151,7 @@ const matGuide = {
 function buildMaterialGuideForm() {
   let html = `<div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Material Selection Guide</div>`;
   matGuide.questions.forEach(q => {
-    html += `<div class="form-group"><label>${q.label}</label><select id="mg-${q.id}">`;
+    html += `<div class="form-group"><label class="form-label">${q.label}</label><select id="mg-${q.id}" class="form-control">`;
     q.options.forEach(o => { html += `<option value="${o.v}">${o.l}</option>`; });
     html += `</select></div>`;
   });
