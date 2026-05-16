@@ -5,7 +5,7 @@ var Vf = function (id) { return parseFloat(E(id).value) || 0; };
 // ===== 1. PRESSURE LOSS (Hazen-Williams) =====
 function buildPressLossForm() {
   E('eng-form').innerHTML = `
-  <div class="form-title">📉 Pressure Loss <span style="font-size:10px;color:var(--text2);font-weight:400">Hazen-Williams</span></div>
+  <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Pressure Loss <span style="font-size:10px;color:var(--text2);font-weight:400">Hazen-Williams</span></div>
   <div class="form-group"><label class="form-label">Material Pipa</label>
   <select class="form-control" id="pl-mat" onchange="updateCfactor()">
     <option value="150">HDPE (C=150)</option><option value="150">PVC (C=150)</option>
@@ -16,7 +16,7 @@ function buildPressLossForm() {
   <div class="form-group"><label class="form-label">Debit (L/s)</label><input type="number" class="form-control" id="pl-q" min="0.1" max="5000" step="0.1" value="5"></div>
   <div class="form-group"><label class="form-label">C-Factor</label><input type="number" class="form-control" id="pl-c" min="50" max="160" value="150"></div>
   
-  <div class="form-title" style="margin-top:15px; font-size:12px; margin-bottom:8px">🔧 Komponen Minor Losses</div>
+  <div class="form-title" style="margin-top:15px; font-size:12px; margin-bottom:8px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Komponen Minor Losses</div>
   
   <div id="pl-hdpe-minor">
     <div class="form-group"><label class="form-label">Panjang per Batang Pipa (m)</label><input type="number" class="form-control" id="pl-pipe-len" min="1" max="250" value="12" title="Untuk menghitung jumlah sambungan butt fusion otomatis"></div>
@@ -27,7 +27,7 @@ function buildPressLossForm() {
   <div style="font-size:10.5px; color:var(--text2); margin-top:4px">Referensi K: Elbow 90°=0.3 | Tee Lurus=0.2 | Tee Belok=1.0 | Gate Valve=0.2</div>
   </div>
 
-  <button class="calc-btn" onclick="calcPressLoss()">⚡ Hitung Pressure Loss</button>`;
+  <button class="calc-btn" onclick="calcPressLoss()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Pressure Loss</button>`;
 }
 function updateCfactor() {
   E('pl-c').value = E('pl-mat').value;
@@ -58,7 +58,7 @@ function calcPressLoss() {
   var pBar = hf * 9.81 / 100;
   var hfPer100 = hf / L * 100;
   E('eng-results').innerHTML = `
-  <div class="eng-section"><div class="eng-section-title">📉 Hasil Pressure Loss</div>
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Hasil Pressure Loss</div>
   <div class="result-grid">
     <div class="result-item"><div class="rk">Kecepatan Aliran</div><div class="rv">${v.toFixed(2)}<span class="ru"> m/s</span></div></div>
     <div class="result-item"><div class="rk">Head Loss Mayor (Gesekan)</div><div class="rv">${hf_major.toFixed(2)}<span class="ru"> m</span></div></div>
@@ -68,8 +68,8 @@ function calcPressLoss() {
     <div class="result-item"><div class="rk">Head Loss /100m</div><div class="rv">${hfPer100.toFixed(3)}<span class="ru"> m/100m</span></div></div>
   </div>
   ${isHDPE ? `<div style="font-size:11px;color:var(--text2);margin-top:8px"><em>*Minor loss termasuk ${joints} sambungan butt-fusion</em></div>` : ''}
-  ${v > 2.5 ? '<div class="fusion-warn">⚠️ Kecepatan > 2.5 m/s — pertimbangkan diameter lebih besar</div>' : ''}
-  ${v < 0.5 ? '<div class="fusion-warn">⚠️ Kecepatan < 0.5 m/s — risiko sedimentasi</div>' : ''}
+  ${v > 2.5 ? '<div class="fusion-warn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Kecepatan > 2.5 m/s — pertimbangkan diameter lebih besar</div>' : ''}
+  ${v < 0.5 ? '<div class="fusion-warn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Kecepatan < 0.5 m/s — risiko sedimentasi</div>' : ''}
   </div>`;
   if (typeof animateValues === 'function') animateValues();
 }
@@ -81,7 +81,7 @@ function buildBuoyancyForm() {
   }).join('');
 
   E('eng-form').innerHTML = `
-  <div class="form-title">🌊 Buoyancy Pipa HDPE <span style="font-size:10px;color:var(--text2);font-weight:400">Instalasi Underwater</span></div>
+  <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg> Buoyancy Pipa HDPE <span style="font-size:10px;color:var(--text2);font-weight:400">Instalasi Underwater</span></div>
   <div class="form-group"><label class="form-label">Diameter Luar Pipa (OD) mm</label>
   <select class="form-control" id="by-od" onchange="updateBuoyancySDR()">${odOpts}</select></div>
   <div class="form-group"><label class="form-label">SDR / PN</label>
@@ -94,7 +94,7 @@ function buildBuoyancyForm() {
   <div class="form-group"><label class="form-label">Kondisi Pipa</label>
   <select class="form-control" id="by-cond"><option value="empty">Kosong (tanpa air)</option><option value="full">Penuh air</option></select></div>
   <div class="form-group"><label class="form-label">Safety Factor Ballast</label><input type="number" class="form-control" id="by-sf" min="1" max="2" step="0.05" value="1.1"></div>
-  <button class="calc-btn" onclick="calcBuoyancy()">⚡ Hitung Buoyancy</button>`;
+  <button class="calc-btn" onclick="calcBuoyancy()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Buoyancy</button>`;
   updateBuoyancySDR();
 }
 
@@ -144,14 +144,14 @@ function calcBuoyancy() {
   var ballastTotal = ballast * len;
   var spacing = needBallast ? Math.min(Math.floor(1 / (ballast / 50)), 5) : 0; // concrete block every N m
   E('eng-results').innerHTML = `
-  <div class="eng-section"><div class="eng-section-title">📋 Data Pipa</div>
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> Data Pipa</div>
   <div class="result-grid">
     <div class="result-item"><div class="rk">OD / en</div><div class="rv">${(od * 1000).toFixed(0)} / ${(en * 1000).toFixed(1)}<span class="ru"> mm</span></div></div>
     <div class="result-item"><div class="rk">ID</div><div class="rv">${(id * 1000).toFixed(1)}<span class="ru"> mm</span></div></div>
     <div class="result-item"><div class="rk">Berat Pipa</div><div class="rv">${wPipe.toFixed(2)}<span class="ru"> kg/m</span></div></div>
     <div class="result-item"><div class="rk">Kondisi</div><div class="rv">${full ? 'Penuh air' : 'Kosong'}</div></div>
   </div></div>
-  <div class="eng-section"><div class="eng-section-title">🌊 Analisis Buoyancy</div>
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg> Analisis Buoyancy</div>
   <div class="result-grid">
     <div class="result-item"><div class="rk">Gaya Apung</div><div class="rv">${Fb.toFixed(2)}<span class="ru"> kg/m</span></div></div>
     <div class="result-item"><div class="rk">Berat Total</div><div class="rv">${wTotal.toFixed(2)}<span class="ru"> kg/m</span></div></div>
@@ -169,7 +169,7 @@ function calcBuoyancy() {
 // ===== 3. WATER HAMMER (Joukowsky) =====
 function buildWaterHammerForm() {
   E('eng-form').innerHTML = `
-  <div class="form-title">💥 Water Hammer <span style="font-size:10px;color:var(--text2);font-weight:400">Joukowsky</span></div>
+  <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Water Hammer <span style="font-size:10px;color:var(--text2);font-weight:400">Joukowsky</span></div>
   <div class="form-group"><label class="form-label">Material Pipa</label>
   <select class="form-control" id="wh-mat"><option value="pvc">PVC (E=3 GPa)</option><option value="hdpe" selected>HDPE (E=0.8 GPa)</option><option value="ppr">PPR (E=0.9 GPa)</option><option value="steel">Baja (E=200 GPa)</option><option value="di">Ductile Iron (E=170 GPa)</option></select></div>
   <div class="form-group"><label class="form-label">Diameter Dalam (mm)</label><input type="number" class="form-control" id="wh-d" min="10" max="2000" value="200"></div>
@@ -177,7 +177,7 @@ function buildWaterHammerForm() {
   <div class="form-group"><label class="form-label">Kecepatan Aliran (m/s)</label><input type="number" class="form-control" id="wh-v" min="0.1" max="10" step="0.1" value="1.5"></div>
   <div class="form-group"><label class="form-label">Panjang Pipa (m)</label><input type="number" class="form-control" id="wh-l" min="10" max="50000" value="500"></div>
   <div class="form-group"><label class="form-label">Tekanan Kerja (bar)</label><input type="number" class="form-control" id="wh-pw" min="1" max="50" step="0.5" value="10"></div>
-  <button class="calc-btn" onclick="calcWaterHammer()">⚡ Hitung Water Hammer</button>`;
+  <button class="calc-btn" onclick="calcWaterHammer()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Water Hammer</button>`;
 }
 function calcWaterHammer() {
   var matE = { 'pvc': 3e9, 'hdpe': 0.8e9, 'ppr': 0.9e9, 'steel': 200e9, 'di': 170e9 };
@@ -194,7 +194,7 @@ function calcWaterHammer() {
   var Tr = 2 * L / a;
   var matNames = { 'pvc': 'PVC', 'hdpe': 'HDPE', 'ppr': 'PPR', 'steel': 'Baja', 'di': 'Ductile Iron' };
   E('eng-results').innerHTML = `
-  <div class="eng-section"><div class="eng-section-title">💥 Hasil Water Hammer — Joukowsky</div>
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hasil Water Hammer — Joukowsky</div>
   <div class="result-grid">
     <div class="result-item"><div class="rk">Wave Celerity (a)</div><div class="rv">${a.toFixed(1)}<span class="ru"> m/s</span></div></div>
     <div class="result-item"><div class="rk">Pressure Surge (ΔP)</div><div class="rv" style="color:#ff8c42">${dPbar.toFixed(2)}<span class="ru"> bar</span></div></div>
@@ -205,22 +205,22 @@ function calcWaterHammer() {
     <div class="result-item"><div class="rk">Reflection Time</div><div class="rv">${Tr.toFixed(2)}<span class="ru"> detik</span></div></div>
     <div class="result-item"><div class="rk">Material</div><div class="rv">${matNames[mat]}<span class="ru"> E=${(Ep / 1e9).toFixed(1)} GPa</span></div></div>
   </div></div>
-  ${Ptotal > Pw * 1.5 ? '<div class="fusion-warn">⚠️ Surge pressure > 150% tekanan kerja! Pasang surge anticipator, air valve, atau slow-closing valve.</div>' : ''}
-  ${mat === 'hdpe' ? '<div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed">💡 HDPE memiliki elastisitas tinggi — wave celerity lebih rendah dan meredam water hammer lebih baik dibanding pipa kaku.</div>' : ''}`;
+  ${Ptotal > Pw * 1.5 ? '<div class="fusion-warn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Surge pressure > 150% tekanan kerja! Pasang surge anticipator, air valve, atau slow-closing valve.</div>' : ''}
+  ${mat === 'hdpe' ? '<div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg> HDPE memiliki elastisitas tinggi — wave celerity lebih rendah dan meredam water hammer lebih baik dibanding pipa kaku.</div>' : ''}`;
   if (typeof animateValues === 'function') animateValues();
 }
 
 // ===== 4. FRICTION LOSS (Darcy-Weisbach) =====
 function buildFrictionForm() {
   E('eng-form').innerHTML = `
-  <div class="form-title">🔧 Friction Loss <span style="font-size:10px;color:var(--text2);font-weight:400">Darcy-Weisbach + Colebrook-White</span></div>
+  <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Friction Loss <span style="font-size:10px;color:var(--text2);font-weight:400">Darcy-Weisbach + Colebrook-White</span></div>
   <div class="form-group"><label class="form-label">Diameter Dalam (mm)</label><input type="number" class="form-control" id="fr-d" min="10" max="2000" value="200"></div>
   <div class="form-group"><label class="form-label">Panjang Pipa (m)</label><input type="number" class="form-control" id="fr-l" min="1" max="50000" value="500"></div>
   <div class="form-group"><label class="form-label">Debit (L/s)</label><input type="number" class="form-control" id="fr-q" min="0.1" max="5000" step="0.1" value="10"></div>
   <div class="form-group"><label class="form-label">Kekasaran Pipa ε (mm)</label>
   <select class="form-control" id="fr-e"><option value="0.0015">HDPE (0.0015 mm)</option><option value="0.0015">PVC (0.0015 mm)</option><option value="0.007">PPR (0.007 mm)</option><option value="0.15">Baja Galvanis (0.15 mm)</option><option value="0.26">Baja Karbon (0.26 mm)</option><option value="0.12">Ductile Iron (0.12 mm)</option></select></div>
   <div class="form-group"><label class="form-label">Suhu Air (°C)</label><input type="number" class="form-control" id="fr-t" min="5" max="80" value="25"></div>
-  <button class="calc-btn" onclick="calcFriction()">⚡ Hitung Friction Loss</button>`;
+  <button class="calc-btn" onclick="calcFriction()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Friction Loss</button>`;
 }
 function calcFriction() {
   var d = Vf('fr-d') / 1000;
@@ -243,7 +243,7 @@ function calcFriction() {
   var hf = f * (L / d) * v * v / (2 * 9.81);
   var pBar = hf * 9.81 / 100;
   E('eng-results').innerHTML = `
-  <div class="eng-section"><div class="eng-section-title">🔧 Hasil Friction Loss — Darcy-Weisbach</div>
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Hasil Friction Loss — Darcy-Weisbach</div>
   <div class="result-grid">
     <div class="result-item"><div class="rk">Kecepatan</div><div class="rv">${v.toFixed(3)}<span class="ru"> m/s</span></div></div>
     <div class="result-item"><div class="rk">Reynolds (Re)</div><div class="rv">${Math.round(Re).toLocaleString()}</div></div>
@@ -263,7 +263,7 @@ function calcFriction() {
 function buildPipeLoadForm() {
   var sdrOpts = [7.4, 9, 11, 13.6, 17, 21, 26].map(s => `<option value="${s}" ${s === 17 ? 'selected' : ''}>SDR ${s}</option>`).join('');
   E('eng-form').innerHTML = `
-  <div class="form-title">⚖️ Pipe Load & Defleksi <span style="font-size:10px;color:var(--text2);font-weight:400">AWWA M23 / Modified Iowa</span></div>
+  <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg> Pipe Load & Defleksi <span style="font-size:10px;color:var(--text2);font-weight:400">AWWA M23 / Modified Iowa</span></div>
   <div class="form-group"><label class="form-label">Tipe Pipa</label>
   <select class="form-control" id="ld-type" onchange="toggleLdSDR()"><option value="flexible" selected>Flexible (HDPE)</option><option value="rigid">Rigid (Beton/Baja)</option></select></div>
   <div class="form-group"><label class="form-label">Diameter Luar (OD) mm</label><input type="number" class="form-control" id="ld-od" min="50" max="2000" value="315"></div>
@@ -288,7 +288,7 @@ function buildPipeLoadForm() {
   </select></div>
   <div class="form-group"><label class="form-label">Deflection Lag Factor (Dl)</label>
   <select class="form-control" id="ld-dl"><option value="1.0">1.0 (Jangka Pendek)</option><option value="1.5" selected>1.5 (Jangka Panjang / Creep)</option></select></div>
-  <button class="calc-btn" onclick="calcPipeLoad()">⚡ Hitung Pipe Load & Defleksi</button>`;
+  <button class="calc-btn" onclick="calcPipeLoad()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Pipe Load & Defleksi</button>`;
 }
 
 function toggleLdSDR() {
@@ -363,7 +363,7 @@ function calcPipeLoad() {
   }
 
   E('eng-results').innerHTML = `
-  <div class="eng-section"><div class="eng-section-title">⚖️ Analisis Beban Tanah & Lalin</div>
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg> Analisis Beban Tanah & Lalin</div>
   <div class="result-grid">
     <div class="result-item"><div class="rk">Beban Mati (Dead Load)</div><div class="rv">${Wd.toFixed(2)}<span class="ru"> kN/m</span></div></div>
     <div class="result-item"><div class="rk">Beban Lalin (Live Load)</div><div class="rv">${Wl.toFixed(2)}<span class="ru"> kN/m</span></div></div>
@@ -372,7 +372,7 @@ function calcPipeLoad() {
   </div></div>
 
   ${type === 'flexible' ? `
-  <div class="eng-section"><div class="eng-section-title">📐 Prediksi Defleksi (Modified Iowa)</div>
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> Prediksi Defleksi (Modified Iowa)</div>
   <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
     ΔX = (Dl × K × Wc) / (8 EI/D³ + 0.061 E')
   </div>
@@ -383,10 +383,10 @@ function calcPipeLoad() {
     <div class="result-item"><div class="rk">Est. Defleksi (ΔX/D)</div><div class="rv" style="color:${deflPct > 5 ? '#ff5555' : '#00ff9d'};font-weight:700">${deflPct.toFixed(2)}<span class="ru"> %</span></div></div>
   </div>
   ${deflPct > 5 ? `
-  <div class="fusion-warn" style="margin-top:10px">⚠️ <strong>Defleksi > 5%! (Batas aman AWWA)</strong><br>
+  <div class="fusion-warn" style="margin-top:10px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> <strong>Defleksi > 5%! (Batas aman AWWA)</strong><br>
   Solusi: 1) Gunakan tanah urug yang lebih baik (E' lebih besar) dan padatkan >90% Proctor. 2) Turunkan nilai SDR pipa (dinding lebih tebal). 3) Tambah kedalaman tanam jika beban dominan adalah lalu lintas.</div>`: ''}
   </div>` :
-      `<div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-top:10px">💡 Pipa Rigid (beton/baja) dihitung berdasarkan Marston (Cd = ${Cd.toFixed(2)}). Bandingkan Total Beban ${Wtotal.toFixed(2)} kN/m dengan kuat hancur (Crushing Strength) dari pabrikan. Defleksi tidak dihitung.</div>`}
+      `<div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-top:10px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg> Pipa Rigid (beton/baja) dihitung berdasarkan Marston (Cd = ${Cd.toFixed(2)}). Bandingkan Total Beban ${Wtotal.toFixed(2)} kN/m dengan kuat hancur (Crushing Strength) dari pabrikan. Defleksi tidak dihitung.</div>`}
   `;
   if (typeof animateValues === 'function') animateValues();
 }
@@ -394,7 +394,7 @@ function calcPipeLoad() {
 // ===== 6. RAINFALL INTENSITY & RUNOFF (SNI 8153:2025) =====
 function buildRainfallForm() {
   E('eng-form').innerHTML = `
-  <div class="form-title">🌧️ Curah Hujan & Runoff <span style="font-size:10px;color:var(--text2);font-weight:400">SNI 8153:2025</span></div>
+  <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></svg> Curah Hujan & Runoff <span style="font-size:10px;color:var(--text2);font-weight:400">SNI 8153:2025</span></div>
   <div class="form-group"><label class="form-label">Curah Hujan Maks. Harian (R₂₄) mm</label><input type="number" class="form-control" id="rf-r24" min="10" max="1000" value="130" title="Contoh data BMKG: 130 mm/hari"></div>
   <div class="form-group"><label class="form-label">Durasi / Waktu Konsentrasi (menit)</label><input type="number" class="form-control" id="rf-t" min="1" max="1440" value="60" title="Standar SNI: Untuk atap biasanya 5-15 menit, luas besar bisa >60 menit"></div>
   <div class="form-group"><label class="form-label">Luas Area Tangkapan (m²)</label><input type="number" class="form-control" id="rf-a" min="1" max="1000000" value="500"></div>
@@ -406,7 +406,7 @@ function buildRainfallForm() {
     <option value="0.3">Green roof - 0.3</option>
   </select></div>
   <div class="form-group"><label class="form-label">Custom Koefisien (Opsional)</label><input type="number" class="form-control" id="rf-c-custom" min="0" max="1" step="0.01" value="" placeholder="Isi untuk override dropdown di atas"></div>
-  <button class="calc-btn" onclick="calcRainfall()">⚡ Hitung Debit Hujan</button>`;
+  <button class="calc-btn" onclick="calcRainfall()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Debit Hujan</button>`;
 }
 
 function calcRainfall() {
@@ -423,7 +423,7 @@ function calcRainfall() {
   var Q_m3h = Q_Ls * 3.6;
 
   E('eng-results').innerHTML = `
-  <div class="eng-section"><div class="eng-section-title">🌧️ Hasil Intensitas Curah Hujan</div>
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></svg> Hasil Intensitas Curah Hujan</div>
   <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
     I = (R₂₄ / 24) × (24 / t)^(2/3)
   </div>
@@ -432,7 +432,7 @@ function calcRainfall() {
     <div class="result-item"><div class="rk">Durasi Hujan (t)</div><div class="rv">${t_jam.toFixed(2)}<span class="ru"> jam</span></div></div>
   </div></div>
 
-  <div class="eng-section"><div class="eng-section-title">🌊 Debit Limpasan (Runoff)</div>
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg> Debit Limpasan (Runoff)</div>
   <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
     Q = (C × I × A) / 3600
   </div>
@@ -442,7 +442,7 @@ function calcRainfall() {
     <div class="result-item"><div class="rk">Koef. Limpasan (C)</div><div class="rv">${C}</div></div>
     <div class="result-item"><div class="rk">Luas Area (A)</div><div class="rv">${A_m2.toLocaleString()}<span class="ru"> m²</span></div></div>
   </div>
-  <div class="fusion-warn" style="margin-top:10px">💡 <strong>Tips SNI 8153:2025</strong><br>
+  <div class="fusion-warn" style="margin-top:10px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg> <strong>Tips SNI 8153:2025</strong><br>
   Debit limpasan ini menentukan dimensi pipa talang (vertical leader) dan drainase mendatar. Pastikan memilih pipa dengan kapasitas aliran yang > <strong>${Q_Ls.toFixed(2)} L/s</strong>.</div>
   </div>`;
   if (typeof animateValues === 'function') animateValues();
@@ -451,13 +451,13 @@ function calcRainfall() {
 function buildTensileForm() {
   var dOpts = [20,25,32,40,50,63,75,90,110,125,140,160,180,200,225,250,280,315,355,400,450,500,560,630,710,800,900,1000,1200];
   E('eng-form').innerHTML = `
-  <div class="eng-section-title">💪 Tensile Yield HDPE Rucika</div>
+  <div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 8h2"/><path d="M9 12h2"/></svg> Tensile Yield HDPE Rucika</div>
   <div class="form-group"><label class="form-label">Tegangan (Tensile Strength) (MPa)</label><input type="number" class="form-control" id="ts-sigma" min="1" max="100" value="20" title="Kuat tarik (Tensile strength at yield). Standar untuk HDPE PE100 umumnya 20 MPa"></div>
   <div class="form-group"><label class="form-label">Diameter Pipa (OD) (mm)</label>
   <select class="form-control" id="ts-od">
     ${dOpts.map(d => `<option value="${d}" ${d==90?'selected':''}>DN ${d} mm</option>`).join('')}
   </select></div>
-  <button class="calc-btn" onclick="calcTensile()">⚡ Hitung Gaya Tarik</button>`;
+  <button class="calc-btn" onclick="calcTensile()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Gaya Tarik</button>`;
 }
 
 function calcTensile() {
@@ -486,7 +486,7 @@ function calcTensile() {
     return Math.ceil((od/sdr)*10)/10;
   }
 
-  let html = `<div class="eng-section"><div class="eng-section-title">📊 Gaya Tarik Maksimum (ton)</div>
+  let html = `<div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Gaya Tarik Maksimum (ton)</div>
   <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
     σ = ${sigma} MPa | Pipa OD ${od} mm<br>
     F = A × σ / 10000 (ton)
@@ -519,7 +519,7 @@ function calcTensile() {
   });
 
   html += `</table></div>
-  <div class="fusion-warn" style="margin-top:10px">💡 <strong>Catatan Teknis:</strong><br>
+  <div class="fusion-warn" style="margin-top:10px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg> <strong>Catatan Teknis:</strong><br>
   Tabel ini digunakan untuk mengetahui beban tarik maksimum saat proses penarikan pipa (misal: <em>Horizontal Directional Drilling (HDD)</em>). Ketebalan mengacu pada standar minimum pipa PE100 SNI 4829:2015.</div>`;
   
   E('eng-results').innerHTML = html;

@@ -42,7 +42,7 @@ function buildFusionForm() {
   }).join('');
 
   document.getElementById('eng-form').innerHTML = `
-  <div class="form-title">🔗 Kalkulator Butt Fusion HDPE <span style="font-size:10px;color:var(--text2);font-weight:400">ISO 21307 / DVS 2207</span></div>
+  <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Kalkulator Butt Fusion HDPE <span style="font-size:10px;color:var(--text2);font-weight:400">ISO 21307 / DVS 2207</span></div>
   <div class="form-group"><label class="form-label">Diameter Luar Pipa (OD) — PE100</label>
   <select class="form-control" id="bf-od" onchange="updateSDRoptions()">${odOpts}</select></div>
   <div class="form-group"><label class="form-label">SDR / PN</label>
@@ -61,7 +61,7 @@ function buildFusionForm() {
   <input type="number" class="form-control" id="bf-ac" min="100" max="100000" value="4418" placeholder="Lihat spesifikasi mesin fusion"></div>
   <div class="form-group"><label class="form-label">Drag Pressure — DP (bar)</label>
   <input type="number" class="form-control" id="bf-drag" min="0" max="10" step="0.1" value="0.5"></div>
-  <button class="calc-btn" onclick="calcFusion()">⚡ Hitung Parameter Fusion</button>`;
+  <button class="calc-btn" onclick="calcFusion()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Parameter Fusion</button>`;
   updateSDRoptions();
 }
 
@@ -159,7 +159,7 @@ function calcISO21307(en, od, As, Ac, DP, mode, bead, temp) {
 
     coolingTime = Math.round((0.43 * en) * 60);
   } else { // DLP
-    if (en < 22) return '<div class="fusion-warn">⚠️ DLP hanya untuk wall thickness > 22mm. Ketebalan saat ini: ' + en + 'mm. Gunakan SLP atau SHP.</div>';
+    if (en < 22) return '<div class="fusion-warn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> DLP hanya untuk wall thickness > 22mm. Ketebalan saat ini: ' + en + 'mm. Gunakan SLP atau SHP.</div>';
     Thp = 232.5; // ±7,5°C per ISO 21307
     IP_bead = 0.15; // ±0.02 MPa
     IP_heat = 0.02;
@@ -196,7 +196,7 @@ function calcISO21307(en, od, As, Ac, DP, mode, bead, temp) {
   var coolMin = Math.floor(coolSec_total / 60), coolSec = coolSec_total % 60;
 
   return `
-  <div class="eng-section"><div class="eng-section-title">📋 Data Pipa — PE100</div>
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> Data Pipa — PE100</div>
   <div class="result-grid">
     <div class="result-item"><div class="rk">Diameter (OD)</div><div class="rv">${od}<span class="ru"> mm</span></div></div>
     <div class="result-item"><div class="rk">Wall Thickness (en)</div><div class="rv">${en}<span class="ru"> mm</span></div></div>
@@ -210,21 +210,21 @@ function calcISO21307(en, od, As, Ac, DP, mode, bead, temp) {
     <div class="result-item"><div class="rk">SDR</div><div class="rv">${document.getElementById('bf-sdr').value}</div></div>
   </div></div>
 
-  <div class="eng-section"><div class="eng-section-title">🔗 ISO 21307:2017 — ${fuseLabel} (${mode})</div>
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> ISO 21307:2017 — ${fuseLabel} (${mode})</div>
   <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px">
-    📐 Rumus: <strong>GP = (IP × As / Ac) + DP</strong> &nbsp;|&nbsp; As = π × (dn − en) × en &nbsp;|&nbsp; As = ${Math.round(As).toLocaleString()} mm²
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> Rumus: <strong>GP = (IP × As / Ac) + DP</strong> &nbsp;|&nbsp; As = π × (dn − en) × en &nbsp;|&nbsp; As = ${Math.round(As).toLocaleString()} mm²
   </div>
   <table class="fusion-table">
   <tr><th>Tahap</th><th>IP (MPa)</th><th>Gauge P (bar)</th><th>Waktu</th><th>Keterangan</th></tr>
-  <tr><td>🔴 Bead-up</td><td class="fusion-val">${IP_bead} ±0.02</td><td class="fusion-val">${GP_bead.toFixed(1)}</td><td class="fusion-val">—</td><td>Bead terbentuk ≥${bead}mm</td></tr>
-  <tr><td>🟡 Heat Soak</td><td class="fusion-val">≤ 0.02</td><td class="fusion-val">${GP_heat.toFixed(1)}</td><td class="fusion-val">${heatMin}m ${heatSec}s</td><td>13.5 × en = ${heatSoakTime}s</td></tr>
-  <tr><td>⚡ Changeover</td><td colspan="2" style="color:var(--warn)">Secepat mungkin</td><td class="fusion-val">≤ ${changeoverMax}s</td><td>3 + 0.03×dn</td></tr>
-  <tr><td>🟢 Fusion Join</td><td class="fusion-val" style="color:${mode === 'SHP' ? '#ff8c42' : '#00e5ff'}">${IP_fuse}</td><td class="fusion-val" style="color:${mode === 'SHP' ? '#ff8c42' : '#00e5ff'}">${GP_fuse.toFixed(1)}</td><td class="fusion-val">${typeof pressBuildup === 'number' ? pressBuildup + 's buildup' : pressBuildup}</td><td>Force: ${F_fuse} kN</td></tr>
-  ${mode === 'DLP' ? `<tr><td>🔵 Cooling P2</td><td class="fusion-val">${IP_cool}</td><td class="fusion-val">${GP_cool.toFixed(1)}</td><td class="fusion-val">${coolMin}m ${coolSec}s</td><td>Reduced pressure phase${tempNotes}</td></tr>` : ''}
-  ${mode === 'DLP' ? '' : `<tr><td>❄️ Cooling</td><td class="fusion-val" style="color:${mode === 'SHP' ? '#ff8c42' : '#00e5ff'}">${IP_fuse}</td><td class="fusion-val" style="color:${mode === 'SHP' ? '#ff8c42' : '#00e5ff'}">${GP_fuse.toFixed(1)}</td><td class="fusion-val">${coolMin}m ${coolSec}s</td><td>Pertahankan tekanan join. ${en < 18 ? '(en+3) min' : '0.015en²−0.47en+20 min'}${tempNotes}</td></tr>`}
-  <tr><td>🌡️ Heater Plate</td><td colspan="2" class="fusion-val">${Thp}°C ${mode === 'SHP' ? '± 15' : (mode === 'DLP' ? '± 7.5' : '± 10')}</td><td>—</td><td>Cek dengan pyrometer</td></tr>
+  <tr><td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10" fill="#ff4444" stroke="none"/></svg> Bead-up</td><td class="fusion-val">${IP_bead} ±0.02</td><td class="fusion-val">${GP_bead.toFixed(1)}</td><td class="fusion-val">—</td><td>Bead terbentuk ≥${bead}mm</td></tr>
+  <tr><td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10" fill="#ffaa00" stroke="none"/></svg> Heat Soak</td><td class="fusion-val">≤ 0.02</td><td class="fusion-val">${GP_heat.toFixed(1)}</td><td class="fusion-val">${heatMin}m ${heatSec}s</td><td>13.5 × en = ${heatSoakTime}s</td></tr>
+  <tr><td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Changeover</td><td colspan="2" style="color:var(--warn)">Secepat mungkin</td><td class="fusion-val">≤ ${changeoverMax}s</td><td>3 + 0.03×dn</td></tr>
+  <tr><td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10" fill="#00ff9d" stroke="none"/></svg> Fusion Join</td><td class="fusion-val" style="color:${mode === 'SHP' ? '#ff8c42' : '#00e5ff'}">${IP_fuse}</td><td class="fusion-val" style="color:${mode === 'SHP' ? '#ff8c42' : '#00e5ff'}">${GP_fuse.toFixed(1)}</td><td class="fusion-val">${typeof pressBuildup === 'number' ? pressBuildup + 's buildup' : pressBuildup}</td><td>Force: ${F_fuse} kN</td></tr>
+  ${mode === 'DLP' ? `<tr><td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10" fill="#4488ff" stroke="none"/></svg> Cooling P2</td><td class="fusion-val">${IP_cool}</td><td class="fusion-val">${GP_cool.toFixed(1)}</td><td class="fusion-val">${coolMin}m ${coolSec}s</td><td>Reduced pressure phase${tempNotes}</td></tr>` : ''}
+  ${mode === 'DLP' ? '' : `<tr><td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><line x1="12" y1="2" x2="12" y2="22"/><path d="M20 16l-4-4 4-4"/><path d="M4 16l4-4-4-4"/><path d="M16 4l-4 4-4-4"/><path d="M16 20l-4-4-4 4"/></svg> Cooling</td><td class="fusion-val" style="color:${mode === 'SHP' ? '#ff8c42' : '#00e5ff'}">${IP_fuse}</td><td class="fusion-val" style="color:${mode === 'SHP' ? '#ff8c42' : '#00e5ff'}">${GP_fuse.toFixed(1)}</td><td class="fusion-val">${coolMin}m ${coolSec}s</td><td>Pertahankan tekanan join. ${en < 18 ? '(en+3) min' : '0.015en²−0.47en+20 min'}${tempNotes}</td></tr>`}
+  <tr><td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg> Heater Plate</td><td colspan="2" class="fusion-val">${Thp}°C ${mode === 'SHP' ? '± 15' : (mode === 'DLP' ? '± 7.5' : '± 10')}</td><td>—</td><td>Cek dengan pyrometer</td></tr>
   </table>
-  <div class="fusion-warn">⚠️ Selalu verifikasi dengan tabel resmi ISO 21307:2017 dan rekomendasi pabrikan mesin. Parameter untuk OD ${od}mm, en ${en}mm, Ac ${Ac} mm².</div>
+  <div class="fusion-warn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Selalu verifikasi dengan tabel resmi ISO 21307:2017 dan rekomendasi pabrikan mesin. Parameter untuk OD ${od}mm, en ${en}mm, Ac ${Ac} mm².</div>
   </div>`;
 }
 
@@ -266,7 +266,7 @@ function calcDVS2207(en, od, As, Ac, DP, bead) {
   var coolMin = Math.floor(coolingTime / 60), coolSec = coolingTime % 60;
 
   return `
-  <div class="eng-section"><div class="eng-section-title">📋 Data Pipa — PE100</div>
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> Data Pipa — PE100</div>
   <div class="result-grid">
     <div class="result-item"><div class="rk">Diameter (OD)</div><div class="rv">${od}<span class="ru"> mm</span></div></div>
     <div class="result-item"><div class="rk">Wall Thickness (en)</div><div class="rv">${en}<span class="ru"> mm</span></div></div>
@@ -280,19 +280,19 @@ function calcDVS2207(en, od, As, Ac, DP, bead) {
     <div class="result-item"><div class="rk">SDR</div><div class="rv">${document.getElementById('bf-sdr').value}</div></div>
   </div></div>
 
-  <div class="eng-section"><div class="eng-section-title">🔗 DVS 2207-1 — PE100</div>
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> DVS 2207-1 — PE100</div>
   <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px">
-    📐 Rumus: <strong>GP = (IP × As / Ac) + DP</strong> &nbsp;|&nbsp; As = π × (dn − en) × en &nbsp;|&nbsp; As = ${Math.round(As).toLocaleString()} mm²
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> Rumus: <strong>GP = (IP × As / Ac) + DP</strong> &nbsp;|&nbsp; As = π × (dn − en) × en &nbsp;|&nbsp; As = ${Math.round(As).toLocaleString()} mm²
   </div>
   <table class="fusion-table">
   <tr><th>Tahap</th><th>IP (N/mm²)</th><th>Gauge P (bar)</th><th>Waktu</th><th>Keterangan</th></tr>
-  <tr><td>🔴 Alignment</td><td class="fusion-val">0.15</td><td class="fusion-val">${GP_bead.toFixed(1)}</td><td class="fusion-val">—</td><td>Bead terbentuk ≥${bead}mm</td></tr>
-  <tr><td>🟡 Heating</td><td class="fusion-val">≤ 0.02</td><td class="fusion-val">${GP_heat.toFixed(1)}</td><td class="fusion-val">${heatMin}m ${heatSec}s</td><td>10 × en = ${heatSoakTime}s</td></tr>
-  <tr><td>⚡ Changeover</td><td colspan="2" style="color:var(--warn)">Secepat mungkin</td><td class="fusion-val">≤ ${changeoverMax}s</td><td>Per DVS tabel</td></tr>
-  <tr><td>🟢 Joining</td><td class="fusion-val">0.15 ±0.01</td><td class="fusion-val">${GP_join.toFixed(1)}</td><td class="fusion-val">${pressBuildup}s buildup</td><td>Force: ${F_join} kN</td></tr>
-  <tr><td>❄️ Cooling</td><td class="fusion-val">0.15 ±0.01</td><td class="fusion-val">${GP_join.toFixed(1)}</td><td class="fusion-val">${coolMin}m ${coolSec}s</td><td>Pertahankan tekanan join. 10×en+10 = ${coolingTime}s</td></tr>
-  <tr><td>🌡️ Heater Plate</td><td colspan="2" class="fusion-val">${Thp}°C</td><td>—</td><td>PE100: 220°C</td></tr>
+  <tr><td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10" fill="#ff4444" stroke="none"/></svg> Alignment</td><td class="fusion-val">0.15</td><td class="fusion-val">${GP_bead.toFixed(1)}</td><td class="fusion-val">—</td><td>Bead terbentuk ≥${bead}mm</td></tr>
+  <tr><td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10" fill="#ffaa00" stroke="none"/></svg> Heating</td><td class="fusion-val">≤ 0.02</td><td class="fusion-val">${GP_heat.toFixed(1)}</td><td class="fusion-val">${heatMin}m ${heatSec}s</td><td>10 × en = ${heatSoakTime}s</td></tr>
+  <tr><td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Changeover</td><td colspan="2" style="color:var(--warn)">Secepat mungkin</td><td class="fusion-val">≤ ${changeoverMax}s</td><td>Per DVS tabel</td></tr>
+  <tr><td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10" fill="#00ff9d" stroke="none"/></svg> Joining</td><td class="fusion-val">0.15 ±0.01</td><td class="fusion-val">${GP_join.toFixed(1)}</td><td class="fusion-val">${pressBuildup}s buildup</td><td>Force: ${F_join} kN</td></tr>
+  <tr><td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><line x1="12" y1="2" x2="12" y2="22"/><path d="M20 16l-4-4 4-4"/><path d="M4 16l4-4-4-4"/><path d="M16 4l-4 4-4-4"/><path d="M16 20l-4-4-4 4"/></svg> Cooling</td><td class="fusion-val">0.15 ±0.01</td><td class="fusion-val">${GP_join.toFixed(1)}</td><td class="fusion-val">${coolMin}m ${coolSec}s</td><td>Pertahankan tekanan join. 10×en+10 = ${coolingTime}s</td></tr>
+  <tr><td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg> Heater Plate</td><td colspan="2" class="fusion-val">${Thp}°C</td><td>—</td><td>PE100: 220°C</td></tr>
   </table>
-  <div class="fusion-warn">⚠️ Selalu verifikasi dengan tabel resmi DVS 2207-1 dan WPS yang disetujui. Parameter untuk OD ${od}mm, en ${en}mm, Ac ${Ac} mm².</div>
+  <div class="fusion-warn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Selalu verifikasi dengan tabel resmi DVS 2207-1 dan WPS yang disetujui. Parameter untuk OD ${od}mm, en ${en}mm, Ac ${Ac} mm².</div>
   </div>`;
 }

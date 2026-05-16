@@ -242,7 +242,7 @@ function buildCompGrid() {
 function openModal(id) {
   const d = systemConfig[currentSystem].compData()[id];
   document.getElementById('modal-content').innerHTML = `
-    <button class="modal-close" onclick="document.getElementById('modal-overlay').classList.remove('open')">✕</button>
+    <button class="modal-close" onclick="document.getElementById('modal-overlay').classList.remove('open')">×</button>
     <div class="cp-header" style="margin-top:4px">
       <div class="cp-icon" style="background:${d.bg};border:1.5px solid ${d.ac};color:${d.ac}">${d.icon}</div>
       <div><div class="cp-name">${d.name}</div><div class="cp-code" style="color:${d.ac}">${d.code}</div></div>
