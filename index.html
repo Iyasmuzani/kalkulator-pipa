@@ -23,34 +23,49 @@
 
   <!-- SYSTEM SELECTOR -->
   <div class="system-bar">
-    <div class="sys-btn active" onclick="switchSystem('bangunan')" id="sys-bangunan">
-      <div class="sys-icon">🏢</div>
-      <div>
-        <div class="sys-label">Bangunan</div>
-        <div class="sys-desc">Perpipaan & pompa gedung</div>
+    
+    <div class="sys-dropdown" id="sys-dropdown-container">
+      <div class="sys-btn active" onclick="toggleDropdown(event)" id="sys-main-btn">
+        <div class="sys-icon">🚰</div>
+        <div>
+          <div class="sys-label">Sistem Perpipaan</div>
+          <div class="sys-desc" id="sys-main-desc">Pilih modul sistem perpipaan</div>
+        </div>
+        <div style="margin-left: 8px; color: var(--text2); font-size: 18px;" id="sys-main-chevron">⌄</div>
+      </div>
+      
+      <div class="sys-dropdown-content" id="sys-dropdown-content">
+        <div class="sys-dropdown-item" onclick="switchSystem('bangunan')" id="sys-bangunan">
+          <div class="sys-icon">🏢</div>
+          <div>
+            <div class="sys-label">Bangunan</div>
+            <div class="sys-desc">Perpipaan & pompa gedung</div>
+          </div>
+        </div>
+        <div class="sys-dropdown-item" onclick="switchSystem('tambang')" id="sys-tambang">
+          <div class="sys-icon">⛏️</div>
+          <div>
+            <div class="sys-label">Tambang</div>
+            <div class="sys-desc">Dewatering & slurry transport</div>
+          </div>
+        </div>
+        <div class="sys-dropdown-item" onclick="switchSystem('distribusi')" id="sys-distribusi">
+          <div class="sys-icon">🌐</div>
+          <div>
+            <div class="sys-label">Distribusi Air</div>
+            <div class="sys-desc">Jaringan transmisi & distribusi</div>
+          </div>
+        </div>
+        <div class="sys-dropdown-item sys-siphonic" onclick="switchSystem('siphonic')" id="sys-siphonic">
+          <div class="sys-icon">🌧️</div>
+          <div>
+            <div class="sys-label">Drainase Atap</div>
+            <div class="sys-desc">Siphonic roof drain system</div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="sys-btn" onclick="switchSystem('tambang')" id="sys-tambang">
-      <div class="sys-icon">⛏️</div>
-      <div>
-        <div class="sys-label">Tambang</div>
-        <div class="sys-desc">Dewatering & slurry transport</div>
-      </div>
-    </div>
-    <div class="sys-btn" onclick="switchSystem('distribusi')" id="sys-distribusi">
-      <div class="sys-icon">🌐</div>
-      <div>
-        <div class="sys-label">Distribusi Air</div>
-        <div class="sys-desc">Jaringan transmisi & distribusi</div>
-      </div>
-    </div>
-    <div class="sys-btn sys-siphonic" onclick="switchSystem('siphonic')" id="sys-siphonic">
-      <div class="sys-icon">🌧️</div>
-      <div>
-        <div class="sys-label">Drainase Atap</div>
-        <div class="sys-desc">Siphonic roof drain system</div>
-      </div>
-    </div>
+
     <div class="sys-btn sys-eng" onclick="switchToEngTools()" id="sys-engineering">
       <div class="sys-icon">🔬</div>
       <div>

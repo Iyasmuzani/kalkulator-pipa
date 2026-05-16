@@ -59,8 +59,18 @@ function switchSystem(sys) {
   if (document.getElementById('library-panel')) document.getElementById('library-panel').style.display = 'none';
   document.querySelector('.tabs').style.display = '';
   document.querySelector('.content').style.display = '';
+  
+  // Handle active states for new dropdown structure
   document.querySelectorAll('.sys-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.sys-dropdown-item').forEach(b => b.classList.remove('active'));
+  
+  document.getElementById('sys-main-btn').classList.add('active');
   document.getElementById('sys-' + sys).classList.add('active');
+  
+  // Close dropdown
+  document.getElementById('sys-dropdown-content').classList.remove('show');
+  const chevron = document.getElementById('sys-main-chevron');
+  if(chevron) chevron.style.transform = 'rotate(0deg)';
 
   const cfg = systemConfig[sys];
   document.getElementById('hdr-title').textContent = cfg.title;
@@ -84,6 +94,7 @@ let currentEngTool = 'fusion';
 
 function switchToEngTools() {
   document.querySelectorAll('.sys-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.sys-dropdown-item').forEach(b => b.classList.remove('active'));
   document.getElementById('sys-engineering').classList.add('active');
   document.querySelector('.tabs').style.display = 'none';
   document.querySelector('.content').style.display = 'none';
@@ -132,6 +143,7 @@ function switchEngTool(tool) {
 // ==================== LIBRARY & FORMS ====================
 function switchToLibrary() {
   document.querySelectorAll('.sys-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.sys-dropdown-item').forEach(b => b.classList.remove('active'));
   document.getElementById('sys-library').classList.add('active');
   document.querySelector('.tabs').style.display = 'none';
   document.querySelector('.content').style.display = 'none';
@@ -294,6 +306,34 @@ function onCheck(step, item, cb) {
   const stepDone = [...stepChecks].every(x => x.checked);
   document.getElementById('sn-' + step).classList.toggle('done', stepDone);
 }
+
+// ==================== DROPDOWN MENU ====================
+function toggleDropdown(e) {
+  if (e) e.stopPropagation();
+  const content = document.getElementById('sys-dropdown-content');
+  const chevron = document.getElementById('sys-main-chevron');
+  if (!content) return;
+  const isShowing = content.classList.contains('show');
+  
+  if (isShowing) {
+    content.classList.remove('show');
+    if(chevron) chevron.style.transform = 'rotate(0deg)';
+  } else {
+    content.classList.add('show');
+    if(chevron) chevron.style.transform = 'rotate(180deg)';
+  }
+}
+
+window.addEventListener('click', function(event) {
+  if (!event.target.closest('.sys-dropdown')) {
+    const content = document.getElementById('sys-dropdown-content');
+    const chevron = document.getElementById('sys-main-chevron');
+    if (content && content.classList.contains('show')) {
+      content.classList.remove('show');
+      if(chevron) chevron.style.transform = 'rotate(0deg)';
+    }
+  }
+});
 
 // ==================== INIT ====================
 buildSVG();

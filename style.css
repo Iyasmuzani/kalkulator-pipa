@@ -59,7 +59,7 @@ body{
   padding:.65rem 1.5rem;
   display:flex;gap:8px;
   backdrop-filter:blur(8px);
-  overflow-x:auto;
+  overflow:visible; /* changed from overflow-x:auto to allow dropdown to show */
 }
 .sys-btn{
   display:flex;align-items:center;gap:10px;
@@ -90,10 +90,68 @@ body{
   border-color:var(--sys-accent);
   background:rgba(var(--sys-accent-rgb,0,212,255),.12);
 }
-.sys-label{font-size:13px;font-weight:600;color:var(--text2);transition:color .3s}
-.sys-desc{font-size:10px;color:rgba(122,154,184,.6);margin-top:1px;transition:color .3s}
+.sys-label{font-size:13px;font-weight:600;color:var(--text2);transition:color .3s;white-space:nowrap}
+.sys-desc{font-size:10px;color:rgba(122,154,184,.6);margin-top:1px;transition:color .3s;white-space:nowrap}
 .sys-btn.active .sys-label{color:#fff}
 .sys-btn.active .sys-desc{color:var(--text2)}
+
+/* DROPDOWN MENU */
+.sys-dropdown {
+  position: relative;
+  display: inline-block;
+}
+.sys-dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 10px;
+  background: rgba(13,27,42,0.95);
+  min-width: 280px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  backdrop-filter: blur(12px);
+  z-index: 200;
+  overflow: hidden;
+  animation: fadeDown 0.2s ease-out forwards;
+}
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.sys-dropdown-content.show {
+  display: flex;
+  flex-direction: column;
+}
+.sys-dropdown-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.sys-dropdown-item:last-child {
+  border-bottom: none;
+}
+.sys-dropdown-item:hover {
+  background: rgba(255,255,255,.05);
+}
+.sys-dropdown-item .sys-icon {
+  width: 32px; height: 32px; font-size: 16px;
+}
+.sys-dropdown-item .sys-label {
+  color: #fff; font-size: 13px; font-weight: 600;
+}
+.sys-dropdown-item .sys-desc {
+  color: var(--text2); font-size: 10px; margin-top: 1px;
+}
+.sys-dropdown-item.active {
+  background: rgba(var(--sys-accent-rgb,0,212,255),.08);
+}
+.sys-dropdown-item.active .sys-icon {
+  border-color: var(--sys-accent);
+}
 
 /* System themes */
 [data-system="bangunan"] { --sys-accent:#00d4ff; --sys-accent-rgb:0,212,255; }
