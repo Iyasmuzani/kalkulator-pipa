@@ -133,7 +133,7 @@ function switchEngTool(tool) {
   if (builders[tool]) builders[tool]();
   document.getElementById('eng-results').innerHTML = `
     <div class="rec-placeholder">
-      <div style="font-size:48px;opacity:.2">🔬</div>
+      <div><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.2; margin-bottom: 10px;"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg></div>
       <div style="font-size:13px;color:var(--text2);max-width:220px;line-height:1.7;text-align:center">
         Isi parameter di panel kiri, lalu klik <strong style="color:#00e5ff">Hitung</strong>
       </div>
@@ -172,7 +172,7 @@ function resetCompPanel() {
   const count = Object.keys(systemConfig[currentSystem].compData()).length;
   document.getElementById('comp-panel').innerHTML = `
     <div class="placeholder">
-      <div class="ph-icon">👆</div>
+      <div class="ph-icon"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.2"><path d="M4 4l7.07 17 2.51-7.39L21 11.07z"/></svg></div>
       <div class="ph-text">Klik salah satu komponen pada diagram di sebelah kiri</div>
       <div class="ph-hint">${count} KOMPONEN TERSEDIA</div>
     </div>`;
@@ -182,7 +182,7 @@ function resetCompPanel() {
 function resetCalcResults() {
   document.getElementById('rec-results').innerHTML = `
     <div class="rec-placeholder">
-      <div style="font-size:48px;opacity:.2">🎯</div>
+      <div><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.2; margin-bottom: 10px;"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
       <div style="font-size:13px;color:var(--text2);max-width:220px;line-height:1.7;text-align:center">
         Isi data di panel kiri, lalu klik <strong style="color:var(--sys-accent)">Hitung</strong>
         untuk mendapatkan spesifikasi teknis otomatis
@@ -289,7 +289,7 @@ function buildGuide() {
               <span>${c}</span>
             </label>`).join('')}
         </div>
-        <div class="step-warning">⚠️ <span>${s.warn}</span></div>
+        <div class="step-warning"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg> <span>${s.warn}</span></div>
       </div>
     </div>`).join('');
 }
