@@ -183,79 +183,79 @@ const pipeStandards = {
     color: '#00bcd4',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="6"/><line x1="8" y1="6" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="18"/></svg>',
     items: [
-      { std: 'SNI 4829.1:2015', title: 'Sistem Perpipaan Plastik — PE untuk Air Minum — Bagian 1: Umum', scope: 'Klasifikasi, terminologi, dan persyaratan umum pipa PE untuk transportasi air minum. Adopsi ISO 4427-1:2007 (MOD).', type: 'SNI' },
-      { std: 'SNI 4829.2:2015', title: 'Sistem Perpipaan Plastik — PE untuk Air Minum — Bagian 2: Pipa', scope: 'Spesifikasi pipa PE100/PE80 (dimensi, tekanan, toleransi). Adopsi ISO 4427-2:2007 (MOD).', type: 'SNI' },
-      { std: 'SNI 4829.3:2015', title: 'Sistem Perpipaan Plastik — PE untuk Air Minum — Bagian 3: Fitting', scope: 'Spesifikasi fitting compression, butt fusion, electrofusion, dan spigot end.', type: 'SNI' },
-      { std: 'SNI 4829.5:2015', title: 'Sistem Perpipaan Plastik — PE untuk Air Minum — Bagian 5: Fitness for Purpose', scope: 'Persyaratan kesesuaian penggunaan, ketahanan tekanan jangka panjang (MRS/LPL).', type: 'SNI' },
-      { std: 'ISO 4427-1:2019', title: 'PE Piping Systems — Part 1: General', scope: 'Standar internasional acuan untuk sistem perpipaan PE untuk air minum.', type: 'ISO' },
-      { std: 'ISO 4427-2:2019', title: 'PE Piping Systems — Part 2: Pipes', scope: 'Dimensi pipa PE DN10–DN2000, ketebalan dinding minimum per SDR.', type: 'ISO' },
-      { std: 'ISO 4427-3:2019', title: 'PE Piping Systems — Part 3: Fittings', scope: 'Spesifikasi fitting PE untuk sambungan mekanis dan fusion.', type: 'ISO' },
-      { std: 'ISO 4427-5:2019', title: 'PE Piping Systems — Part 5: Fitness for Purpose', scope: 'Uji kesesuaian jangka panjang: hydrostatic pressure, slow crack growth, RCP.', type: 'ISO' },
-      { std: 'ISO 21307:2017', title: 'Plastics Pipes — Butt Fusion Jointing Procedures', scope: 'Parameter butt fusion (suhu, tekanan, waktu) untuk pipa PE. Acuan utama installer.', type: 'ISO' },
-      { std: 'DVS 2207-1:2015', title: 'Welding of Thermoplastics — Heated Tool Butt Welding (PE)', scope: 'Standar Jerman untuk pengelasan butt fusion PE100. Parameter detail per ketebalan dinding.', type: 'DVS' },
-      { std: 'ISO 12176-1:2017', title: 'Plastics Pipes — Equipment for Fusion Jointing — Part 1: Butt Fusion', scope: 'Spesifikasi alat butt fusion (mesin, heater plate, facing tool).', type: 'ISO' },
-      { std: 'ISO 12176-2:2008', title: 'Plastics Pipes — Equipment for Fusion Jointing — Part 2: Electrofusion', scope: 'Spesifikasi alat electrofusion (kontrol unit, barcode scanner).', type: 'ISO' },
-      { std: 'ISO 13953:2001', title: 'PE Pipes — Determination of Tensile Strength', scope: 'Metode uji kuat tarik sambungan butt fusion (Tensile Test).', type: 'ISO' },
-      { std: 'ISO 13954:1997', title: 'PE Pipes — Peel Decohesion Test for Electrofusion', scope: 'Metode uji kekuatan sambungan electrofusion.', type: 'ISO' },
-      { std: 'AWWA M55', title: 'PE Pipe — Design and Installation', scope: 'Manual desain dan instalasi pipa PE untuk air (flotation, deflection, thrust restraint).', type: 'AWWA' },
-      { std: 'AWWA C906', title: 'PE Pressure Pipe and Fittings, 4 in. through 65 in.', scope: 'Standar material dan pengujian pipa PE bertekanan diameter besar.', type: 'AWWA' },
-      { std: 'AS/NZS 4130:2018', title: 'PE Pipes for Pressure Applications', scope: 'Standar Australia/NZ untuk pipa PE bertekanan (series 1 & 2).', type: 'AS/NZS' },
+      { std: 'SNI 4829.1:2015', pdf: 'standards/hdpe/sni_4829.12015.pdf', title: 'Sistem Perpipaan Plastik — PE untuk Air Minum — Bagian 1: Umum', scope: 'Klasifikasi, terminologi, dan persyaratan umum pipa PE untuk transportasi air minum. Adopsi ISO 4427-1:2007 (MOD).', type: 'SNI' },
+      { std: 'SNI 4829.2:2015', pdf: 'standards/hdpe/sni_4829.22015.pdf', title: 'Sistem Perpipaan Plastik — PE untuk Air Minum — Bagian 2: Pipa', scope: 'Spesifikasi pipa PE100/PE80 (dimensi, tekanan, toleransi). Adopsi ISO 4427-2:2007 (MOD).', type: 'SNI' },
+      { std: 'SNI 4829.3:2015', pdf: 'standards/hdpe/sni_4829.32015.pdf', title: 'Sistem Perpipaan Plastik — PE untuk Air Minum — Bagian 3: Fitting', scope: 'Spesifikasi fitting compression, butt fusion, electrofusion, dan spigot end.', type: 'SNI' },
+      { std: 'SNI 4829.5:2015', pdf: 'standards/hdpe/sni_4829.52015.pdf', title: 'Sistem Perpipaan Plastik — PE untuk Air Minum — Bagian 5: Fitness for Purpose', scope: 'Persyaratan kesesuaian penggunaan, ketahanan tekanan jangka panjang (MRS/LPL).', type: 'SNI' },
+      { std: 'ISO 4427-1:2019', pdf: 'standards/hdpe/iso_4427-12019.pdf', title: 'PE Piping Systems — Part 1: General', scope: 'Standar internasional acuan untuk sistem perpipaan PE untuk air minum.', type: 'ISO' },
+      { std: 'ISO 4427-2:2019', pdf: 'standards/hdpe/iso_4427-22019.pdf', title: 'PE Piping Systems — Part 2: Pipes', scope: 'Dimensi pipa PE DN10–DN2000, ketebalan dinding minimum per SDR.', type: 'ISO' },
+      { std: 'ISO 4427-3:2019', pdf: 'standards/hdpe/iso_4427-32019.pdf', title: 'PE Piping Systems — Part 3: Fittings', scope: 'Spesifikasi fitting PE untuk sambungan mekanis dan fusion.', type: 'ISO' },
+      { std: 'ISO 4427-5:2019', pdf: 'standards/hdpe/iso_4427-52019.pdf', title: 'PE Piping Systems — Part 5: Fitness for Purpose', scope: 'Uji kesesuaian jangka panjang: hydrostatic pressure, slow crack growth, RCP.', type: 'ISO' },
+      { std: 'ISO 21307:2017', pdf: 'standards/hdpe/iso_213072017.pdf', title: 'Plastics Pipes — Butt Fusion Jointing Procedures', scope: 'Parameter butt fusion (suhu, tekanan, waktu) untuk pipa PE. Acuan utama installer.', type: 'ISO' },
+      { std: 'DVS 2207-1:2015', pdf: 'standards/hdpe/dvs_2207-12015.pdf', title: 'Welding of Thermoplastics — Heated Tool Butt Welding (PE)', scope: 'Standar Jerman untuk pengelasan butt fusion PE100. Parameter detail per ketebalan dinding.', type: 'DVS' },
+      { std: 'ISO 12176-1:2017', pdf: 'standards/hdpe/iso_12176-12017.pdf', title: 'Plastics Pipes — Equipment for Fusion Jointing — Part 1: Butt Fusion', scope: 'Spesifikasi alat butt fusion (mesin, heater plate, facing tool).', type: 'ISO' },
+      { std: 'ISO 12176-2:2008', pdf: 'standards/hdpe/iso_12176-22008.pdf', title: 'Plastics Pipes — Equipment for Fusion Jointing — Part 2: Electrofusion', scope: 'Spesifikasi alat electrofusion (kontrol unit, barcode scanner).', type: 'ISO' },
+      { std: 'ISO 13953:2001', pdf: 'standards/hdpe/iso_139532001.pdf', title: 'PE Pipes — Determination of Tensile Strength', scope: 'Metode uji kuat tarik sambungan butt fusion (Tensile Test).', type: 'ISO' },
+      { std: 'ISO 13954:1997', pdf: 'standards/hdpe/iso_139541997.pdf', title: 'PE Pipes — Peel Decohesion Test for Electrofusion', scope: 'Metode uji kekuatan sambungan electrofusion.', type: 'ISO' },
+      { std: 'AWWA M55', pdf: 'standards/hdpe/awwa_m55.pdf', title: 'PE Pipe — Design and Installation', scope: 'Manual desain dan instalasi pipa PE untuk air (flotation, deflection, thrust restraint).', type: 'AWWA' },
+      { std: 'AWWA C906', pdf: 'standards/hdpe/awwa_c906.pdf', title: 'PE Pressure Pipe and Fittings, 4 in. through 65 in.', scope: 'Standar material dan pengujian pipa PE bertekanan diameter besar.', type: 'AWWA' },
+      { std: 'AS/NZS 4130:2018', pdf: 'standards/hdpe/asnzs_41302018.pdf', title: 'PE Pipes for Pressure Applications', scope: 'Standar Australia/NZ untuk pipa PE bertekanan (series 1 & 2).', type: 'AS/NZS' },
     ]
   },
   'PVC (Polyvinyl Chloride)': {
     color: '#7c4dff',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10h20v4H2z"/><path d="M2 6h20v4H2z"/><path d="M12 10v4"/></svg>',
     items: [
-      { std: 'SNI 9324:2024', title: 'Pipa uPVC untuk Air Minum, Drainase, dan Saluran Pembuangan', scope: 'Standar terbaru pipa uPVC untuk air minum, drainase, dan sewerage di luar bangunan/dalam galian. Menggabungkan dan menggantikan SNI 06-0084-2002, SNI 06-0162-1987, dan SNI 06-6419-2000.', type: 'SNI' },
-      { std: 'JIS K 6741:2016', title: 'Unplasticized PVC Pipes (VP, VU)', scope: 'Standar Jepang untuk pipa PVC-U. VP = tekanan, VU = non-tekanan. Banyak digunakan di Indonesia.', type: 'JIS' },
-      { std: 'JIS K 6742:2016', title: 'Unplasticized PVC Pipes Fittings', scope: 'Fitting PVC-U (elbow, tee, socket) sesuai standar JIS.', type: 'JIS' },
-      { std: 'JIS K 6743:2016', title: 'Unplasticized PVC Valves', scope: 'Katup PVC-U (ball valve, check valve) standar JIS.', type: 'JIS' },
-      { std: 'ISO 1452-1:2009', title: 'PVC-U Piping Systems for Water Supply — Part 1: General', scope: 'Standar internasional sistem perpipaan PVC-U untuk suplai air.', type: 'ISO' },
-      { std: 'ISO 1452-2:2009', title: 'PVC-U Piping Systems for Water Supply — Part 2: Pipes', scope: 'Dimensi, ketebalan, dan pengujian pipa PVC-U bertekanan.', type: 'ISO' },
-      { std: 'ISO 1452-3:2009', title: 'PVC-U Piping Systems for Water Supply — Part 3: Fittings', scope: 'Spesifikasi fitting PVC-U injection moulded dan fabricated.', type: 'ISO' },
-      { std: 'ASTM D1785', title: 'PVC Plastic Pipe, Schedule 40, 80, 120', scope: 'Standar AS untuk pipa PVC jadwal/schedule. Tekanan & dimensi.', type: 'ASTM' },
-      { std: 'ASTM D2241', title: 'PVC Pressure-Rated Pipe (SDR Series)', scope: 'Pipa PVC berdasarkan SDR (Standard Dimension Ratio).', type: 'ASTM' },
-      { std: 'AS/NZS 1477:2017', title: 'PVC Pipes and Fittings for Pressure Applications', scope: 'Standar Australia/NZ untuk pipa PVC bertekanan (Series 1 & 2, DN15–DN750).', type: 'AS/NZS' },
-      { std: 'BS EN 1401-1:2019', title: 'PVC-U Piping Systems for Non-Pressure Underground Drainage', scope: 'Sistem perpipaan PVC-U non-tekanan untuk drainase bawah tanah.', type: 'BS EN' },
+      { std: 'SNI 9324:2024', pdf: 'standards/pvc/sni_93242024.pdf', title: 'Pipa uPVC untuk Air Minum, Drainase, dan Saluran Pembuangan', scope: 'Standar terbaru pipa uPVC untuk air minum, drainase, dan sewerage di luar bangunan/dalam galian. Menggabungkan dan menggantikan SNI 06-0084-2002, SNI 06-0162-1987, dan SNI 06-6419-2000.', type: 'SNI' },
+      { std: 'JIS K 6741:2016', pdf: 'standards/pvc/jis_k_67412016.pdf', title: 'Unplasticized PVC Pipes (VP, VU)', scope: 'Standar Jepang untuk pipa PVC-U. VP = tekanan, VU = non-tekanan. Banyak digunakan di Indonesia.', type: 'JIS' },
+      { std: 'JIS K 6742:2016', pdf: 'standards/pvc/jis_k_67422016.pdf', title: 'Unplasticized PVC Pipes Fittings', scope: 'Fitting PVC-U (elbow, tee, socket) sesuai standar JIS.', type: 'JIS' },
+      { std: 'JIS K 6743:2016', pdf: 'standards/pvc/jis_k_67432016.pdf', title: 'Unplasticized PVC Valves', scope: 'Katup PVC-U (ball valve, check valve) standar JIS.', type: 'JIS' },
+      { std: 'ISO 1452-1:2009', pdf: 'standards/pvc/iso_1452-12009.pdf', title: 'PVC-U Piping Systems for Water Supply — Part 1: General', scope: 'Standar internasional sistem perpipaan PVC-U untuk suplai air.', type: 'ISO' },
+      { std: 'ISO 1452-2:2009', pdf: 'standards/pvc/iso_1452-22009.pdf', title: 'PVC-U Piping Systems for Water Supply — Part 2: Pipes', scope: 'Dimensi, ketebalan, dan pengujian pipa PVC-U bertekanan.', type: 'ISO' },
+      { std: 'ISO 1452-3:2009', pdf: 'standards/pvc/iso_1452-32009.pdf', title: 'PVC-U Piping Systems for Water Supply — Part 3: Fittings', scope: 'Spesifikasi fitting PVC-U injection moulded dan fabricated.', type: 'ISO' },
+      { std: 'ASTM D1785', pdf: 'standards/pvc/astm_d1785.pdf', title: 'PVC Plastic Pipe, Schedule 40, 80, 120', scope: 'Standar AS untuk pipa PVC jadwal/schedule. Tekanan & dimensi.', type: 'ASTM' },
+      { std: 'ASTM D2241', pdf: 'standards/pvc/astm_d2241.pdf', title: 'PVC Pressure-Rated Pipe (SDR Series)', scope: 'Pipa PVC berdasarkan SDR (Standard Dimension Ratio).', type: 'ASTM' },
+      { std: 'AS/NZS 1477:2017', pdf: 'standards/pvc/asnzs_14772017.pdf', title: 'PVC Pipes and Fittings for Pressure Applications', scope: 'Standar Australia/NZ untuk pipa PVC bertekanan (Series 1 & 2, DN15–DN750).', type: 'AS/NZS' },
+      { std: 'BS EN 1401-1:2019', pdf: 'standards/pvc/bs_en_1401-12019.pdf', title: 'PVC-U Piping Systems for Non-Pressure Underground Drainage', scope: 'Sistem perpipaan PVC-U non-tekanan untuk drainase bawah tanah.', type: 'BS EN' },
     ]
   },
   'PVC-O (Oriented PVC)': {
     color: '#ff6d00',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v12"/><path d="M6 12h12"/></svg>',
     items: [
-      { std: 'ISO 16422-1:2024', title: 'PVC-O Piping Systems — Part 1: General', scope: 'Standar utama pipa PVC-O (oriented). Klasifikasi kelas 315, 400, 450, 500. Menggantikan ISO 16422:2014.', type: 'ISO' },
-      { std: 'ISO 16422-2:2023', title: 'PVC-O Piping Systems — Part 2: Pipes', scope: 'Spesifikasi dimensi, tekanan kerja, dan pengujian pipa PVC-O.', type: 'ISO' },
-      { std: 'ISO 16422-5:2024', title: 'PVC-O Piping Systems — Part 5: Fitness for Purpose', scope: 'Pengujian jangka panjang pipa PVC-O termasuk ketahanan impak dan fatigue.', type: 'ISO' },
-      { std: 'AS/NZS 4441:2019', title: 'Oriented PVC-O Pipes for Pressure Applications', scope: 'Standar Australia/NZ untuk pipa PVC-O, DN100–DN600.', type: 'AS/NZS' },
-      { std: 'EN 17176-1:2019', title: 'PVC-O Piping Systems for Water Supply — Part 1: General', scope: 'Standar Eropa untuk PVC-O: terminologi, klasifikasi, persyaratan umum.', type: 'EN' },
-      { std: 'EN 17176-2:2019+A1:2022', title: 'PVC-O Piping Systems for Water Supply — Part 2: Pipes', scope: 'Dimensi, tekanan kerja, dan pengujian pipa PVC-O kelas 315–500. Termasuk Amendment 1:2022.', type: 'EN' },
-      { std: 'PAS 27:2017 (UK)', title: 'Oriented PVC Pipes — Specification', scope: 'Spesifikasi publik Inggris untuk pipa PVC-O dalam aplikasi air bertekanan.', type: 'PAS' },
+      { std: 'ISO 16422-1:2024', pdf: 'standards/pvc-o/iso_16422-12024.pdf', title: 'PVC-O Piping Systems — Part 1: General', scope: 'Standar utama pipa PVC-O (oriented). Klasifikasi kelas 315, 400, 450, 500. Menggantikan ISO 16422:2014.', type: 'ISO' },
+      { std: 'ISO 16422-2:2023', pdf: 'standards/pvc-o/iso_16422-22023.pdf', title: 'PVC-O Piping Systems — Part 2: Pipes', scope: 'Spesifikasi dimensi, tekanan kerja, dan pengujian pipa PVC-O.', type: 'ISO' },
+      { std: 'ISO 16422-5:2024', pdf: 'standards/pvc-o/iso_16422-52024.pdf', title: 'PVC-O Piping Systems — Part 5: Fitness for Purpose', scope: 'Pengujian jangka panjang pipa PVC-O termasuk ketahanan impak dan fatigue.', type: 'ISO' },
+      { std: 'AS/NZS 4441:2019', pdf: 'standards/pvc-o/asnzs_44412019.pdf', title: 'Oriented PVC-O Pipes for Pressure Applications', scope: 'Standar Australia/NZ untuk pipa PVC-O, DN100–DN600.', type: 'AS/NZS' },
+      { std: 'EN 17176-1:2019', pdf: 'standards/pvc-o/en_17176-12019.pdf', title: 'PVC-O Piping Systems for Water Supply — Part 1: General', scope: 'Standar Eropa untuk PVC-O: terminologi, klasifikasi, persyaratan umum.', type: 'EN' },
+      { std: 'EN 17176-2:2019+A1:2022', pdf: 'standards/pvc-o/en_17176-22019a12022.pdf', title: 'PVC-O Piping Systems for Water Supply — Part 2: Pipes', scope: 'Dimensi, tekanan kerja, dan pengujian pipa PVC-O kelas 315–500. Termasuk Amendment 1:2022.', type: 'EN' },
+      { std: 'PAS 27:2017 (UK)', pdf: 'standards/pvc-o/pas_272017_uk.pdf', title: 'Oriented PVC Pipes — Specification', scope: 'Spesifikasi publik Inggris untuk pipa PVC-O dalam aplikasi air bertekanan.', type: 'PAS' },
     ]
   },
   'PPR (Polypropylene Random Copolymer)': {
     color: '#00e676',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>',
     items: [
-      { std: 'SNI ISO 15874-1:2012', title: 'Sistem Perpipaan Plastik untuk Air Panas dan Dingin — PP — Bagian 1: Umum', scope: 'Adopsi ISO 15874-1 untuk persyaratan umum sistem perpipaan PP-R di Indonesia.', type: 'SNI' },
-      { std: 'SNI ISO 15874-2:2012', title: 'Sistem Perpipaan Plastik untuk Air Panas dan Dingin — PP — Bagian 2: Pipa', scope: 'Adopsi ISO 15874-2 untuk spesifikasi pipa PP-R di Indonesia.', type: 'SNI' },
-      { std: 'SNI ISO 15874-3:2012', title: 'Sistem Perpipaan Plastik untuk Air Panas dan Dingin — PP — Bagian 3: Fitting', scope: 'Adopsi ISO 15874-3 untuk spesifikasi fitting PP-R di Indonesia.', type: 'SNI' },
-      { std: 'ISO 15874-1:2013', title: 'PP Piping Systems for Hot and Cold Water — Part 1: General', scope: 'Standar internasional sistem perpipaan PP-R untuk air panas/dingin. Termasuk Amd 1:2022.', type: 'ISO' },
-      { std: 'ISO 15874-2:2013', title: 'PP Piping Systems — Part 2: Pipes', scope: 'Spesifikasi dimensi dan pengujian pipa PP-R (PN10, PN16, PN20, PN25).', type: 'ISO' },
-      { std: 'ISO 15874-3:2013', title: 'PP Piping Systems — Part 3: Fittings', scope: 'Spesifikasi fitting PP-R (elbow, tee, socket fusion, butt fusion).', type: 'ISO' },
-      { std: 'ISO 15874-5:2013', title: 'PP Piping Systems — Part 5: Fitness for Purpose', scope: 'Pengujian kesesuaian: ketahanan tekanan pada suhu tinggi, bending, dll.', type: 'ISO' },
-      { std: 'DIN 8077:2008', title: 'PP Pipes — General Quality Requirements and Testing', scope: 'Standar Jerman untuk persyaratan mutu umum dan pengujian pipa PP.', type: 'DIN' },
-      { std: 'DIN 8078:2008', title: 'PP Pipes — Dimensions', scope: 'Dimensi standar pipa PP-R menurut DIN (DN20 – DN160).', type: 'DIN' },
-      { std: 'DVS 2207-11:2008', title: 'Welding of Thermoplastics — PP Socket Fusion', scope: 'Parameter socket fusion untuk pipa PP-R (suhu, waktu, kedalaman insersi).', type: 'DVS' },
-      { std: 'DVS 2207-1', title: 'Welding of Thermoplastics — Heated Tool Butt Welding', scope: 'Parameter butt fusion untuk PP-R diameter besar. Direvisi berkala oleh DVS.', type: 'DVS' },
+      { std: 'SNI ISO 15874-1:2012', pdf: 'standards/ppr/sni_iso_15874-12012.pdf', title: 'Sistem Perpipaan Plastik untuk Air Panas dan Dingin — PP — Bagian 1: Umum', scope: 'Adopsi ISO 15874-1 untuk persyaratan umum sistem perpipaan PP-R di Indonesia.', type: 'SNI' },
+      { std: 'SNI ISO 15874-2:2012', pdf: 'standards/ppr/sni_iso_15874-22012.pdf', title: 'Sistem Perpipaan Plastik untuk Air Panas dan Dingin — PP — Bagian 2: Pipa', scope: 'Adopsi ISO 15874-2 untuk spesifikasi pipa PP-R di Indonesia.', type: 'SNI' },
+      { std: 'SNI ISO 15874-3:2012', pdf: 'standards/ppr/sni_iso_15874-32012.pdf', title: 'Sistem Perpipaan Plastik untuk Air Panas dan Dingin — PP — Bagian 3: Fitting', scope: 'Adopsi ISO 15874-3 untuk spesifikasi fitting PP-R di Indonesia.', type: 'SNI' },
+      { std: 'ISO 15874-1:2013', pdf: 'standards/ppr/iso_15874-12013.pdf', title: 'PP Piping Systems for Hot and Cold Water — Part 1: General', scope: 'Standar internasional sistem perpipaan PP-R untuk air panas/dingin. Termasuk Amd 1:2022.', type: 'ISO' },
+      { std: 'ISO 15874-2:2013', pdf: 'standards/ppr/iso_15874-22013.pdf', title: 'PP Piping Systems — Part 2: Pipes', scope: 'Spesifikasi dimensi dan pengujian pipa PP-R (PN10, PN16, PN20, PN25).', type: 'ISO' },
+      { std: 'ISO 15874-3:2013', pdf: 'standards/ppr/iso_15874-32013.pdf', title: 'PP Piping Systems — Part 3: Fittings', scope: 'Spesifikasi fitting PP-R (elbow, tee, socket fusion, butt fusion).', type: 'ISO' },
+      { std: 'ISO 15874-5:2013', pdf: 'standards/ppr/iso_15874-52013.pdf', title: 'PP Piping Systems — Part 5: Fitness for Purpose', scope: 'Pengujian kesesuaian: ketahanan tekanan pada suhu tinggi, bending, dll.', type: 'ISO' },
+      { std: 'DIN 8077:2008', pdf: 'standards/ppr/din_80772008.pdf', title: 'PP Pipes — General Quality Requirements and Testing', scope: 'Standar Jerman untuk persyaratan mutu umum dan pengujian pipa PP.', type: 'DIN' },
+      { std: 'DIN 8078:2008', pdf: 'standards/ppr/din_80782008.pdf', title: 'PP Pipes — Dimensions', scope: 'Dimensi standar pipa PP-R menurut DIN (DN20 – DN160).', type: 'DIN' },
+      { std: 'DVS 2207-11:2008', pdf: 'standards/ppr/dvs_2207-112008.pdf', title: 'Welding of Thermoplastics — PP Socket Fusion', scope: 'Parameter socket fusion untuk pipa PP-R (suhu, waktu, kedalaman insersi).', type: 'DVS' },
+      { std: 'DVS 2207-1', pdf: 'standards/ppr/dvs_2207-1.pdf', title: 'Welding of Thermoplastics — Heated Tool Butt Welding', scope: 'Parameter butt fusion untuk PP-R diameter besar. Direvisi berkala oleh DVS.', type: 'DVS' },
     ]
   },
   'Standar Sistem & Perencanaan': {
     color: '#ffd740',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
     items: [
-      { std: 'SNI 8153:2025', title: 'Tata Cara Perencanaan Sistem Plambing', scope: 'Standar terbaru tata cara perencanaan dan pemasangan sistem plambing bangunan gedung. Mencakup semua material pipa (PVC, PPR, HDPE, tembaga, baja). Revisi dari SNI 8153:2015.', type: 'SNI' },
-      { std: 'SNI 7511:2011', title: 'Tata Cara Pemasangan Pipa Transmisi dan Distribusi serta Sambungan Rumah', scope: 'Panduan pemasangan pipa transmisi dan distribusi air minum (semua material) termasuk sambungan rumah. Acuan utama untuk jaringan PDAM.', type: 'SNI' },
-      { std: 'BS 8490:2007', title: 'Guide to Siphonic Roof Drainage Systems', scope: 'Panduan desain dan instalasi sistem drainase atap siphonic. Berlaku untuk semua material pipa siphonic (PVC, HDPE).', type: 'BS' },
+      { std: 'SNI 8153:2025', pdf: 'standards/sistem/sni_81532025.pdf', title: 'Tata Cara Perencanaan Sistem Plambing', scope: 'Standar terbaru tata cara perencanaan dan pemasangan sistem plambing bangunan gedung. Mencakup semua material pipa (PVC, PPR, HDPE, tembaga, baja). Revisi dari SNI 8153:2015.', type: 'SNI' },
+      { std: 'SNI 7511:2011', pdf: 'standards/sistem/sni_75112011.pdf', title: 'Tata Cara Pemasangan Pipa Transmisi dan Distribusi serta Sambungan Rumah', scope: 'Panduan pemasangan pipa transmisi dan distribusi air minum (semua material) termasuk sambungan rumah. Acuan utama untuk jaringan PDAM.', type: 'SNI' },
+      { std: 'BS 8490:2007', pdf: 'standards/sistem/bs_84902007.pdf', title: 'Guide to Siphonic Roof Drainage Systems', scope: 'Panduan desain dan instalasi sistem drainase atap siphonic. Berlaku untuk semua material pipa siphonic (PVC, HDPE).', type: 'BS' },
     ]
   }
 };
@@ -311,7 +311,12 @@ function renderStandarAcuan(filterKey) {
       html += '<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba('+tcRgb+',.15);color:'+tc+';font-weight:600;letter-spacing:.5px">'+item.type+'</span>';
       html += '</div>';
       html += '<div style="font-size:12.5px;color:#e0e0e0;font-weight:600;margin-bottom:4px;line-height:1.4">'+item.title+'</div>';
-      html += '<div style="font-size:11px;color:var(--text2);line-height:1.5">'+item.scope+'</div>';
+      html += '<div style="font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:8px">'+item.scope+'</div>';
+      if (item.pdf) {
+        html += '<a href="'+item.pdf+'" target="_blank" class="std-pdf-btn" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;padding:4px 10px;border-radius:5px;background:rgba('+rgb+',.1);border:1px solid rgba('+rgb+',.2);color:'+data.color+';text-decoration:none;font-weight:600;font-family:' + "'Space Grotesk'" + ',sans-serif;transition:all .2s;cursor:pointer" onmouseenter="this.style.background=' + "'rgba("+rgb+",.2)'" + '" onmouseleave="this.style.background=' + "'rgba("+rgb+",.1)'" + '">';
+        html += '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>';
+        html += 'Buka PDF</a>';
+      }
       html += '</div>';
     }
     html += '</div></div>';
