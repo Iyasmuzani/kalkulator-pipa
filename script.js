@@ -117,7 +117,7 @@ function exitEngTools() {
 function switchEngTool(tool) {
   currentEngTool = tool;
   document.querySelectorAll('.eng-tab').forEach((b, i) => {
-    const tools = ['fusion', 'pressloss', 'buoyancy', 'waterhammer', 'friction', 'pipeload', 'rainfall', 'tensile'];
+    const tools = ['fusion', 'pressloss', 'buoyancy', 'waterhammer', 'friction', 'pipeload', 'rainfall', 'tensile', 'unitconv', 'matguide'];
     b.classList.toggle('active', tools[i] === tool);
   });
   const builders = {
@@ -128,7 +128,9 @@ function switchEngTool(tool) {
     friction: buildFrictionForm,
     pipeload: buildPipeLoadForm,
     rainfall: buildRainfallForm,
-    tensile: buildTensileForm
+    tensile: buildTensileForm,
+    unitconv: buildUnitConverterForm,
+    matguide: buildMaterialGuideForm
   };
   if (builders[tool]) builders[tool]();
   document.getElementById('eng-results').innerHTML = `
