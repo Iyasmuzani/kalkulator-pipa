@@ -257,6 +257,47 @@ const pipeStandards = {
       { std: 'SNI 7511:2011', pdf: 'standards/sistem/sni_75112011.pdf', title: 'Tata Cara Pemasangan Pipa Transmisi dan Distribusi serta Sambungan Rumah', scope: 'Panduan pemasangan pipa transmisi dan distribusi air minum (semua material) termasuk sambungan rumah. Acuan utama untuk jaringan PDAM.', type: 'SNI' },
       { std: 'BS 8490:2007', pdf: 'standards/sistem/bs_84902007.pdf', title: 'Guide to Siphonic Roof Drainage Systems', scope: 'Panduan desain dan instalasi sistem drainase atap siphonic. Berlaku untuk semua material pipa siphonic (PVC, HDPE).', type: 'BS' },
     ]
+  },
+  'Uji Komisioning & Pressure Test': {
+    color: '#e040fb',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>',
+    items: [
+      { std: 'SNI 8153:2025', pdf: 'standards/komisioning/sni_81532025.pdf', title: 'Tata Cara Perencanaan Sistem Plambing (termasuk Uji Komisioning)', scope: 'Mengatur uji komisioning dan uji hidrostatik sistem plambing bangunan gedung. Mencakup prosedur pressure test pipa air bersih, air buangan, dan vent sebelum sistem dioperasikan.', type: 'SNI' },
+      { std: 'BS EN 805:2025', pdf: 'standards/komisioning/bs_en_8052025.pdf', title: 'Water Supply — Requirements for Systems Outside Buildings', scope: 'Standar utama komisioning jaringan air minum di luar gedung. Mencakup uji tekanan hidrostatis, prosedur flushing, dan disinfeksi sebelum operasional. Revisi dari BS EN 805:2000.', type: 'BS EN' },
+      { std: 'SNI 7629:2008', pdf: 'standards/komisioning/sni_76292008.pdf', title: 'Tata Cara Komisioning Instalasi Pengolahan Air', scope: 'Panduan komisioning instalasi pengolahan air minum di Indonesia, termasuk uji kinerja dan serah terima sistem.', type: 'SNI' },
+      { std: 'ASTM F2164', pdf: 'standards/komisioning/astm_f2164.pdf', title: 'Field Leak Testing of PE Pressure Piping Systems', scope: 'Prosedur uji kebocoran lapangan untuk sistem pipa PE bertekanan menggunakan metode hidrostatis. Memperhitungkan sifat viskoelastis PE.', type: 'ASTM' },
+      { std: 'ASTM F2263', pdf: 'standards/komisioning/astm_f2263.pdf', title: 'Standard Test Method for Evaluating the Oxidative Resistance of PE Pipe to Chlorinated Water', scope: 'Metode uji ketahanan pipa PE terhadap air berklorin — penting untuk komisioning jaringan air minum.', type: 'ASTM' },
+      { std: 'ISO 10802:2020', pdf: 'standards/komisioning/iso_108022020.pdf', title: 'Ductile Iron Pipelines — Hydrostatic Testing After Installation', scope: 'Prosedur uji hidrostatis paska instalasi. Tiga fase: persiapan, uji pendahuluan (stabilisasi), dan uji tekanan utama.', type: 'ISO' },
+      { std: 'AWWA C600', pdf: 'standards/komisioning/awwa_c600.pdf', title: 'Installation of Ductile-Iron Mains and Their Appurtenances', scope: 'Panduan instalasi dan uji komisioning pipa ductile iron termasuk prosedur hydrostatic test dan disinfeksi.', type: 'AWWA' },
+      { std: 'AWWA C605', pdf: 'standards/komisioning/awwa_c605.pdf', title: 'Underground Installation of PVC and PVCO Pressure Pipe', scope: 'Panduan instalasi bawah tanah dan uji tekanan pipa PVC dan PVC-O, termasuk prosedur field pressure test.', type: 'AWWA' },
+      { std: 'AWWA M41', pdf: 'standards/komisioning/awwa_m41.pdf', title: 'Ductile-Iron Pipe and Fittings — Manual of Water Supply Practices', scope: 'Manual praktik uji dan komisioning pipa ductile iron untuk jaringan air minum.', type: 'AWWA' },
+      { std: 'PPI TN-46', pdf: 'standards/komisioning/ppi_tn-46.pdf', title: 'Guidance for Field Hydrostatic Testing of HDPE Pressure Pipelines', scope: 'Panduan teknis dari Plastics Pipe Institute untuk uji hidrostatis lapangan pipa HDPE. Memperhitungkan creep dan stress relaxation material PE.', type: 'PPI' },
+      { std: 'WIS 4-01-03', pdf: 'standards/komisioning/wis_4-01-03.pdf', title: 'Site Pressure Testing of Pressure Pipelines (UK Water Industry)', scope: 'Spesifikasi industri air Inggris untuk uji tekanan lapangan, termasuk prosedur khusus untuk pipa PE viskoelastis.', type: 'WIS' },
+    ]
+  },
+  'Pengujian Kualitas Pipa': {
+    color: '#26a69a',
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>',
+    items: [
+      { std: 'ISO 1167-1:2006', pdf: 'standards/pengujian-kualitas/iso_1167-12006.pdf', title: 'Thermoplastics Pipes — Resistance to Internal Pressure — Part 1: General Method', scope: 'Metode umum uji ketahanan tekanan internal pipa termoplastik. Menentukan waktu gagal pada tekanan dan suhu tertentu (hydrostatic stress rupture test).', type: 'ISO' },
+      { std: 'ISO 1167-2:2006', pdf: 'standards/pengujian-kualitas/iso_1167-22006.pdf', title: 'Thermoplastics Pipes — Resistance to Internal Pressure — Part 2: Preparation of Pipe Test Pieces', scope: 'Prosedur penyiapan benda uji pipa untuk pengujian tekanan internal jangka panjang.', type: 'ISO' },
+      { std: 'ISO 6259-1:2015', pdf: 'standards/pengujian-kualitas/iso_6259-12015.pdf', title: 'Thermoplastics Pipes — Determination of Tensile Properties — Part 1: General Test Method', scope: 'Metode uji sifat tarik (tensile test) pipa termoplastik: kuat tarik, elongation at break, dan stress at yield.', type: 'ISO' },
+      { std: 'ISO 6259-3:2015', pdf: 'standards/pengujian-kualitas/iso_6259-32015.pdf', title: 'Thermoplastics Pipes — Determination of Tensile Properties — Part 3: Polyolefin Pipes', scope: 'Uji tarik spesifik untuk pipa polyolefin (PE, PP). Parameter sesuai jenis material dan diameter.', type: 'ISO' },
+      { std: 'ISO 3126:2005', pdf: 'standards/pengujian-kualitas/iso_31262005.pdf', title: 'Plastics Piping Systems — Plastics Components — Determination of Dimensions', scope: 'Metode pengukuran dimensi pipa dan fitting plastik: diameter, ketebalan dinding, panjang, dan kesikuan.', type: 'ISO' },
+      { std: 'ISO 3127:2016', pdf: 'standards/pengujian-kualitas/iso_31272016.pdf', title: 'Thermoplastics Pipes — Determination of Resistance to External Blows (Drop Impact)', scope: 'Uji ketahanan pipa termoplastik terhadap benturan eksternal (drop-weight impact test/TIR test).', type: 'ISO' },
+      { std: 'ISO 2505:2005', pdf: 'standards/pengujian-kualitas/iso_25052005.pdf', title: 'Thermoplastics Pipes — Longitudinal Reversion', scope: 'Uji perubahan dimensi longitudinal pipa setelah dipanaskan (reversion test). Indikator kualitas proses ekstrusi.', type: 'ISO' },
+      { std: 'ISO 9969:2016', pdf: 'standards/pengujian-kualitas/iso_99692016.pdf', title: 'Thermoplastics Pipes — Determination of Ring Stiffness', scope: 'Pengujian kekakuan cincin (ring stiffness) pipa termoplastik. Penting untuk pipa non-tekanan yang ditanam dalam tanah (SN2, SN4, SN8).', type: 'ISO' },
+      { std: 'ISO 1133-1:2022', pdf: 'standards/pengujian-kualitas/iso_1133-12022.pdf', title: 'Plastics — Determination of Melt Mass-Flow Rate (MFR) and Melt Volume-Flow Rate (MVR)', scope: 'Pengujian MFR/MVR material termoplastik. Digunakan untuk kontrol kualitas bahan baku pipa (PE, PP, PVC).', type: 'ISO' },
+      { std: 'ISO 306:2022', pdf: 'standards/pengujian-kualitas/iso_3062022.pdf', title: 'Plastics — Thermoplastic Materials — Determination of Vicat Softening Temperature (VST)', scope: 'Pengujian suhu pelunakan Vicat material termoplastik. Indikator ketahanan panas material pipa.', type: 'ISO' },
+      { std: 'ISO 6964:2019', pdf: 'standards/pengujian-kualitas/iso_69642019.pdf', title: 'Polyolefin Pipes and Fittings — Determination of Carbon Black Content by Calcination and Pyrolysis', scope: 'Pengujian kandungan carbon black pada pipa PE/PP. Penting untuk memastikan ketahanan UV pipa HDPE hitam (min. 2%).', type: 'ISO' },
+      { std: 'ISO 13953:2001', pdf: 'standards/pengujian-kualitas/iso_139532001.pdf', title: 'PE Pipes — Determination of Tensile Strength of Butt Fusion Joint', scope: 'Metode uji kuat tarik sambungan butt fusion pipa PE. Menentukan kualitas pengelasan.', type: 'ISO' },
+      { std: 'ISO 13954:1997', pdf: 'standards/pengujian-kualitas/iso_139541997.pdf', title: 'PE Pipes — Peel Decohesion Test for Electrofusion Joints', scope: 'Metode uji kekuatan sambungan electrofusion pipa PE dengan metode peel decohesion.', type: 'ISO' },
+      { std: 'ASTM D2122', pdf: 'standards/pengujian-kualitas/astm_d2122.pdf', title: 'Standard Test Method for Determining Dimensions of Thermoplastic Pipe and Fittings', scope: 'Metode ASTM untuk pengukuran dimensi pipa dan fitting termoplastik.', type: 'ASTM' },
+      { std: 'ASTM D2837', pdf: 'standards/pengujian-kualitas/astm_d2837.pdf', title: 'Standard Test Method for Obtaining Hydrostatic Design Basis (HDB) for Thermoplastic Pipe Materials', scope: 'Metode penentuan Hydrostatic Design Basis (HDB) material pipa termoplastik melalui uji regresi tekanan jangka panjang.', type: 'ASTM' },
+      { std: 'ISO 11357-6:2018', pdf: 'standards/pengujian-kualitas/iso_11357-62018.pdf', title: 'Plastics — DSC — Part 6: Determination of Oxidation Induction Time (OIT)', scope: 'Pengujian OIT (Oxidation Induction Time) menggunakan DSC. Mengukur stabilitas oksidatif material pipa PE — indikator utama daya tahan jangka panjang terhadap degradasi termal.', type: 'ISO' },
+      { std: 'ISO 188:2023', pdf: 'standards/pengujian-kualitas/iso_1882023.pdf', title: 'Rubber, Vulcanized or Thermoplastic — Accelerated Ageing and Heat Resistance Tests', scope: 'Uji penuaan dipercepat dan ketahanan panas karet vulkanisasi/termoplastik. Relevan untuk pengujian gasket dan seal karet pada sambungan pipa (rubber ring joint).', type: 'ISO' },
+      { std: 'ISO 9352:2012', pdf: 'standards/pengujian-kualitas/iso_93522012.pdf', title: 'Plastics — Determination of Resistance to Wear by Abrasive Wheels', scope: 'Uji ketahanan gesek/abrasi material plastik menggunakan Taber Abraser. Penting untuk pipa yang mengalirkan fluida abrasif (slurry, pasir, tailing).', type: 'ISO' },
+    ]
   }
 };
 
@@ -301,7 +342,7 @@ function renderStandarAcuan(filterKey) {
       const typeColors = {
         'SNI':'#ff6d00','ISO':'#00bcd4','JIS':'#e91e63','DVS':'#9c27b0','AWWA':'#2196f3',
         'ASTM':'#ff5722','AS/NZS':'#4caf50','BS EN':'#3f51b5','DIN':'#795548','EN':'#607d8b',
-        'PAS':'#ff9800','BS':'#3f51b5'
+        'PAS':'#ff9800','BS':'#3f51b5','PPI':'#26c6da','WIS':'#ab47bc'
       };
       const tc = typeColors[item.type] || '#888';
       const tcRgb = parseInt(tc.slice(1,3),16)+','+parseInt(tc.slice(3,5),16)+','+parseInt(tc.slice(5,7),16);
