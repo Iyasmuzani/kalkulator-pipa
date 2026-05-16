@@ -115,15 +115,18 @@ const matGuide = {
       {v:'gas', l:'Gas / Udara Bertekanan'},
     ]},
     { id:'temp', label:'Suhu Operasi Maksimum', options:[
-      {v:'ambient', l:'< 45°C (Ambient)'},
-      {v:'warm', l:'45°C – 70°C'},
-      {v:'hot', l:'70°C – 95°C'},
+      {v:'cold', l:'< 25°C (Air dingin normal)'},
+      {v:'ambient', l:'25°C – 45°C'},
+      {v:'warm', l:'45°C – 60°C'},
+      {v:'hot', l:'60°C – 80°C'},
+      {v:'vhot', l:'80°C – 95°C'},
     ]},
     { id:'pres', label:'Tekanan Operasi', options:[
       {v:'gravity', l:'Non-tekanan (Gravitasi)'},
-      {v:'low', l:'≤ PN 10 (10 bar)'},
-      {v:'med', l:'PN 10 – PN 16'},
-      {v:'high', l:'PN 16 – PN 25'},
+      {v:'low', l:'≤ PN 6 (6 bar)'},
+      {v:'pn10', l:'PN 8 – PN 10'},
+      {v:'pn16', l:'PN 12.5 – PN 16'},
+      {v:'pn25', l:'PN 20 – PN 25'},
       {v:'vhigh', l:'> PN 25'},
     ]},
     { id:'size', label:'Rentang Diameter', options:[
@@ -141,9 +144,18 @@ const matGuide = {
     ]},
     { id:'ground', label:'Kondisi Instalasi', options:[
       {v:'above', l:'Di Atas Tanah / Dalam Gedung'},
-      {v:'buried', l:'Tertanam dalam Tanah'},
+      {v:'buried', l:'Tertanam dalam Tanah (galian)'},
       {v:'trenchless', l:'Trenchless (HDD/Pipe Jacking)'},
       {v:'submerged', l:'Terendam Air / Bawah Laut'},
+    ]},
+    { id:'terrain', label:'Kontur & Kondisi Tanah', options:[
+      {v:'flat', l:'Datar / Stabil'},
+      {v:'rocky', l:'Berbatu / Kasar'},
+      {v:'clay', l:'Tanah Lempung Ekspansif'},
+      {v:'sandy', l:'Berpasir / Berkerikil'},
+      {v:'swamp', l:'Rawa / Muka Air Tinggi'},
+      {v:'slope', l:'Berlereng / Berbukit'},
+      {v:'seismic', l:'Zona Gempa / Rawan Gerak Tanah'},
     ]},
   ]
 };
@@ -161,31 +173,83 @@ function buildMaterialGuideForm() {
 
 function calcMaterialGuide() {
   const g = id => document.getElementById('mg-'+id).value;
-  const app=g('app'), temp=g('temp'), pres=g('pres'), size=g('size'), join=g('join'), ground=g('ground');
+  const app=g('app'), temp=g('temp'), pres=g('pres'), size=g('size'), join=g('join'), ground=g('ground'), terrain=g('terrain');
 
-  // Scoring system
+  // Scoring system — based on actual material capabilities
   const scores = {hdpe:0, pvc:0, pvco:0, ppr:0};
   const notes = {hdpe:[], pvc:[], pvco:[], ppr:[]};
+  const warns = {hdpe:[], pvc:[], pvco:[], ppr:[]};
 
   // Application
   if (app==='air_minum') { scores.hdpe+=3; scores.pvc+=3; scores.pvco+=3; scores.ppr+=1; }
-  if (app==='air_panas') { scores.ppr+=5; notes.ppr.push('PPR adalah pilihan utama untuk air panas'); scores.hdpe-=2; scores.pvc-=3; scores.pvco-=3; }
+  if (app==='air_panas') { scores.ppr+=5; notes.ppr.push('PPR adalah pilihan utama untuk air panas'); scores.hdpe-=2; scores.pvc-=3; scores.pvco-=3; warns.pvc.push('PVC tidak cocok untuk air panas'); warns.pvco.push('PVC-O tidak cocok untuk air panas'); }
   if (app==='drainase') { scores.pvc+=4; scores.hdpe+=2; notes.pvc.push('PVC dominan untuk drainase gedung'); }
   if (app==='irigasi') { scores.pvc+=3; scores.hdpe+=3; scores.pvco+=2; }
-  if (app==='tambang') { scores.hdpe+=5; notes.hdpe.push('HDPE unggul untuk tambang (fleksibel, tahan abrasi, tahan kimia)'); scores.pvc-=1; }
-  if (app==='gas') { scores.hdpe+=4; notes.hdpe.push('HDPE PE100 standar untuk jaringan gas'); scores.pvc-=2; scores.pvco-=1; }
+  if (app==='tambang') { scores.hdpe+=5; notes.hdpe.push('HDPE unggul untuk tambang — fleksibel, tahan abrasi & kimia'); scores.pvc-=1; }
+  if (app==='gas') { scores.hdpe+=4; notes.hdpe.push('HDPE PE100 standar untuk jaringan gas (ISO 4437)'); scores.pvc-=2; scores.pvco-=1; }
 
-  // Temperature
-  if (temp==='ambient') { scores.hdpe+=2; scores.pvc+=2; scores.pvco+=2; scores.ppr+=2; }
-  if (temp==='warm') { scores.ppr+=3; scores.hdpe+=1; scores.pvc-=2; scores.pvco-=2; notes.pvc.push('PVC tidak direkomendasikan > 45°C'); }
-  if (temp==='hot') { scores.ppr+=4; scores.hdpe-=1; scores.pvc-=5; scores.pvco-=5; notes.ppr.push('PPR tahan hingga 95°C'); }
+  // Temperature — actual material limits per standar:
+  // HDPE PE100: maks 40°C (SNI 4829:2015)
+  // PVC-U: maks 45°C (derating mulai 25°C)
+  // PVC-O: maks 45°C
+  // PPR: kontinu 70°C, short-term 95°C (ISO 10508)
+  if (temp==='cold') { scores.hdpe+=3; scores.pvc+=3; scores.pvco+=3; scores.ppr+=2; }
+  if (temp==='ambient') {
+    scores.hdpe+=1; scores.pvc+=2; scores.pvco+=2; scores.ppr+=2;
+    notes.pvc.push('PVC-U: derating tekanan mulai berlaku di atas 25°C');
+    warns.hdpe.push('HDPE: suhu maks 40°C per SNI 4829:2015 — pastikan suhu operasi tidak melebihi batas');
+  }
+  if (temp==='warm') {
+    scores.ppr+=5;
+    scores.hdpe-=5; scores.pvc-=5; scores.pvco-=5;
+    warns.hdpe.push('⚠ HDPE TIDAK BOLEH digunakan > 40°C (SNI 4829:2015)');
+    warns.pvc.push('⚠ PVC-U TIDAK BOLEH digunakan > 45°C — risiko deformasi');
+    warns.pvco.push('⚠ PVC-O TIDAK BOLEH digunakan > 45°C');
+    notes.ppr.push('PPR mampu beroperasi kontinu pada 45–70°C');
+  }
+  if (temp==='hot') {
+    scores.ppr+=5;
+    scores.hdpe-=10; scores.pvc-=10; scores.pvco-=10;
+    warns.hdpe.push('⚠ HDPE TIDAK BOLEH — maks 40°C (SNI 4829:2015)');
+    warns.pvc.push('⚠ PVC-U TIDAK BOLEH — maks 45°C');
+    warns.pvco.push('⚠ PVC-O TIDAK BOLEH — maks 45°C');
+    notes.ppr.push('PPR dapat beroperasi kontinu hingga 70°C');
+  }
+  if (temp==='vhot') {
+    scores.ppr+=5;
+    scores.hdpe-=10; scores.pvc-=10; scores.pvco-=10;
+    warns.hdpe.push('⚠ HDPE TIDAK BOLEH — maks 40°C (SNI 4829:2015)');
+    warns.pvc.push('⚠ PVC-U TIDAK BOLEH — maks 45°C');
+    warns.pvco.push('⚠ PVC-O TIDAK BOLEH — maks 45°C');
+    notes.ppr.push('PPR tahan short-term hingga 95°C (PN berdasarkan ISO 10508)');
+  }
 
-  // Pressure
-  if (pres==='gravity') { scores.pvc+=3; scores.hdpe+=1; }
-  if (pres==='low') { scores.hdpe+=2; scores.pvc+=2; scores.pvco+=2; scores.ppr+=2; }
-  if (pres==='med') { scores.hdpe+=3; scores.pvco+=3; scores.ppr+=2; scores.pvc+=1; }
-  if (pres==='high') { scores.hdpe+=3; scores.pvco+=4; notes.pvco.push('PVC-O unggul pada tekanan tinggi dengan dinding tipis'); scores.pvc-=1; }
-  if (pres==='vhigh') { scores.hdpe+=2; scores.pvco+=3; scores.pvc-=3; }
+  // Pressure — actual PN ratings:
+  // PVC-U: PN 6 – PN 16 (PN 20 terbatas)
+  // PVC-O: PN 12.5 – PN 25 (kelas 315–500)
+  // HDPE PE100: PN 4 – PN 25 (SDR 7.4–41)
+  // PPR: PN 10 – PN 25
+  if (pres==='gravity') { scores.pvc+=3; scores.hdpe+=1; scores.pvco-=1; }
+  if (pres==='low') { scores.hdpe+=2; scores.pvc+=3; scores.pvco+=1; scores.ppr+=2; }
+  if (pres==='pn10') { scores.hdpe+=3; scores.pvc+=2; scores.pvco+=2; scores.ppr+=3; }
+  if (pres==='pn16') {
+    scores.hdpe+=3; scores.pvco+=4; scores.ppr+=2; scores.pvc+=1;
+    notes.pvco.push('PVC-O unggul pada PN 12.5–16 — dinding lebih tipis dari PVC-U');
+    notes.pvc.push('PVC-U: PN 16 tersedia namun dinding tebal, kurang efisien');
+  }
+  if (pres==='pn25') {
+    scores.hdpe+=3; scores.pvco+=4; scores.ppr+=3;
+    scores.pvc-=2;
+    notes.pvco.push('PVC-O kelas 500 mampu PN 25 dengan dinding tipis');
+    notes.hdpe.push('HDPE PE100 SDR 7.4 = PN 25');
+    warns.pvc.push('PVC-U PN 25 sangat terbatas dan tidak umum');
+  }
+  if (pres==='vhigh') {
+    scores.hdpe+=2; scores.pvco+=2;
+    scores.pvc-=5; scores.ppr-=1;
+    warns.pvc.push('⚠ PVC-U tidak tersedia > PN 20');
+    notes.hdpe.push('HDPE: pertimbangkan steel-reinforced PE atau PE100-RC');
+  }
 
   // Size
   if (size==='small') { scores.ppr+=2; scores.pvc+=2; scores.hdpe+=1; }
@@ -202,12 +266,44 @@ function calcMaterialGuide() {
   // Ground condition
   if (ground==='above') { scores.ppr+=2; scores.pvc+=1; }
   if (ground==='buried') { scores.hdpe+=2; scores.pvc+=2; scores.pvco+=3; }
-  if (ground==='trenchless') { scores.hdpe+=5; notes.hdpe.push('HDPE ideal untuk HDD — fleksibel dan sambungan leak-free'); scores.pvc-=3; scores.ppr-=3; }
+  if (ground==='trenchless') { scores.hdpe+=5; notes.hdpe.push('HDPE ideal untuk HDD — fleksibel dan sambungan leak-free'); scores.pvc-=3; scores.ppr-=3; warns.pvc.push('PVC-U terlalu kaku untuk trenchless'); }
   if (ground==='submerged') { scores.hdpe+=4; notes.hdpe.push('HDPE tahan korosi dan ringan untuk aplikasi terendam'); scores.pvc+=1; }
+
+  // Terrain / Soil condition (NEW)
+  if (terrain==='flat') { scores.hdpe+=1; scores.pvc+=2; scores.pvco+=2; scores.ppr+=1; }
+  if (terrain==='rocky') {
+    scores.hdpe+=4; scores.pvc-=2; scores.pvco-=1;
+    notes.hdpe.push('HDPE fleksibel & tahan impak — ideal untuk tanah berbatu');
+    warns.pvc.push('PVC-U getas — risiko retak pada tanah berbatu tanpa padding pasir');
+  }
+  if (terrain==='clay') {
+    scores.hdpe+=4; scores.pvco+=2; scores.pvc-=1;
+    notes.hdpe.push('HDPE menyerap pergerakan tanah lempung ekspansif (fleksibel)');
+    notes.pvco.push('PVC-O lebih tahan impak dibanding PVC-U pada tanah lempung');
+  }
+  if (terrain==='sandy') { scores.hdpe+=2; scores.pvc+=2; scores.pvco+=2; scores.ppr+=1; }
+  if (terrain==='swamp') {
+    scores.hdpe+=4;
+    notes.hdpe.push('HDPE: sambungan fusion leak-free, tahan pada muka air tinggi');
+    warns.pvc.push('PVC-U: sambungan rubber ring berisiko bocor pada tanah rawa');
+    scores.pvc-=1;
+  }
+  if (terrain==='slope') {
+    scores.hdpe+=4; scores.pvco+=2;
+    notes.hdpe.push('HDPE fleksibel — mampu mengikuti kontur lereng tanpa banyak fitting');
+    scores.pvc-=1; scores.ppr-=2;
+  }
+  if (terrain==='seismic') {
+    scores.hdpe+=5;
+    notes.hdpe.push('HDPE unggul di zona gempa — sambungan monolitik tahan pergeseran tanah');
+    warns.pvc.push('PVC-U getas — berisiko patah saat gempa');
+    warns.pvco.push('PVC-O: rubber ring joint berisiko lepas saat pergeseran tanah besar');
+    scores.pvc-=3; scores.pvco-=1; scores.ppr-=1;
+  }
 
   // Sort results
   const matInfo = {
-    hdpe: {name:'HDPE (PE100)', color:'#00bcd4', snr:'SNI 4829:2015 / ISO 4427:2019', pros:['Fleksibel & tahan impak','Sambungan leak-free (fusion)','Tahan korosi & kimia','Tersedia DN20–DN2000','Cocok untuk HDD/trenchless'], cons:['Perlu mesin fusion','Koefisien muai besar','Tidak tahan UV tanpa proteksi']},
+    hdpe: {name:'HDPE (PE100)', color:'#00bcd4', snr:'SNI 4829:2015 / ISO 4427:2019', pros:['Fleksibel & tahan impak','Sambungan leak-free (fusion)','Tahan korosi & kimia','Tersedia DN20–DN2000','Cocok untuk HDD/trenchless'], cons:['Suhu maks 40°C (SNI 4829:2015)','Perlu mesin fusion','Koefisien muai besar','Tidak tahan UV tanpa proteksi']},
     pvc: {name:'PVC-U', color:'#7c4dff', snr:'SNI 9324:2024 / JIS K 6741 / ISO 1452:2009', pros:['Harga ekonomis','Instalasi mudah (solvent cement)','Kaku — baik untuk gravitasi','Tahan korosi'], cons:['Getas pada suhu rendah','Tidak untuk air panas (maks 45°C)','Tidak fleksibel']},
     pvco: {name:'PVC-O', color:'#ff6d00', snr:'ISO 16422:2024 / EN 17176:2019', pros:['Kuat tarik sangat tinggi','Dinding tipis — kapasitas lebih besar','Tahan impak lebih baik dari PVC-U','Ringan dan efisien'], cons:['Ketersediaan terbatas','Hanya untuk air dingin','Diameter terbatas (DN90–DN600)']},
     ppr: {name:'PPR (PP-R)', color:'#00e676', snr:'SNI ISO 15874:2012 / ISO 15874:2013', pros:['Tahan air panas hingga 95°C','Sambungan socket fusion cepat','Tidak korosi & food grade','Umur pakai 50+ tahun'], cons:['Diameter terbatas (maks DN160)','Koefisien muai tinggi','Perlu support lebih rapat']}
@@ -244,6 +340,16 @@ function calcMaterialGuide() {
       n.forEach(note => {
         html += `<div style="font-size:11px;color:${m.color};margin-bottom:4px;display:flex;align-items:start;gap:6px"><span style="margin-top:2px">▸</span> ${note}</div>`;
       });
+    }
+
+    // Warnings
+    const w = warns[key];
+    if (w.length) {
+      html += `<div style="margin-top:6px;padding:8px;background:rgba(255,85,85,.08);border:1px solid rgba(255,85,85,.2);border-radius:6px">`;
+      w.forEach(warn => {
+        html += `<div style="font-size:11px;color:#ff5555;margin-bottom:3px;display:flex;align-items:start;gap:6px"><span style="margin-top:1px">⚠</span> ${warn}</div>`;
+      });
+      html += `</div>`;
     }
 
     // Pros/Cons
