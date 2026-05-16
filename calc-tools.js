@@ -138,6 +138,7 @@ const matGuide = {
     { id:'join', label:'Metode Sambungan Disukai', options:[
       {v:'any', l:'Fleksibel / Semua'},
       {v:'solvent', l:'Solvent Cement (Lem)'},
+      {v:'rubber', l:'Rubber Ring Joint (Push-Fit)'},
       {v:'fusion', l:'Butt Fusion / Electrofusion'},
       {v:'socket', l:'Socket Fusion (Heat)'},
       {v:'mechanical', l:'Mekanikal (Flange/Compression)'},
@@ -259,6 +260,13 @@ function calcMaterialGuide() {
 
   // Jointing
   if (join==='solvent') { scores.pvc+=3; scores.pvco+=1; scores.hdpe-=2; scores.ppr-=2; }
+  if (join==='rubber') {
+    scores.pvc+=3; scores.pvco+=4; scores.hdpe+=1;
+    notes.pvco.push('PVC-O dirancang optimal untuk sambungan rubber ring joint');
+    notes.pvc.push('PVC-U dengan rubber ring joint — instalasi cepat tanpa alat khusus');
+    notes.hdpe.push('HDPE tersedia rubber ring joint untuk diameter besar, namun fusion lebih disarankan');
+    scores.ppr-=2;
+  }
   if (join==='fusion') { scores.hdpe+=3; notes.hdpe.push('Butt fusion menghasilkan sambungan monolitik'); scores.pvc-=2; }
   if (join==='socket') { scores.ppr+=3; scores.hdpe+=1; scores.pvc-=1; }
   if (join==='mechanical') { scores.hdpe+=1; scores.pvc+=1; scores.pvco+=1; scores.ppr+=1; }
