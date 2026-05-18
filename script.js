@@ -304,14 +304,16 @@ const pipeStandards = {
 };
 
 let _standarSearchQuery = '';
+let _standarSearchRaw = '';
 let _standarSearchTimeout = null;
 
 function _standarSearchHandler(value) {
   clearTimeout(_standarSearchTimeout);
+  _standarSearchRaw = value;
   _standarSearchTimeout = setTimeout(function() {
-    _standarSearchQuery = value.trim().toLowerCase();
+    _standarSearchQuery = value.toLowerCase();
     renderStandarAcuan(_standarActiveFilter || 'all');
-  }, 200);
+  }, 250);
 }
 
 let _standarActiveFilter = 'all';
@@ -339,13 +341,13 @@ function renderStandarAcuan(filterKey) {
   html += '<div style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text2);pointer-events:none;display:flex;align-items:center;transition:color .2s" id="standar-search-icon">';
   html += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
   html += '</div>';
-  html += '<input type="text" id="standar-search-input" placeholder="Cari standar (SNI, ISO, HDPE, butt fusion, tekanan, ...)" value="' + (searchQuery ? searchQuery.replace(/"/g, '&quot;') : '') + '" ';
+  html += '<input type="text" id="standar-search-input" placeholder="Cari standar (SNI, ISO, HDPE, butt fusion, tekanan, ...)" value="' + (_standarSearchRaw ? _standarSearchRaw.replace(/"/g, '&quot;') : '') + '" ';
   html += 'oninput="_standarSearchHandler(this.value)" ';
   html += 'onfocus="document.getElementById(\'standar-search-icon\').style.color=\'#00e5ff\';this.parentElement.style.boxShadow=\'0 0 0 2px rgba(0,229,255,.2)\'" ';
   html += 'onblur="document.getElementById(\'standar-search-icon\').style.color=\'var(--text2)\';this.parentElement.style.boxShadow=\'none\'" ';
   html += 'style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 40px 12px 42px;color:#fff;font-size:13px;font-family:\'Inter\',sans-serif;outline:none;transition:all .25s" />';
   if (searchQuery) {
-    html += '<button onclick="_standarSearchQuery=\'\';document.getElementById(\'standar-search-input\').value=\'\';renderStandarAcuan(\'' + activeFilter.replace(/'/g, "\\'") + '\')" ';
+    html += '<button onclick="_standarSearchQuery=\'\';_standarSearchRaw=\'\';document.getElementById(\'standar-search-input\').value=\'\';renderStandarAcuan(\'' + activeFilter.replace(/'/g, "\\'") + '\')" ';
     html += 'style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:var(--text2);width:24px;height:24px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s" ';
     html += 'onmouseenter="this.style.background=\'rgba(255,100,100,.15)\';this.style.borderColor=\'rgba(255,100,100,.3)\';this.style.color=\'#ff6b6b\'" ';
     html += 'onmouseleave="this.style.background=\'rgba(255,255,255,.08)\';this.style.borderColor=\'rgba(255,255,255,.1)\';this.style.color=\'var(--text2)\'">';
