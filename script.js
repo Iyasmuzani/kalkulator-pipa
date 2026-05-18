@@ -303,14 +303,55 @@ const pipeStandards = {
   }
 };
 
+let _standarSearchQuery = '';
+let _standarSearchTimeout = null;
+
+function _standarSearchHandler(value) {
+  clearTimeout(_standarSearchTimeout);
+  _standarSearchTimeout = setTimeout(function() {
+    _standarSearchQuery = value.trim().toLowerCase();
+    renderStandarAcuan(_standarActiveFilter || 'all');
+  }, 200);
+}
+
+let _standarActiveFilter = 'all';
+
+function _highlightMatch(text, query) {
+  if (!query) return text;
+  const idx = text.toLowerCase().indexOf(query);
+  if (idx === -1) return text;
+  return text.slice(0, idx) + '<mark style="background:rgba(0,229,255,.25);color:#fff;border-radius:2px;padding:0 1px">' + text.slice(idx, idx + query.length) + '</mark>' + text.slice(idx + query.length);
+}
+
 function renderStandarAcuan(filterKey) {
   const container = document.getElementById('library-standar');
   const categories = Object.keys(pipeStandards);
   const activeFilter = filterKey || 'all';
+  _standarActiveFilter = activeFilter;
+  const searchQuery = _standarSearchQuery;
 
   // Header
   let html = '<div style="margin-bottom:16px;font-family:' + "'Space Grotesk'" + ',sans-serif;font-size:18px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--sys-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h6"/></svg> Referensi Standar Acuan — Pipa Plastik</div>';
   html += '<div style="font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.6">Kumpulan standar nasional dan internasional yang menjadi acuan desain, manufaktur, pengujian, dan instalasi pipa plastik.</div>';
+
+  // Search bar
+  html += '<div id="standar-search-wrap" style="position:relative;margin-bottom:16px">';
+  html += '<div style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text2);pointer-events:none;display:flex;align-items:center;transition:color .2s" id="standar-search-icon">';
+  html += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+  html += '</div>';
+  html += '<input type="text" id="standar-search-input" placeholder="Cari standar (SNI, ISO, HDPE, butt fusion, tekanan, ...)" value="' + (searchQuery ? searchQuery.replace(/"/g, '&quot;') : '') + '" ';
+  html += 'oninput="_standarSearchHandler(this.value)" ';
+  html += 'onfocus="document.getElementById(\'standar-search-icon\').style.color=\'#00e5ff\';this.parentElement.style.boxShadow=\'0 0 0 2px rgba(0,229,255,.2)\'" ';
+  html += 'onblur="document.getElementById(\'standar-search-icon\').style.color=\'var(--text2)\';this.parentElement.style.boxShadow=\'none\'" ';
+  html += 'style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 40px 12px 42px;color:#fff;font-size:13px;font-family:\'Inter\',sans-serif;outline:none;transition:all .25s" />';
+  if (searchQuery) {
+    html += '<button onclick="_standarSearchQuery=\'\';document.getElementById(\'standar-search-input\').value=\'\';renderStandarAcuan(\'' + activeFilter.replace(/'/g, "\\'") + '\')" ';
+    html += 'style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:var(--text2);width:24px;height:24px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s" ';
+    html += 'onmouseenter="this.style.background=\'rgba(255,100,100,.15)\';this.style.borderColor=\'rgba(255,100,100,.3)\';this.style.color=\'#ff6b6b\'" ';
+    html += 'onmouseleave="this.style.background=\'rgba(255,255,255,.08)\';this.style.borderColor=\'rgba(255,255,255,.1)\';this.style.color=\'var(--text2)\'">';
+    html += '&times;</button>';
+  }
+  html += '</div>';
 
   // Dropdown filter
   html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap">';
@@ -327,20 +368,35 @@ function renderStandarAcuan(filterKey) {
   }
   html += '</div>';
 
-  // Render categories
+  // Render categories (with search filtering)
   const entriesToRender = activeFilter === 'all' ? Object.entries(pipeStandards) : [[activeFilter, pipeStandards[activeFilter]]];
+  let totalMatchCount = 0;
+
+  let contentHtml = '';
   for (const [category, data] of entriesToRender) {
     if (!data) continue;
-    const rgb = parseInt(data.color.slice(1,3),16)+','+parseInt(data.color.slice(3,5),16)+','+parseInt(data.color.slice(5,7),16);
-    html += '<div class="std-category" style="margin-bottom:24px">';
-    html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 14px;background:rgba('+rgb+',.08);border:1px solid rgba('+rgb+',.2);border-radius:8px">';
-    html += '<span style="color:'+data.color+'">'+data.icon+'</span>';
-    html += '<span style="font-family:' + "'Space Grotesk'" + ',sans-serif;font-size:15px;font-weight:700;color:'+data.color+'">'+category+'</span>';
-    html += '<span style="margin-left:auto;font-size:11px;color:var(--text2);font-family:' + "'JetBrains Mono'" + ',monospace">'+data.items.length+' dokumen</span>';
-    html += '</div>';
-    html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px">';
 
-    for (const item of data.items) {
+    // Filter items by search query
+    let filteredItems = data.items;
+    if (searchQuery) {
+      filteredItems = data.items.filter(function(item) {
+        const haystack = (item.std + ' ' + item.title + ' ' + item.scope + ' ' + item.type + ' ' + category).toLowerCase();
+        return haystack.indexOf(searchQuery) !== -1;
+      });
+      if (filteredItems.length === 0) continue;
+    }
+    totalMatchCount += filteredItems.length;
+
+    const rgb = parseInt(data.color.slice(1,3),16)+','+parseInt(data.color.slice(3,5),16)+','+parseInt(data.color.slice(5,7),16);
+    contentHtml += '<div class="std-category" style="margin-bottom:24px">';
+    contentHtml += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 14px;background:rgba('+rgb+',.08);border:1px solid rgba('+rgb+',.2);border-radius:8px">';
+    contentHtml += '<span style="color:'+data.color+'">'+data.icon+'</span>';
+    contentHtml += '<span style="font-family:' + "'Space Grotesk'" + ',sans-serif;font-size:15px;font-weight:700;color:'+data.color+'">'+category+'</span>';
+    contentHtml += '<span style="margin-left:auto;font-size:11px;color:var(--text2);font-family:' + "'JetBrains Mono'" + ',monospace">'+filteredItems.length+' dokumen</span>';
+    contentHtml += '</div>';
+    contentHtml += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px">';
+
+    for (const item of filteredItems) {
       const typeColors = {
         'SNI':'#ff6d00','ISO':'#00bcd4','JIS':'#e91e63','DVS':'#9c27b0','AWWA':'#2196f3',
         'ASTM':'#ff5722','AS/NZS':'#4caf50','BS EN':'#3f51b5','DIN':'#795548','EN':'#607d8b',
@@ -348,25 +404,58 @@ function renderStandarAcuan(filterKey) {
       };
       const tc = typeColors[item.type] || '#888';
       const tcRgb = parseInt(tc.slice(1,3),16)+','+parseInt(tc.slice(3,5),16)+','+parseInt(tc.slice(5,7),16);
-      html += '<div class="std-card" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px 14px;transition:all .2s;cursor:default" onmouseenter="this.style.borderColor=' + "'rgba("+rgb+',.3)' + "'" + ';this.style.background=' + "'rgba("+rgb+',.04)' + "'" + '" onmouseleave="this.style.borderColor=' + "'rgba(255,255,255,.06)'" + ';this.style.background=' + "'rgba(255,255,255,.03)'" + '">';
-      html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
-      html += '<span style="font-family:' + "'JetBrains Mono'" + ',monospace;font-size:12px;font-weight:700;color:'+data.color+'">'+item.std+'</span>';
-      html += '<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba('+tcRgb+',.15);color:'+tc+';font-weight:600;letter-spacing:.5px">'+item.type+'</span>';
-      html += '</div>';
-      html += '<div style="font-size:12.5px;color:#e0e0e0;font-weight:600;margin-bottom:4px;line-height:1.4">'+item.title+'</div>';
-      html += '<div style="font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:8px">'+item.scope+'</div>';
+
+      const displayStd = searchQuery ? _highlightMatch(item.std, searchQuery) : item.std;
+      const displayTitle = searchQuery ? _highlightMatch(item.title, searchQuery) : item.title;
+      const displayScope = searchQuery ? _highlightMatch(item.scope, searchQuery) : item.scope;
+
+      contentHtml += '<div class="std-card" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px 14px;transition:all .2s;cursor:default' + (searchQuery ? ';animation:fadeUp .3s ease-out' : '') + '" onmouseenter="this.style.borderColor=' + "'rgba("+rgb+',.3)' + "'" + ';this.style.background=' + "'rgba("+rgb+',.04)' + "'" + '" onmouseleave="this.style.borderColor=' + "'rgba(255,255,255,.06)'" + ';this.style.background=' + "'rgba(255,255,255,.03)'" + '">';
+      contentHtml += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
+      contentHtml += '<span style="font-family:' + "'JetBrains Mono'" + ',monospace;font-size:12px;font-weight:700;color:'+data.color+'">'+displayStd+'</span>';
+      contentHtml += '<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba('+tcRgb+',.15);color:'+tc+';font-weight:600;letter-spacing:.5px">'+item.type+'</span>';
+      contentHtml += '</div>';
+      contentHtml += '<div style="font-size:12.5px;color:#e0e0e0;font-weight:600;margin-bottom:4px;line-height:1.4">'+displayTitle+'</div>';
+      contentHtml += '<div style="font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:8px">'+displayScope+'</div>';
       if (item.pdf) {
-        html += '<a href="'+item.pdf+'" target="_blank" class="std-pdf-btn" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;padding:4px 10px;border-radius:5px;background:rgba('+rgb+',.1);border:1px solid rgba('+rgb+',.2);color:'+data.color+';text-decoration:none;font-weight:600;font-family:' + "'Space Grotesk'" + ',sans-serif;transition:all .2s;cursor:pointer" onmouseenter="this.style.background=' + "'rgba("+rgb+",.2)'" + '" onmouseleave="this.style.background=' + "'rgba("+rgb+",.1)'" + '">';
-        html += '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>';
-        html += 'Buka PDF</a>';
+        contentHtml += '<a href="'+item.pdf+'" target="_blank" class="std-pdf-btn" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;padding:4px 10px;border-radius:5px;background:rgba('+rgb+',.1);border:1px solid rgba('+rgb+',.2);color:'+data.color+';text-decoration:none;font-weight:600;font-family:' + "'Space Grotesk'" + ',sans-serif;transition:all .2s;cursor:pointer" onmouseenter="this.style.background=' + "'rgba("+rgb+",.2)'" + '" onmouseleave="this.style.background=' + "'rgba("+rgb+",.1)'" + '">';
+        contentHtml += '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>';
+        contentHtml += 'Buka PDF</a>';
       }
-      html += '</div>';
+      contentHtml += '</div>';
     }
-    html += '</div></div>';
+    contentHtml += '</div></div>';
   }
 
+  // Search results summary
+  if (searchQuery) {
+    if (totalMatchCount > 0) {
+      html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:8px 14px;background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.12);border-radius:8px;animation:fadeUp .2s ease-out">';
+      html += '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
+      html += '<span style="font-size:12px;color:var(--text2)">Ditemukan <strong style="color:#00e5ff">' + totalMatchCount + '</strong> standar untuk "<strong style="color:#fff">' + searchQuery.replace(/</g,'&lt;') + '</strong>"</span>';
+      html += '</div>';
+    } else {
+      html += '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;text-align:center;animation:fadeUp .3s ease-out">';
+      html += '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.25;margin-bottom:16px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="8" x2="14" y2="14"/><line x1="14" y1="8" x2="8" y2="14"/></svg>';
+      html += '<div style="font-size:14px;color:var(--text2);font-weight:600;margin-bottom:6px">Tidak ditemukan standar untuk "<span style="color:#fff">' + searchQuery.replace(/</g,'&lt;') + '</span>"</div>';
+      html += '<div style="font-size:12px;color:rgba(142,155,176,.6);line-height:1.6;max-width:320px">Coba kata kunci lain, misalnya: <span style="color:var(--text2);cursor:pointer;text-decoration:underline" onclick="document.getElementById(\'standar-search-input\').value=\'HDPE\';_standarSearchHandler(\'HDPE\')">HDPE</span>, <span style="color:var(--text2);cursor:pointer;text-decoration:underline" onclick="document.getElementById(\'standar-search-input\').value=\'fusion\';_standarSearchHandler(\'fusion\')">fusion</span>, <span style="color:var(--text2);cursor:pointer;text-decoration:underline" onclick="document.getElementById(\'standar-search-input\').value=\'tekanan\';_standarSearchHandler(\'tekanan\')">tekanan</span>, atau <span style="color:var(--text2);cursor:pointer;text-decoration:underline" onclick="document.getElementById(\'standar-search-input\').value=\'SNI\';_standarSearchHandler(\'SNI\')">SNI</span></div>';
+      html += '</div>';
+    }
+  }
+
+  html += contentHtml;
+
   container.innerHTML = html;
-  container.scrollTop = 0;
+
+  // Restore focus to search input if there's a query
+  if (searchQuery) {
+    const input = document.getElementById('standar-search-input');
+    if (input) {
+      input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
+    }
+  }
+
+  if (!searchQuery) container.scrollTop = 0;
 }
 
 function resetCompPanel() {
