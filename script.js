@@ -167,15 +167,21 @@ function switchLibraryForm(formId) {
 
   const iframeWrap = document.getElementById('library-content');
   const standarWrap = document.getElementById('library-standar');
+  const pustakaWrap = document.getElementById('library-pustaka');
+
+  iframeWrap.style.display = 'none';
+  standarWrap.style.display = 'none';
+  pustakaWrap.style.display = 'none';
 
   if (formId === 'siphonic') {
     iframeWrap.style.display = 'block';
-    standarWrap.style.display = 'none';
     document.getElementById('library-iframe').src = 'form-siphonic.html';
   } else if (formId === 'standar') {
-    iframeWrap.style.display = 'none';
     standarWrap.style.display = 'block';
     renderStandarAcuan();
+  } else if (formId === 'pustaka') {
+    pustakaWrap.style.display = 'block';
+    renderPustakaTeknis();
   }
 }
 
@@ -458,6 +464,178 @@ function renderStandarAcuan(filterKey) {
   }
 
   if (!searchQuery) container.scrollTop = 0;
+}
+
+// ==================== PUSTAKA TEKNIS ====================
+let _pustakaSearchQuery = '';
+let _pustakaSearchRaw = '';
+let _pustakaSearchTimeout = null;
+let _pustakaActiveCat = 'all';
+let _pustakaActiveMat = 'all';
+
+function _pustakaSearchHandler(value) {
+  clearTimeout(_pustakaSearchTimeout);
+  _pustakaSearchRaw = value;
+  _pustakaSearchTimeout = setTimeout(function() {
+    _pustakaSearchQuery = value.toLowerCase();
+    renderPustakaTeknis();
+  }, 250);
+}
+
+function renderPustakaTeknis(catFilter, matFilter) {
+  const container = document.getElementById('library-pustaka');
+  if (catFilter !== undefined) _pustakaActiveCat = catFilter;
+  if (matFilter !== undefined) _pustakaActiveMat = matFilter;
+  const activeCat = _pustakaActiveCat;
+  const activeMat = _pustakaActiveMat;
+  const sq = _pustakaSearchQuery;
+
+  // Filter data
+  let items = pustakaData.filter(function(item) {
+    if (activeCat !== 'all' && item.cat !== activeCat) return false;
+    if (activeMat !== 'all' && item.material !== activeMat) return false;
+    if (sq) {
+      const h = (item.title + ' ' + item.author + ' ' + item.summary + ' ' + item.tags.join(' ') + ' ' + item.material + ' ' + item.id).toLowerCase();
+      if (h.indexOf(sq) === -1) return false;
+    }
+    return true;
+  });
+
+  // Header
+  let html = '<div style="margin-bottom:16px;font-family:\'Space Grotesk\',sans-serif;font-size:18px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px">';
+  html += '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--sys-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>';
+  html += ' Pustaka Teknis — Handbook, Jurnal & Panduan Pipa Plastik</div>';
+  html += '<div style="font-size:12px;color:var(--text2);margin-bottom:16px;line-height:1.6">Koleksi handbook, technical notes, jurnal riset, panduan teknis, dan regulasi terkait pipa plastik (HDPE, PVC, PVC-O, PPR).</div>';
+
+  // Search bar
+  html += '<div style="position:relative;margin-bottom:14px">';
+  html += '<div style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text2);pointer-events:none;display:flex;align-items:center" id="pustaka-search-icon">';
+  html += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>';
+  html += '<input type="text" id="pustaka-search-input" placeholder="Cari handbook, jurnal, panduan teknis..." value="' + (_pustakaSearchRaw || '').replace(/"/g,'&quot;') + '" ';
+  html += 'oninput="_pustakaSearchHandler(this.value)" ';
+  html += 'onfocus="document.getElementById(\'pustaka-search-icon\').style.color=\'#00e5ff\';this.parentElement.style.boxShadow=\'0 0 0 2px rgba(0,229,255,.2)\'" ';
+  html += 'onblur="document.getElementById(\'pustaka-search-icon\').style.color=\'var(--text2)\';this.parentElement.style.boxShadow=\'none\'" ';
+  html += 'style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px 40px 12px 42px;color:#fff;font-size:13px;font-family:\'Inter\',sans-serif;outline:none;transition:all .25s" />';
+  if (sq) {
+    html += '<button onclick="_pustakaSearchQuery=\'\';_pustakaSearchRaw=\'\';renderPustakaTeknis()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:var(--text2);width:24px;height:24px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s" onmouseenter="this.style.color=\'#ff6b6b\'" onmouseleave="this.style.color=\'var(--text2)\'">&times;</button>';
+  }
+  html += '</div>';
+
+  // Category filter
+  html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">';
+  html += '<span style="font-size:11px;color:var(--text2)">Kategori:</span>';
+  var catBtnStyle = function(isActive, color) {
+    return isActive ? 'background:rgba(' + color + ',.15);color:rgb(' + color + ');border-color:rgba(' + color + ',.4)' : 'background:rgba(255,255,255,.03);color:var(--text2);border-color:rgba(255,255,255,.08)';
+  };
+  html += '<button onclick="renderPustakaTeknis(\'all\')" style="' + catBtnStyle(activeCat==='all','255,255,255') + ';border:1px solid;padding:4px 12px;border-radius:20px;font-size:10px;font-family:\'Space Grotesk\',sans-serif;cursor:pointer;font-weight:600">Semua</button>';
+  Object.keys(pustakaCategoryMeta).forEach(function(key) {
+    var m = pustakaCategoryMeta[key];
+    var r = parseInt(m.color.slice(1,3),16), g = parseInt(m.color.slice(3,5),16), b = parseInt(m.color.slice(5,7),16);
+    html += '<button onclick="renderPustakaTeknis(\'' + key + '\')" style="' + catBtnStyle(activeCat===key, r+','+g+','+b) + ';border:1px solid;padding:4px 12px;border-radius:20px;font-size:10px;font-family:\'Space Grotesk\',sans-serif;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:4px">' + m.icon + ' ' + m.label + '</button>';
+  });
+  html += '</div>';
+
+  // Material filter
+  html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:18px;flex-wrap:wrap">';
+  html += '<span style="font-size:11px;color:var(--text2)">Material:</span>';
+  html += '<button onclick="renderPustakaTeknis(undefined,\'all\')" style="' + catBtnStyle(activeMat==='all','255,255,255') + ';border:1px solid;padding:4px 12px;border-radius:20px;font-size:10px;font-family:\'Space Grotesk\',sans-serif;cursor:pointer;font-weight:600">Semua</button>';
+  Object.keys(pustakaMatColors).forEach(function(mat) {
+    var c = pustakaMatColors[mat];
+    var r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
+    html += '<button onclick="renderPustakaTeknis(undefined,\'' + mat + '\')" style="' + catBtnStyle(activeMat===mat, r+','+g+','+b) + ';border:1px solid;padding:4px 12px;border-radius:20px;font-size:10px;font-family:\'Space Grotesk\',sans-serif;cursor:pointer;font-weight:600">' + mat + '</button>';
+  });
+  html += '</div>';
+
+  // Results count
+  html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">';
+  html += '<span style="font-size:12px;color:var(--text2)">' + (sq ? 'Hasil pencarian: ' : 'Total: ') + '<strong style="color:#00e5ff">' + items.length + '</strong> dokumen</span>';
+  html += '</div>';
+
+  if (items.length === 0) {
+    html += '<div style="text-align:center;padding:48px 20px;color:var(--text2)">';
+    html += '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.2;margin-bottom:12px"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>';
+    html += '<div style="font-size:13px;font-weight:600">Tidak ada dokumen ditemukan</div>';
+    html += '<div style="font-size:11px;color:rgba(142,155,176,.6);margin-top:4px">Coba ubah filter atau kata kunci pencarian</div></div>';
+  } else {
+    // Table header
+    html += '<div style="display:grid;grid-template-columns:minmax(0,2.5fr) minmax(0,1.2fr) 70px 70px 80px 90px;gap:0;border:1px solid rgba(255,255,255,.08);border-radius:8px;overflow:hidden;font-size:11px">';
+    html += '<div style="background:rgba(0,229,255,.06);padding:10px 14px;color:#00e5ff;font-weight:700;font-family:\'Space Grotesk\',sans-serif;letter-spacing:.5px">JUDUL</div>';
+    html += '<div style="background:rgba(0,229,255,.06);padding:10px 14px;color:#00e5ff;font-weight:700;font-family:\'Space Grotesk\',sans-serif;letter-spacing:.5px">PENERBIT</div>';
+    html += '<div style="background:rgba(0,229,255,.06);padding:10px 14px;color:#00e5ff;font-weight:700;font-family:\'Space Grotesk\',sans-serif;letter-spacing:.5px;text-align:center">TAHUN</div>';
+    html += '<div style="background:rgba(0,229,255,.06);padding:10px 14px;color:#00e5ff;font-weight:700;font-family:\'Space Grotesk\',sans-serif;letter-spacing:.5px;text-align:center">MATERIAL</div>';
+    html += '<div style="background:rgba(0,229,255,.06);padding:10px 14px;color:#00e5ff;font-weight:700;font-family:\'Space Grotesk\',sans-serif;letter-spacing:.5px;text-align:center">KATEGORI</div>';
+    html += '<div style="background:rgba(0,229,255,.06);padding:10px 14px;color:#00e5ff;font-weight:700;font-family:\'Space Grotesk\',sans-serif;letter-spacing:.5px;text-align:center">AKSES</div>';
+
+    items.forEach(function(item, idx) {
+      var catM = pustakaCategoryMeta[item.cat] || { label:item.cat, color:'#888' };
+      var matC = pustakaMatColors[item.material] || '#888';
+      var catR = parseInt(catM.color.slice(1,3),16), catG = parseInt(catM.color.slice(3,5),16), catB = parseInt(catM.color.slice(5,7),16);
+      var matR = parseInt(matC.slice(1,3),16), matG = parseInt(matC.slice(3,5),16), matB = parseInt(matC.slice(5,7),16);
+      var rowBg = idx % 2 === 0 ? 'rgba(255,255,255,.015)' : 'rgba(255,255,255,.035)';
+      var bdr = 'border-bottom:1px solid rgba(255,255,255,.04)';
+      var hoverAttr = 'onmouseenter="this.parentElement.querySelectorAll(\'[data-row=row' + idx + ']\').forEach(function(e){e.style.background=\'rgba(0,229,255,.04)\'})" onmouseleave="this.parentElement.querySelectorAll(\'[data-row=row' + idx + ']\').forEach(function(e){e.style.background=\'' + rowBg + '\'})"';
+
+      // Title cell with expandable summary
+      html += '<div data-row="row' + idx + '" style="padding:10px 14px;background:' + rowBg + ';' + bdr + ';cursor:pointer" ' + hoverAttr + ' onclick="var el=document.getElementById(\'pst-sum-' + idx + '\');el.style.display=el.style.display===\'block\'?\'none\':\'block\'">';
+      html += '<div style="font-weight:600;color:#e0e0e0;line-height:1.4;font-size:12px">' + item.title + '</div>';
+      html += '<div id="pst-sum-' + idx + '" style="display:none;margin-top:6px;font-size:11px;color:var(--text2);line-height:1.5;padding:6px 8px;background:rgba(255,255,255,.03);border-radius:4px;border-left:2px solid ' + catM.color + '">' + item.summary;
+      if (item.tags.length) {
+        html += '<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">';
+        item.tags.forEach(function(t) { html += '<span style="font-size:9px;padding:1px 6px;border-radius:3px;background:rgba(255,255,255,.06);color:var(--text2)">' + t + '</span>'; });
+        html += '</div>';
+      }
+      html += '</div></div>';
+
+      // Author
+      html += '<div data-row="row' + idx + '" style="padding:10px 14px;background:' + rowBg + ';' + bdr + ';color:var(--text2);font-size:11px;line-height:1.4" ' + hoverAttr + '>' + item.author + '</div>';
+
+      // Year
+      html += '<div data-row="row' + idx + '" style="padding:10px 14px;background:' + rowBg + ';' + bdr + ';text-align:center;color:var(--text2);font-family:\'JetBrains Mono\',monospace;font-size:11px" ' + hoverAttr + '>' + item.year + '</div>';
+
+      // Material badge
+      html += '<div data-row="row' + idx + '" style="padding:10px 14px;background:' + rowBg + ';' + bdr + ';text-align:center" ' + hoverAttr + '>';
+      html += '<span style="font-size:9px;padding:2px 8px;border-radius:4px;background:rgba(' + matR + ',' + matG + ',' + matB + ',.12);color:' + matC + ';font-weight:600">' + item.material + '</span></div>';
+
+      // Category badge
+      html += '<div data-row="row' + idx + '" style="padding:10px 14px;background:' + rowBg + ';' + bdr + ';text-align:center" ' + hoverAttr + '>';
+      html += '<span style="font-size:9px;padding:2px 8px;border-radius:4px;background:rgba(' + catR + ',' + catG + ',' + catB + ',.12);color:' + catM.color + ';font-weight:600">' + catM.label.split(' ')[0] + '</span></div>';
+
+      // Access link
+      var accessColor = item.access === 'open' ? '#00e676' : item.access === 'purchase' ? '#ffd740' : '#ff9800';
+      var accessLabel = item.access === 'open' ? 'Open' : item.access === 'purchase' ? 'Beli' : 'Member';
+      html += '<div data-row="row' + idx + '" style="padding:10px 14px;background:' + rowBg + ';' + bdr + ';text-align:center;display:flex;align-items:center;justify-content:center;gap:6px" ' + hoverAttr + '>';
+      if (item.url) {
+        html += '<a href="' + item.url + '" target="_blank" style="display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:3px 8px;border-radius:4px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);color:#00e5ff;text-decoration:none;font-weight:600;transition:all .2s" onmouseenter="this.style.background=\'rgba(0,229,255,.15)\'" onmouseleave="this.style.background=\'rgba(0,229,255,.08)\'">';
+        html += '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
+        html += accessLabel + '</a>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  // Stats footer
+  var stats = {};
+  pustakaData.forEach(function(d) { stats[d.cat] = (stats[d.cat]||0) + 1; });
+  html += '<div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">';
+  Object.keys(pustakaCategoryMeta).forEach(function(k) {
+    var m = pustakaCategoryMeta[k];
+    var r = parseInt(m.color.slice(1,3),16)+','+parseInt(m.color.slice(3,5),16)+','+parseInt(m.color.slice(5,7),16);
+    html += '<div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba('+r+',.06);border:1px solid rgba('+r+',.12);border-radius:6px">';
+    html += '<span style="color:'+m.color+'">'+m.icon+'</span>';
+    html += '<span style="font-size:11px;color:var(--text2)">' + m.label + '</span>';
+    html += '<span style="font-size:12px;font-weight:700;color:'+m.color+';font-family:\'JetBrains Mono\',monospace">' + (stats[k]||0) + '</span>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  container.innerHTML = html;
+
+  if (sq) {
+    var inp = document.getElementById('pustaka-search-input');
+    if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+  }
+  if (!sq) container.scrollTop = 0;
 }
 
 function resetCompPanel() {
