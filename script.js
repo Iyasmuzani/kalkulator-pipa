@@ -225,6 +225,7 @@ const pipeStandards = {
       { std: 'ASTM D2241', pdf: 'standards/pvc/astm_d2241.pdf', title: 'PVC Pressure-Rated Pipe (SDR Series)', scope: 'Pipa PVC berdasarkan SDR (Standard Dimension Ratio).', type: 'ASTM' },
       { std: 'AS/NZS 1477:2017', pdf: 'standards/pvc/asnzs_14772017.pdf', title: 'PVC Pipes and Fittings for Pressure Applications', scope: 'Standar Australia/NZ untuk pipa PVC bertekanan (Series 1 & 2, DN15–DN750).', type: 'AS/NZS' },
       { std: 'BS EN 1401-1:2019', pdf: 'standards/pvc/bs_en_1401-12019.pdf', title: 'PVC-U Piping Systems for Non-Pressure Underground Drainage', scope: 'Sistem perpipaan PVC-U non-tekanan untuk drainase bawah tanah.', type: 'BS EN' },
+      { std: 'ISO/TR 4191:2014', pdf: 'standards/pvc/iso_tr_4191_2014.pdf', title: 'Plastics piping systems for water supply — PVC-U and PVC-O — Guidance for installation', scope: 'Panduan instalasi sistem perpipaan plastik untuk suplai air, khusus untuk pipa PVC-U dan PVC-O.', type: 'ISO' },
     ]
   },
   'PVC-O (Oriented PVC)': {
@@ -238,6 +239,7 @@ const pipeStandards = {
       { std: 'EN 17176-1:2019', pdf: 'standards/pvc-o/en_17176-12019.pdf', title: 'PVC-O Piping Systems for Water Supply — Part 1: General', scope: 'Standar Eropa untuk PVC-O: terminologi, klasifikasi, persyaratan umum.', type: 'EN' },
       { std: 'EN 17176-2:2019+A1:2022', pdf: 'standards/pvc-o/en_17176-22019a12022.pdf', title: 'PVC-O Piping Systems for Water Supply — Part 2: Pipes', scope: 'Dimensi, tekanan kerja, dan pengujian pipa PVC-O kelas 315–500. Termasuk Amendment 1:2022.', type: 'EN' },
       { std: 'PAS 27:2017 (UK)', pdf: 'standards/pvc-o/pas_272017_uk.pdf', title: 'Oriented PVC Pipes — Specification', scope: 'Spesifikasi publik Inggris untuk pipa PVC-O dalam aplikasi air bertekanan.', type: 'PAS' },
+      { std: 'ISO/TR 4191:2014', pdf: 'standards/pvc-o/iso_tr_4191_2014.pdf', title: 'Plastics piping systems for water supply — PVC-U and PVC-O — Guidance for installation', scope: 'Panduan instalasi sistem perpipaan plastik untuk suplai air, khusus untuk pipa PVC-U dan PVC-O.', type: 'ISO' },
     ]
   },
   'PPR (Polypropylene Random Copolymer)': {
