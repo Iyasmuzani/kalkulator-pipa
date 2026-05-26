@@ -15,8 +15,8 @@ function buildCalcBangunan() {
   <div class="form-group"><label class="form-label">Jumlah Pengguna per hari</label><input type="number" class="form-control" id="f-users" min="1" value="30"></div>
   <div class="form-group"><label class="form-label">Tinggi per Lantai (m)</label><input type="number" class="form-control" id="f-height" min="2.5" max="8" step="0.1" value="3.5"></div>
   <div class="form-group"><label class="form-label">Sumber Air</label><select class="form-control" id="f-source"><option value="pdam">PDAM</option><option value="sumur">Sumur Bor</option><option value="keduanya">PDAM + Sumur</option></select></div>
-  <div class="form-group"><label class="form-label">Sistem Distribusi</label><select class="form-control" id="f-system"><option value="downfeed">Down-feed (Gravitasi)</option><option value="upfeed">Up-feed (Booster)</option><option value="hybrid">Hybrid</option></select></div>
-  <div class="form-group"><label class="form-label">Material Pipa</label><select class="form-control" id="f-pipe"><option value="ppr10">PPR PN10 (Cold water)</option><option value="ppr16">PPR PN16 (Cold/warm)</option><option value="ppr20">PPR PN20 (Cold + Hot)</option><option value="pvc">uPVC Class AW</option><option value="galvanis">Baja Galvanis</option><option value="hdpe">HDPE</option></select></div>
+  <div class="form-group"><label class="form-label">Sistem Distribusi</label><select class="form-control" id="f-system"><option value="downfeed">Down-feed Gravitasi</option><option value="downfeed-pump">Down-feed + Pompa Booster</option><option value="upfeed">Up-feed Booster</option><option value="hybrid">Hybrid (Gravitasi + Booster)</option></select></div>
+  <div class="form-group"><label class="form-label">Material Pipa</label><select class="form-control" id="f-pipe"><option value="ppr10">PPR PN10 (Cold water)</option><option value="ppr16">PPR PN16 (Cold/warm)</option><option value="ppr20">PPR PN20 (Cold + Hot)</option><option value="pvc">uPVC Class AW</option><option value="galvanis">Baja Galvanis</option><option value="hdpe8">HDPE PE100 PN8 (SDR 21)</option><option value="hdpe10">HDPE PE100 PN10 (SDR 17)</option><option value="hdpe125">HDPE PE100 PN12.5 (SDR 13.6)</option><option value="hdpe16">HDPE PE100 PN16 (SDR 11)</option><option value="hdpe20">HDPE PE100 PN20 (SDR 9)</option></select></div>
   <div class="form-group"><label class="form-label">Kecepatan Aliran (m/s)</label><input type="number" class="form-control" id="f-velocity" min="0.6" max="2.0" step="0.1" value="1.5"></div>
   <button class="calc-btn" onclick="calcBangunan()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Rekomendasi</button>`;
 }
@@ -82,18 +82,77 @@ function calcBangunan() {
     restoran: { l: 80, p: 5.0, name: 'Restoran/Food Court', unit: 'L/kursi/hari' }
   };
   var t = R('f-type').value, fl = V('f-floors'), us = V('f-users'), hf = V('f-height'), src = R('f-source').value, sys = R('f-system').value, pp = R('f-pipe').value;
-  var s = ws[t], Qd = us * s.l, gt = Math.ceil(Qd * 1.5 / 100) * 100, rt = Math.ceil(Qd * 0.3 / 100) * 100;
+  var s = ws[t], Qd = us * s.l;
   var Qls = Qd * s.p / 86400, Qm3h = Qls * 3.6, Qm3s = Qls / 1000;
-  var tH = fl * hf + 8, fr = tH * 0.22, H = Math.ceil(tH + fr + 10);
-  var pw = (1000 * 9.81 * Qm3s * H) / (650), pwF = pwStd.find(p => p >= pw) || Math.ceil(pw);
-  // Kecepatan aliran desain (SNI 8153:2025: 0.6–2.0 m/s)
   var vDes = V('f-velocity') || 1.5;
+  // --- Perhitungan berbeda per sistem distribusi ---
+  var gt = Math.ceil(Qd * 1.5 / 100) * 100;
+  var rt, tH, fr, H, wP, prv, z, pt;
+  var sysLabel, sysDesc, pumpLabel, extraHTML = '';
+  var icoBolt = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>';
+  if (sys === 'downfeed') {
+    sysLabel = 'Down-feed Gravitasi';
+    sysDesc = 'Pompa transfer mengisi tangki atas (roof tank). Air didistribusikan ke seluruh lantai secara gravitasi. Sistem paling hemat energi untuk bangunan rendah–menengah.';
+    pumpLabel = 'Pompa Transfer';
+    rt = Math.ceil(Qd * 0.3 / 100) * 100;
+    tH = fl * hf + 5; fr = tH * 0.15; H = Math.ceil(tH + fr + 3);
+    wP = (fl * hf) / 10; prv = wP > 3.5; z = Math.ceil(fl / 4);
+  } else if (sys === 'downfeed-pump') {
+    sysLabel = 'Down-feed + Booster';
+    sysDesc = 'Pompa transfer mengisi tangki atas. Pompa booster di tangki atas mendorong air ke lantai-lantai dengan tekanan terkontrol. Cocok untuk bangunan tinggi yang butuh tekanan stabil.';
+    pumpLabel = 'Pompa Transfer';
+    rt = Math.ceil(Qd * 0.25 / 100) * 100;
+    tH = fl * hf + 5; fr = tH * 0.18; H = Math.ceil(tH + fr + 5);
+    var hBst = Math.ceil(fl * hf * 0.5 + 15);
+    var pwBst = (1000 * 9.81 * Qm3s * hBst) / 650;
+    var pwBstF = pwStd.find(p => p >= pwBst) || Math.ceil(pwBst);
+    wP = hBst / 10; prv = wP > 3.5; z = Math.ceil(fl / 4);
+    extraHTML = '<div class="result-sec"><div class="result-sec-title">' + icoBolt + ' Pompa Booster (dari Tangki Atas)</div><div class="result-grid">' +
+      '<div class="result-item"><div class="rk">Head Booster</div><div class="rv">' + hBst + '<span class="ru"> m</span></div></div>' +
+      '<div class="result-item"><div class="rk">Daya Booster</div><div class="rv">' + pwBstF + '<span class="ru"> kW</span></div></div>' +
+      '<div class="result-item"><div class="rk">Debit Booster</div><div class="rv">' + Qm3h.toFixed(1) + '<span class="ru"> m³/jam</span></div></div>' +
+      '<div class="result-item"><div class="rk">Jumlah Unit</div><div class="rv">2<span class="ru"> (1+1 standby)</span></div></div></div></div>';
+  } else if (sys === 'upfeed') {
+    sysLabel = 'Up-feed Booster';
+    sysDesc = 'Pompa booster mendorong air dari tangki bawah langsung ke seluruh lantai. Tanpa tangki atas. Dilengkapi pressure tank dan VFD untuk stabilitas tekanan.';
+    pumpLabel = 'Pompa Booster';
+    rt = 0;
+    tH = fl * hf; fr = tH * 0.22; H = Math.ceil(tH + fr + 15);
+    pt = Math.ceil(Qls * 360 / 10) * 10;
+    wP = H / 10; prv = fl > 4 && wP > 3.5; z = prv ? Math.ceil(fl / 4) : 0;
+    extraHTML = '<div class="result-sec"><div class="result-sec-title">' + icoBolt + ' Pressure Tank</div><div class="result-grid">' +
+      '<div class="result-item"><div class="rk">Volume Min.</div><div class="rv">' + pt + '<span class="ru"> Liter</span></div></div>' +
+      '<div class="result-item"><div class="rk">Pre-charge</div><div class="rv">' + (wP * 0.8).toFixed(1) + '<span class="ru"> bar</span></div></div>' +
+      '<div class="result-item"><div class="rk">Cut-in</div><div class="rv">' + (wP * 0.85).toFixed(1) + '<span class="ru"> bar</span></div></div>' +
+      '<div class="result-item"><div class="rk">Cut-out</div><div class="rv">' + (wP * 1.1).toFixed(1) + '<span class="ru"> bar</span></div></div></div></div>';
+  } else {
+    sysLabel = 'Hybrid';
+    sysDesc = 'Kombinasi: lantai atas dilayani gravitasi dari tangki atas, lantai bawah dilayani pompa booster. Efisien untuk bangunan menengah–tinggi.';
+    pumpLabel = 'Pompa Transfer';
+    rt = Math.ceil(Qd * 0.2 / 100) * 100;
+    tH = fl * hf + 5; fr = tH * 0.20; H = Math.ceil(tH + fr + 8);
+    var midFl = Math.ceil(fl / 2);
+    var hBstHy = Math.ceil(midFl * hf + 15);
+    var pwBstHy = (1000 * 9.81 * Qm3s * 0.6 * hBstHy) / 650;
+    var pwBstHyF = pwStd.find(p => p >= pwBstHy) || Math.ceil(pwBstHy);
+    wP = (fl * hf) / 10; prv = wP > 3.5; z = Math.ceil(fl / 4);
+    extraHTML = '<div class="result-sec"><div class="result-sec-title">' + icoBolt + ' Pompa Booster (Zona Lt.1–' + midFl + ')</div><div class="result-grid">' +
+      '<div class="result-item"><div class="rk">Head Booster</div><div class="rv">' + hBstHy + '<span class="ru"> m</span></div></div>' +
+      '<div class="result-item"><div class="rk">Daya Booster</div><div class="rv">' + pwBstHyF + '<span class="ru"> kW</span></div></div>' +
+      '<div class="result-item"><div class="rk">Zona Gravitasi</div><div class="rv">Lt.' + (midFl+1) + '–' + fl + '<span class="ru"> (tangki atas)</span></div></div>' +
+      '<div class="result-item"><div class="rk">Zona Booster</div><div class="rv">Lt.1–' + midFl + '<span class="ru"> (pompa)</span></div></div></div></div>';
+  }
+  var pw = (1000 * 9.81 * Qm3s * H) / 650, pwF = pwStd.find(p => p >= pw) || Math.ceil(pw);
   var Dm = Math.sqrt(4 * Qm3s / (Math.PI * vDes)) * 1000;
   var pSpecs = {
     'ppr10': { s: [20, 25, 32, 40, 50, 63, 75, 90, 110, 160], id: [15.6, 20.4, 26.2, 32.6, 40.8, 51.4, 61.4, 73.6, 90, 128], l: 'OD' },
     'ppr16': { s: [20, 25, 32, 40, 50, 63, 75, 90, 110, 160], id: [14.4, 18, 23.2, 29, 36.2, 45.8, 54.4, 65.4, 79.8, 114.2], l: 'OD' },
     'ppr20': { s: [20, 25, 32, 40, 50, 63, 75, 90, 110, 160], id: [13.2, 16.6, 21.2, 26.6, 33.4, 42, 50, 60, 73.4, 106.6], l: 'OD' },
-    'hdpe': { s: [20, 25, 32, 40, 50, 63, 75, 90, 110, 160, 200], id: [16.0, 21.0, 27.2, 34.0, 42.6, 53.6, 63.8, 76.6, 93.8, 136.4, 170.6], l: 'OD' },
+    'hdpe8': { s: [20, 25, 32, 40, 50, 63, 75, 90, 110, 160, 200], id: [18.1, 22.6, 29.0, 36.2, 45.2, 57.0, 67.9, 81.4, 99.5, 144.8, 181.0], l: 'OD' },
+    'hdpe10': { s: [20, 25, 32, 40, 50, 63, 75, 90, 110, 160, 200], id: [17.6, 22.1, 28.2, 35.3, 44.1, 55.6, 66.2, 79.4, 97.0, 141.1, 176.4], l: 'OD' },
+    'hdpe125': { s: [20, 25, 32, 40, 50, 63, 75, 90, 110, 160, 200], id: [17.1, 21.3, 27.3, 34.1, 42.6, 53.7, 64.0, 76.8, 93.8, 136.5, 170.6], l: 'OD' },
+    'hdpe16': { s: [20, 25, 32, 40, 50, 63, 75, 90, 110, 160, 200], id: [16.4, 20.5, 26.2, 32.7, 40.9, 51.5, 61.4, 73.6, 90.0, 130.9, 163.6], l: 'OD' },
+    'hdpe20': { s: [20, 25, 32, 40, 50, 63, 75, 90, 110, 160, 200], id: [15.6, 19.4, 24.9, 31.1, 38.9, 49.0, 58.3, 70.0, 85.6, 124.4, 155.6], l: 'OD' },
     'pvc': { s: [16, 20, 25, 35, 40, 50, 65, 75, 100, 125, 150, 200, 250, 300], id: [19, 22.4, 28, 37.4, 43.4, 55.4, 70.8, 82.8, 105.8, 129.2, 152.2, 199.4, 246.4, 293.6], l: 'DN' },
     'galvanis': { s: [15, 20, 25, 32, 40, 50, 65, 80, 100, 125, 150, 200, 250, 300], id: [16.1, 21.6, 27.3, 36.0, 41.9, 53.0, 68.7, 80.8, 105.3, 130.0, 155.4, 202.7, 254.5, 304.7], l: 'DN' }
   };
@@ -107,24 +166,27 @@ function calcBangunan() {
     pD = findPipe(Dm / spec.r, spec.s);
     bD = findPipe((Dm * 0.6) / spec.r, spec.s);
   }
-  var pt = Math.ceil(Qls * 360 / 10) * 10, wP = H / 10, prv = wP > 3.5, z = Math.ceil(fl / 4);
-  var pm = { 'ppr10': 'PPR PN10', 'ppr16': 'PPR PN16', 'ppr20': 'PPR PN20', 'pvc': 'uPVC Class AW', 'galvanis': 'Baja Galvanis', 'hdpe': 'HDPE PN12.5' };
+  var pm = { 'ppr10': 'PPR PN10', 'ppr16': 'PPR PN16', 'ppr20': 'PPR PN20', 'pvc': 'uPVC Class AW', 'galvanis': 'Baja Galvanis', 'hdpe8': 'HDPE PE100 PN8', 'hdpe10': 'HDPE PE100 PN10', 'hdpe125': 'HDPE PE100 PN12.5', 'hdpe16': 'HDPE PE100 PN16', 'hdpe20': 'HDPE PE100 PN20' };
+  var tankAtasHTML = sys === 'upfeed' ? '<div class="result-item"><div class="rk">Tangki Atas</div><div class="rv" style="color:#7a9ab8;font-size:12px">Tidak diperlukan</div></div>' : '<div class="result-item"><div class="rk">Tangki Atas</div><div class="rv">' + fmt(rt) + '</div></div>';
   R('rec-results').innerHTML = `
-  <div class="result-sec"><div class="result-sec-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Kebutuhan Air — ${us} pengguna</div><div class="result-grid">
+  <div class="result-sec"><div class="result-sec-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Kebutuhan Air — ${us} pengguna <span style="font-size:10px;color:var(--text2)">(${sysLabel})</span></div><div class="result-grid">
   <div class="result-item"><div class="rk">Konsumsi Harian</div><div class="rv">${(Qd / 1000).toFixed(2)}<span class="ru"> m³/hari</span></div></div>
   <div class="result-item"><div class="rk">Debit Puncak</div><div class="rv">${Qls.toFixed(2)}<span class="ru"> L/s</span></div></div>
   <div class="result-item"><div class="rk">Tangki Bawah</div><div class="rv">${fmt(gt)}</div></div>
-  <div class="result-item"><div class="rk">Tangki Atas</div><div class="rv">${fmt(rt)}</div></div></div></div>
-  <div class="result-sec"><div class="result-sec-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Spesifikasi Pompa</div><div class="result-grid">
+  ${tankAtasHTML}</div></div>
+  <div class="result-sec"><div class="result-sec-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Spesifikasi ${pumpLabel}</div><div class="result-grid">
   <div class="result-item"><div class="rk">Total Head</div><div class="rv">${H}<span class="ru"> m</span></div></div>
   <div class="result-item"><div class="rk">Debit Pompa</div><div class="rv">${Qm3h.toFixed(1)}<span class="ru"> m³/jam</span></div></div>
   <div class="result-item"><div class="rk">Daya Motor</div><div class="rv">${pwF}<span class="ru"> kW</span></div></div>
   <div class="result-item"><div class="rk">Tekanan Kerja</div><div class="rv">${wP.toFixed(1)}<span class="ru"> bar</span></div></div></div></div>
+  ${extraHTML}
   <div class="result-sec"><div class="result-sec-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Perpipaan</div><div class="result-grid">
   <div class="result-item"><div class="rk">Pipa Utama</div><div class="rv">${spec.l}${pD}<span class="ru"> mm</span></div></div>
   <div class="result-item"><div class="rk">Pipa Cabang</div><div class="rv">${spec.l}${bD}<span class="ru"> mm</span></div></div>
   <div class="result-item"><div class="rk">PRV Diperlukan</div><div class="rv" style="color:${prv ? '#ffaa00' : '#00ff9d'}">${prv ? 'YA - ' + z + ' zona' : 'TIDAK'}</div></div>
-  <div class="result-item"><div class="rk">Material</div><div class="rv" style="font-size:13px">${pm[pp]}</div></div></div></div>`;
+  <div class="result-item"><div class="rk">Material</div><div class="rv" style="font-size:13px">${pm[pp]}</div></div></div></div>
+  <div class="result-sec"><div class="result-sec-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Sistem: ${sysLabel}</div>
+  <div style="background:rgba(0,188,212,.06);border:1px solid rgba(0,188,212,.15);border-radius:6px;padding:10px 12px;font-size:11px;color:#7a9ab8;line-height:1.7">${sysDesc}</div></div>`;
   if (typeof animateValues === 'function') animateValues();
 }
 
