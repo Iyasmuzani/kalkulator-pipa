@@ -97,6 +97,15 @@ function calcBangunan() {
     rt = Math.ceil(Qd * 0.3 / 100) * 100;
     tH = fl * hf + 5; fr = tH * 0.15; H = Math.ceil(tH + fr + 3);
     wP = (fl * hf) / 10; prv = wP > 3.5; z = Math.ceil(fl / 4);
+    var hGrav = fl * hf;
+    var pGravMax = (hGrav / 10).toFixed(1);
+    var pGravMin = (hf / 10).toFixed(2);
+    var icoDroplet = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>';
+    extraHTML = '<div class="result-sec"><div class="result-sec-title">' + icoDroplet + ' Distribusi Gravitasi</div><div class="result-grid">' +
+      '<div class="result-item"><div class="rk">Head Gravitasi</div><div class="rv">' + hGrav + '<span class="ru"> m</span></div></div>' +
+      '<div class="result-item"><div class="rk">Tekanan Lt. Dasar</div><div class="rv">' + pGravMax + '<span class="ru"> bar (maks)</span></div></div>' +
+      '<div class="result-item"><div class="rk">Tekanan Lt. Teratas</div><div class="rv">' + pGravMin + '<span class="ru"> bar (min)</span></div></div>' +
+      '<div class="result-item"><div class="rk">Debit Gravitasi</div><div class="rv">' + Qm3h.toFixed(1) + '<span class="ru"> m³/jam</span></div></div></div></div>';
   } else if (sys === 'downfeed-pump') {
     sysLabel = 'Down-feed + Booster';
     sysDesc = 'Pompa transfer mengisi tangki atas. Pompa booster di tangki atas mendorong air ke lantai-lantai dengan tekanan terkontrol. Cocok untuk bangunan tinggi yang butuh tekanan stabil.';
