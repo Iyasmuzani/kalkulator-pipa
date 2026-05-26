@@ -191,6 +191,9 @@ const pipeStandards = {
     color: '#00bcd4',
     icon: '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="6"/><line x1="8" y1="6" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="18"/></svg>',
     items: [
+      { std: 'SNI 9383:2025', pdf: '#', title: 'Resin Polietilena (PE) untuk Pipa dan Fiting', scope: 'Standar resin PE untuk sistem perpipaan air minum bertekanan. Mengacu pada ISO 4427-1:2019. Menggantikan SNI 06-4829:2005.', type: 'SNI' },
+      { std: 'SNI 9362:2025', pdf: '#', title: 'Pipa Polietilena (PE) untuk Air Minum & Drainase', scope: 'Standar pipa PE sistem perpipaan bertekanan. Mengacu pada ISO 4427-2:2019. Menggantikan SNI 06-4829:2005.', type: 'SNI' },
+      { std: 'SNI 9363:2025', pdf: '#', title: 'Fiting Polietilena (PE) untuk Air Minum & Drainase', scope: 'Standar fiting PE untuk air minum bertekanan. Melengkapi spesifikasi teknis SNI 9362:2025.', type: 'SNI' },
       { std: 'SNI 4829.1:2015', pdf: 'standards/hdpe/sni_4829.12015.pdf', title: 'Sistem Perpipaan Plastik — PE untuk Air Minum — Bagian 1: Umum', scope: 'Klasifikasi, terminologi, dan persyaratan umum pipa PE untuk transportasi air minum. Adopsi ISO 4427-1:2007 (MOD).', type: 'SNI' },
       { std: 'SNI 4829.2:2015', pdf: 'standards/hdpe/sni_4829.22015.pdf', title: 'Sistem Perpipaan Plastik — PE untuk Air Minum — Bagian 2: Pipa', scope: 'Spesifikasi pipa PE100/PE80 (dimensi, tekanan, toleransi). Adopsi ISO 4427-2:2007 (MOD).', type: 'SNI' },
       { std: 'SNI 4829.3:2015', pdf: 'standards/hdpe/sni_4829.32015.pdf', title: 'Sistem Perpipaan Plastik — PE untuk Air Minum — Bagian 3: Fitting', scope: 'Spesifikasi fitting compression, butt fusion, electrofusion, dan spigot end.', type: 'SNI' },
