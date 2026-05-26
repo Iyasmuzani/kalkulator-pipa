@@ -148,7 +148,7 @@ function calcBangunan() {
     extraHTML = '<div class="result-sec"><div class="result-sec-title">' + icoBolt + ' Pompa Booster (Zona Lt.1–' + midFl + ')</div><div class="result-grid">' +
       '<div class="result-item"><div class="rk">Head Booster</div><div class="rv">' + hBstHy + '<span class="ru"> m</span></div></div>' +
       '<div class="result-item"><div class="rk">Daya Booster</div><div class="rv">' + pwBstHyF + '<span class="ru"> kW</span></div></div>' +
-      '<div class="result-item"><div class="rk">Zona Gravitasi</div><div class="rv">Lt.' + (midFl+1) + '–' + fl + '<span class="ru"> (tangki atas)</span></div></div>' +
+      '<div class="result-item"><div class="rk">Zona Gravitasi</div><div class="rv">Lt.' + (midFl + 1) + '–' + fl + '<span class="ru"> (tangki atas)</span></div></div>' +
       '<div class="result-item"><div class="rk">Zona Booster</div><div class="rv">Lt.1–' + midFl + '<span class="ru"> (pompa)</span></div></div></div></div>';
   }
   var pw = (1000 * 9.81 * Qm3s * H) / 650, pwF = pwStd.find(p => p >= pw) || Math.ceil(pw);
@@ -415,14 +415,14 @@ function calcSiphonic() {
     svgH = svgMaxH - 2 * padding;
     svgW = svgH * aspect;
   }
-  
+
   var viewBoxW = svgW + 2 * padding;
   var viewBoxH = svgH + 2 * padding;
-  
+
   var cellW = svgW / cols;
   var cellH = svgH / rows;
   var svgPoints = '';
-  
+
   for (var i = 0; i < nOut; i++) {
     var r = Math.floor(i / cols);
     var c = i % cols;
@@ -430,13 +430,13 @@ function calcSiphonic() {
     var rowStartX = padding + (svgW - (itemsInThisRow * cellW)) / 2;
     var px = rowStartX + c * cellW + cellW / 2;
     var py = padding + r * cellH + cellH / 2;
-    
+
     var rInfluence = Math.min(cellW, cellH) / 2.2;
     svgPoints += `
       <circle cx="${px}" cy="${py}" r="${rInfluence}" fill="rgba(0,188,212,0.06)" stroke="rgba(0,188,212,0.3)" stroke-dasharray="4,4"/>
       <circle cx="${px}" cy="${py}" r="6" fill="#041828" stroke="#00bcd4" stroke-width="2"/>
       <circle cx="${px}" cy="${py}" r="2" fill="#00bcd4"/>
-      <text x="${px}" y="${py+16}" text-anchor="middle" fill="#00bcd4" font-size="10" font-family="monospace">RD-${i+1}</text>
+      <text x="${px}" y="${py + 16}" text-anchor="middle" fill="#00bcd4" font-size="10" font-family="monospace">RD-${i + 1}</text>
     `;
   }
 
@@ -446,8 +446,8 @@ function calcSiphonic() {
     <div style="background:#030d1a; border:1px solid rgba(0,188,212,0.2); border-radius:6px; padding:15px; text-align:center;">
       <svg viewBox="0 0 ${viewBoxW} ${viewBoxH}" width="100%" style="max-height:300px; display:block; margin:0 auto;">
         <rect x="${padding}" y="${padding}" width="${svgW}" height="${svgH}" fill="rgba(0,188,212,0.03)" stroke="rgba(0,188,212,0.3)" stroke-width="1.5" rx="2"/>
-        <text x="${viewBoxW/2}" y="${padding - 10}" text-anchor="middle" fill="rgba(0,188,212,0.6)" font-size="11" font-family="monospace">Panjang: ${L} m</text>
-        <text x="${padding - 10}" y="${viewBoxH/2}" text-anchor="middle" fill="rgba(0,188,212,0.6)" font-size="11" font-family="monospace" transform="rotate(-90, ${padding - 10}, ${viewBoxH/2})">Lebar: ${W} m</text>
+        <text x="${viewBoxW / 2}" y="${padding - 10}" text-anchor="middle" fill="rgba(0,188,212,0.6)" font-size="11" font-family="monospace">Panjang: ${L} m</text>
+        <text x="${padding - 10}" y="${viewBoxH / 2}" text-anchor="middle" fill="rgba(0,188,212,0.6)" font-size="11" font-family="monospace" transform="rotate(-90, ${padding - 10}, ${viewBoxH / 2})">Lebar: ${W} m</text>
         ${svgPoints}
       </svg>
       <div style="font-size:11px; color:#7a9ab8; margin-top:10px;">* Area lingkaran putus-putus menunjukkan estimasi jangkauan area tangkapan per roof drain.</div>
