@@ -43,6 +43,8 @@ function buildCalcTambang() {
 function buildCalcDistribusi() {
   document.getElementById('calc-form').innerHTML = `
   <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Data Jaringan Distribusi</div>
+  <div class="mode-toggle"><button class="mode-btn active" id="mb-jar" onclick="setDistribusiMode('jaringan')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg> Sizing Jaringan</button><button class="mode-btn" id="mb-nrw" onclick="setDistribusiMode('nrw')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/><path d="M6 15a1.5 1.5 0 0 0 3 0c0-1-.5-1.5-1-2.5"/></svg> Analisis NRW</button></div>
+  <div id="dist-form-jar">
   <div class="form-group"><label class="form-label">Jumlah Sambungan Rumah (SR)</label><input type="number" class="form-control" id="d-sr" min="50" max="50000" value="500"></div>
   <div class="form-group"><label class="form-label">Jiwa per SR</label><input type="number" class="form-control" id="d-jpsr" min="3" max="8" value="5"></div>
   <div class="form-group"><label class="form-label">Kebutuhan Air (L/org/hari)</label><input type="number" class="form-control" id="d-liter" min="60" max="250" value="120"></div>
@@ -50,7 +52,22 @@ function buildCalcDistribusi() {
   <div class="form-group"><label class="form-label">Panjang Pipa Distribusi (m)</label><input type="number" class="form-control" id="d-dist" min="500" max="100000" value="8000"></div>
   <div class="form-group"><label class="form-label">Beda Elevasi Maks (m)</label><input type="number" class="form-control" id="d-elev" min="0" max="200" value="30"></div>
   <div class="form-group"><label class="form-label">Tekanan Layanan Min (bar)</label><input type="number" class="form-control" id="d-pmin" min="0.5" max="5" step="0.1" value="1.5"></div>
-  <button class="calc-btn" onclick="calcDistribusi()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Jaringan</button>`;
+  <button class="calc-btn" onclick="calcDistribusi()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Jaringan</button></div>
+  <div id="dist-form-nrw" style="display:none">
+  <div style="background:rgba(109,213,237,.06);border:1px solid rgba(109,213,237,.15);border-radius:7px;padding:8px 10px;margin-bottom:12px;font-size:10px;color:#7a9ab8;line-height:1.6">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    Analisis berdasarkan <strong style="color:var(--sys-accent)">IWA Water Balance</strong> dan metodologi <strong style="color:var(--sys-accent)">UARL (Lambert, 2009)</strong>. Data input sesuai format BPPSPAM / audit PDAM.
+  </div>
+  <div class="form-group"><label class="form-label">Volume Input Sistem (m³/bulan)</label><input type="number" class="form-control" id="nrw-input" min="1000" max="99999999" value="500000" placeholder="Total produksi air masuk sistem"></div>
+  <div class="form-group"><label class="form-label">Volume Air Terjual / Berekening (m³/bulan)</label><input type="number" class="form-control" id="nrw-billed" min="0" max="99999999" value="325000" placeholder="Dari data rekening pelanggan"></div>
+  <div class="form-group"><label class="form-label">Volume Air Tak Berekening Resmi (m³/bulan)</label><input type="number" class="form-control" id="nrw-unbilled-auth" min="0" max="9999999" value="10000" placeholder="Sosial, hidran, flushing, dll."></div>
+  <div class="form-group"><label class="form-label">Jumlah Sambungan Aktif</label><input type="number" class="form-control" id="nrw-conn" min="10" max="999999" value="12000"></div>
+  <div class="form-group"><label class="form-label">Panjang Jaringan Pipa (km)</label><input type="number" class="form-control" id="nrw-length" min="1" max="50000" step="0.1" value="150"></div>
+  <div class="form-group"><label class="form-label">Rata-rata Panjang Pipa SR (m)</label><input type="number" class="form-control" id="nrw-sr-length" min="1" max="50" step="0.5" value="8" placeholder="Dari meter air ke pipa distribusi"></div>
+  <div class="form-group"><label class="form-label">Tekanan Rata-rata Sistem (m H₂O)</label><input type="number" class="form-control" id="nrw-pressure" min="5" max="100" step="0.5" value="25" placeholder="1 bar ≈ 10 m H₂O"></div>
+  <div class="form-group"><label class="form-label">Jam Suplai per Hari</label><input type="number" class="form-control" id="nrw-hours" min="1" max="24" step="0.5" value="24"></div>
+  <div class="form-group"><label class="form-label">Tarif Air Rata-rata (Rp/m³)</label><input type="number" class="form-control" id="nrw-tariff" min="500" max="50000" step="100" value="5500"></div>
+  <button class="calc-btn" onclick="calcNRW()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Analisis NRW</button></div>`;
 }
 
 function setMiningMode(m) {
@@ -58,6 +75,13 @@ function setMiningMode(m) {
   document.getElementById('mining-form-sl').style.display = m === 'slurry' ? 'block' : 'none';
   document.getElementById('mb-dw').classList.toggle('active', m === 'dewatering');
   document.getElementById('mb-sl').classList.toggle('active', m === 'slurry');
+}
+
+function setDistribusiMode(m) {
+  document.getElementById('dist-form-jar').style.display = m === 'jaringan' ? 'block' : 'none';
+  document.getElementById('dist-form-nrw').style.display = m === 'nrw' ? 'block' : 'none';
+  document.getElementById('mb-jar').classList.toggle('active', m === 'jaringan');
+  document.getElementById('mb-nrw').classList.toggle('active', m === 'nrw');
 }
 
 function fmt(n) { if (n >= 1e6) return (n / 1e6).toFixed(2) + ' m³'; if (n >= 1000) return (n / 1000).toFixed(1) + ' m³'; return Math.round(n) + ' L'; }
@@ -296,6 +320,172 @@ function calcDistribusi() {
   <div class="result-item"><div class="rk">Air Valve</div><div class="rv">~${nAV}<span class="ru"> unit</span></div></div>
   <div class="result-item"><div class="rk">Hidran</div><div class="rv">~${nHyd}<span class="ru"> unit</span></div></div>
   <div class="result-item"><div class="rk">Bulk Meter</div><div class="rv">${nDMA}<span class="ru"> unit</span></div></div></div></div>`;
+  if (typeof animateValues === 'function') animateValues();
+}
+
+// ==================== NRW (NON-REVENUE WATER) CALCULATOR ====================
+function calcNRW() {
+  var sysInput = V('nrw-input');       // m³/bulan
+  var billed = V('nrw-billed');         // m³/bulan
+  var unbilledAuth = V('nrw-unbilled-auth'); // m³/bulan
+  var nConn = V('nrw-conn');            // jumlah sambungan
+  var Lm = V('nrw-length');             // km jaringan
+  var Lp = V('nrw-sr-length');          // m rata-rata pipa SR
+  var P = V('nrw-pressure');            // m H₂O tekanan rata-rata
+  var supplyHrs = V('nrw-hours');       // jam suplai/hari
+  var tariff = V('nrw-tariff');         // Rp/m³
+
+  // === IWA WATER BALANCE ===
+  var authorizedConsumption = billed + unbilledAuth;
+  var waterLoss = sysInput - authorizedConsumption;
+  var nrwVol = sysInput - billed;       // NRW = input - billed authorized
+  var nrwPct = (nrwVol / sysInput * 100);
+
+  // Estimasi komponen kehilangan air (IWA methodology)
+  // Apparent losses biasanya 20-40% dari total water loss di negara berkembang
+  var apparentLossRatio = 0.30; // asumsi 30% dari water loss
+  var apparentLoss = waterLoss * apparentLossRatio;
+  var realLoss = waterLoss - apparentLoss;
+
+  // === UARL (Unavoidable Annual Real Losses) - Lambert 2009 ===
+  // UARL (L/conn/day) = (18 × Lm/Nc + 0.80 + 25 × Lp/1000) × P
+  // Lm = mains length (km), Nc = number of connections, Lp = avg service pipe length (m), P = pressure (m H₂O)
+  var uarlPerConnDay = (18 * Lm / nConn + 0.80 + 25 * Lp / 1000) * P; // L/conn/day
+  var uarlTotalDaily = uarlPerConnDay * nConn; // L/day total
+
+  // CARL (Current Annual Real Losses) per connection per day
+  var carlPerConnDay = realLoss * 1000 / nConn / 30.44; // L/conn/day (from m³/bulan)
+
+  // ILI = CARL / UARL
+  var ILI = carlPerConnDay / uarlPerConnDay;
+
+  // Kategori ILI (IWA / World Bank)
+  var iliCategory, iliColor, iliDesc, iliBand;
+  if (ILI <= 2) {
+    iliCategory = 'A — Sangat Baik';
+    iliColor = '#00e676';
+    iliDesc = 'Kebocoran fisik sangat rendah. Potensi penurunan terbatas. Fokus pada pemeliharaan preventif.';
+    iliBand = 'A';
+  } else if (ILI <= 4) {
+    iliCategory = 'B — Baik';
+    iliColor = '#6dd5ed';
+    iliDesc = 'Kebocoran fisik terkontrol. Ada ruang untuk penurunan melalui active leakage control (ALC).';
+    iliBand = 'B';
+  } else if (ILI <= 8) {
+    iliCategory = 'C — Perlu Perbaikan';
+    iliColor = '#ffaa00';
+    iliDesc = 'Kehilangan nyata signifikan. Perlu program ALC intensif, perbaikan infrastruktur, dan pressure management.';
+    iliBand = 'C';
+  } else {
+    iliCategory = 'D — Buruk';
+    iliColor = '#ff5555';
+    iliDesc = 'Kehilangan nyata sangat tinggi. Dibutuhkan investasi besar: rehabilitasi pipa, DMA, pressure management.';
+    iliBand = 'D';
+  }
+
+  // Kategori NRW% (BPPSPAM)
+  var nrwCategory, nrwColor;
+  if (nrwPct <= 20) { nrwCategory = 'Sangat Baik'; nrwColor = '#00e676'; }
+  else if (nrwPct <= 30) { nrwCategory = 'Baik'; nrwColor = '#6dd5ed'; }
+  else if (nrwPct <= 40) { nrwCategory = 'Cukup'; nrwColor = '#ffaa00'; }
+  else { nrwCategory = 'Kurang'; nrwColor = '#ff5555'; }
+
+  // Financial impact
+  var revenuePerMonth = billed * tariff;
+  var potentialLossPerMonth = nrwVol * tariff;
+  var potentialLossPerYear = potentialLossPerMonth * 12;
+
+  // Target penurunan (realistis: turun 2-5% NRW per tahun)
+  var targetNRW = Math.max(20, nrwPct - 5);
+  var targetVol = sysInput * targetNRW / 100;
+  var savedVol = nrwVol - targetVol;
+  var savedRevenue = savedVol * tariff * 12;
+
+  // Water loss per km per day (L/km/day)
+  var lossPerKmDay = realLoss * 1000 / Lm / 30.44;
+
+  // Icons
+  var icoWater = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>';
+  var icoChart = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>';
+  var icoTarget = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>';
+  var icoMoney = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>';
+  var icoGauge = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m14.7 10.7-3 3"/></svg>';
+  var icoTool = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>';
+
+  // NRW gauge percentage for visual bar
+  var nrwBarPct = Math.min(nrwPct, 100);
+
+  // ILI gauge percentage (cap at ILI=16 for visual)
+  var iliBarPct = Math.min(ILI / 16 * 100, 100);
+
+  // Format number as Rupiah
+  function fmtRp(n) {
+    if (n >= 1e12) return 'Rp ' + (n / 1e12).toFixed(1) + ' T';
+    if (n >= 1e9) return 'Rp ' + (n / 1e9).toFixed(1) + ' M';
+    if (n >= 1e6) return 'Rp ' + (n / 1e6).toFixed(1) + ' Jt';
+    return 'Rp ' + Math.round(n).toLocaleString('id-ID');
+  }
+
+  R('rec-results').innerHTML = `
+  <div class="result-sec"><div class="result-sec-title">${icoWater} IWA Water Balance — Neraca Air Bulanan</div><div class="result-grid">
+  <div class="result-item"><div class="rk">Volume Input Sistem</div><div class="rv">${(sysInput/1000).toFixed(1)}<span class="ru"> ×10³ m³</span></div></div>
+  <div class="result-item"><div class="rk">Konsumsi Resmi</div><div class="rv">${(authorizedConsumption/1000).toFixed(1)}<span class="ru"> ×10³ m³</span></div></div>
+  <div class="result-item"><div class="rk">Total Kehilangan Air</div><div class="rv" style="color:${nrwColor}">${(waterLoss/1000).toFixed(1)}<span class="ru"> ×10³ m³</span></div></div>
+  <div class="result-item"><div class="rk">Volume NRW</div><div class="rv" style="color:${nrwColor}">${(nrwVol/1000).toFixed(1)}<span class="ru"> ×10³ m³</span></div></div></div></div>
+
+  <div class="result-sec"><div class="result-sec-title">${icoChart} Indikator Kinerja NRW</div>
+  <div class="result-grid">
+  <div class="result-item"><div class="rk">NRW (%)</div><div class="rv" style="color:${nrwColor}">${nrwPct.toFixed(1)}<span class="ru"> %</span></div>
+  <div class="gauge-wrap"><div class="gauge-bar"><div class="gauge-fill" style="width:${nrwBarPct}%;background:linear-gradient(90deg,#00e676,${nrwColor})"></div></div></div></div>
+  <div class="result-item"><div class="rk">Kategori BPPSPAM</div><div class="rv" style="font-size:14px;color:${nrwColor}">${nrwCategory}</div></div>
+  <div class="result-item"><div class="rk">Kehilangan Nyata</div><div class="rv">${(realLoss/1000).toFixed(1)}<span class="ru"> ×10³ m³/bln</span></div></div>
+  <div class="result-item"><div class="rk">Kehilangan Semu</div><div class="rv">${(apparentLoss/1000).toFixed(1)}<span class="ru"> ×10³ m³/bln</span></div></div></div></div>
+
+  <div class="result-sec"><div class="result-sec-title">${icoGauge} ILI — Infrastructure Leakage Index</div>
+  <div class="result-grid">
+  <div class="result-item"><div class="rk">CARL (Real Loss Aktual)</div><div class="rv">${carlPerConnDay.toFixed(1)}<span class="ru"> L/conn/hari</span></div></div>
+  <div class="result-item"><div class="rk">UARL (Batas Minimum)</div><div class="rv">${uarlPerConnDay.toFixed(1)}<span class="ru"> L/conn/hari</span></div></div>
+  <div class="result-item" style="grid-column:span 2"><div class="rk">ILI = CARL ÷ UARL</div><div class="rv" style="font-size:28px;color:${iliColor}">${ILI.toFixed(2)}<span class="ru" style="font-size:12px"> (Kategori ${iliCategory})</span></div>
+  <div class="gauge-wrap"><div class="gauge-bar"><div class="gauge-fill" style="width:${iliBarPct}%;background:linear-gradient(90deg,#00e676,${iliColor})"></div></div></div></div>
+  <div class="result-item"><div class="rk">Loss per km Pipa</div><div class="rv">${lossPerKmDay.toFixed(0)}<span class="ru"> L/km/hari</span></div></div>
+  <div class="result-item"><div class="rk">Tekanan Sistem</div><div class="rv">${P}<span class="ru"> m H₂O (${(P/10).toFixed(1)} bar)</span></div></div></div>
+  <div style="background:rgba(${parseInt(iliColor.slice(1,3),16)},${parseInt(iliColor.slice(3,5),16)},${parseInt(iliColor.slice(5,7),16)},.06);border:1px solid rgba(${parseInt(iliColor.slice(1,3),16)},${parseInt(iliColor.slice(3,5),16)},${parseInt(iliColor.slice(5,7),16)},.18);border-radius:6px;padding:10px 12px;margin-top:10px;font-size:11px;color:${iliColor};line-height:1.7">${iliDesc}</div></div>
+
+  <div class="result-sec"><div class="result-sec-title">${icoMoney} Dampak Finansial</div><div class="result-grid">
+  <div class="result-item"><div class="rk">Pendapatan Air Terjual</div><div class="rv" style="font-size:15px;color:#00e676">${fmtRp(revenuePerMonth)}<span class="ru"> /bulan</span></div></div>
+  <div class="result-item"><div class="rk">Potensi Rugi NRW</div><div class="rv" style="font-size:15px;color:#ff5555">${fmtRp(potentialLossPerMonth)}<span class="ru"> /bulan</span></div></div>
+  <div class="result-item"><div class="rk">Potensi Rugi NRW</div><div class="rv" style="font-size:15px;color:#ff5555">${fmtRp(potentialLossPerYear)}<span class="ru"> /tahun</span></div></div>
+  <div class="result-item"><div class="rk">Rasio Rugi/Pendapatan</div><div class="rv" style="color:${nrwColor}">${(potentialLossPerMonth/revenuePerMonth*100).toFixed(0)}<span class="ru"> %</span></div></div></div></div>
+
+  <div class="result-sec"><div class="result-sec-title">${icoTarget} Target Penurunan NRW</div><div class="result-grid">
+  <div class="result-item"><div class="rk">NRW Saat Ini</div><div class="rv" style="color:${nrwColor}">${nrwPct.toFixed(1)}<span class="ru"> %</span></div></div>
+  <div class="result-item"><div class="rk">Target NRW (1 tahun)</div><div class="rv" style="color:#00e676">${targetNRW.toFixed(1)}<span class="ru"> %</span></div></div>
+  <div class="result-item"><div class="rk">Volume Air Diselamatkan</div><div class="rv">${(savedVol/1000).toFixed(1)}<span class="ru"> ×10³ m³/bln</span></div></div>
+  <div class="result-item"><div class="rk">Potensi Tambah Pendapatan</div><div class="rv" style="color:#00e676;font-size:14px">${fmtRp(savedRevenue)}<span class="ru"> /tahun</span></div></div></div></div>
+
+  <div class="result-sec"><div class="result-sec-title">${icoTool} Rekomendasi Aksi</div><div style="display:flex;flex-direction:column;gap:8px">
+  ${iliBand === 'A' ? `
+  <div class="rec-card"><div class="rec-icon">✅</div><div class="rec-text">Kinerja kebocoran fisik <strong>sangat baik</strong>. Fokus pada <strong>pemeliharaan preventif</strong> dan monitoring DMA untuk mempertahankan kinerja.</div></div>
+  <div class="rec-card"><div class="rec-text">Prioritas: penurunan <strong>kehilangan semu (apparent loss)</strong> melalui penggantian meter air tua dan audit pelanggan ilegal.</div></div>` : ''}
+  ${iliBand === 'B' ? `
+  <div class="rec-card"><div class="rec-icon">📊</div><div class="rec-text">Implementasi <strong>Active Leakage Control (ALC)</strong>: step testing, noise logger, dan correlator untuk deteksi kebocoran.</div></div>
+  <div class="rec-card"><div class="rec-text">Bentuk <strong>DMA (District Metered Area)</strong> — est. ${Math.ceil(nConn/2500)} zona. Monitoring minimum night flow (MNF) untuk deteksi dini.</div></div>
+  <div class="rec-card"><div class="rec-text">Program penggantian <strong>meter air</strong> yang berusia &gt;5 tahun. Estimasi under-registration bisa 5-15%.</div></div>` : ''}
+  ${iliBand === 'C' ? `
+  <div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text">Kehilangan air <strong>signifikan</strong>. Perlu program <strong>ALC intensif</strong> dengan target penurunan ${(nrwPct - targetNRW).toFixed(0)}% dalam 1 tahun.</div></div>
+  <div class="rec-card"><div class="rec-icon">🔧</div><div class="rec-text"><strong>Pressure management</strong>: instalasi PRV di inlet DMA. Penurunan 1 m tekanan ≈ penurunan ~1.5% kebocoran.</div></div>
+  <div class="rec-card"><div class="rec-text">Bentuk min. <strong>${Math.ceil(nConn/2000)} DMA</strong> dengan bulk meter dan data logger. Monitoring MNF harian.</div></div>
+  <div class="rec-card"><div class="rec-text">Program <strong>rehabilitasi pipa</strong> prioritas: pipa usia &gt;25 tahun, material AC/GI. Ganti ke HDPE/PVC-O.</div></div>
+  <div class="rec-card"><div class="rec-text">Audit meter dan pelanggan: ganti meter air tua, deteksi sambungan ilegal, kalibrasi meter induk.</div></div>` : ''}
+  ${iliBand === 'D' ? `
+  <div class="rec-card rec-warn"><div class="rec-icon">🚨</div><div class="rec-text">Kehilangan air <strong>sangat tinggi</strong>. Dibutuhkan <strong>investasi besar dan program jangka panjang</strong> (3-5 tahun).</div></div>
+  <div class="rec-card rec-warn"><div class="rec-text"><strong>Potensi kerugian ${fmtRp(potentialLossPerYear)}/tahun</strong> — investasi penurunan NRW hampir selalu menghasilkan ROI positif.</div></div>
+  <div class="rec-card"><div class="rec-icon">📋</div><div class="rec-text"><strong>Tahap 1 (0-6 bulan):</strong> Pembentukan min. ${Math.ceil(nConn/1500)} DMA, instalasi bulk meter, baseline MNF.</div></div>
+  <div class="rec-card"><div class="rec-text"><strong>Tahap 2 (6-18 bulan):</strong> ALC intensif, pressure management, penggantian meter air, deteksi sambungan ilegal.</div></div>
+  <div class="rec-card"><div class="rec-text"><strong>Tahap 3 (18-36 bulan):</strong> Rehabilitasi pipa kritis (AC, GI usia &gt;20 tahun). Pertimbangkan <strong>HDPE PE100</strong> atau <strong>PVC-O</strong>.</div></div>
+  <div class="rec-card"><div class="rec-text">Pertimbangkan: GIS mapping jaringan, SCADA monitoring, dan <strong>hydraulic modelling</strong> untuk optimasi.</div></div>` : ''}
+  ${supplyHrs < 24 ? `<div class="rec-card rec-warn"><div class="rec-icon">⏰</div><div class="rec-text"><strong>Suplai intermiten (${supplyHrs} jam/hari)</strong>: Nilai ILI yang dihitung bersifat indikatif. Suplai intermiten menyebabkan kontaminasi, kerusakan pipa, dan kehilangan air yang tidak terukur. Prioritas: <strong>menuju suplai 24 jam</strong>.</div></div>` : ''}
+  </div></div>`;
   if (typeof animateValues === 'function') animateValues();
 }
 
