@@ -117,7 +117,7 @@ function exitEngTools() {
 function switchEngTool(tool) {
   currentEngTool = tool;
   document.querySelectorAll('.eng-tab').forEach((b, i) => {
-    const tools = ['fusion', 'pressloss', 'buoyancy', 'waterhammer', 'friction', 'pipeload', 'rainfall', 'tensile', 'unitconv', 'matguide'];
+    const tools = ['fusion', 'pressloss', 'buoyancy', 'waterhammer', 'friction', 'pipeload', 'rainfall', 'tensile', 'thermal', 'unitconv', 'matguide'];
     b.classList.toggle('active', tools[i] === tool);
   });
   const builders = {
@@ -129,6 +129,7 @@ function switchEngTool(tool) {
     pipeload: buildPipeLoadForm,
     rainfall: buildRainfallForm,
     tensile: buildTensileForm,
+    thermal: buildThermalExpForm,
     unitconv: buildUnitConverterForm,
     matguide: buildMaterialGuideForm
   };

@@ -525,3 +525,236 @@ function calcTensile() {
   E('eng-results').innerHTML = html;
   if (typeof animateValues === 'function') animateValues();
 }
+
+// ===== 8. THERMAL EXPANSION =====
+function buildThermalExpForm() {
+  E('eng-form').innerHTML = `
+  <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg> Pemuaian Termal Pipa <span style="font-size:10px;color:var(--text2);font-weight:400">Thermal Expansion</span></div>
+  <div style="background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.12);border-radius:7px;padding:8px 10px;margin-bottom:12px;font-size:10px;color:#7a9ab8;line-height:1.6">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+    ΔL = α × L × ΔT — Koefisien pemuaian sesuai <strong style="color:#00e5ff">ISO 15874</strong> (PPR), <strong style="color:#00e5ff">ISO 4427</strong> (HDPE), <strong style="color:#00e5ff">ISO 1452</strong> (PVC).
+  </div>
+  <div class="form-group"><label class="form-label">Material Pipa</label>
+  <select class="form-control" id="te-mat" onchange="updateThermalOD()">
+    <option value="ppr">PPR (Polypropylene Random) — α = 0.15 mm/m/°C</option>
+    <option value="hdpe">HDPE PE100 — α = 0.20 mm/m/°C</option>
+    <option value="pvc">PVC-U (uPVC) — α = 0.06 mm/m/°C</option>
+  </select></div>
+  <div class="form-group"><label class="form-label">Diameter Luar Pipa (OD) mm</label>
+  <select class="form-control" id="te-od"></select></div>
+  <div class="form-group"><label class="form-label">Panjang Pipa Lurus (m)</label><input type="number" class="form-control" id="te-length" min="1" max="1000" step="0.5" value="30"></div>
+  <div class="form-group"><label class="form-label">Suhu Instalasi / Awal (°C)</label><input type="number" class="form-control" id="te-t1" min="-10" max="60" step="0.5" value="28" placeholder="Suhu saat pipa dipasang"></div>
+  <div class="form-group"><label class="form-label">Suhu Operasi Maks. (°C)</label><input type="number" class="form-control" id="te-t2" min="-10" max="95" step="0.5" value="60" placeholder="Suhu air panas / paparan matahari"></div>
+  <div class="form-group"><label class="form-label">Suhu Operasi Min. (°C) — Opsional</label><input type="number" class="form-control" id="te-t3" min="-10" max="60" step="0.5" value="" placeholder="Isi jika ingin hitung kontraksi juga"></div>
+  <button class="calc-btn" onclick="calcThermalExp()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Pemuaian</button>`;
+  updateThermalOD();
+}
+
+function updateThermalOD() {
+  var mat = E('te-mat').value;
+  var sizes = {
+    ppr:  [20, 25, 32, 40, 50, 63, 75, 90, 110, 160],
+    hdpe: [20, 25, 32, 40, 50, 63, 75, 90, 110, 125, 160, 200, 250, 315, 400, 500, 630],
+    pvc:  [20, 25, 32, 40, 50, 63, 75, 90, 110, 125, 160, 200, 250, 315, 400]
+  };
+  var list = sizes[mat] || sizes.ppr;
+  var sel = E('te-od');
+  sel.innerHTML = list.map(function(d) {
+    return '<option value="' + d + '"' + (d === 63 ? ' selected' : '') + '>DN ' + d + ' mm</option>';
+  }).join('');
+}
+
+function calcThermalExp() {
+  var mat = E('te-mat').value;
+  var od = Vf('te-od');
+  var L = Vf('te-length');
+  var T1 = Vf('te-t1');
+  var T2 = Vf('te-t2');
+  var T3input = E('te-t3').value;
+  var hasContraction = T3input !== '' && !isNaN(parseFloat(T3input));
+  var T3 = hasContraction ? parseFloat(T3input) : T1;
+
+  // Material properties
+  var props = {
+    ppr:  { alpha: 0.15, name: 'PPR', E_mpa: 800,  color: '#00e676', maxTemp: 70, sdrWall: {20:3.4, 25:4.2, 32:5.4, 40:6.7, 50:8.4, 63:10.5, 75:12.5, 90:15.0, 110:18.3, 160:26.6} },
+    hdpe: { alpha: 0.20, name: 'HDPE PE100', E_mpa: 800,  color: '#00bcd4', maxTemp: 60, sdrWall: {20:1.9, 25:2.3, 32:2.9, 40:3.7, 50:4.6, 63:5.8, 75:6.8, 90:8.2, 110:10.0, 125:11.4, 160:14.6, 200:18.2, 250:22.7, 315:28.6, 400:36.3, 500:45.4, 630:57.2} },
+    pvc:  { alpha: 0.06, name: 'PVC-U', E_mpa: 3000, color: '#aa66ff', maxTemp: 45, sdrWall: {20:1.5, 25:1.9, 32:2.4, 40:3.0, 50:3.7, 63:4.7, 75:5.6, 90:6.7, 110:8.2, 125:9.2, 160:11.8, 200:14.7, 250:18.4, 315:23.2, 400:29.4} }
+  };
+  var p = props[mat];
+  var alpha = p.alpha; // mm/m/°C
+
+  // ΔT calculations
+  var dT_exp = T2 - T1;      // expansion
+  var dT_con = T1 - T3;      // contraction
+  var dT_total = T2 - T3;    // total range
+
+  // Thermal expansion: ΔL = α × L × ΔT (mm)
+  var dL_exp = alpha * L * Math.abs(dT_exp);
+  var dL_con = hasContraction ? alpha * L * Math.abs(dT_con) : 0;
+  var dL_total = alpha * L * Math.abs(dT_total);
+  var dL_per_m = alpha * Math.abs(dT_exp); // mm per meter
+
+  // Wall thickness for force calculation (use PN16/SDR11 for PPR/HDPE, standard for PVC)
+  var en = p.sdrWall[od] || (od / 11);
+  var id_mm = od - 2 * en;
+  var A_mm2 = Math.PI / 4 * (od * od - id_mm * id_mm); // cross section area (mm²)
+
+  // Fixed point force: F = E × A × α × ΔT (convert units)
+  // E in MPa (N/mm²), A in mm², alpha in /°C (need to convert from mm/m/°C to 1/°C = ×1e-3)
+  var alpha_per_c = alpha / 1000; // 1/°C
+  var F_exp_N = p.E_mpa * A_mm2 * alpha_per_c * Math.abs(dT_exp); // Newton
+  var F_exp_kN = F_exp_N / 1000;
+  var F_exp_kg = F_exp_N / 9.81;
+
+  // Expansion loop sizing: L_loop = √(3 × D × ΔL)
+  // Where D = OD in mm, ΔL in mm → L_loop in mm
+  var Lloop_exp = Math.sqrt(3 * od * dL_exp); // mm
+  var Lloop_total = Math.sqrt(3 * od * dL_total);
+
+  // Guide/support spacing recommendations
+  var guideSpacing = { ppr: {h: 0.7, v: 1.0}, hdpe: {h: 1.0, v: 1.2}, pvc: {h: 1.0, v: 1.5} };
+  var baseSpacing = guideSpacing[mat];
+  // Adjust for larger diameters
+  var spacingFactor = od <= 32 ? 1.0 : od <= 63 ? 1.2 : od <= 110 ? 1.4 : 1.6;
+  var hSpacing = (baseSpacing.h * spacingFactor).toFixed(1);
+  var vSpacing = (baseSpacing.v * spacingFactor).toFixed(1);
+
+  // Max distance between fixed points (practical: 6-8m for PPR, 10-15m for HDPE, 8-10m for PVC)
+  var maxFixedDist = { ppr: 6, hdpe: 12, pvc: 8 };
+  var fixedDist = maxFixedDist[mat];
+  var nFixedPoints = Math.ceil(L / fixedDist) + 1;
+  var nExpDevices = Math.ceil(L / fixedDist);
+
+  // Icons
+  var icoThermo = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>';
+  var icoRuler = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/></svg>';
+  var icoForce = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>';
+  var icoLoop = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M17 18a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2"/><path d="m15 6-3-3-3 3"/><path d="M7 18v-1a2 2 0 0 1 2-2h6"/></svg>';
+  var icoTool = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>';
+
+  // Severity color
+  var sevColor = dL_exp < 5 ? '#00e676' : dL_exp < 15 ? '#6dd5ed' : dL_exp < 30 ? '#ffaa00' : '#ff5555';
+
+  var html = `
+  <div class="eng-section"><div class="eng-section-title">${icoThermo} Pemuaian Termal — ${p.name} DN${od}</div>
+  <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
+    ΔL = α × L × ΔT = ${alpha} × ${L} × ${Math.abs(dT_exp).toFixed(1)} = <strong>${dL_exp.toFixed(1)} mm</strong>
+  </div>
+  <div class="result-grid">
+    <div class="result-item"><div class="rk">Koef. Pemuaian (α)</div><div class="rv">${alpha}<span class="ru"> mm/m/°C</span></div></div>
+    <div class="result-item"><div class="rk">ΔT (Ekspansi)</div><div class="rv" style="color:${dT_exp > 0 ? '#ff8c42' : '#6dd5ed'}">${dT_exp > 0 ? '+' : ''}${dT_exp.toFixed(1)}<span class="ru"> °C</span></div></div>
+    <div class="result-item"><div class="rk">Pemuaian Total</div><div class="rv" style="color:${sevColor};font-size:22px">${dL_exp.toFixed(1)}<span class="ru"> mm</span></div>
+    <div class="gauge-wrap"><div class="gauge-bar"><div class="gauge-fill" style="width:${Math.min(dL_exp / 50 * 100, 100)}%;background:linear-gradient(90deg,#00e676,${sevColor})"></div></div></div></div>
+    <div class="result-item"><div class="rk">Pemuaian /meter</div><div class="rv">${dL_per_m.toFixed(2)}<span class="ru"> mm/m</span></div></div>
+  </div>`;
+
+  // Contraction section
+  if (hasContraction) {
+    html += `<div class="result-grid" style="margin-top:8px">
+    <div class="result-item"><div class="rk">ΔT (Kontraksi)</div><div class="rv" style="color:#6dd5ed">-${dT_con.toFixed(1)}<span class="ru"> °C</span></div></div>
+    <div class="result-item"><div class="rk">Kontraksi</div><div class="rv" style="color:#6dd5ed">${dL_con.toFixed(1)}<span class="ru"> mm</span></div></div>
+    <div class="result-item" style="grid-column:span 2"><div class="rk">Rentang Total (Ekspansi + Kontraksi)</div><div class="rv" style="color:#ffaa00">${dL_total.toFixed(1)}<span class="ru"> mm (T<sub>min</sub> ${T3}°C → T<sub>max</sub> ${T2}°C)</span></div></div>
+    </div>`;
+  }
+  html += `</div>`;
+
+  // Expansion Loop
+  html += `
+  <div class="eng-section"><div class="eng-section-title">${icoLoop} Dimensi Expansion Loop / Offset</div>
+  <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
+    L<sub>loop</sub> = √(3 × D × ΔL) = √(3 × ${od} × ${(hasContraction ? dL_total : dL_exp).toFixed(1)}) = <strong>${(hasContraction ? Lloop_total : Lloop_exp).toFixed(0)} mm</strong>
+  </div>
+  <div class="result-grid">
+    <div class="result-item"><div class="rk">Panjang Lengan Loop</div><div class="rv" style="color:#00e5ff;font-size:20px">${((hasContraction ? Lloop_total : Lloop_exp) / 1000).toFixed(2)}<span class="ru"> m (${(hasContraction ? Lloop_total : Lloop_exp).toFixed(0)} mm)</span></div></div>
+    <div class="result-item"><div class="rk">Diameter Pipa</div><div class="rv">DN ${od}<span class="ru"> mm (OD)</span></div></div>
+    <div class="result-item"><div class="rk">Jarak Antar Fixed Point</div><div class="rv">${fixedDist}<span class="ru"> m (maks.)</span></div></div>
+    <div class="result-item"><div class="rk">Jumlah Expansion Device</div><div class="rv">${nExpDevices}<span class="ru"> buah (untuk ${L} m)</span></div></div>
+  </div></div>`;
+
+  // Fixed Point Force
+  html += `
+  <div class="eng-section"><div class="eng-section-title">${icoForce} Gaya pada Fixed Point</div>
+  <div class="result-grid">
+    <div class="result-item"><div class="rk">Modulus Elastisitas (E)</div><div class="rv">${p.E_mpa}<span class="ru"> MPa</span></div></div>
+    <div class="result-item"><div class="rk">Luas Penampang Pipa</div><div class="rv">${A_mm2.toFixed(0)}<span class="ru"> mm²</span></div></div>
+    <div class="result-item"><div class="rk">Gaya Aksial Ekspansi</div><div class="rv" style="color:#ff8c42">${F_exp_kN.toFixed(1)}<span class="ru"> kN (${F_exp_kg.toFixed(0)} kgf)</span></div></div>
+    <div class="result-item"><div class="rk">Tebal Dinding (en)</div><div class="rv">${en.toFixed(1)}<span class="ru"> mm</span></div></div>
+  </div></div>`;
+
+  // Guide Spacing
+  html += `
+  <div class="eng-section"><div class="eng-section-title">${icoRuler} Jarak Support & Guide</div>
+  <div class="result-grid">
+    <div class="result-item"><div class="rk">Jarak Guide (Horizontal)</div><div class="rv">${hSpacing}<span class="ru"> m</span></div></div>
+    <div class="result-item"><div class="rk">Jarak Guide (Vertikal)</div><div class="rv">${vSpacing}<span class="ru"> m</span></div></div>
+    <div class="result-item"><div class="rk">Jml Fixed Point (est.)</div><div class="rv">${nFixedPoints}<span class="ru"> titik</span></div></div>
+    <div class="result-item"><div class="rk">Material</div><div class="rv" style="color:${p.color}">${p.name}</div></div>
+  </div></div>`;
+
+  // Recommendations
+  html += `<div class="eng-section"><div class="eng-section-title">${icoTool} Rekomendasi</div><div style="display:flex;flex-direction:column;gap:8px">`;
+
+  if (mat === 'ppr') {
+    html += `<div class="rec-card"><div class="rec-icon">🔥</div><div class="rec-text"><strong>PPR memiliki pemuaian tinggi (0.15 mm/m/°C).</strong> Untuk sistem air panas, WAJIB gunakan expansion loop atau compensator pada setiap perubahan arah dan setiap ${fixedDist}m jalur lurus.</div></div>`;
+    if (T2 > 60) {
+      html += `<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text"><strong>Suhu operasi ${T2}°C mendekati batas PPR.</strong> Pastikan menggunakan PPR PN20 (SDR 6) untuk suhu >60°C. Suhu maks kontinu PPR: 70°C, intermiten: 95°C.</div></div>`;
+    }
+    html += `<div class="rec-card"><div class="rec-text">Gunakan <strong>PPR-CT (PPR Fiber Composite)</strong> untuk mengurangi pemuaian hingga ~70% dibanding PPR standar (α ≈ 0.05 mm/m/°C).</div></div>`;
+  }
+
+  if (mat === 'hdpe') {
+    html += `<div class="rec-card"><div class="rec-icon">📏</div><div class="rec-text"><strong>HDPE memiliki pemuaian tertinggi (0.20 mm/m/°C)</strong> di antara pipa plastik. Untuk instalasi above-ground, expansion loop atau snake-lay pattern WAJIB direncanakan.</div></div>`;
+    html += `<div class="rec-card"><div class="rec-text">Untuk instalasi <strong>underground (buried)</strong>, pemuaian termal biasanya ditahan oleh gesekan tanah. Pastikan tanah urug dipadatkan dengan baik. Pre-stressing sebelum penimbunan dapat mengurangi tegangan sisa.</div></div>`;
+    if (T2 > 45) {
+      html += `<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text"><strong>Suhu ${T2}°C:</strong> Perhatikan derating factor tekanan kerja HDPE. Pada 50°C, kapasitas tekanan turun ~50% dari rating 20°C.</div></div>`;
+    }
+  }
+
+  if (mat === 'pvc') {
+    html += `<div class="rec-card"><div class="rec-icon">✅</div><div class="rec-text"><strong>PVC-U memiliki pemuaian paling rendah (0.06 mm/m/°C)</strong> di antara pipa plastik. Namun PVC bersifat <strong>rigid/getas</strong> — tegangan termal TIDAK boleh diabaikan.</div></div>`;
+    if (T2 > 40) {
+      html += `<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text"><strong>PVC-U TIDAK untuk air panas!</strong> Suhu maks operasi: 45°C. Untuk suhu lebih tinggi gunakan PVC-C (CPVC) atau PPR.</div></div>`;
+    }
+    html += `<div class="rec-card"><div class="rec-text">Gunakan <strong>rubber ring joint</strong> (solvent-free) pada jalur panjang. Rubber ring memungkinkan gerakan aksial sehingga berfungsi sebagai expansion joint alami.</div></div>`;
+  }
+
+  // General tips
+  html += `<div class="rec-card"><div class="rec-icon">📌</div><div class="rec-text"><strong>Layout Fixed Point:</strong> Pasang di kedua sisi belokan, percabangan tee, di dekat valve/equipment, dan di ujung pipa. Jarak maks antar fixed point: ~${fixedDist}m.</div></div>`;
+  html += `<div class="rec-card"><div class="rec-text"><strong>Sliding Support:</strong> Pastikan support/clamp memungkinkan gerakan aksial (sliding), jangan jepit pipa terlalu kencang di antara fixed point.</div></div>`;
+
+  html += `</div></div>`;
+
+  // Comparison table
+  html += `<div class="eng-section"><div class="eng-section-title">${icoThermo} Perbandingan Pemuaian per Material</div>
+  <table style="width:100%;border-collapse:collapse;font-size:11px;color:#fff;text-align:center;margin-top:8px">
+  <tr style="background:rgba(255,255,255,.08);border-bottom:1px solid rgba(0,229,255,.15)">
+    <th style="padding:7px;border:1px solid rgba(255,255,255,.06)">Material</th>
+    <th style="padding:7px;border:1px solid rgba(255,255,255,.06)">α (mm/m/°C)</th>
+    <th style="padding:7px;border:1px solid rgba(255,255,255,.06)">ΔL untuk ${L}m, ΔT=${Math.abs(dT_exp).toFixed(0)}°C</th>
+    <th style="padding:7px;border:1px solid rgba(255,255,255,.06)">Loop (mm)</th>
+  </tr>`;
+
+  var compMats = [
+    { name: 'PPR', alpha: 0.15, color: '#00e676' },
+    { name: 'PPR-CT (Fiber)', alpha: 0.05, color: '#66bb6a' },
+    { name: 'HDPE PE100', alpha: 0.20, color: '#00bcd4' },
+    { name: 'PVC-U', alpha: 0.06, color: '#aa66ff' },
+    { name: 'Baja Karbon', alpha: 0.012, color: '#aaaaaa' },
+    { name: 'Tembaga', alpha: 0.017, color: '#ff8a65' }
+  ];
+  compMats.forEach(function(m) {
+    var dl = m.alpha * L * Math.abs(dT_exp);
+    var ll = Math.sqrt(3 * od * dl);
+    var isActive = m.name.toLowerCase().indexOf(p.name.toLowerCase().split(' ')[0].toLowerCase()) >= 0 && m.name.indexOf('CT') < 0;
+    if (mat === 'ppr' && m.name === 'PPR') isActive = true;
+    html += '<tr style="' + (isActive ? 'background:rgba(0,229,255,.08);' : '') + '">' +
+      '<td style="padding:6px;border:1px solid rgba(255,255,255,.06);color:' + m.color + ';font-weight:' + (isActive ? '700' : '400') + '">' + m.name + (isActive ? ' ◄' : '') + '</td>' +
+      '<td style="padding:6px;border:1px solid rgba(255,255,255,.06);font-family:monospace">' + m.alpha + '</td>' +
+      '<td style="padding:6px;border:1px solid rgba(255,255,255,.06);font-family:monospace;color:' + (dl > 20 ? '#ffaa00' : '#00e676') + ';font-weight:700">' + dl.toFixed(1) + ' mm</td>' +
+      '<td style="padding:6px;border:1px solid rgba(255,255,255,.06);font-family:monospace">' + ll.toFixed(0) + '</td></tr>';
+  });
+  html += '</table></div>';
+
+  E('eng-results').innerHTML = html;
+  if (typeof animateValues === 'function') animateValues();
+}
