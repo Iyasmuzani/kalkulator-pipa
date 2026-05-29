@@ -319,11 +319,10 @@ body{
 
 /* SVG Pump Spin Animation */
 @keyframes pumpSpin{
-  to{transform-origin:center;transform:rotate(360deg)}
+  to{transform:rotate(360deg)}
 }
 .pump-impeller{
   animation:pumpSpin 2s linear infinite;
-  transform-origin:center;
 }
 
 /* SVG Rain Animation */
