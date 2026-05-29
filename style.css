@@ -293,22 +293,31 @@ body{
 
 /* SVG Water Flow Animation — moving dashes along pipes */
 @keyframes waterFlow{
-  to{stroke-dashoffset:-20}
+  from{stroke-dashoffset:0}
+  to{stroke-dashoffset:-14}
 }
 @keyframes waterFlowReverse{
-  to{stroke-dashoffset:20}
+  from{stroke-dashoffset:0}
+  to{stroke-dashoffset:14}
+}
+@keyframes waterFlowSlow{
+  from{stroke-dashoffset:0}
+  to{stroke-dashoffset:-18}
 }
 .pipe-flow{
   stroke-dasharray:8,6;
-  animation:waterFlow .8s linear infinite;
+  animation:waterFlow 1s linear infinite;
+  will-change:stroke-dashoffset;
 }
 .pipe-flow-reverse{
   stroke-dasharray:8,6;
-  animation:waterFlowReverse .8s linear infinite;
+  animation:waterFlowReverse 1s linear infinite;
+  will-change:stroke-dashoffset;
 }
 .pipe-flow-slow{
   stroke-dasharray:10,8;
-  animation:waterFlow 1.2s linear infinite;
+  animation:waterFlowSlow 1.6s linear infinite;
+  will-change:stroke-dashoffset;
 }
 
 /* SVG Pulse Effect — glowing pulse on selected components */
@@ -319,10 +328,12 @@ body{
 
 /* SVG Pump Spin Animation */
 @keyframes pumpSpin{
+  from{transform:rotate(0deg)}
   to{transform:rotate(360deg)}
 }
 .pump-impeller{
-  animation:pumpSpin 2s linear infinite;
+  animation:pumpSpin 2.5s linear infinite;
+  will-change:transform;
 }
 
 /* SVG Rain Animation */
@@ -332,7 +343,8 @@ body{
   100%{opacity:0;transform:translateY(6px)}
 }
 .rain-drop{
-  animation:rainFall 1s ease-in infinite;
+  animation:rainFall 1.2s ease-in-out infinite;
+  will-change:transform,opacity;
 }
 
 /* SVG Water Shimmer */
@@ -341,7 +353,8 @@ body{
   50%{opacity:.9}
 }
 .water-shimmer{
-  animation:waterShimmer 2.5s ease-in-out infinite;
+  animation:waterShimmer 3s ease-in-out infinite;
+  will-change:opacity;
 }
 
 /* === TAB 2: KOMPONEN === */
