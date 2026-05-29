@@ -70,8 +70,10 @@ function calcPressLoss() {
   ${isHDPE ? `<div style="font-size:11px;color:var(--text2);margin-top:8px"><em>*Minor loss termasuk ${joints} sambungan butt-fusion</em></div>` : ''}
   ${v > 2.5 ? '<div class="fusion-warn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Kecepatan > 2.5 m/s — pertimbangkan diameter lebih besar</div>' : ''}
   ${v < 0.5 ? '<div class="fusion-warn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Kecepatan < 0.5 m/s — risiko sedimentasi</div>' : ''}
-  </div>`;
+  </div>
+  <div class="chart-wrap"><div class="chart-title">📊 Profil Tekanan Sepanjang Pipa</div><div style="height:220px"><canvas id="chart-pressloss"></canvas></div></div>`;
   if (typeof animateValues === 'function') animateValues();
+  if (typeof chartPressureProfile === 'function') chartPressureProfile('chart-pressloss', L, hf_major, hf_minor_total, v);
 }
 
 // ===== 2. BUOYANCY =====
@@ -255,8 +257,10 @@ function calcFriction() {
     <div class="result-item"><div class="rk">Pressure Drop</div><div class="rv">${pBar.toFixed(4)}<span class="ru"> bar</span></div></div>
     <div class="result-item"><div class="rk">Gradient</div><div class="rv">${(hf / L * 1000).toFixed(2)}<span class="ru"> m/km</span></div></div>
     <div class="result-item"><div class="rk">Kekasaran ε</div><div class="rv">${(eps * 1000).toFixed(4)}<span class="ru"> mm</span></div></div>
-  </div></div>`;
+  </div></div>
+  <div class="chart-wrap"><div class="chart-title">📊 Head Loss vs Diameter Pipa (Q=${(Q * 1000).toFixed(1)} L/s, L=${L}m)</div><div style="height:240px"><canvas id="chart-friction"></canvas></div></div>`;
   if (typeof animateValues === 'function') animateValues();
+  if (typeof chartFrictionVsDiameter === 'function') chartFrictionVsDiameter('chart-friction', Q * 1000, L, eps * 1000, T);
 }
 
 // ===== 5. PIPE LOAD & DEFLECTION (AWWA M23) =====
@@ -755,6 +759,9 @@ function calcThermalExp() {
   });
   html += '</table></div>';
 
+  html += '<div class="chart-wrap"><div class="chart-title">📊 Perbandingan Pemuaian per Material (L=' + L + 'm, ΔT=' + Math.abs(dT_exp).toFixed(0) + '°C)</div><div style="height:220px"><canvas id="chart-thermal"></canvas></div></div>';
+
   E('eng-results').innerHTML = html;
   if (typeof animateValues === 'function') animateValues();
+  if (typeof chartThermalComparison === 'function') chartThermalComparison('chart-thermal', L, dT_exp, od);
 }

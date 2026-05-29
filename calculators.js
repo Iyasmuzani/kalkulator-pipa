@@ -319,8 +319,11 @@ function calcDistribusi() {
   <div class="result-item"><div class="rk">Gate Valve</div><div class="rv">~${nGV}<span class="ru"> unit</span></div></div>
   <div class="result-item"><div class="rk">Air Valve</div><div class="rv">~${nAV}<span class="ru"> unit</span></div></div>
   <div class="result-item"><div class="rk">Hidran</div><div class="rv">~${nHyd}<span class="ru"> unit</span></div></div>
-  <div class="result-item"><div class="rk">Bulk Meter</div><div class="rv">${nDMA}<span class="ru"> unit</span></div></div></div></div>`;
+  <div class="result-item"><div class="rk">Bulk Meter</div><div class="rv">${nDMA}<span class="ru"> unit</span></div></div></div></div>
+  <div class="result-sec"><div class="result-sec-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Grafik Kapasitas Pipa vs Kebutuhan</div>
+  <div class="chart-wrap"><div class="chart-title">📊 Kapasitas Pipa per Diameter vs Debit Kebutuhan</div><div style="height:240px"><canvas id="chart-distribusi"></canvas></div></div></div>`;
   if (typeof animateValues === 'function') animateValues();
+  if (typeof chartDistribusiPipe === 'function') chartDistribusiPipe('chart-distribusi', QpkLs, QdLs, pDT, pDD);
 }
 
 // ==================== NRW (NON-REVENUE WATER) CALCULATOR ====================
@@ -485,8 +488,15 @@ function calcNRW() {
   <div class="rec-card"><div class="rec-text"><strong>Tahap 3 (18-36 bulan):</strong> Rehabilitasi pipa kritis (AC, GI usia &gt;20 tahun). Pertimbangkan <strong>HDPE PE100</strong> atau <strong>PVC-O</strong>.</div></div>
   <div class="rec-card"><div class="rec-text">Pertimbangkan: GIS mapping jaringan, SCADA monitoring, dan <strong>hydraulic modelling</strong> untuk optimasi.</div></div>` : ''}
   ${supplyHrs < 24 ? `<div class="rec-card rec-warn"><div class="rec-icon">⏰</div><div class="rec-text"><strong>Suplai intermiten (${supplyHrs} jam/hari)</strong>: Nilai ILI yang dihitung bersifat indikatif. Suplai intermiten menyebabkan kontaminasi, kerusakan pipa, dan kehilangan air yang tidak terukur. Prioritas: <strong>menuju suplai 24 jam</strong>.</div></div>` : ''}
+  </div></div>
+  <div class="result-sec"><div class="result-sec-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Grafik Analisis NRW</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+  <div class="chart-wrap"><div class="chart-title">📊 IWA Water Balance</div><div style="height:220px"><canvas id="chart-nrw-balance"></canvas></div></div>
+  <div class="chart-wrap"><div class="chart-title">📊 ILI Benchmark</div><div style="height:220px"><canvas id="chart-nrw-ili"></canvas></div></div>
   </div></div>`;
   if (typeof animateValues === 'function') animateValues();
+  if (typeof chartNRWBalance === 'function') chartNRWBalance('chart-nrw-balance', billed, unbilledAuth, apparentLoss, realLoss);
+  if (typeof chartILIBenchmark === 'function') chartILIBenchmark('chart-nrw-ili', ILI);
 }
 
 // ==================== SIPHONIC ROOF DRAIN CALCULATOR ====================
