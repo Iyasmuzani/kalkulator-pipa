@@ -59,7 +59,7 @@ function smartWarn(level, msg, ref) {
   };
   return '<div class="smart-warn smart-warn-' + level + '">' +
     (icons[level] || _refIco.info) +
-    '<div>' + msg + (ref ? '<span class="warn-ref">📖 ' + ref + '</span>' : '') + '</div></div>';
+    '<div>' + msg + (ref ? '<span class="warn-ref">' + _refIco.book + ' ' + ref + '</span>' : '') + '</div></div>';
 }
 
 // ===== VELOCITY WARNINGS =====

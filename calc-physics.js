@@ -73,7 +73,7 @@ function calcPressLoss() {
   </div>
   ${getRefTable('cFactor')}
   ${getRefTable('kFitting')}
-  <div class="chart-wrap"><div class="chart-title">📊 Profil Tekanan Sepanjang Pipa</div><div style="height:220px"><canvas id="chart-pressloss"></canvas></div></div>`;
+  <div class="chart-wrap"><div class="chart-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Profil Tekanan Sepanjang Pipa</div><div style="height:220px"><canvas id="chart-pressloss"></canvas></div></div>`;
   if (typeof animateValues === 'function') animateValues();
   if (typeof chartPressureProfile === 'function') chartPressureProfile('chart-pressloss', L, hf_major, hf_minor_total, v);
 }
@@ -268,7 +268,7 @@ function calcFriction() {
   ${velocityWarnings(v, 'pressure')}
   </div>
   ${getRefTable('roughness')}
-  <div class="chart-wrap"><div class="chart-title">📊 Head Loss vs Diameter Pipa (Q=${(Q * 1000).toFixed(1)} L/s, L=${L}m)</div><div style="height:240px"><canvas id="chart-friction"></canvas></div></div>`;
+  <div class="chart-wrap"><div class="chart-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Head Loss vs Diameter Pipa (Q=${(Q * 1000).toFixed(1)} L/s, L=${L}m)</div><div style="height:240px"><canvas id="chart-friction"></canvas></div></div>`;
   if (typeof animateValues === 'function') animateValues();
   if (typeof chartFrictionVsDiameter === 'function') chartFrictionVsDiameter('chart-friction', Q * 1000, L, eps * 1000, T);
 }
@@ -711,31 +711,31 @@ function calcThermalExp() {
   html += `<div class="eng-section"><div class="eng-section-title">${icoTool} Rekomendasi</div><div style="display:flex;flex-direction:column;gap:8px">`;
 
   if (mat === 'ppr') {
-    html += `<div class="rec-card"><div class="rec-icon">🔥</div><div class="rec-text"><strong>PPR memiliki pemuaian tinggi (0.15 mm/m/°C).</strong> Untuk sistem air panas, WAJIB gunakan expansion loop atau compensator pada setiap perubahan arah dan setiap ${fixedDist}m jalur lurus.</div></div>`;
+    html += `<div class="rec-card"><div class="rec-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div><div class="rec-text"><strong>PPR memiliki pemuaian tinggi (0.15 mm/m/°C).</strong> Untuk sistem air panas, WAJIB gunakan expansion loop atau compensator pada setiap perubahan arah dan setiap ${fixedDist}m jalur lurus.</div></div>`;
     if (T2 > 60) {
-      html += `<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text"><strong>Suhu operasi ${T2}°C mendekati batas PPR.</strong> Pastikan menggunakan PPR PN20 (SDR 6) untuk suhu >60°C. Suhu maks kontinu PPR: 70°C, intermiten: 95°C.</div></div>`;
+      html += `<div class="rec-card rec-warn"><div class="rec-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="rec-text"><strong>Suhu operasi ${T2}°C mendekati batas PPR.</strong> Pastikan menggunakan PPR PN20 (SDR 6) untuk suhu >60°C. Suhu maks kontinu PPR: 70°C, intermiten: 95°C.</div></div>`;
     }
     html += `<div class="rec-card"><div class="rec-text">Gunakan <strong>PPR-CT (PPR Fiber Composite)</strong> untuk mengurangi pemuaian hingga ~70% dibanding PPR standar (α ≈ 0.05 mm/m/°C).</div></div>`;
   }
 
   if (mat === 'hdpe') {
-    html += `<div class="rec-card"><div class="rec-icon">📏</div><div class="rec-text"><strong>HDPE memiliki pemuaian tertinggi (0.20 mm/m/°C)</strong> di antara pipa plastik. Untuk instalasi above-ground, expansion loop atau snake-lay pattern WAJIB direncanakan.</div></div>`;
+    html += `<div class="rec-card"><div class="rec-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 6v4"/><path d="M10 6v2"/><path d="M14 6v4"/><path d="M18 6v2"/></svg></div><div class="rec-text"><strong>HDPE memiliki pemuaian tertinggi (0.20 mm/m/°C)</strong> di antara pipa plastik. Untuk instalasi above-ground, expansion loop atau snake-lay pattern WAJIB direncanakan.</div></div>`;
     html += `<div class="rec-card"><div class="rec-text">Untuk instalasi <strong>underground (buried)</strong>, pemuaian termal biasanya ditahan oleh gesekan tanah. Pastikan tanah urug dipadatkan dengan baik. Pre-stressing sebelum penimbunan dapat mengurangi tegangan sisa.</div></div>`;
     if (T2 > 45) {
-      html += `<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text"><strong>Suhu ${T2}°C:</strong> Perhatikan derating factor tekanan kerja HDPE. Pada 50°C, kapasitas tekanan turun ~50% dari rating 20°C.</div></div>`;
+      html += `<div class="rec-card rec-warn"><div class="rec-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="rec-text"><strong>Suhu ${T2}°C:</strong> Perhatikan derating factor tekanan kerja HDPE. Pada 50°C, kapasitas tekanan turun ~50% dari rating 20°C.</div></div>`;
     }
   }
 
   if (mat === 'pvc') {
     html += `<div class="rec-card"><div class="rec-icon">✅</div><div class="rec-text"><strong>PVC-U memiliki pemuaian paling rendah (0.06 mm/m/°C)</strong> di antara pipa plastik. Namun PVC bersifat <strong>rigid/getas</strong> — tegangan termal TIDAK boleh diabaikan.</div></div>`;
     if (T2 > 40) {
-      html += `<div class="rec-card rec-warn"><div class="rec-icon">⚠️</div><div class="rec-text"><strong>PVC-U TIDAK untuk air panas!</strong> Suhu maks operasi: 45°C. Untuk suhu lebih tinggi gunakan PVC-C (CPVC) atau PPR.</div></div>`;
+      html += `<div class="rec-card rec-warn"><div class="rec-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="rec-text"><strong>PVC-U TIDAK untuk air panas!</strong> Suhu maks operasi: 45°C. Untuk suhu lebih tinggi gunakan PVC-C (CPVC) atau PPR.</div></div>`;
     }
     html += `<div class="rec-card"><div class="rec-text">Gunakan <strong>rubber ring joint</strong> (solvent-free) pada jalur panjang. Rubber ring memungkinkan gerakan aksial sehingga berfungsi sebagai expansion joint alami.</div></div>`;
   }
 
   // General tips
-  html += `<div class="rec-card"><div class="rec-icon">📌</div><div class="rec-text"><strong>Layout Fixed Point:</strong> Pasang di kedua sisi belokan, percabangan tee, di dekat valve/equipment, dan di ujung pipa. Jarak maks antar fixed point: ~${fixedDist}m.</div></div>`;
+  html += `<div class="rec-card"><div class="rec-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="rec-text"><strong>Layout Fixed Point:</strong> Pasang di kedua sisi belokan, percabangan tee, di dekat valve/equipment, dan di ujung pipa. Jarak maks antar fixed point: ~${fixedDist}m.</div></div>`;
   html += `<div class="rec-card"><div class="rec-text"><strong>Sliding Support:</strong> Pastikan support/clamp memungkinkan gerakan aksial (sliding), jangan jepit pipa terlalu kencang di antara fixed point.</div></div>`;
 
   html += `</div></div>`;
@@ -771,7 +771,7 @@ function calcThermalExp() {
   });
   html += '</table></div>';
 
-  html += '<div class="chart-wrap"><div class="chart-title">📊 Perbandingan Pemuaian per Material (L=' + L + 'm, ΔT=' + Math.abs(dT_exp).toFixed(0) + '°C)</div><div style="height:220px"><canvas id="chart-thermal"></canvas></div></div>';
+  html += '<div class="chart-wrap"><div class="chart-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Perbandingan Pemuaian per Material (L=' + L + 'm, ΔT=' + Math.abs(dT_exp).toFixed(0) + '°C)</div><div style="height:220px"><canvas id="chart-thermal"></canvas></div></div>';
 
   E('eng-results').innerHTML = html;
   if (typeof animateValues === 'function') animateValues();

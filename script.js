@@ -454,7 +454,7 @@ function renderStandarAcuan(filterKey) {
       html += '</div>';
     } else {
       html += '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;text-align:center;animation:fadeUp .3s ease-out">';
-      html += '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.25;margin-bottom:16px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="8" x2="14" y2="14"/><line x1="14" y1="8" x2="8" y2="14"/></svg>';
+      html += '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.25;margin-bottom:16px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="8" x2="14" y2="14"/><line x1="14" y1="8" x2="8" y2="14"/></svg>';
       html += '<div style="font-size:14px;color:var(--text2);font-weight:600;margin-bottom:6px">Tidak ditemukan standar untuk "<span style="color:#fff">' + searchQuery.replace(/</g,'&lt;') + '</span>"</div>';
       html += '<div style="font-size:12px;color:rgba(142,155,176,.6);line-height:1.6;max-width:320px">Coba kata kunci lain, misalnya: <span style="color:var(--text2);cursor:pointer;text-decoration:underline" onclick="document.getElementById(\'standar-search-input\').value=\'HDPE\';_standarSearchHandler(\'HDPE\')">HDPE</span>, <span style="color:var(--text2);cursor:pointer;text-decoration:underline" onclick="document.getElementById(\'standar-search-input\').value=\'fusion\';_standarSearchHandler(\'fusion\')">fusion</span>, <span style="color:var(--text2);cursor:pointer;text-decoration:underline" onclick="document.getElementById(\'standar-search-input\').value=\'tekanan\';_standarSearchHandler(\'tekanan\')">tekanan</span>, atau <span style="color:var(--text2);cursor:pointer;text-decoration:underline" onclick="document.getElementById(\'standar-search-input\').value=\'SNI\';_standarSearchHandler(\'SNI\')">SNI</span></div>';
       html += '</div>';
@@ -564,7 +564,7 @@ function renderPustakaTeknis(catFilter, matFilter) {
 
   if (items.length === 0) {
     html += '<div style="text-align:center;padding:48px 20px;color:var(--text2)">';
-    html += '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.2;margin-bottom:12px"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>';
+    html += '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.2;margin-bottom:12px"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>';
     html += '<div style="font-size:13px;font-weight:600">Tidak ada dokumen ditemukan</div>';
     html += '<div style="font-size:11px;color:rgba(142,155,176,.6);margin-top:4px">Coba ubah filter atau kata kunci pencarian</div></div>';
   } else {
