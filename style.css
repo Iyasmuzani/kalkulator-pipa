@@ -612,7 +612,7 @@ select.form-control option{background:var(--bg2)}
 .info-tip:hover{background:rgba(0,229,255,.2);border-color:rgba(0,229,255,.4);transform:scale(1.1)}
 .info-tip::after{
   content:attr(data-tip);
-  position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  position:absolute;bottom:calc(100% + 8px);left:-10px;
   width:260px;padding:10px 12px;
   background:rgba(10,20,40,.97);border:1px solid rgba(0,229,255,.25);
   border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.5),0 0 12px rgba(0,229,255,.1);
@@ -621,10 +621,10 @@ select.form-control option{background:var(--bg2)}
   white-space:pre-line;pointer-events:none;
   opacity:0;visibility:hidden;transition:all .2s ease-out;z-index:50;
 }
-.info-tip:hover::after{opacity:1;visibility:visible;transform:translateX(-50%) translateY(-2px)}
+.info-tip:hover::after{opacity:1;visibility:visible;transform:translateY(-2px)}
 /* Tooltip arrow */
 .info-tip::before{
-  content:'';position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);
+  content:'';position:absolute;bottom:calc(100% + 4px);left:8px;transform:translateX(-50%);
   border:5px solid transparent;border-top-color:rgba(0,229,255,.25);
   opacity:0;visibility:hidden;transition:all .2s;z-index:51;
 }
