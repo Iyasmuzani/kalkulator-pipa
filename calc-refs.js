@@ -195,7 +195,7 @@ var REF_TABLES = {
     headers: ['Material', 'E (GPa)', 'Wave Celerity ±', 'Sumber'],
     rows: [
       ['HDPE PE100', '0.8', '~200 m/s', 'ISO 4427 / PPI Handbook'],
-      ['PVC-U', '3.0', '~400 m/s', 'ISO 1452 / Uni-Bell'],
+      ['PVC-U', '3.0', '~400 m/s', 'SNI 9324:2024 / Uni-Bell'],
       ['PPR (PP-R)', '0.9', '~220 m/s', 'ISO 15874 / DIN 8078'],
       ['Baja Karbon', '200', '~1200 m/s', 'ASME B31.3'],
       ['Ductile Iron', '170', '~1100 m/s', 'AWWA M41'],

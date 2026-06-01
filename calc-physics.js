@@ -316,6 +316,35 @@ function toggleLdSDR() {
   E('ld-sdr-wrap').style.display = isFlex ? 'block' : 'none';
   E('ld-dl').disabled = !isFlex;
   E('ld-soil-e').disabled = !isFlex;
+
+  if (isFlex) {
+    var sdrList = [];
+    var defaultSdr = 17;
+    if (type === 'hdpe') {
+      sdrList = [7.4, 9, 11, 13.6, 17, 21, 26];
+      defaultSdr = 17;
+    } else if (type === 'pvc') {
+      sdrList = [17, 21, 26, 28, 33, 41]; // Mendekati SDR rata-rata AW dan D
+      defaultSdr = 26;
+    } else if (type === 'pvco') {
+      sdrList = [26, 29, 34.4, 41, 45.8, 51, 65];
+      defaultSdr = 41;
+    }
+    
+    var currentSdr = parseFloat(E('ld-sdr').value);
+    if (!sdrList.includes(currentSdr)) currentSdr = defaultSdr;
+    
+    E('ld-sdr').innerHTML = sdrList.map(s => {
+      var label = `SDR ${s}`;
+      if (type === 'pvc') {
+        if (s === 26) label = 'Tipe AW (~SDR 26)';
+        else if (s === 41) label = 'Tipe D (~SDR 41)';
+      } else if (type === 'pvco') {
+        label = `SDR ${s} (ISO 16422)`;
+      }
+      return `<option value="${s}" ${s === currentSdr ? 'selected' : ''}>${label}</option>`;
+    }).join('');
+  }
 }
 
 function calcPipeLoad() {
@@ -558,7 +587,7 @@ function buildThermalExpForm() {
   <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg> Pemuaian Termal Pipa <span style="font-size:10px;color:var(--text2);font-weight:400">Thermal Expansion</span></div>
   <div style="background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.12);border-radius:7px;padding:8px 10px;margin-bottom:12px;font-size:10px;color:#7a9ab8;line-height:1.6">
     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-    ΔL = α × L × ΔT — Koefisien pemuaian sesuai <strong style="color:#00e5ff">ISO 15874</strong> (PPR), <strong style="color:#00e5ff">ISO 4427</strong> (HDPE), <strong style="color:#00e5ff">ISO 1452</strong> (PVC).
+    ΔL = α × L × ΔT — Koefisien pemuaian sesuai <strong style="color:#00e5ff">ISO 15874</strong> (PPR), <strong style="color:#00e5ff">ISO 4427</strong> (HDPE), <strong style="color:#00e5ff">SNI 9324:2024</strong> (PVC).
   </div>
   <div class="form-group"><label class="form-label">Material Pipa</label>
   <select class="form-control" id="te-mat" onchange="updateThermalOD()">
