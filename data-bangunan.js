@@ -78,7 +78,7 @@ const bangunanGuideData=[
    warn:'Kapasitas tangki atas JANGAN berlebihan. Target 20–30% kebutuhan harian.'},
   {n:7,title:'Uji Tekan, Flushing & Commissioning',sub:'Hydrostatic test, pembersihan, dan uji fungsi seluruh sistem',
    detail:'Tahap commissioning adalah pembuktian bahwa sistem telah terpasang dengan benar dan siap beroperasi.',
-   checks:['Hydrostatic test: 1.5× tekanan kerja selama min. 2 jam','Tandai semua titik bocor, perbaiki, dan uji ulang','Flushing sistem dengan air bersih min. 30 menit','Uji fungsi pompa: start/stop, tekanan, debit, noise','Setting dan verifikasi pressure switch','Uji float valve / solenoid control tangki','Uji PRV: ukur tekanan upstream dan downstream','Test semua gate valve, check valve, dan ball valve','Verifikasi pembacaan water meter dan pressure gauge','Ambil sampel air untuk uji bakteriologi'],
+   checks:['Hydrostatic test: 1.1× tekanan kerja selama min. 2 jam (SNI 8153)','Tandai semua titik bocor, perbaiki, dan uji ulang','Flushing sistem dengan air bersih min. 30 menit','Uji fungsi pompa: start/stop, tekanan, debit, noise','Setting dan verifikasi pressure switch','Uji float valve / solenoid control tangki','Uji PRV: ukur tekanan upstream dan downstream','Test semua gate valve, check valve, dan ball valve','Verifikasi pembacaan water meter dan pressure gauge','Ambil sampel air untuk uji bakteriologi'],
    warn:'JANGAN operasikan ke penghuni sebelum hasil uji bakteriologis LULUS.'},
   {n:8,title:'Operasi & Pemeliharaan Berkala',sub:'SOP operasional, jadwal maintenance, dan dokumentasi teknis',
    detail:'Sistem yang bagus akan gagal tanpa maintenance rutin. Buat jadwal tertulis dan training operator.',
