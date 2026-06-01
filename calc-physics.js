@@ -279,7 +279,12 @@ function buildPipeLoadForm() {
   E('eng-form').innerHTML = `
   <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg> Pipe Load & Defleksi <span style="font-size:10px;color:var(--text2);font-weight:400">AWWA M23 / Modified Iowa</span></div>
   <div class="form-group"><label class="form-label">Tipe Pipa${infoTip('Flexible (HDPE/PVC): Defleksi dihitung via Modified Iowa.\nRigid (Beton/Baja): Marston load theory, defleksi tidak dihitung.\nSumber: AWWA M23 / M55')}</label>
-  <select class="form-control" id="ld-type" onchange="toggleLdSDR()"><option value="flexible" selected>Flexible (HDPE)</option><option value="rigid">Rigid (Beton/Baja)</option></select></div>
+  <select class="form-control" id="ld-type" onchange="toggleLdSDR()">
+    <option value="hdpe" selected>Flexible (HDPE)</option>
+    <option value="pvc">Flexible (PVC-U)</option>
+    <option value="pvco">Flexible (PVC-O)</option>
+    <option value="rigid">Rigid (Beton/Baja)</option>
+  </select></div>
   <div class="form-group"><label class="form-label">Diameter Luar (OD) mm</label><input type="number" class="form-control" id="ld-od" min="50" max="2000" value="315"></div>
   <div class="form-group" id="ld-sdr-wrap"><label class="form-label">SDR Pipa (Kekakuan)${infoTip('SDR menentukan pipe stiffness (EI/D³).\nSDR rendah = dinding tebal = lebih kaku.\nSumber: AWWA M23 §4.3')}</label>
   <select class="form-control" id="ld-sdr">${sdrOpts}</select></div>
@@ -306,7 +311,8 @@ function buildPipeLoadForm() {
 }
 
 function toggleLdSDR() {
-  var isFlex = E('ld-type').value === 'flexible';
+  var type = E('ld-type').value;
+  var isFlex = (type === 'hdpe' || type === 'pvc' || type === 'pvco');
   E('ld-sdr-wrap').style.display = isFlex ? 'block' : 'none';
   E('ld-dl').disabled = !isFlex;
   E('ld-soil-e').disabled = !isFlex;
@@ -327,6 +333,7 @@ function calcPipeLoad() {
   // 1. DEAD LOAD (Wd)
   var Wd = 0;
   var Cd = 0;
+  var isFlex = (type === 'hdpe' || type === 'pvc' || type === 'pvco');
   if (type === 'rigid') {
     // Marston equation for rigid ditch condition
     var ratio = H / Bd;
@@ -360,10 +367,13 @@ function calcPipeLoad() {
   var K_bed = 0.1; // Bedding constant (typical)
   var PS_kpa = 0; // Pipe stiffness
 
-  if (type === 'flexible') {
+  if (isFlex) {
     var en = od / sdr; // meter
     var D_mean = od - en; // meter
     var Ep = 800000; // kPa (HDPE Modulus of Elasticity, short-medium term)
+    if (type === 'pvc') Ep = 3000000; // PVC-U Modulus of Elasticity (~3 GPa)
+    if (type === 'pvco') Ep = 4000000; // PVC-O Modulus of Elasticity (~4 GPa)
+    
     var I_pipe = (en * en * en) / 12; // m^4/m
 
     // Ring Stiffness (8*E*I / D^3) in kPa
@@ -386,7 +396,7 @@ function calcPipeLoad() {
     <div class="result-item"><div class="rk">Tekanan Lalin Ekivalen</div><div class="rv">${Pl_kPa.toFixed(1)}<span class="ru"> kPa</span></div></div>
   </div></div>
 
-  ${type === 'flexible' ? `
+  ${isFlex ? `
   <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> Prediksi Defleksi (Modified Iowa)</div>
   <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
     ΔX = (Dl × K × Wc) / (8 EI/D³ + 0.061 E')
