@@ -588,6 +588,99 @@ select.form-control option{background:var(--bg2)}
 .eng-section{margin-bottom:16px;padding:14px;background:var(--bg2);border:1px solid rgba(255,255,255,.05);border-radius:10px}
 .eng-section-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:#00e5ff;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 
+/* ===== REKOMENDASI #1: CROSS-REFERENCE BADGES ===== */
+.ref-badges{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
+.ref-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:5px;font-size:10px;
+  font-family:'Fira Code',monospace;letter-spacing:.3px;
+  background:rgba(170,102,255,.08);border:1px solid rgba(170,102,255,.2);
+  color:#c49fff;cursor:default;transition:all .25s;
+}
+.ref-badge:hover{background:rgba(170,102,255,.14);border-color:rgba(170,102,255,.35)}
+.ref-badge svg{width:12px;height:12px;flex-shrink:0}
+
+/* ===== REKOMENDASI #2: INFO TOOLTIPS ===== */
+.info-tip{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:16px;height:16px;border-radius:50%;
+  background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.2);
+  color:#00e5ff;font-size:9px;font-weight:700;font-style:normal;
+  cursor:help;margin-left:5px;position:relative;vertical-align:middle;
+  transition:all .2s;flex-shrink:0;
+}
+.info-tip:hover{background:rgba(0,229,255,.2);border-color:rgba(0,229,255,.4);transform:scale(1.1)}
+.info-tip::after{
+  content:attr(data-tip);
+  position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  width:260px;padding:10px 12px;
+  background:rgba(10,20,40,.97);border:1px solid rgba(0,229,255,.25);
+  border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.5),0 0 12px rgba(0,229,255,.1);
+  color:#c8d6e5;font-size:10.5px;line-height:1.65;font-weight:400;
+  font-family:'Inter',sans-serif;letter-spacing:0;
+  white-space:pre-line;pointer-events:none;
+  opacity:0;visibility:hidden;transition:all .2s ease-out;z-index:50;
+}
+.info-tip:hover::after{opacity:1;visibility:visible;transform:translateX(-50%) translateY(-2px)}
+/* Tooltip arrow */
+.info-tip::before{
+  content:'';position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);
+  border:5px solid transparent;border-top-color:rgba(0,229,255,.25);
+  opacity:0;visibility:hidden;transition:all .2s;z-index:51;
+}
+.info-tip:hover::before{opacity:1;visibility:visible}
+
+/* ===== REKOMENDASI #3: COLLAPSIBLE REFERENCE TABLES ===== */
+.ref-panel-toggle{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 12px;margin:10px 0 0;
+  background:rgba(170,102,255,.05);border:1px solid rgba(170,102,255,.12);
+  border-radius:7px;cursor:pointer;transition:all .25s;
+  font-size:11px;color:#b388ff;font-family:'Space Grotesk',sans-serif;font-weight:600;
+}
+.ref-panel-toggle:hover{background:rgba(170,102,255,.1);border-color:rgba(170,102,255,.25)}
+.ref-panel-toggle svg{width:14px;height:14px;flex-shrink:0}
+.ref-panel-toggle .ref-chevron{margin-left:auto;transition:transform .25s;font-size:14px}
+.ref-panel-toggle.open .ref-chevron{transform:rotate(180deg)}
+.ref-panel{
+  display:none;margin-top:6px;padding:10px;
+  background:rgba(13,27,42,.6);border:1px solid rgba(170,102,255,.1);
+  border-radius:7px;overflow-x:auto;
+  animation:fadeUp .25s ease-out;
+}
+.ref-panel.open{display:block}
+.ref-table{width:100%;border-collapse:collapse;font-size:11px}
+.ref-table th{
+  background:rgba(170,102,255,.1);color:#b388ff;
+  padding:7px 10px;text-align:left;border-bottom:1px solid rgba(170,102,255,.15);
+  font-weight:600;font-size:10px;letter-spacing:.3px;white-space:nowrap;
+}
+.ref-table td{
+  padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.03);
+  color:var(--text2);font-size:11px;
+}
+.ref-table tr:hover td{background:rgba(170,102,255,.04)}
+.ref-table td:first-child{color:#e0d0ff;font-family:'Fira Code',monospace;font-weight:600;font-size:10.5px;white-space:nowrap}
+.ref-table .ref-src{font-size:9px;color:rgba(170,102,255,.6);font-family:'Fira Code',monospace}
+
+/* ===== REKOMENDASI #4: SMART WARNINGS ===== */
+.smart-warn{
+  display:flex;align-items:flex-start;gap:8px;
+  padding:9px 12px;margin-top:8px;border-radius:7px;
+  font-size:11px;line-height:1.65;
+  animation:fadeUp .3s ease-out;
+}
+.smart-warn svg{width:16px;height:16px;flex-shrink:0;margin-top:1px}
+.smart-warn-ok{background:rgba(0,230,118,.06);border:1px solid rgba(0,230,118,.18);color:#69f0ae}
+.smart-warn-info{background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.15);color:#6dd5ed}
+.smart-warn-caution{background:rgba(255,170,0,.06);border:1px solid rgba(255,170,0,.18);color:#ffd080}
+.smart-warn-danger{background:rgba(255,85,85,.06);border:1px solid rgba(255,85,85,.18);color:#ff8a8a}
+.smart-warn .warn-ref{
+  display:block;margin-top:4px;font-size:9.5px;
+  font-family:'Fira Code',monospace;letter-spacing:.3px;
+  opacity:.7;
+}
+
 /* FOOTER */
 .app-footer{
   text-align:center;padding:2.5rem 1.5rem 1.5rem;font-size:11px;color:var(--text2);

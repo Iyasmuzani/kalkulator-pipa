@@ -6,24 +6,24 @@ var Vf = function (id) { return parseFloat(E(id).value) || 0; };
 function buildPressLossForm() {
   E('eng-form').innerHTML = `
   <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Pressure Loss <span style="font-size:10px;color:var(--text2);font-weight:400">Hazen-Williams</span></div>
-  <div class="form-group"><label class="form-label">Material Pipa</label>
+  <div class="form-group"><label class="form-label">Material Pipa${infoTip('Material menentukan C-Factor (koefisien kekasaran Hazen-Williams).\nSemakin tinggi C, semakin halus permukaan pipa.\nSumber: PPI Handbook Ch.6 | Uni-Bell Handbook')}</label>
   <select class="form-control" id="pl-mat" onchange="updateCfactor()">
     <option value="150">HDPE (C=150)</option><option value="150">PVC (C=150)</option>
     <option value="140">PPR (C=140)</option><option value="120">Baja Galvanis (C=120)</option>
     <option value="130">Ductile Iron (C=130)</option></select></div>
-  <div class="form-group"><label class="form-label">Diameter Dalam (mm)</label><input type="number" class="form-control" id="pl-d" min="10" max="2000" value="200"></div>
-  <div class="form-group"><label class="form-label">Panjang Pipa (m)</label><input type="number" class="form-control" id="pl-l" min="1" max="50000" value="100"></div>
-  <div class="form-group"><label class="form-label">Debit (L/s)</label><input type="number" class="form-control" id="pl-q" min="0.1" max="5000" step="0.1" value="5"></div>
-  <div class="form-group"><label class="form-label">C-Factor</label><input type="number" class="form-control" id="pl-c" min="50" max="160" value="150"></div>
+  <div class="form-group"><label class="form-label">Diameter Dalam (mm)${infoTip('Diameter internal pipa (ID), bukan OD.\nID = OD - 2×en (tebal dinding).\nUntuk HDPE: lihat tabel ISO 4427-2:2019')}</label><input type="number" class="form-control" id="pl-d" min="10" max="2000" value="200"></div>
+  <div class="form-group"><label class="form-label">Panjang Pipa (m)${infoTip('Panjang total jalur pipa dari sumber ke ujung.\nTidak termasuk equivalent length dari fitting (dihitung terpisah via K-Factor).')}</label><input type="number" class="form-control" id="pl-l" min="1" max="50000" value="100"></div>
+  <div class="form-group"><label class="form-label">Debit (L/s)${infoTip('Debit aliran desain.\nKecepatan optimal: 0.6–1.5 m/s\nSumber: PPI Handbook Ch.6 | AWWA M55 §5.4')}</label><input type="number" class="form-control" id="pl-q" min="0.1" max="5000" step="0.1" value="5"></div>
+  <div class="form-group"><label class="form-label">C-Factor${infoTip('Koefisien Hazen-Williams.\nHDPE/PVC baru: 150\nBaja galvanis baru: 120\nNilai menurun seiring usia pipa.\nSumber: PPI Handbook | AWWA M55')}</label><input type="number" class="form-control" id="pl-c" min="50" max="160" value="150"></div>
   
   <div class="form-title" style="margin-top:15px; font-size:12px; margin-bottom:8px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Komponen Minor Losses</div>
   
   <div id="pl-hdpe-minor">
-    <div class="form-group"><label class="form-label">Panjang per Batang Pipa (m)</label><input type="number" class="form-control" id="pl-pipe-len" min="1" max="250" value="12" title="Untuk menghitung jumlah sambungan butt fusion otomatis"></div>
-    <div class="form-group"><label class="form-label">K-Factor Butt Fusion / Sambungan</label><input type="number" class="form-control" id="pl-k-weld" min="0" max="1" step="0.01" value="0.05" title="Koefisien rugi-rugi minor akibat bead di dalam pipa. Tipikal ~0.05"></div>
+    <div class="form-group"><label class="form-label">Panjang per Batang Pipa (m)${infoTip('Panjang tiap batang pipa untuk menghitung jumlah sambungan butt fusion otomatis.\nHDPE standar: 6m atau 12m.\nSumber: ISO 4427-2:2019 §8.1')}</label><input type="number" class="form-control" id="pl-pipe-len" min="1" max="250" value="12"></div>
+    <div class="form-group"><label class="form-label">K-Factor Butt Fusion${infoTip('Koefisien rugi minor per sambungan butt fusion.\nTipikal: K = 0.05 (bead internal).\nSumber: PPI Handbook Ch.6 | Crane TP 410')}</label><input type="number" class="form-control" id="pl-k-weld" min="0" max="1" step="0.01" value="0.05"></div>
   </div>
 
-  <div class="form-group"><label class="form-label">Total K-Factor Fitting & Katup (Opsional)</label><input type="number" class="form-control" id="pl-k-fittings" min="0" max="1000" step="0.1" value="0" title="Total akumulasi K dari semua fitting. Cth: 2 Elbow 90° (K=0.3) = 0.6">
+  <div class="form-group"><label class="form-label">Total K-Factor Fitting & Katup${infoTip('Akumulasi K dari semua fitting & katup.\nContoh: 2× Elbow 90° (K=0.3) + 1× Gate Valve (K=0.2) = 0.8\nSumber: Crane TP 410 | AWWA M55')}</label><input type="number" class="form-control" id="pl-k-fittings" min="0" max="1000" step="0.1" value="0">
   <div style="font-size:10.5px; color:var(--text2); margin-top:4px">Referensi K: Elbow 90°=0.3 | Tee Lurus=0.2 | Tee Belok=1.0 | Gate Valve=0.2</div>
   </div>
 
@@ -59,6 +59,7 @@ function calcPressLoss() {
   var hfPer100 = hf / L * 100;
   E('eng-results').innerHTML = `
   <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Hasil Pressure Loss</div>
+  ${refBadges(['Hazen-Williams', 'PPI Handbook Ch.6', 'AWWA M55 §5.4'])}
   <div class="result-grid">
     <div class="result-item"><div class="rk">Kecepatan Aliran</div><div class="rv">${v.toFixed(2)}<span class="ru"> m/s</span></div></div>
     <div class="result-item"><div class="rk">Head Loss Mayor (Gesekan)</div><div class="rv">${hf_major.toFixed(2)}<span class="ru"> m</span></div></div>
@@ -68,9 +69,10 @@ function calcPressLoss() {
     <div class="result-item"><div class="rk">Head Loss /100m</div><div class="rv">${hfPer100.toFixed(3)}<span class="ru"> m/100m</span></div></div>
   </div>
   ${isHDPE ? `<div style="font-size:11px;color:var(--text2);margin-top:8px"><em>*Minor loss termasuk ${joints} sambungan butt-fusion</em></div>` : ''}
-  ${v > 2.5 ? '<div class="fusion-warn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Kecepatan > 2.5 m/s — pertimbangkan diameter lebih besar</div>' : ''}
-  ${v < 0.5 ? '<div class="fusion-warn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Kecepatan < 0.5 m/s — risiko sedimentasi</div>' : ''}
+  ${velocityWarnings(v, 'pressure')}
   </div>
+  ${getRefTable('cFactor')}
+  ${getRefTable('kFitting')}
   <div class="chart-wrap"><div class="chart-title">📊 Profil Tekanan Sepanjang Pipa</div><div style="height:220px"><canvas id="chart-pressloss"></canvas></div></div>`;
   if (typeof animateValues === 'function') animateValues();
   if (typeof chartPressureProfile === 'function') chartPressureProfile('chart-pressloss', L, hf_major, hf_minor_total, v);
@@ -84,18 +86,18 @@ function buildBuoyancyForm() {
 
   E('eng-form').innerHTML = `
   <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg> Buoyancy Pipa HDPE <span style="font-size:10px;color:var(--text2);font-weight:400">Instalasi Underwater</span></div>
-  <div class="form-group"><label class="form-label">Diameter Luar Pipa (OD) mm</label>
+  <div class="form-group"><label class="form-label">Diameter Luar Pipa (OD) mm${infoTip('Outer Diameter pipa HDPE PE100.\nPilih dari tabel ISO 4427-2:2019.\nData tebal dinding otomatis terisi.')}</label>
   <select class="form-control" id="by-od" onchange="updateBuoyancySDR()">${odOpts}</select></div>
-  <div class="form-group"><label class="form-label">SDR / PN</label>
+  <div class="form-group"><label class="form-label">SDR / PN${infoTip('Standard Dimension Ratio = OD/en.\nSDR kecil = dinding tebal = tekanan tinggi.\nSumber: ISO 4427-2:2019')}</label>
   <select class="form-control" id="by-sdr"></select></div>
   <div class="form-group"><label class="form-label">Tebal Dinding (en) — mm</label>
   <input type="number" class="form-control" id="by-en" readonly style="background:rgba(0,229,255,.05);color:#00e5ff;font-weight:700"></div>
   <div class="form-group"><label class="form-label">Panjang Pipa (m)</label><input type="number" class="form-control" id="by-len" min="1" max="10000" value="100"></div>
-  <div class="form-group"><label class="form-label">Densitas Air (kg/m³)</label>
+  <div class="form-group"><label class="form-label">Densitas Air (kg/m³)${infoTip('Air tawar: 998–1000 kg/m³\nAir laut: 1020–1030 kg/m³\nAir payau: 1005–1015 kg/m³\nSumber: CRC Handbook')}</label>
   <select class="form-control" id="by-rho"><option value="1000">Air Tawar (1000)</option><option value="1025">Air Laut (1025)</option></select></div>
-  <div class="form-group"><label class="form-label">Kondisi Pipa</label>
+  <div class="form-group"><label class="form-label">Kondisi Pipa${infoTip('Pipa kosong: skenario terburuk untuk buoyancy.\nPipa penuh: berat air di dalam mengurangi gaya apung.\nDesain ballast selalu berdasarkan kondisi kosong.')}</label>
   <select class="form-control" id="by-cond"><option value="empty">Kosong (tanpa air)</option><option value="full">Penuh air</option></select></div>
-  <div class="form-group"><label class="form-label">Safety Factor Ballast</label><input type="number" class="form-control" id="by-sf" min="1" max="2" step="0.05" value="1.1"></div>
+  <div class="form-group"><label class="form-label">Safety Factor Ballast${infoTip('Faktor keamanan untuk berat ballast.\nMinimum 1.1 (10% lebih berat).\nUntuk kondisi arus kuat: gunakan 1.2–1.5\nSumber: AWWA M55 Ch.11')}</label><input type="number" class="form-control" id="by-sf" min="1" max="2" step="0.05" value="1.1"></div>
   <button class="calc-btn" onclick="calcBuoyancy()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Buoyancy</button>`;
   updateBuoyancySDR();
 }
@@ -147,6 +149,7 @@ function calcBuoyancy() {
   var spacing = needBallast ? Math.min(Math.floor(1 / (ballast / 50)), 5) : 0; // concrete block every N m
   E('eng-results').innerHTML = `
   <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg> Data Pipa</div>
+  ${refBadges(['Archimedes Principle', 'AWWA M55 Ch.11', 'ISO 4427-5:2019'])}
   <div class="result-grid">
     <div class="result-item"><div class="rk">OD / en</div><div class="rv">${(od * 1000).toFixed(0)} / ${(en * 1000).toFixed(1)}<span class="ru"> mm</span></div></div>
     <div class="result-item"><div class="rk">ID</div><div class="rv">${(id * 1000).toFixed(1)}<span class="ru"> mm</span></div></div>
@@ -164,6 +167,7 @@ function calcBuoyancy() {
     <div class="result-item"><div class="rk">Ballast Total</div><div class="rv">${(ballastTotal / 1000).toFixed(1)}<span class="ru"> ton (${len}m)</span></div></div>
     <div class="result-item"><div class="rk">Spacing ±50kg blok</div><div class="rv">setiap ${spacing > 0 ? spacing : 1}<span class="ru"> m</span></div></div>
   </div>`: ''}
+  ${needBallast ? smartWarn('caution', 'Pipa <strong>MENGAPUNG</strong> — membutuhkan ballast ' + ballast.toFixed(2) + ' kg/m. Pasang concrete saddle weight atau continuous concrete coating.', 'AWWA M55 Ch.11 | ISO 4427-5:2019 Annex A') : smartWarn('ok', 'Pipa <strong>TENGGELAM</strong> secara alami — ballast tidak diperlukan.', 'AWWA M55 Ch.11: Net downward force = ' + Math.abs(netUp).toFixed(2) + ' kg/m')}
   </div>`;
   if (typeof animateValues === 'function') animateValues();
 }
@@ -172,13 +176,13 @@ function calcBuoyancy() {
 function buildWaterHammerForm() {
   E('eng-form').innerHTML = `
   <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Water Hammer <span style="font-size:10px;color:var(--text2);font-weight:400">Joukowsky</span></div>
-  <div class="form-group"><label class="form-label">Material Pipa</label>
+  <div class="form-group"><label class="form-label">Material Pipa${infoTip('Modulus elastisitas (E) material menentukan wave celerity.\nPipa fleksibel (HDPE) meredam water hammer lebih baik.\nSumber: ISO 4427-5:2019 | PPI Handbook Ch.6')}</label>
   <select class="form-control" id="wh-mat"><option value="pvc">PVC (E=3 GPa)</option><option value="hdpe" selected>HDPE (E=0.8 GPa)</option><option value="ppr">PPR (E=0.9 GPa)</option><option value="steel">Baja (E=200 GPa)</option><option value="di">Ductile Iron (E=170 GPa)</option></select></div>
-  <div class="form-group"><label class="form-label">Diameter Dalam (mm)</label><input type="number" class="form-control" id="wh-d" min="10" max="2000" value="200"></div>
-  <div class="form-group"><label class="form-label">Tebal Dinding (mm)</label><input type="number" class="form-control" id="wh-en" min="1" max="100" value="18.5"></div>
-  <div class="form-group"><label class="form-label">Kecepatan Aliran (m/s)</label><input type="number" class="form-control" id="wh-v" min="0.1" max="10" step="0.1" value="1.5"></div>
-  <div class="form-group"><label class="form-label">Panjang Pipa (m)</label><input type="number" class="form-control" id="wh-l" min="10" max="50000" value="500"></div>
-  <div class="form-group"><label class="form-label">Tekanan Kerja (bar)</label><input type="number" class="form-control" id="wh-pw" min="1" max="50" step="0.5" value="10"></div>
+  <div class="form-group"><label class="form-label">Diameter Dalam (mm)${infoTip('Diameter internal pipa.\nID = OD - 2×en')}</label><input type="number" class="form-control" id="wh-d" min="10" max="2000" value="200"></div>
+  <div class="form-group"><label class="form-label">Tebal Dinding (mm)${infoTip('Ketebalan dinding pipa (en).\nLihat tabel ISO 4427-2:2019 per SDR.')}</label><input type="number" class="form-control" id="wh-en" min="1" max="100" value="18.5"></div>
+  <div class="form-group"><label class="form-label">Kecepatan Aliran (m/s)${infoTip('Kecepatan sesaat sebelum penutupan katup.\nDP = ρ × a × ΔV (Joukowsky)\nSumber: AWWA M55 Ch.7')}</label><input type="number" class="form-control" id="wh-v" min="0.1" max="10" step="0.1" value="1.5"></div>
+  <div class="form-group"><label class="form-label">Panjang Pipa (m)${infoTip('Panjang jalur pipa — menentukan reflection time.\nTr = 2L/a (waktu refleksi gelombang)')}</label><input type="number" class="form-control" id="wh-l" min="10" max="50000" value="500"></div>
+  <div class="form-group"><label class="form-label">Tekanan Kerja (bar)${infoTip('Maximum Operating Pressure (MOP).\nISO 4427-5: Ptotal ≤ 1.5× MOP (occasional)\nSumber: ISO 4427-5:2019 §6.2')}</label><input type="number" class="form-control" id="wh-pw" min="1" max="50" step="0.5" value="10"></div>
   <button class="calc-btn" onclick="calcWaterHammer()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Water Hammer</button>`;
 }
 function calcWaterHammer() {
@@ -197,6 +201,7 @@ function calcWaterHammer() {
   var matNames = { 'pvc': 'PVC', 'hdpe': 'HDPE', 'ppr': 'PPR', 'steel': 'Baja', 'di': 'Ductile Iron' };
   E('eng-results').innerHTML = `
   <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hasil Water Hammer — Joukowsky</div>
+  ${refBadges(['Joukowsky Equation', 'ISO 4427-5:2019 §6.2', 'AWWA M55 Ch.7'])}
   <div class="result-grid">
     <div class="result-item"><div class="rk">Wave Celerity (a)</div><div class="rv">${a.toFixed(1)}<span class="ru"> m/s</span></div></div>
     <div class="result-item"><div class="rk">Pressure Surge (ΔP)</div><div class="rv" style="color:#ff8c42">${dPbar.toFixed(2)}<span class="ru"> bar</span></div></div>
@@ -206,9 +211,10 @@ function calcWaterHammer() {
   <div class="result-grid" style="margin-top:8px">
     <div class="result-item"><div class="rk">Reflection Time</div><div class="rv">${Tr.toFixed(2)}<span class="ru"> detik</span></div></div>
     <div class="result-item"><div class="rk">Material</div><div class="rv">${matNames[mat]}<span class="ru"> E=${(Ep / 1e9).toFixed(1)} GPa</span></div></div>
-  </div></div>
-  ${Ptotal > Pw * 1.5 ? '<div class="fusion-warn"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Surge pressure > 150% tekanan kerja! Pasang surge anticipator, air valve, atau slow-closing valve.</div>' : ''}
-  ${mat === 'hdpe' ? '<div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg> HDPE memiliki elastisitas tinggi — wave celerity lebih rendah dan meredam water hammer lebih baik dibanding pipa kaku.</div>' : ''}`;
+  </div>
+  ${waterHammerWarnings(Ptotal, Pw, dPbar, mat)}
+  </div>
+  ${getRefTable('elasticity')}`;
   if (typeof animateValues === 'function') animateValues();
 }
 
@@ -216,12 +222,12 @@ function calcWaterHammer() {
 function buildFrictionForm() {
   E('eng-form').innerHTML = `
   <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Friction Loss <span style="font-size:10px;color:var(--text2);font-weight:400">Darcy-Weisbach + Colebrook-White</span></div>
-  <div class="form-group"><label class="form-label">Diameter Dalam (mm)</label><input type="number" class="form-control" id="fr-d" min="10" max="2000" value="200"></div>
+  <div class="form-group"><label class="form-label">Diameter Dalam (mm)${infoTip('Diameter internal pipa (ID).\nID = OD - 2×en\nSumber: ISO 4427-2:2019')}</label><input type="number" class="form-control" id="fr-d" min="10" max="2000" value="200"></div>
   <div class="form-group"><label class="form-label">Panjang Pipa (m)</label><input type="number" class="form-control" id="fr-l" min="1" max="50000" value="500"></div>
   <div class="form-group"><label class="form-label">Debit (L/s)</label><input type="number" class="form-control" id="fr-q" min="0.1" max="5000" step="0.1" value="10"></div>
-  <div class="form-group"><label class="form-label">Kekasaran Pipa ε (mm)</label>
+  <div class="form-group"><label class="form-label">Kekasaran Pipa ε (mm)${infoTip('Roughness absolut permukaan dalam pipa.\nHDPE/PVC: 0.0015 mm (sangat halus)\nBaja: 0.15–0.26 mm\nNilai meningkat seiring korosi.\nSumber: Moody Chart | PPI Handbook Ch.6')}</label>
   <select class="form-control" id="fr-e"><option value="0.0015">HDPE (0.0015 mm)</option><option value="0.0015">PVC (0.0015 mm)</option><option value="0.007">PPR (0.007 mm)</option><option value="0.15">Baja Galvanis (0.15 mm)</option><option value="0.26">Baja Karbon (0.26 mm)</option><option value="0.12">Ductile Iron (0.12 mm)</option></select></div>
-  <div class="form-group"><label class="form-label">Suhu Air (°C)</label><input type="number" class="form-control" id="fr-t" min="5" max="80" value="25"></div>
+  <div class="form-group"><label class="form-label">Suhu Air (°C)${infoTip('Suhu air mempengaruhi viskositas kinematik.\nAir 20°C: ν = 1.003×10⁻⁶ m²/s\nAir 40°C: ν = 0.658×10⁻⁶ m²/s\nSumber: CRC Handbook of Chemistry')}</label><input type="number" class="form-control" id="fr-t" min="5" max="80" value="25"></div>
   <button class="calc-btn" onclick="calcFriction()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Friction Loss</button>`;
 }
 function calcFriction() {
@@ -246,6 +252,7 @@ function calcFriction() {
   var pBar = hf * 9.81 / 100;
   E('eng-results').innerHTML = `
   <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Hasil Friction Loss — Darcy-Weisbach</div>
+  ${refBadges(['Darcy-Weisbach', 'Colebrook-White', 'Moody Chart'])}
   <div class="result-grid">
     <div class="result-item"><div class="rk">Kecepatan</div><div class="rv">${v.toFixed(3)}<span class="ru"> m/s</span></div></div>
     <div class="result-item"><div class="rk">Reynolds (Re)</div><div class="rv">${Math.round(Re).toLocaleString()}</div></div>
@@ -257,7 +264,10 @@ function calcFriction() {
     <div class="result-item"><div class="rk">Pressure Drop</div><div class="rv">${pBar.toFixed(4)}<span class="ru"> bar</span></div></div>
     <div class="result-item"><div class="rk">Gradient</div><div class="rv">${(hf / L * 1000).toFixed(2)}<span class="ru"> m/km</span></div></div>
     <div class="result-item"><div class="rk">Kekasaran ε</div><div class="rv">${(eps * 1000).toFixed(4)}<span class="ru"> mm</span></div></div>
-  </div></div>
+  </div>
+  ${velocityWarnings(v, 'pressure')}
+  </div>
+  ${getRefTable('roughness')}
   <div class="chart-wrap"><div class="chart-title">📊 Head Loss vs Diameter Pipa (Q=${(Q * 1000).toFixed(1)} L/s, L=${L}m)</div><div style="height:240px"><canvas id="chart-friction"></canvas></div></div>`;
   if (typeof animateValues === 'function') animateValues();
   if (typeof chartFrictionVsDiameter === 'function') chartFrictionVsDiameter('chart-friction', Q * 1000, L, eps * 1000, T);
@@ -268,29 +278,29 @@ function buildPipeLoadForm() {
   var sdrOpts = [7.4, 9, 11, 13.6, 17, 21, 26].map(s => `<option value="${s}" ${s === 17 ? 'selected' : ''}>SDR ${s}</option>`).join('');
   E('eng-form').innerHTML = `
   <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg> Pipe Load & Defleksi <span style="font-size:10px;color:var(--text2);font-weight:400">AWWA M23 / Modified Iowa</span></div>
-  <div class="form-group"><label class="form-label">Tipe Pipa</label>
+  <div class="form-group"><label class="form-label">Tipe Pipa${infoTip('Flexible (HDPE/PVC): Defleksi dihitung via Modified Iowa.\nRigid (Beton/Baja): Marston load theory, defleksi tidak dihitung.\nSumber: AWWA M23 / M55')}</label>
   <select class="form-control" id="ld-type" onchange="toggleLdSDR()"><option value="flexible" selected>Flexible (HDPE)</option><option value="rigid">Rigid (Beton/Baja)</option></select></div>
   <div class="form-group"><label class="form-label">Diameter Luar (OD) mm</label><input type="number" class="form-control" id="ld-od" min="50" max="2000" value="315"></div>
-  <div class="form-group" id="ld-sdr-wrap"><label class="form-label">SDR Pipa (Kekakuan)</label>
+  <div class="form-group" id="ld-sdr-wrap"><label class="form-label">SDR Pipa (Kekakuan)${infoTip('SDR menentukan pipe stiffness (EI/D³).\nSDR rendah = dinding tebal = lebih kaku.\nSumber: AWWA M23 §4.3')}</label>
   <select class="form-control" id="ld-sdr">${sdrOpts}</select></div>
-  <div class="form-group"><label class="form-label">Kedalaman Tanam (H) m</label><input type="number" class="form-control" id="ld-h" min="0.3" max="15" step="0.1" value="1.5"></div>
-  <div class="form-group"><label class="form-label">Lebar Galian (Bd) m</label><input type="number" class="form-control" id="ld-bd" min="0.3" max="5" step="0.1" value="0.8"></div>
+  <div class="form-group"><label class="form-label">Kedalaman Tanam (H) m${infoTip('Kedalaman dari permukaan tanah ke mahkota pipa.\nMin 0.6m di bawah jalan (AASHTO).\nMin 0.3m di taman/lahan kosong.')}</label><input type="number" class="form-control" id="ld-h" min="0.3" max="15" step="0.1" value="1.5"></div>
+  <div class="form-group"><label class="form-label">Lebar Galian (Bd) m${infoTip('Lebar trench di atas pipa.\nMin OD + 30cm (tiap sisi 15cm).\nMempengaruhi Marston load coefficient (Cd).\nSumber: AWWA M23 §4.2')}</label><input type="number" class="form-control" id="ld-bd" min="0.3" max="5" step="0.1" value="0.8"></div>
   
-  <div class="form-group"><label class="form-label">Kepadatan Tanah Sekeliling (E')</label>
+  <div class="form-group"><label class="form-label">Kepadatan Tanah Sekeliling (E\')${infoTip('Modulus reaksi tanah sekeliling pipa.\nSemakin padat dan berbutir kasar, E\' semakin besar.\nPengaruh sangat besar terhadap defleksi.\nSumber: AWWA M23 Table 4-5')}</label>
   <select class="form-control" id="ld-soil-e">
     <option value="2000">Ringan / Uncompacted (E' = 2 MPa)</option>
     <option value="7000" selected>Sedang / 85% Proctor (E' = 7 MPa)</option>
     <option value="14000">Padat / >90% Proctor (E' = 14 MPa)</option>
     <option value="20000">Sangat Padat / Kerikil (E' = 20 MPa)</option>
   </select></div>
-  <div class="form-group"><label class="form-label">Beban Lalu Lintas (Live Load)</label>
+  <div class="form-group"><label class="form-label">Beban Lalu Lintas (Live Load)${infoTip('Beban roda kendaraan di atas jalur pipa.\nDihitung dengan distribusi Boussinesq.\nSumber: AASHTO H-20 | AWWA M23')}</label>
   <select class="form-control" id="ld-live">
     <option value="0">Tanpa beban (Taman/Lahan kosong)</option>
     <option value="10">Pedestrian / Ringan (10 kN)</option>
     <option value="72">Truk H-20 (72 kN / roda belakang)</option>
     <option value="100">Alat Berat (100 kN)</option>
   </select></div>
-  <div class="form-group"><label class="form-label">Deflection Lag Factor (Dl)</label>
+  <div class="form-group"><label class="form-label">Deflection Lag Factor (Dl)${infoTip('Faktor yang memperhitungkan creep jangka panjang.\n1.0 = beban sesaat (instalasi).\n1.5 = beban jangka panjang (operasi).\nSumber: AWWA M23 §4.4')}</label>
   <select class="form-control" id="ld-dl"><option value="1.0">1.0 (Jangka Pendek)</option><option value="1.5" selected>1.5 (Jangka Panjang / Creep)</option></select></div>
   <button class="calc-btn" onclick="calcPipeLoad()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Pipe Load & Defleksi</button>`;
 }
@@ -368,6 +378,7 @@ function calcPipeLoad() {
 
   E('eng-results').innerHTML = `
   <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg> Analisis Beban Tanah & Lalin</div>
+  ${refBadges(['AWWA M23 / M55', 'Modified Iowa Eq.', 'Boussinesq'])}
   <div class="result-grid">
     <div class="result-item"><div class="rk">Beban Mati (Dead Load)</div><div class="rv">${Wd.toFixed(2)}<span class="ru"> kN/m</span></div></div>
     <div class="result-item"><div class="rk">Beban Lalin (Live Load)</div><div class="rv">${Wl.toFixed(2)}<span class="ru"> kN/m</span></div></div>
@@ -386,11 +397,11 @@ function calcPipeLoad() {
     <div class="result-item"><div class="rk">Lag Factor (Dl)</div><div class="rv">${Dl}</div></div>
     <div class="result-item"><div class="rk">Est. Defleksi (ΔX/D)</div><div class="rv" style="color:${deflPct > 5 ? '#ff5555' : '#00ff9d'};font-weight:700">${deflPct.toFixed(2)}<span class="ru"> %</span></div></div>
   </div>
-  ${deflPct > 5 ? `
-  <div class="fusion-warn" style="margin-top:10px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> <strong>Defleksi > 5%! (Batas aman AWWA)</strong><br>
-  Solusi: 1) Gunakan tanah urug yang lebih baik (E' lebih besar) dan padatkan >90% Proctor. 2) Turunkan nilai SDR pipa (dinding lebih tebal). 3) Tambah kedalaman tanam jika beban dominan adalah lalu lintas.</div>`: ''}
+  ${deflectionWarnings(deflPct)}
   </div>` :
-      `<div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-top:10px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg> Pipa Rigid (beton/baja) dihitung berdasarkan Marston (Cd = ${Cd.toFixed(2)}). Bandingkan Total Beban ${Wtotal.toFixed(2)} kN/m dengan kuat hancur (Crushing Strength) dari pabrikan. Defleksi tidak dihitung.</div>`}
+      `${smartWarn('info', 'Pipa Rigid (beton/baja) dihitung berdasarkan Marston (Cd = ' + Cd.toFixed(2) + '). Bandingkan Total Beban ' + Wtotal.toFixed(2) + ' kN/m dengan kuat hancur (Crushing Strength) dari pabrikan. Defleksi tidak dihitung.', 'AWWA M9 | ASCE Manual 37')}`}
+  ${getRefTable('soilModulus')}
+  ${getRefTable('liveLoad')}
   `;
   if (typeof animateValues === 'function') animateValues();
 }
@@ -428,6 +439,7 @@ function calcRainfall() {
 
   E('eng-results').innerHTML = `
   <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M16 14v6"/><path d="M8 14v6"/><path d="M12 16v6"/></svg> Hasil Intensitas Curah Hujan</div>
+  ${refBadges(['SNI 8153:2025 Tabel 8', 'Metode Mononobe', 'Rasional Q=CIA'])}
   <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
     I = (R₂₄ / 24) × (24 / t)^(2/3)
   </div>
@@ -446,9 +458,9 @@ function calcRainfall() {
     <div class="result-item"><div class="rk">Koef. Limpasan (C)</div><div class="rv">${C}</div></div>
     <div class="result-item"><div class="rk">Luas Area (A)</div><div class="rv">${A_m2.toLocaleString()}<span class="ru"> m²</span></div></div>
   </div>
-  <div class="fusion-warn" style="margin-top:10px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg> <strong>Tips SNI 8153:2025</strong><br>
-  Debit limpasan ini menentukan dimensi pipa talang (vertical leader) dan drainase mendatar. Pastikan memilih pipa dengan kapasitas aliran yang > <strong>${Q_Ls.toFixed(2)} L/s</strong>.</div>
-  </div>`;
+  ${smartWarn('info', '<strong>Tips SNI 8153:2025</strong> — Debit limpasan ini menentukan dimensi pipa talang (vertical leader) dan drainase mendatar. Pastikan memilih pipa dengan kapasitas aliran yang > <strong>' + Q_Ls.toFixed(2) + ' L/s</strong>.', 'SNI 8153:2025 §8.4 | BS EN 12056-3')}
+  </div>
+  ${getRefTable('runoffCoeff')}`;
   if (typeof animateValues === 'function') animateValues();
 }
 
