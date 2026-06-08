@@ -1023,20 +1023,42 @@ function calcDerating() {
 
   var factor = 1.0;
   
+  // Fungsi helper untuk interpolasi linear
+  function getFactor(t, table) {
+    if (t <= table[0][0]) return table[0][1];
+    if (t >= table[table.length - 1][0]) return table[table.length - 1][1];
+    for (var i = 0; i < table.length - 1; i++) {
+      if (t >= table[i][0] && t <= table[i+1][0]) {
+        var t1 = table[i][0], f1 = table[i][1];
+        var t2 = table[i+1][0], f2 = table[i+1][1];
+        return f1 + ((t - t1) / (t2 - t1)) * (f2 - f1);
+      }
+    }
+    return 1.0;
+  }
+
   if (mat === 'pe100') {
-    // Simplified PE100 derating ISO 4427
-    if (temp <= 20) factor = 1.0;
-    else if (temp <= 30) factor = 0.87;
-    else if (temp <= 40) factor = 0.74;
-    else if (temp <= 50) factor = 0.61;
+    // PE100 derating ISO 4427 / PPI
+    var peTable = [
+      [20, 1.00],
+      [30, 0.87],
+      [40, 0.74],
+      [50, 0.61],
+      [60, 0.47] // Estimasi usia pakai pendek (<50 tahun)
+    ];
+    factor = getFactor(temp, peTable);
   } else if (mat === 'pvc') {
-    // PVC-U derating
-    if (temp <= 25) factor = 1.0;
-    else if (temp <= 30) factor = 0.88;
-    else if (temp <= 35) factor = 0.78;
-    else if (temp <= 40) factor = 0.70;
-    else if (temp <= 45) factor = 0.64;
-    else factor = 0.50; // up to 60C
+    // PVC-U derating SNI 9324 / ISO 1452
+    var pvcTable = [
+      [25, 1.00],
+      [30, 0.88],
+      [35, 0.78],
+      [40, 0.70],
+      [45, 0.64],
+      [50, 0.58],
+      [60, 0.40]
+    ];
+    factor = getFactor(temp, pvcTable);
   }
 
   var maop = pn * factor;
