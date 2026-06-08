@@ -120,6 +120,118 @@ function switchEngTool(tool) {
     const tools = ['fusion', 'pressloss', 'buoyancy', 'waterhammer', 'friction', 'pipeload', 'rainfall', 'tensile', 'thermal', 'unitconv', 'matguide'];
     b.classList.toggle('active', tools[i] === tool);
   });
+
+  // ===== Tool descriptions =====
+  const engToolDescriptions = {
+    fusion: {
+      title: 'Butt Fusion HDPE',
+      desc: 'Menghitung parameter pengelasan butt fusion pipa HDPE PE100 berdasarkan diameter dan SDR pipa. Meliputi <strong>tekanan pengelasan</strong>, <strong>suhu heater plate</strong>, <strong>waktu pemanasan & pendinginan</strong>, serta <strong>tinggi bead</strong> yang sesuai standar.',
+      formula: 'P<sub>fusion</sub> = (p × A<sub>pipe</sub>) / A<sub>piston</sub>',
+      standards: ['ISO 21307:2017', 'DVS 2207-1:2015', 'SNI 4829:2015'],
+      useCase: 'Digunakan oleh teknisi fusion welding di lapangan untuk menentukan setting mesin butt fusion yang benar, memastikan kualitas sambungan memenuhi standar.'
+    },
+    pressloss: {
+      title: 'Pressure Loss (Hazen-Williams)',
+      desc: 'Menghitung <strong>kehilangan tekanan (head loss)</strong> sepanjang pipa akibat gesekan aliran air menggunakan metode empiris <strong>Hazen-Williams</strong>. Termasuk perhitungan <em>minor losses</em> dari sambungan butt fusion dan fitting.',
+      formula: 'h<sub>f</sub> = 10.67 × Q<sup>1.852</sup> / (C<sup>1.852</sup> × D<sup>4.87</sup>) × L',
+      standards: ['PPI Handbook Ch.6', 'AWWA M55 §5.4', 'Crane TP 410'],
+      useCase: 'Untuk mendesain sistem perpipaan: memastikan tekanan di ujung pipa masih cukup, menentukan ukuran pipa optimal, dan menghitung kebutuhan daya pompa.'
+    },
+    buoyancy: {
+      title: 'Buoyancy Pipa HDPE',
+      desc: 'Menganalisis <strong>gaya apung (buoyancy)</strong> pada pipa HDPE yang diinstal di bawah air atau di daerah muka air tanah tinggi. Menghitung apakah pipa akan mengapung atau tenggelam, serta kebutuhan <strong>ballast/pemberat</strong>.',
+      formula: 'F<sub>buoyancy</sub> = ρ<sub>air</sub> × A<sub>displaced</sub> — Net uplift = F<sub>b</sub> - W<sub>pipa</sub>',
+      standards: ['Archimedes Principle', 'AWWA M55 Ch.11', 'ISO 4427-5:2019'],
+      useCase: 'Wajib dihitung untuk pipa yang melintasi sungai, rawa, area muka air tanah tinggi, atau pipa underwater crossing untuk menentukan jenis dan jarak pemasangan pemberat.'
+    },
+    waterhammer: {
+      title: 'Water Hammer (Joukowsky)',
+      desc: 'Menghitung <strong>lonjakan tekanan (pressure surge)</strong> yang terjadi saat katup ditutup mendadak atau pompa berhenti tiba-tiba. Fenomena ini disebut <em>water hammer</em> dan dapat merusak pipa jika tekanan total melebihi batas material.',
+      formula: 'ΔP = ρ × a × ΔV — dimana a = √(K/ρ) / √(1 + K×D/(E×e))',
+      standards: ['Joukowsky Equation', 'ISO 4427-5:2019 §6.2', 'AWWA M55 Ch.7'],
+      useCase: 'Untuk memverifikasi apakah pipa mampu menahan lonjakan tekanan transien, menentukan kebutuhan surge vessel/air valve, dan mendesain waktu penutupan katup yang aman.'
+    },
+    friction: {
+      title: 'Friction Loss (Darcy-Weisbach)',
+      desc: 'Menghitung <strong>head loss</strong> akibat gesekan menggunakan persamaan <strong>Darcy-Weisbach</strong> yang lebih akurat secara fisik. Friction factor dihitung secara iteratif dengan <strong>Colebrook-White equation</strong> berdasarkan Reynolds number dan kekasaran pipa.',
+      formula: 'h<sub>f</sub> = f × (L/D) × V²/(2g) — f dari 1/√f = -2 log(ε/3.7D + 2.51/Re√f)',
+      standards: ['Darcy-Weisbach', 'Colebrook-White', 'Moody Chart'],
+      useCase: 'Alternatif Hazen-Williams yang lebih akurat untuk semua jenis fluida dan semua regime aliran (laminar & turbulen). Penting untuk desain presisi dan fluida non-air.'
+    },
+    pipeload: {
+      title: 'Pipe Load & Defleksi',
+      desc: 'Menganalisis <strong>beban tanah (dead load)</strong> dan <strong>beban lalu lintas (live load)</strong> yang bekerja pada pipa tanam, serta memprediksi <strong>defleksi (perubahan bentuk)</strong> pipa fleksibel menggunakan <strong>Modified Iowa Equation</strong>.',
+      formula: 'ΔX = (D<sub>l</sub> × K × W<sub>c</sub>) / (8EI/D³ + 0.061 × E\')',
+      standards: ['AWWA M23 / M55', 'Modified Iowa Eq.', 'Boussinesq', 'AASHTO H-20'],
+      useCase: 'Menentukan SDR/kekakuan pipa yang tepat, kedalaman tanam minimum, jenis bedding yang diperlukan, dan apakah pipa aman dipasang di bawah jalan raya.'
+    },
+    rainfall: {
+      title: 'Intensitas Curah Hujan & Runoff',
+      desc: 'Menghitung <strong>intensitas curah hujan desain</strong> dari data R₂₄ (curah hujan harian) menggunakan <strong>Metode Mononobe</strong>, kemudian menghitung <strong>debit limpasan (runoff)</strong> menggunakan <strong>Metode Rasional</strong> (Q = CIA).',
+      formula: 'I = (R₂₄/24) × (24/t)<sup>2/3</sup> — Q = C × I × A / 3600',
+      standards: ['SNI 8153:2025 Tabel 8', 'Metode Mononobe', 'Rasional Q=CIA'],
+      useCase: 'Menentukan ukuran pipa drainase atap (vertical leader), talang, dan saluran pembuangan air hujan berdasarkan debit limpasan puncak yang harus ditampung.'
+    },
+    tensile: {
+      title: 'Tensile Yield HDPE',
+      desc: 'Menghitung <strong>gaya tarik maksimum</strong> yang mampu ditahan pipa HDPE PE100 pada berbagai SDR/PN berdasarkan tegangan yield material. Penting untuk proses <strong>penarikan pipa</strong> saat instalasi, terutama pada metode <em>trenchless</em>.',
+      formula: 'F = A<sub>cross-section</sub> × σ<sub>yield</sub> / 10000 (ton)',
+      standards: ['SNI 4829:2015', 'ISO 4427-2:2019', 'ASTM F1962 (HDD)'],
+      useCase: 'Menentukan batas aman gaya tarik saat penarikan pipa dalam Horizontal Directional Drilling (HDD), pipe bursting, atau penarikan pipa dalam conduit/selongsong.'
+    },
+    thermal: {
+      title: 'Pemuaian Termal Pipa',
+      desc: 'Menghitung <strong>pertambahan panjang (ekspansi)</strong> dan <strong>penyusutan (kontraksi)</strong> pipa akibat perubahan suhu. Termasuk dimensi <strong>expansion loop</strong>, <strong>gaya pada fixed point</strong>, dan jarak support/guide yang direkomendasikan.',
+      formula: 'ΔL = α × L × ΔT — L<sub>loop</sub> = √(3 × D × ΔL)',
+      standards: ['ISO 15874 (PPR)', 'ISO 4427 (HDPE)', 'SNI 9324:2024 (PVC)'],
+      useCase: 'Mendesain expansion loop/compensator pada jalur pipa lurus panjang, terutama untuk sistem air panas (PPR) dan pipa above-ground yang terpapar perubahan suhu signifikan.'
+    },
+    unitconv: {
+      title: 'Unit Converter',
+      desc: 'Konversi satuan teknis antar unit yang umum digunakan dalam bidang perpipaan, meliputi kategori: <strong>Tekanan</strong> (bar, psi, kPa, atm, mH₂O), <strong>Debit</strong> (L/s, m³/h, GPM), <strong>Kecepatan</strong>, <strong>Panjang</strong>, <strong>Suhu</strong>, <strong>Gaya</strong>, dan <strong>Massa</strong>.',
+      formula: 'Konversi linear: Nilai × Faktor — Suhu: rumus khusus (°C ↔ °F ↔ K)',
+      standards: ['SI Units', 'ASTM E380'],
+      useCase: 'Alat bantu cepat untuk mengonversi satuan saat membaca spesifikasi teknis dari berbagai standar (SNI vs ISO vs ASTM) yang menggunakan sistem satuan berbeda.'
+    },
+    matguide: {
+      title: 'Material Selection Guide',
+      desc: 'Sistem rekomendasi pemilihan material pipa plastik (<strong>HDPE, PVC-U, PVC-O, PPR</strong>) berdasarkan 7 kriteria: aplikasi, suhu, tekanan, diameter, metode sambungan, kondisi instalasi, dan kontur tanah. Menggunakan <strong>scoring system</strong> untuk membandingkan kesesuaian masing-masing material.',
+      formula: 'Skor = Σ(bobot kriteria) — Ranking berdasarkan akumulasi skor tertinggi',
+      standards: ['SNI 4829:2015 (HDPE)', 'SNI 9324:2024 (PVC)', 'ISO 16422 (PVC-O)', 'ISO 15874 (PPR)'],
+      useCase: 'Membantu engineer dan perencana memilih material pipa yang paling sesuai berdasarkan kondisi proyek spesifik, mengurangi risiko salah pilih material.'
+    }
+  };
+
+  const descData = engToolDescriptions[tool];
+  const descEl = document.getElementById('eng-tool-desc');
+  if (descData && descEl) {
+    const stdBadges = descData.standards.map(s => 
+      `<span style="display:inline-block;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.15);color:#6dd5ed;font-size:9px;padding:2px 8px;border-radius:10px;font-family:'JetBrains Mono',monospace;white-space:nowrap">${s}</span>`
+    ).join(' ');
+    
+    descEl.innerHTML = `
+      <div class="eng-desc-header">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:#00e5ff"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span class="eng-desc-title">${descData.title}</span>
+        <button class="eng-desc-toggle" onclick="this.closest('.eng-tool-desc').classList.toggle('collapsed')" title="Tutup/Buka penjelasan">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+      <div class="eng-desc-body">
+        <div class="eng-desc-text">${descData.desc}</div>
+        <div class="eng-desc-formula">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span><strong>Rumus:</strong> ${descData.formula}</span>
+        </div>
+        <div class="eng-desc-usecase">
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>
+          <span>${descData.useCase}</span>
+        </div>
+        <div class="eng-desc-standards">${stdBadges}</div>
+      </div>`;
+    descEl.classList.remove('collapsed');
+  }
+
   const builders = {
     fusion: buildFusionForm,
     pressloss: buildPressLossForm,

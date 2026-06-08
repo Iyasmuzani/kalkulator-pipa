@@ -588,6 +588,75 @@ select.form-control option{background:var(--bg2)}
 .eng-section{margin-bottom:16px;padding:14px;background:var(--bg2);border:1px solid rgba(255,255,255,.05);border-radius:10px}
 .eng-section-title{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:#00e5ff;margin-bottom:10px;display:flex;align-items:center;gap:6px}
 
+/* ===== ENGINEERING TOOL DESCRIPTION BOX ===== */
+.eng-tool-desc{
+  background:linear-gradient(135deg,rgba(0,229,255,.04),rgba(13,27,42,.6));
+  border:1px solid rgba(0,229,255,.12);
+  border-radius:10px;
+  margin-bottom:1rem;
+  overflow:hidden;
+  animation:fadeUp .3s ease-out;
+  transition:all .3s ease;
+}
+.eng-tool-desc:empty{display:none}
+.eng-desc-header{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 14px;
+  cursor:default;
+}
+.eng-desc-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:14px;font-weight:700;color:#fff;
+  flex:1;
+}
+.eng-desc-toggle{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  color:var(--text2);
+  width:24px;height:24px;border-radius:6px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .25s;flex-shrink:0;
+}
+.eng-desc-toggle:hover{
+  background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.3);color:#00e5ff;
+}
+.eng-desc-toggle svg{transition:transform .25s}
+.eng-tool-desc.collapsed .eng-desc-toggle svg{transform:rotate(-90deg)}
+.eng-desc-body{
+  padding:0 14px 12px;
+  transition:all .3s ease;
+}
+.eng-tool-desc.collapsed .eng-desc-body{
+  display:none;
+}
+.eng-desc-text{
+  font-size:12px;color:var(--text2);line-height:1.75;
+  margin-bottom:10px;
+}
+.eng-desc-text strong{color:#00e5ff;font-weight:600}
+.eng-desc-text em{color:#6dd5ed;font-style:italic}
+.eng-desc-formula{
+  display:flex;align-items:flex-start;gap:6px;
+  background:rgba(0,229,255,.06);
+  border:1px solid rgba(0,229,255,.1);
+  border-radius:6px;
+  padding:8px 10px;margin-bottom:8px;
+  font-size:11px;color:#6dd5ed;line-height:1.6;
+  font-family:'JetBrains Mono','Fira Code',monospace;
+}
+.eng-desc-formula strong{color:#00e5ff}
+.eng-desc-usecase{
+  display:flex;align-items:flex-start;gap:6px;
+  background:rgba(0,230,118,.04);
+  border:1px solid rgba(0,230,118,.1);
+  border-radius:6px;
+  padding:8px 10px;margin-bottom:10px;
+  font-size:11px;color:#8abfa8;line-height:1.6;
+}
+.eng-desc-standards{
+  display:flex;flex-wrap:wrap;gap:5px;
+}
+
 /* ===== REKOMENDASI #1: CROSS-REFERENCE BADGES ===== */
 .ref-badges{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
 .ref-badge{
