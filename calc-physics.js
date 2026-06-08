@@ -1079,7 +1079,10 @@ function buildFlangeTorqueForm() {
   <div class="form-group"><label class="form-label">Standar Flange / PN</label>
   <select class="form-control" id="flange-pn">
     <option value="10">DIN / EN1092 PN10</option>
-    <option value="16" selected>DIN / EN1092 PN16</option>
+    <option value="16" selected>DIN / EN / ISO PN16</option>
+    <option value="jis10k">JIS 10K</option>
+    <option value="jis16k">JIS 16K</option>
+    <option value="ansi150">ANSI B16.5 Class 150</option>
   </select></div>
 
   <button class="calc-btn" onclick="calcFlangeTorque()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Spesifikasi Flange</button>
@@ -1090,8 +1093,9 @@ function calcFlangeTorque() {
   var od = E('flange-od').value;
   var pn = E('flange-pn').value;
 
-  // Approximate torque data based on PPI TN-38 / generic gasket
+  // Approximate torque data based on PPI TN-38 / generic gasket guidelines
   var data = {
+    // DIN/EN/ISO PN10 & PN16
     "63_10": { bolts: 4, size: "M16", torque: 35 },
     "63_16": { bolts: 4, size: "M16", torque: 40 },
     "90_10": { bolts: 8, size: "M16", torque: 40 },
@@ -1105,7 +1109,34 @@ function calcFlangeTorque() {
     "250_10": { bolts: 12, size: "M20", torque: 90 },
     "250_16": { bolts: 12, size: "M24", torque: 120 },
     "315_10": { bolts: 12, size: "M20", torque: 110 },
-    "315_16": { bolts: 12, size: "M24", torque: 150 }
+    "315_16": { bolts: 12, size: "M24", torque: 150 },
+
+    // JIS 10K
+    "63_jis10k": { bolts: 4, size: "M16", torque: 35 },
+    "90_jis10k": { bolts: 8, size: "M16", torque: 40 },
+    "110_jis10k": { bolts: 8, size: "M16", torque: 45 },
+    "160_jis10k": { bolts: 8, size: "M20", torque: 80 },
+    "200_jis10k": { bolts: 12, size: "M20", torque: 90 },
+    "250_jis10k": { bolts: 12, size: "M22", torque: 110 },
+    "315_jis10k": { bolts: 16, size: "M22", torque: 120 },
+
+    // JIS 16K
+    "63_jis16k": { bolts: 8, size: "M16", torque: 40 },
+    "90_jis16k": { bolts: 8, size: "M20", torque: 50 },
+    "110_jis16k": { bolts: 8, size: "M20", torque: 60 },
+    "160_jis16k": { bolts: 12, size: "M22", torque: 90 },
+    "200_jis16k": { bolts: 12, size: "M22", torque: 100 },
+    "250_jis16k": { bolts: 12, size: "M24", torque: 130 },
+    "315_jis16k": { bolts: 16, size: "M24", torque: 160 },
+
+    // ANSI B16.5 Class 150
+    "63_ansi150": { bolts: 4, size: "5/8\"", torque: 45 },
+    "90_ansi150": { bolts: 4, size: "5/8\"", torque: 50 },
+    "110_ansi150": { bolts: 8, size: "5/8\"", torque: 55 },
+    "160_ansi150": { bolts: 8, size: "3/4\"", torque: 90 },
+    "200_ansi150": { bolts: 8, size: "3/4\"", torque: 110 },
+    "250_ansi150": { bolts: 12, size: "7/8\"", torque: 130 },
+    "315_ansi150": { bolts: 12, size: "7/8\"", torque: 150 }
   };
 
   var key = od + "_" + pn;
@@ -1113,13 +1144,25 @@ function calcFlangeTorque() {
 
   if (!info) return;
 
+  var badgeRefs = ['PPI TN-38'];
+  if (pn === '10' || pn === '16') badgeRefs.unshift('EN 1092-1', 'ISO 7005-1');
+  else if (pn.indexOf('jis') >= 0) badgeRefs.unshift('JIS B 2220');
+  else if (pn === 'ansi150') badgeRefs.unshift('ASME B16.5');
+
+  var pnLabel = pn;
+  if (pn === '10') pnLabel = 'PN10 (DIN/EN)';
+  else if (pn === '16') pnLabel = 'PN16 (DIN/EN/ISO)';
+  else if (pn === 'jis10k') pnLabel = 'JIS 10K';
+  else if (pn === 'jis16k') pnLabel = 'JIS 16K';
+  else if (pn === 'ansi150') pnLabel = 'Class 150 (ANSI)';
+
   var html = `
   <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Rekomendasi Torsi Flange</div>
-  ${refBadges(['EN 1092-1', 'PPI TN-38'])}
+  ${refBadges(badgeRefs)}
   
   <div class="result-grid">
     <div class="result-item"><div class="rk">Diameter Nominal</div><div class="rv">DN ${od}</div></div>
-    <div class="result-item"><div class="rk">Flange Rating</div><div class="rv">PN ${pn}</div></div>
+    <div class="result-item"><div class="rk">Flange Rating</div><div class="rv">${pnLabel}</div></div>
     <div class="result-item"><div class="rk">Jumlah & Ukuran Baut</div><div class="rv" style="color:#ffaa00">${info.bolts} pcs × ${info.size}</div></div>
     <div class="result-item"><div class="rk">Target Torque</div><div class="rv" style="color:#00e5ff">${info.torque}<span class="ru"> Nm</span></div></div>
   </div></div>
