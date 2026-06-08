@@ -126,7 +126,6 @@ function switchEngTool(tool) {
     fusion: {
       title: 'Butt Fusion HDPE',
       desc: 'Menghitung parameter pengelasan butt fusion pipa HDPE PE100 berdasarkan diameter dan SDR pipa. Meliputi <strong>tekanan pengelasan</strong>, <strong>suhu heater plate</strong>, <strong>waktu pemanasan & pendinginan</strong>, serta <strong>tinggi bead</strong> yang sesuai standar.',
-      formula: 'P<sub>fusion</sub> = (p × A<sub>pipe</sub>) / A<sub>piston</sub>',
       standards: ['ISO 21307:2017', 'DVS 2207-1:2015', 'SNI 4829:2015'],
       useCase: 'Digunakan oleh teknisi fusion welding di lapangan untuk menentukan setting mesin butt fusion yang benar, memastikan kualitas sambungan memenuhi standar.'
     },
@@ -219,10 +218,10 @@ function switchEngTool(tool) {
       </div>
       <div class="eng-desc-body">
         <div class="eng-desc-text">${descData.desc}</div>
-        <div class="eng-desc-formula">
+        ${descData.formula ? `<div class="eng-desc-formula">
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
           <span><strong>Rumus:</strong> ${descData.formula}</span>
-        </div>
+        </div>` : ''}
         <div class="eng-desc-usecase">
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>
           <span>${descData.useCase}</span>
