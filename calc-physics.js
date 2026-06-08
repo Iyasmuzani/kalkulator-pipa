@@ -797,6 +797,16 @@ function calcThermalExp() {
     { name: 'Baja Karbon', alpha: 0.012, color: '#aaaaaa' },
     { name: 'Tembaga', alpha: 0.017, color: '#ff8a65' }
   ];
+  compMats.forEach(function(m) {
+    var dl = m.alpha * L * Math.abs(dT_exp);
+    var ll = Math.sqrt(3 * od * dl);
+    var isActive = m.name.toLowerCase().indexOf(p.name.toLowerCase().split(' ')[0].toLowerCase()) >= 0 && m.name.indexOf('CT') < 0;
+    if (mat === 'ppr' && m.name === 'PPR') isActive = true;
+    html += '<tr style="' + (isActive ? 'background:rgba(0,229,255,.08);' : '') + '">' +
+      '<td style="padding:6px;border:1px solid rgba(255,255,255,.06);color:' + m.color + ';font-weight:' + (isActive ? '700' : '400') + '">' + m.name + (isActive ? ' ◄' : '') + '</td>' +
+      '<td style="padding:6px;border:1px solid rgba(255,255,255,.06);font-family:monospace">' + m.alpha + '</td>' +
+      '<td style="padding:6px;border:1px solid rgba(255,255,255,.06);font-family:monospace;color:' + (dl > 20 ? '#ffaa00' : '#00e676') + ';font-weight:700">' + dl.toFixed(1) + ' mm</td>' +
+      '<td style="padding:6px;border:1px solid rgba(255,255,255,.06);font-family:monospace">' + ll.toFixed(0) + '</td></tr>';
   });
   html += '</table></div>';
 
