@@ -117,7 +117,7 @@ function exitEngTools() {
 function switchEngTool(tool) {
   currentEngTool = tool;
   document.querySelectorAll('.eng-tab').forEach((b, i) => {
-    const tools = ['fusion', 'pressloss', 'buoyancy', 'waterhammer', 'friction', 'pipeload', 'rainfall', 'tensile', 'thermal', 'unitconv', 'matguide'];
+    const tools = ['fusion', 'pressloss', 'buoyancy', 'waterhammer', 'friction', 'pipeload', 'rainfall', 'tensile', 'thermal', 'bending', 'sdrpn', 'derating', 'flange', 'trench', 'unitconv', 'matguide'];
     b.classList.toggle('active', tools[i] === tool);
   });
 
@@ -185,6 +185,41 @@ function switchEngTool(tool) {
       standards: ['ISO 15874 (PPR)', 'ISO 4427 (HDPE)', 'SNI 9324:2024 (PVC)'],
       useCase: 'Mendesain expansion loop/compensator pada jalur pipa lurus panjang, terutama untuk sistem air panas (PPR) dan pipa above-ground yang terpapar perubahan suhu signifikan.'
     },
+    bending: {
+      title: 'Radius Bending HDPE',
+      desc: 'Menghitung <strong>radius minimum pelengkungan (bending)</strong> pipa HDPE di lapangan. Pipa PE fleksibel dapat ditekuk tanpa fitting, namun menekuk melebihi batas dapat memicu kinking atau stress jangka panjang.',
+      formula: 'R<sub>min</sub> = OD × Factor (tergantung SDR dan Suhu)',
+      standards: ['ISO 4427-5:2019', 'AWWA M55 Ch.7', 'PPI Handbook'],
+      useCase: 'Menentukan radius kelengkungan jalur pipa di lapangan untuk menghindari penggunaan fitting elbow (menghemat biaya dan menekan head loss).'
+    },
+    sdrpn: {
+      title: 'SDR & PN Converter',
+      desc: 'Konversi interaktif antara <strong>SDR (Standard Dimension Ratio)</strong>, <strong>S (Pipe Series)</strong>, dan <strong>PN (Nominal Pressure)</strong>. Membantu menerjemahkan spesifikasi pipa dari berbagai standar (ISO, ASTM, SNI).',
+      formula: 'SDR = 2S + 1 — PN = (20 × MRS) / (C × (SDR - 1))',
+      standards: ['ISO 4065:2018', 'ISO 4427-2:2019', 'SNI 4829:2015'],
+      useCase: 'Menerjemahkan spesifikasi teknis dari proyek yang memakai referensi standar berbeda-beda agar tidak salah beli material.'
+    },
+    derating: {
+      title: 'Derating Factor Suhu',
+      desc: 'Menghitung <strong>penurunan tekanan kerja maksimal (MAOP)</strong> pada pipa plastik ketika beroperasi pada suhu di atas suhu referensi standar (20°C). Tekanan nominal pipa harus diturunkan saat dialiri air hangat/panas.',
+      formula: 'MAOP = PN × f<sub>T</sub> (Faktor Reduksi Suhu)',
+      standards: ['ISO 13760:1998', 'ISO 4427-1:2019', 'SNI 9324:2024'],
+      useCase: 'Mendesain sistem perpipaan di area industri atau terpapar sinar matahari langsung (above ground) agar pipa tidak pecah akibat melemahnya material.'
+    },
+    flange: {
+      title: 'Flange Tightening Torque',
+      desc: 'Memberikan panduan spesifikasi baut dan <strong>torsi pengencangan (torque)</strong> untuk sambungan Flange Adaptor HDPE dengan Backing Ring. Mengencangkan terlalu keras bisa mematahkan stub end plastik.',
+      formula: 'Torsi dihitung berdasar kelas tekanan flange, jumlah baut, dan material gasket',
+      standards: ['ASME B16.5', 'EN 1092-1', 'PPI TN-38'],
+      useCase: 'Digunakan oleh teknisi instalasi di lapangan saat menyambung pipa HDPE ke katup (valve) atau ke pipa baja menggunakan kunci torsi (torque wrench).'
+    },
+    trench: {
+      title: 'Kedalaman Galian (Trench)',
+      desc: 'Memberikan rekomendasi <strong>kedalaman parit (trench depth) minimum</strong> untuk instalasi pipa plastik tanam (underground), dengan mempertimbangkan beban tanah dan beban lalu lintas (live load) di atasnya.',
+      formula: 'Kedalaman aman agar defleksi pipa < 5% (Metode Spangler)',
+      standards: ['AWWA M55', 'AWWA M23', 'AASHTO H-20'],
+      useCase: 'Perencanaan galian (excavation) di proyek infrastruktur jalan atau drainase bawah tanah agar pipa aman saat dilindas kendaraan berat.'
+    },
     unitconv: {
       title: 'Unit Converter',
       desc: 'Konversi satuan teknis antar unit yang umum digunakan dalam bidang perpipaan, meliputi kategori: <strong>Tekanan</strong> (bar, psi, kPa, atm, mH₂O), <strong>Debit</strong> (L/s, m³/h, GPM), <strong>Kecepatan</strong>, <strong>Panjang</strong>, <strong>Suhu</strong>, <strong>Gaya</strong>, dan <strong>Massa</strong>.',
@@ -241,6 +276,11 @@ function switchEngTool(tool) {
     rainfall: buildRainfallForm,
     tensile: buildTensileForm,
     thermal: buildThermalExpForm,
+    bending: buildBendingForm,
+    sdrpn: buildSDRPNForm,
+    derating: buildDeratingForm,
+    flange: buildFlangeTorqueForm,
+    trench: buildTrenchDepthForm,
     unitconv: buildUnitConverterForm,
     matguide: buildMaterialGuideForm
   };

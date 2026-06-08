@@ -797,16 +797,6 @@ function calcThermalExp() {
     { name: 'Baja Karbon', alpha: 0.012, color: '#aaaaaa' },
     { name: 'Tembaga', alpha: 0.017, color: '#ff8a65' }
   ];
-  compMats.forEach(function(m) {
-    var dl = m.alpha * L * Math.abs(dT_exp);
-    var ll = Math.sqrt(3 * od * dl);
-    var isActive = m.name.toLowerCase().indexOf(p.name.toLowerCase().split(' ')[0].toLowerCase()) >= 0 && m.name.indexOf('CT') < 0;
-    if (mat === 'ppr' && m.name === 'PPR') isActive = true;
-    html += '<tr style="' + (isActive ? 'background:rgba(0,229,255,.08);' : '') + '">' +
-      '<td style="padding:6px;border:1px solid rgba(255,255,255,.06);color:' + m.color + ';font-weight:' + (isActive ? '700' : '400') + '">' + m.name + (isActive ? ' ◄' : '') + '</td>' +
-      '<td style="padding:6px;border:1px solid rgba(255,255,255,.06);font-family:monospace">' + m.alpha + '</td>' +
-      '<td style="padding:6px;border:1px solid rgba(255,255,255,.06);font-family:monospace;color:' + (dl > 20 ? '#ffaa00' : '#00e676') + ';font-weight:700">' + dl.toFixed(1) + ' mm</td>' +
-      '<td style="padding:6px;border:1px solid rgba(255,255,255,.06);font-family:monospace">' + ll.toFixed(0) + '</td></tr>';
   });
   html += '</table></div>';
 
@@ -815,4 +805,371 @@ function calcThermalExp() {
   E('eng-results').innerHTML = html;
   if (typeof animateValues === 'function') animateValues();
   if (typeof chartThermalComparison === 'function') chartThermalComparison('chart-thermal', L, dT_exp, od);
+}
+
+// ===== 9. BENDING RADIUS (ISO 4427 / PPI) =====
+function buildBendingForm() {
+  E('eng-form').innerHTML = `
+  <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M21 16.5A8.5 8.5 0 0 0 12.5 8H3"/><path d="M21 16.5A8.5 8.5 0 0 1 12.5 25H3"/><path d="M21 16.5V22"/></svg> Kalkulator Radius Bending HDPE</div>
+  <div class="form-group"><label class="form-label">Diameter Luar Pipa (OD) — mm</label>
+  <input type="number" class="form-control" id="bend-od" value="110" step="1"></div>
+  <div class="form-group"><label class="form-label">SDR Pipa</label>
+  <select class="form-control" id="bend-sdr">
+    <option value="9">SDR 9 (PN20)</option>
+    <option value="11" selected>SDR 11 (PN16)</option>
+    <option value="13.6">SDR 13.6 (PN12.5)</option>
+    <option value="17">SDR 17 (PN10)</option>
+    <option value="21">SDR 21 (PN8)</option>
+    <option value="26">SDR 26 (PN6.3)</option>
+  </select></div>
+  <div class="form-group"><label class="form-label">Suhu Lingkungan (°C)</label>
+  <input type="number" class="form-control" id="bend-temp" value="25" max="50"></div>
+  <div class="form-group"><label class="form-label">Terdapat Sambungan (Fitting/Fusion) di Area Bending?</label>
+  <select class="form-control" id="bend-joint">
+    <option value="no" selected>Tidak ada sambungan (Pipa Utuh)</option>
+    <option value="yes">Ada sambungan</option>
+  </select></div>
+  <button class="calc-btn" onclick="calcBending()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Minimum Radius</button>
+  `;
+}
+
+function calcBending() {
+  var od = parseFloat(E('bend-od').value);
+  var sdr = parseFloat(E('bend-sdr').value);
+  var temp = parseFloat(E('bend-temp').value);
+  var hasJoint = E('bend-joint').value === 'yes';
+
+  if (!od) return;
+
+  // Base multiplier based on SDR
+  var multiplier = 20;
+  if (sdr <= 9) multiplier = 20;
+  else if (sdr <= 11) multiplier = 25;
+  else if (sdr <= 13.6) multiplier = 25;
+  else if (sdr <= 17) multiplier = 27;
+  else if (sdr <= 21) multiplier = 30;
+  else multiplier = 35; // SDR 26+
+
+  // Temperature correction (multiplier increases as temp drops)
+  if (temp <= 5) multiplier *= 2.5;
+  else if (temp <= 15) multiplier *= 1.5;
+  // >15 is standard
+
+  // Joint factor
+  if (hasJoint) multiplier *= 2; // Generally, don't bend near joints. If forced, double the radius.
+
+  // If there's a joint and SDR is high, it's very dangerous.
+  var isCritical = hasJoint || sdr >= 21;
+
+  var R_min = (od * multiplier) / 1000; // in meters
+
+  var html = `
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M21 16.5A8.5 8.5 0 0 0 12.5 8H3"/><path d="M21 16.5A8.5 8.5 0 0 1 12.5 25H3"/><path d="M21 16.5V22"/></svg> Minimum Bending Radius</div>
+  ${refBadges(['AWWA M55', 'PPI Handbook Ch.7'])}
+  
+  <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
+    R_min = OD × Multiplier (berdasar SDR)
+  </div>
+
+  <div class="result-grid">
+    <div class="result-item"><div class="rk">Multiplier Dasar (SDR ${sdr})</div><div class="rv">${multiplier / (hasJoint ? 2 : 1) / (temp <= 5 ? 2.5 : (temp <= 15 ? 1.5 : 1))}</div></div>
+    <div class="result-item"><div class="rk">Faktor Koreksi Suhu/Sambungan</div><div class="rv">× ${(hasJoint ? 2 : 1) * (temp <= 5 ? 2.5 : (temp <= 15 ? 1.5 : 1))}</div></div>
+    <div class="result-item"><div class="rk">Total Multiplier</div><div class="rv">${multiplier}</div></div>
+    <div class="result-item"><div class="rk">Radius Minimum ($R_{min}$)</div><div class="rv" style="color:#00e5ff">${R_min.toFixed(2)}<span class="ru"> m</span></div></div>
+  </div></div>`;
+
+  if (isCritical) {
+    html += smartWarn('danger', '<strong>Peringatan Defleksi Kritis:</strong> ' + (hasJoint ? 'Menekuk pipa di area sambungan sangat tidak disarankan dan membatalkan garansi.' : 'Pipa SDR tinggi (dinding tipis) sangat rentan kinking saat ditekuk.'), 'PPI TN-42');
+  }
+
+  E('eng-results').innerHTML = html;
+  if (typeof animateValues === 'function') animateValues();
+}
+
+// ===== 10. SDR & PN CONVERTER =====
+function buildSDRPNForm() {
+  E('eng-form').innerHTML = `
+  <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/></svg> SDR & PN Converter</div>
+  
+  <div class="form-group"><label class="form-label">Material Pipa</label>
+  <select class="form-control" id="sdrpn-mat">
+    <option value="PE100" selected>HDPE (PE 100) — C = 1.25</option>
+    <option value="PE80">HDPE (PE 80) — C = 1.25</option>
+    <option value="PVC">PVC-U (MRS 25) — C = 2.0</option>
+  </select></div>
+
+  <div class="form-group"><label class="form-label">Mode Input</label>
+  <select class="form-control" id="sdrpn-mode" onchange="toggleSDRPNInput()">
+    <option value="sdr" selected>Input SDR, Cari PN & Series</option>
+    <option value="pn">Input PN, Cari SDR & Series</option>
+    <option value="series">Input Series (S), Cari SDR & PN</option>
+  </select></div>
+
+  <div id="sdrpn-input-wrap">
+    <div class="form-group"><label class="form-label" id="sdrpn-label">Nilai SDR</label>
+    <input type="number" class="form-control" id="sdrpn-val" value="11" step="0.1"></div>
+  </div>
+
+  <button class="calc-btn" onclick="calcSDRPN()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Konversi</button>
+  `;
+}
+
+// Make sure toggleSDRPNInput is available globally
+window.toggleSDRPNInput = function() {
+  var mode = E('sdrpn-mode').value;
+  var label = E('sdrpn-label');
+  var input = E('sdrpn-val');
+  if (mode === 'sdr') {
+    label.innerText = 'Nilai SDR (Standard Dimension Ratio)';
+    input.value = '11';
+  } else if (mode === 'pn') {
+    label.innerText = 'Nilai PN (Nominal Pressure dalam Bar)';
+    input.value = '16';
+  } else {
+    label.innerText = 'Nilai Series (S)';
+    input.value = '5';
+  }
+};
+
+function calcSDRPN() {
+  var mat = E('sdrpn-mat').value;
+  var mode = E('sdrpn-mode').value;
+  var val = parseFloat(E('sdrpn-val').value);
+
+  if (!val) return;
+
+  var MRS = 10; // MPa
+  var C = 1.25;
+
+  if (mat === 'PE100') { MRS = 10; C = 1.25; }
+  else if (mat === 'PE80') { MRS = 8; C = 1.25; }
+  else if (mat === 'PVC') { MRS = 25; C = 2.0; } // or 2.5 depending on standard
+
+  var sdr, pn, s;
+
+  if (mode === 'sdr') {
+    sdr = val;
+    s = (sdr - 1) / 2;
+    pn = (20 * MRS) / (C * (sdr - 1));
+  } else if (mode === 'pn') {
+    pn = val;
+    sdr = ((20 * MRS) / (pn * C)) + 1;
+    s = (sdr - 1) / 2;
+  } else {
+    s = val;
+    sdr = 2 * s + 1;
+    pn = (20 * MRS) / (C * (sdr - 1));
+  }
+
+  var html = `
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg> Hasil Konversi (${mat})</div>
+  ${refBadges(['ISO 4065', 'ISO 4427'])}
+  
+  <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
+    SDR = 2S + 1<br>PN = (20 × MRS) / (C × (SDR - 1))
+  </div>
+
+  <div class="result-grid">
+    <div class="result-item"><div class="rk">Material (MRS)</div><div class="rv">${MRS} MPa</div></div>
+    <div class="result-item"><div class="rk">Safety Factor (C)</div><div class="rv">${C}</div></div>
+  </div>
+  <div class="result-grid" style="margin-top:8px">
+    <div class="result-item" style="${mode==='sdr'?'background:rgba(255,255,255,.05)':''}"><div class="rk">SDR</div><div class="rv" style="color:#00e5ff">${sdr.toFixed(1)}</div></div>
+    <div class="result-item" style="${mode==='pn'?'background:rgba(255,255,255,.05)':''}"><div class="rk">PN (Nominal Pressure)</div><div class="rv" style="color:#00ff9d">${pn.toFixed(1)}<span class="ru"> bar</span></div></div>
+    <div class="result-item" style="${mode==='series'?'background:rgba(255,255,255,.05)':''}"><div class="rk">Pipe Series (S)</div><div class="rv" style="color:#ffaa00">${s.toFixed(2)}</div></div>
+  </div></div>`;
+
+  E('eng-results').innerHTML = html;
+  if (typeof animateValues === 'function') animateValues();
+}
+
+// ===== 11. DERATING FACTOR =====
+function buildDeratingForm() {
+  E('eng-form').innerHTML = `
+  <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Kalkulator Derating Suhu</div>
+  
+  <div class="form-group"><label class="form-label">Material Pipa</label>
+  <select class="form-control" id="derating-mat">
+    <option value="pe100" selected>HDPE (PE 100)</option>
+    <option value="pvc">PVC-U</option>
+  </select></div>
+
+  <div class="form-group"><label class="form-label">Tekanan Nominal (PN) — bar</label>
+  <input type="number" class="form-control" id="derating-pn" value="16" step="1"></div>
+
+  <div class="form-group"><label class="form-label">Suhu Operasional Aktual (°C)</label>
+  <input type="number" class="form-control" id="derating-temp" value="30" max="60" min="20"></div>
+
+  <button class="calc-btn" onclick="calcDerating()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung MAOP</button>
+  `;
+}
+
+function calcDerating() {
+  var mat = E('derating-mat').value;
+  var pn = parseFloat(E('derating-pn').value);
+  var temp = parseFloat(E('derating-temp').value);
+
+  if (!pn || !temp) return;
+
+  var factor = 1.0;
+  
+  if (mat === 'pe100') {
+    // Simplified PE100 derating ISO 4427
+    if (temp <= 20) factor = 1.0;
+    else if (temp <= 30) factor = 0.87;
+    else if (temp <= 40) factor = 0.74;
+    else if (temp <= 50) factor = 0.61;
+  } else if (mat === 'pvc') {
+    // PVC-U derating
+    if (temp <= 25) factor = 1.0;
+    else if (temp <= 30) factor = 0.88;
+    else if (temp <= 35) factor = 0.78;
+    else if (temp <= 40) factor = 0.70;
+    else if (temp <= 45) factor = 0.64;
+    else factor = 0.50; // up to 60C
+  }
+
+  var maop = pn * factor;
+
+  var html = `
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Maximum Allowable Operating Pressure (MAOP)</div>
+  ${refBadges(mat === 'pe100' ? ['ISO 4427', 'SNI 4829'] : ['SNI 9324'])}
+  
+  <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
+    MAOP = PN × Faktor Derating (${temp}°C)
+  </div>
+
+  <div class="result-grid">
+    <div class="result-item"><div class="rk">Suhu Operasional</div><div class="rv">${temp}°C</div></div>
+    <div class="result-item"><div class="rk">Faktor Derating ($f_T$)</div><div class="rv">${factor.toFixed(2)}</div></div>
+    <div class="result-item"><div class="rk">Tekanan Nominal (20°C)</div><div class="rv">${pn} bar</div></div>
+    <div class="result-item"><div class="rk">MAOP (${temp}°C)</div><div class="rv" style="color:${factor < 1 ? '#ff8c42' : '#00e5ff'}">${maop.toFixed(2)}<span class="ru"> bar</span></div></div>
+  </div></div>`;
+
+  E('eng-results').innerHTML = html;
+  if (typeof animateValues === 'function') animateValues();
+}
+
+// ===== 12. FLANGE TORQUE =====
+function buildFlangeTorqueForm() {
+  E('eng-form').innerHTML = `
+  <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Flange Tightening Torque</div>
+  
+  <div class="form-group"><label class="form-label">Diameter Pipa (OD) — mm</label>
+  <select class="form-control" id="flange-od">
+    <option value="63">DN 63 (2")</option>
+    <option value="90">DN 90 (3")</option>
+    <option value="110" selected>DN 110 (4")</option>
+    <option value="160">DN 160 (6")</option>
+    <option value="200">DN 200 (8")</option>
+    <option value="250">DN 250 (10")</option>
+    <option value="315">DN 315 (12")</option>
+  </select></div>
+
+  <div class="form-group"><label class="form-label">Standar Flange / PN</label>
+  <select class="form-control" id="flange-pn">
+    <option value="10">DIN / EN1092 PN10</option>
+    <option value="16" selected>DIN / EN1092 PN16</option>
+  </select></div>
+
+  <button class="calc-btn" onclick="calcFlangeTorque()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Spesifikasi Flange</button>
+  `;
+}
+
+function calcFlangeTorque() {
+  var od = E('flange-od').value;
+  var pn = E('flange-pn').value;
+
+  // Approximate torque data based on PPI TN-38 / generic gasket
+  var data = {
+    "63_10": { bolts: 4, size: "M16", torque: 35 },
+    "63_16": { bolts: 4, size: "M16", torque: 40 },
+    "90_10": { bolts: 8, size: "M16", torque: 40 },
+    "90_16": { bolts: 8, size: "M16", torque: 40 },
+    "110_10": { bolts: 8, size: "M16", torque: 45 },
+    "110_16": { bolts: 8, size: "M16", torque: 45 },
+    "160_10": { bolts: 8, size: "M20", torque: 60 },
+    "160_16": { bolts: 8, size: "M20", torque: 80 },
+    "200_10": { bolts: 8, size: "M20", torque: 75 },
+    "200_16": { bolts: 12, size: "M20", torque: 90 },
+    "250_10": { bolts: 12, size: "M20", torque: 90 },
+    "250_16": { bolts: 12, size: "M24", torque: 120 },
+    "315_10": { bolts: 12, size: "M20", torque: 110 },
+    "315_16": { bolts: 12, size: "M24", torque: 150 }
+  };
+
+  var key = od + "_" + pn;
+  var info = data[key];
+
+  if (!info) return;
+
+  var html = `
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Rekomendasi Torsi Flange</div>
+  ${refBadges(['EN 1092-1', 'PPI TN-38'])}
+  
+  <div class="result-grid">
+    <div class="result-item"><div class="rk">Diameter Nominal</div><div class="rv">DN ${od}</div></div>
+    <div class="result-item"><div class="rk">Flange Rating</div><div class="rv">PN ${pn}</div></div>
+    <div class="result-item"><div class="rk">Jumlah & Ukuran Baut</div><div class="rv" style="color:#ffaa00">${info.bolts} pcs × ${info.size}</div></div>
+    <div class="result-item"><div class="rk">Target Torque</div><div class="rv" style="color:#00e5ff">${info.torque}<span class="ru"> Nm</span></div></div>
+  </div></div>
+  ${smartWarn('info', 'Gunakan kunci torsi (torque wrench) dan kencangkan dengan pola menyilang (star pattern) dalam 3 tahap (30%, 60%, 100%).', 'Instalasi')}
+  `;
+
+  E('eng-results').innerHTML = html;
+  if (typeof animateValues === 'function') animateValues();
+}
+
+// ===== 13. TRENCH DEPTH =====
+function buildTrenchDepthForm() {
+  E('eng-form').innerHTML = `
+  <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M2 12h20"/><path d="M7 12v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6"/></svg> Kedalaman Galian (Trench Depth) Minimum</div>
+  
+  <div class="form-group"><label class="form-label">Material Pipa</label>
+  <select class="form-control" id="trench-mat">
+    <option value="hdpe">HDPE / Pipa Fleksibel</option>
+    <option value="pvc">PVC / Pipa Kaku</option>
+  </select></div>
+
+  <div class="form-group"><label class="form-label">Kondisi Lalu Lintas Permukaan</label>
+  <select class="form-control" id="trench-load">
+    <option value="none" selected>Tidak ada lalu lintas (Taman / Lahan kosong)</option>
+    <option value="light">Lalu Lintas Ringan</option>
+    <option value="heavy">Lalu Lintas Berat (H-20 / Jalan Raya)</option>
+  </select></div>
+
+  <button class="calc-btn" onclick="calcTrenchDepth()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Minimum Cover</button>
+  `;
+}
+
+function calcTrenchDepth() {
+  var mat = E('trench-mat').value;
+  var load = E('trench-load').value;
+
+  var minCover = 0.6; // meter
+  
+  if (mat === 'hdpe') {
+    if (load === 'none') minCover = 0.6;
+    else if (load === 'light') minCover = 0.9;
+    else if (load === 'heavy') minCover = 1.2;
+  } else {
+    // PVC (more rigid, can be slightly shallower but still needs protection from impact)
+    if (load === 'none') minCover = 0.5;
+    else if (load === 'light') minCover = 0.8;
+    else if (load === 'heavy') minCover = 1.0;
+  }
+
+  var html = `
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M2 12h20"/><path d="M7 12v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6"/></svg> Rekomendasi Kedalaman Parit</div>
+  ${refBadges(['AWWA M55', 'AWWA M23'])}
+  
+  <div class="result-grid">
+    <div class="result-item"><div class="rk">Beban Lalu Lintas</div><div class="rv">${load === 'none' ? 'Tidak Ada' : (load === 'light' ? 'Ringan' : 'Berat (H-20)')}</div></div>
+    <div class="result-item"><div class="rk">Minimum Cover (H)</div><div class="rv" style="color:#00e5ff">${minCover.toFixed(2)}<span class="ru"> m</span></div></div>
+  </div></div>
+  ${smartWarn('info', 'Minimum cover diukur dari permukaan tanah atas hingga ke punggung pipa (crown).', 'Instalasi')}
+  `;
+
+  E('eng-results').innerHTML = html;
+  if (typeof animateValues === 'function') animateValues();
 }
