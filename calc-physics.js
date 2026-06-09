@@ -1200,17 +1200,24 @@ function buildTrenchDepthForm() {
   E('eng-form').innerHTML = `
   <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M2 12h20"/><path d="M7 12v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6"/></svg> Kedalaman Galian (Trench Depth) Minimum</div>
   
+  <div class="form-group"><label class="form-label">Standar Acuan</label>
+  <select class="form-control" id="trench-std" onchange="calcTrenchDepth()">
+    <option value="sni" selected>SNI 7511:2011 / SNI 8153:2025</option>
+    <option value="awwa">AWWA M55 / M23</option>
+    <option value="asnzs">AS/NZS 2566.2 / PIPA POP201</option>
+  </select></div>
+
   <div class="form-group"><label class="form-label">Material Pipa</label>
-  <select class="form-control" id="trench-mat">
+  <select class="form-control" id="trench-mat" onchange="calcTrenchDepth()">
     <option value="hdpe">HDPE / Pipa Fleksibel</option>
     <option value="pvc">PVC / Pipa Kaku</option>
   </select></div>
 
   <div class="form-group"><label class="form-label">Kondisi Lalu Lintas Permukaan</label>
-  <select class="form-control" id="trench-load">
+  <select class="form-control" id="trench-load" onchange="calcTrenchDepth()">
     <option value="none" selected>Tidak ada lalu lintas (Taman / Lahan kosong)</option>
-    <option value="light">Lalu Lintas Ringan</option>
-    <option value="heavy">Lalu Lintas Berat (H-20 / Jalan Raya)</option>
+    <option value="light">Lalu Lintas Ringan (Jalan perumahan / paving)</option>
+    <option value="heavy">Lalu Lintas Berat (H-20 / Jalan Raya Utama)</option>
   </select></div>
 
   <button class="calc-btn" onclick="calcTrenchDepth()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Minimum Cover</button>
@@ -1218,31 +1225,49 @@ function buildTrenchDepthForm() {
 }
 
 function calcTrenchDepth() {
+  var std = E('trench-std').value;
   var mat = E('trench-mat').value;
   var load = E('trench-load').value;
 
   var minCover = 0.6; // meter
+  var refTags = [];
+  var extraInfo = '';
   
-  if (mat === 'hdpe') {
-    if (load === 'none') minCover = 0.6;
-    else if (load === 'light') minCover = 0.9;
-    else if (load === 'heavy') minCover = 1.2;
-  } else {
-    // PVC (more rigid, can be slightly shallower but still needs protection from impact)
-    if (load === 'none') minCover = 0.5;
-    else if (load === 'light') minCover = 0.8;
-    else if (load === 'heavy') minCover = 1.0;
+  if (std === 'sni') {
+    refTags = ['SNI 7511:2011', 'SNI 8153:2025'];
+    // SNI 7511:2011 (Tata cara pemasangan pipa PE)
+    if (load === 'none') { minCover = 0.6; extraInfo = 'Sesuai SNI, pada area tanpa beban kendaraan, kedalaman 0.6m cukup untuk menghindari kerusakan mekanis ringan.'; }
+    else if (load === 'light') { minCover = 0.9; extraInfo = 'Untuk jalan perumahan/kendaraan ringan, diperlukan cover 0.9m untuk distribusi beban.'; }
+    else if (load === 'heavy') { minCover = 1.2; extraInfo = 'Untuk jalan raya utama dengan beban truk (H-20), wajib minimum 1.2m cover.'; }
+  } else if (std === 'awwa') {
+    refTags = ['AWWA M55', 'AWWA M23'];
+    if (mat === 'hdpe') {
+      if (load === 'none') minCover = 0.6;
+      else if (load === 'light') minCover = 0.9;
+      else if (load === 'heavy') minCover = 1.2;
+    } else {
+      if (load === 'none') minCover = 0.5;
+      else if (load === 'light') minCover = 0.8;
+      else if (load === 'heavy') minCover = 1.0;
+    }
+  } else if (std === 'asnzs') {
+    refTags = ['AS/NZS 2566.2', 'PIPA POP201'];
+    // AS/NZS 2566.2 Table 3.1
+    if (load === 'none') { minCover = 0.45; extraInfo = 'Area non-vehicular menurut AS/NZS mensyaratkan 0.45m.'; }
+    else if (load === 'light') { minCover = 0.6; extraInfo = 'Jalan beraspal/sealed dengan lalu lintas ringan membutuhkan 0.6m.'; }
+    else if (load === 'heavy') { minCover = 0.75; extraInfo = 'Jalan beraspal utama membutuhkan minimal 0.75m. (0.9m jika unsealed).'; }
   }
 
   var html = `
   <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M2 12h20"/><path d="M7 12v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6"/></svg> Rekomendasi Kedalaman Parit</div>
-  ${refBadges(['AWWA M55', 'AWWA M23'])}
+  ${refBadges(refTags)}
   
   <div class="result-grid">
     <div class="result-item"><div class="rk">Beban Lalu Lintas</div><div class="rv">${load === 'none' ? 'Tidak Ada' : (load === 'light' ? 'Ringan' : 'Berat (H-20)')}</div></div>
     <div class="result-item"><div class="rk">Minimum Cover (H)</div><div class="rv" style="color:#00e5ff">${minCover.toFixed(2)}<span class="ru"> m</span></div></div>
   </div></div>
-  ${smartWarn('info', 'Minimum cover diukur dari permukaan tanah atas hingga ke punggung pipa (crown).', 'Instalasi')}
+  ${extraInfo ? smartWarn('info', extraInfo, 'Catatan Standar') : ''}
+  ${smartWarn('caution', 'Minimum cover diukur dari permukaan tanah atas hingga ke punggung pipa (crown). Pastikan bedding material sesuai standar.', 'Instalasi')}
   `;
 
   E('eng-results').innerHTML = html;
