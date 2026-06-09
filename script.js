@@ -50,35 +50,112 @@ const systemConfig = {
   }
 };
 
+// ==================== SIDEBAR NAVIGATION ====================
+
+function toggleSidebar() {
+  var sb = document.getElementById('sidebar');
+  var overlay = document.getElementById('sidebar-overlay');
+  sb.classList.toggle('open');
+  overlay.classList.toggle('open');
+}
+
+function toggleSidebarGroup(groupId) {
+  var el = document.getElementById(groupId);
+  if (!el) return;
+  el.classList.toggle('open');
+  // Rotate chevron of parent label
+  var label = el.previousElementSibling;
+  if (label) {
+    var chev = label.querySelector('.sidebar-chevron');
+    if (chev) chev.style.transform = el.classList.contains('open') ? 'rotate(0)' : 'rotate(-90deg)';
+  }
+}
+
+function filterSidebar(val) {
+  var items = document.querySelectorAll('.sidebar-item');
+  var q = val.toLowerCase().trim();
+  items.forEach(function(it) {
+    if (!q) { it.style.display = ''; return; }
+    var text = it.textContent.toLowerCase();
+    it.style.display = text.indexOf(q) >= 0 ? '' : 'none';
+  });
+  // Also open all groups if searching
+  if (q) {
+    document.querySelectorAll('.sidebar-group-items').forEach(function(g) { g.classList.add('open'); });
+  }
+}
+
+function sidebarNav(type, id) {
+  if (type === 'system') {
+    switchSystem(id);
+  } else if (type === 'eng') {
+    switchToEngTools();
+    switchEngTool(id);
+    // Mark active in sidebar
+    document.querySelectorAll('.sidebar-item').forEach(function(el) { el.classList.remove('active'); });
+    var target = document.querySelector('.sidebar-item[data-nav="eng"][data-id="' + id + '"]');
+    if (target) target.classList.add('active');
+  } else if (type === 'lib') {
+    switchToLibrary();
+    switchLibraryForm(id);
+    // Mark active in sidebar
+    document.querySelectorAll('.sidebar-item').forEach(function(el) { el.classList.remove('active'); });
+    var target = document.querySelector('.sidebar-item[data-nav="lib"][data-id="' + id + '"]');
+    if (target) target.classList.add('active');
+  }
+  // Close sidebar on mobile
+  if (window.innerWidth <= 900) {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('open');
+  }
+}
+
+function sidebarSwitchTab(tab) {
+  switchTab(tab);
+  // Update sidebar sub-tabs
+  document.querySelectorAll('.sidebar-sub').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('data-tab') === tab);
+  });
+}
+
+function updateSidebarActive(type, id) {
+  // Clear all sidebar items active
+  document.querySelectorAll('.sidebar-item').forEach(function(el) { el.classList.remove('active'); });
+  // Set new active
+  var target = document.querySelector('.sidebar-item[data-nav="' + type + '"][data-id="' + id + '"]');
+  if (target) target.classList.add('active');
+  // Move subtabs under the active system item
+  if (type === 'system') {
+    var subtabs = document.getElementById('sidebar-systabs');
+    if (subtabs && target) {
+      target.insertAdjacentElement('afterend', subtabs);
+    }
+  }
+}
+
 // ==================== SYSTEM SWITCHING ====================
 function switchSystem(sys) {
   currentSystem = sys;
   document.documentElement.setAttribute('data-system', sys);
-  // Hide eng and library tools, show normal UI
-  document.getElementById('eng-panel').style.display = 'none';
-  if (document.getElementById('library-panel')) document.getElementById('library-panel').style.display = 'none';
-  document.querySelector('.tabs').style.display = '';
-  document.querySelector('.content').style.display = '';
   
-  // Handle active states for new dropdown structure
-  document.querySelectorAll('.sys-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.sys-dropdown-item').forEach(b => b.classList.remove('active'));
-  
-  document.getElementById('sys-main-btn').classList.add('active');
-  document.getElementById('sys-' + sys).classList.add('active');
-  
-  // Close dropdown
-  document.getElementById('sys-dropdown-content').classList.remove('show');
-  const chevron = document.getElementById('sys-main-chevron');
-  if(chevron) chevron.style.transform = 'rotate(0deg)';
+  // Show system content, hide others
+  document.getElementById('content-body').style.display = '';
+  document.getElementById('eng-content').style.display = 'none';
+  document.getElementById('lib-content').style.display = 'none';
 
   const cfg = systemConfig[sys];
   document.getElementById('hdr-title').textContent = cfg.title;
   document.getElementById('hdr-sub').textContent = cfg.sub;
-  document.getElementById('hdr-badge').textContent = cfg.badge;
-  document.getElementById('hdr-icon').innerHTML = cfg.icon;
+  if (document.getElementById('hdr-badge')) document.getElementById('hdr-badge').textContent = cfg.badge;
   document.getElementById('viz-label').textContent = cfg.vizLabel;
   document.getElementById('guide-intro-text').innerHTML = cfg.guideIntro;
+
+  // Update sidebar active
+  updateSidebarActive('system', sys);
+
+  // Ensure eng group is closed, modul group is open
+  var grpModul = document.getElementById('grp-modul');
+  if (grpModul) grpModul.classList.add('open');
 
   // Rebuild all content
   buildSVG();
@@ -93,32 +170,31 @@ function switchSystem(sys) {
 let currentEngTool = 'fusion';
 
 function switchToEngTools() {
-  document.querySelectorAll('.sys-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.sys-dropdown-item').forEach(b => b.classList.remove('active'));
-  document.getElementById('sys-engineering').classList.add('active');
-  document.querySelector('.tabs').style.display = 'none';
-  document.querySelector('.content').style.display = 'none';
-  if (document.getElementById('library-panel')) document.getElementById('library-panel').style.display = 'none';
-  document.getElementById('eng-panel').style.display = 'block';
+  document.getElementById('content-body').style.display = 'none';
+  document.getElementById('eng-content').style.display = '';
+  document.getElementById('lib-content').style.display = 'none';
+
   document.getElementById('hdr-title').textContent = 'Engineering Tools';
-  document.getElementById('hdr-sub').textContent = 'Butt fusion HDPE · Pressure loss · Buoyancy · Water hammer · Friction · Pipe load · Curah Hujan';
-  document.getElementById('hdr-badge').textContent = '';
-  document.getElementById('hdr-icon').innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>';
+  document.getElementById('hdr-sub').textContent = 'Kalkulator teknis perpipaan';
+
+  // Ensure eng group is open
+  var grpEng = document.getElementById('grp-eng');
+  if (grpEng) grpEng.classList.add('open');
+
   switchEngTool(currentEngTool);
 }
 
 function exitEngTools() {
-  document.getElementById('eng-panel').style.display = 'none';
-  document.querySelector('.tabs').style.display = '';
-  document.querySelector('.content').style.display = '';
+  document.getElementById('eng-content').style.display = 'none';
+  document.getElementById('content-body').style.display = '';
   switchSystem(currentSystem);
 }
 
 function switchEngTool(tool) {
   currentEngTool = tool;
-  document.querySelectorAll('.eng-tab').forEach((b, i) => {
-    const tools = ['fusion', 'pressloss', 'buoyancy', 'waterhammer', 'friction', 'pipeload', 'rainfall', 'tensile', 'thermal', 'bending', 'sdrpn', 'derating', 'flange', 'trench', 'unitconv', 'matguide'];
-    b.classList.toggle('active', tools[i] === tool);
+  // Update sidebar active state
+  document.querySelectorAll('.sidebar-item[data-nav="eng"]').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('data-id') === tool);
   });
 
   // ===== Tool descriptions =====
@@ -296,27 +372,21 @@ function switchEngTool(tool) {
 
 // ==================== LIBRARY & FORMS ====================
 function switchToLibrary() {
-  document.querySelectorAll('.sys-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.sys-dropdown-item').forEach(b => b.classList.remove('active'));
-  document.getElementById('sys-library').classList.add('active');
-  document.querySelector('.tabs').style.display = 'none';
-  document.querySelector('.content').style.display = 'none';
-  document.getElementById('eng-panel').style.display = 'none';
-  if (document.getElementById('library-panel')) document.getElementById('library-panel').style.display = 'block';
-  
+  document.getElementById('content-body').style.display = 'none';
+  document.getElementById('eng-content').style.display = 'none';
+  document.getElementById('lib-content').style.display = '';
+
   document.getElementById('hdr-title').textContent = 'Library';
   document.getElementById('hdr-sub').textContent = 'Kumpulan dokumen dan standar acuan perpipaan';
-  document.getElementById('hdr-badge').textContent = '';
-  document.getElementById('hdr-icon').innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>';
+
+  // Ensure lib group is open
+  var grpLib = document.getElementById('grp-lib');
+  if (grpLib) grpLib.classList.add('open');
   
   switchLibraryForm('standar');
 }
 
 function switchLibraryForm(formId) {
-  document.querySelectorAll('#library-subtabs .eng-tab').forEach(b => b.classList.remove('active'));
-  const activeBtn = document.querySelector('#library-subtabs .eng-tab[data-lib="' + formId + '"]');
-  if (activeBtn) activeBtn.classList.add('active');
-
   const iframeWrap = document.getElementById('library-content');
   const standarWrap = document.getElementById('library-standar');
   const pustakaWrap = document.getElementById('library-pustaka');
@@ -824,12 +894,12 @@ function resetCalcResults() {
 
 // ==================== TAB SWITCHING ====================
 function switchTab(t) {
-  const tabNames = ['visualisasi', 'komponen', 'panduan', 'kalkulator'];
-  document.querySelectorAll('.tab').forEach((el, i) => {
-    el.classList.toggle('active', tabNames[i] === t);
-  });
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-' + t).classList.add('active');
+  // Update sidebar sub active state
+  document.querySelectorAll('.sidebar-sub').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('data-tab') === t);
+  });
 }
 
 // ==================== COMPONENT INTERACTION ====================
