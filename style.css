@@ -711,7 +711,8 @@ html{scrollbar-width:thin;scrollbar-color:rgba(0,212,255,.2) rgba(255,255,255,.0
 
 /* ===== RESPONSIVE ===== */
 @media(max-width:900px){
-  .app-shell{grid-template-columns:1fr}
+  body{overflow:auto;overflow-x:hidden}
+  .app-shell{grid-template-columns:1fr;min-height:100vh;height:auto}
   .sidebar{
     position:fixed;left:0;top:0;bottom:0;
     width:280px;z-index:200;
@@ -720,7 +721,7 @@ html{scrollbar-width:thin;scrollbar-color:rgba(0,212,255,.2) rgba(255,255,255,.0
   .sidebar.open{transform:translateX(0)}
   .sidebar-overlay.open{display:block}
   .mobile-header{display:flex}
-  .content-main{height:auto;min-height:100vh}
+  .content-main{height:auto;min-height:calc(100vh - 57px);overflow-y:visible}
   .content-header{padding:1rem 1rem .5rem}
   .content-body{padding:1rem}
   .viz-layout{grid-template-columns:1fr}
