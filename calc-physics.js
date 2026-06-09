@@ -1212,6 +1212,12 @@ function buildTrenchDepthForm() {
     <option value="hdpe">HDPE / Pipa Fleksibel</option>
     <option value="pvc">PVC / Pipa Kaku</option>
   </select></div>
+  
+  <div class="form-group"><label class="form-label">Diameter Luar Pipa (OD)</label>
+  <div style="display:flex;gap:10px;align-items:center">
+    <input type="number" class="form-control" id="trench-od" value="110" oninput="calcTrenchDepth()" style="width:120px">
+    <span style="color:var(--text2);font-size:12px;font-family:monospace">mm</span>
+  </div></div>
 
   <div class="form-group"><label class="form-label">Kondisi Lalu Lintas Permukaan</label>
   <select class="form-control" id="trench-load" onchange="calcTrenchDepth()">
@@ -1228,6 +1234,7 @@ function calcTrenchDepth() {
   var std = E('trench-std').value;
   var mat = E('trench-mat').value;
   var load = E('trench-load').value;
+  var od = parseFloat(E('trench-od').value) || 110;
 
   var minCover = 0.6; // meter
   var refTags = [];
@@ -1235,7 +1242,6 @@ function calcTrenchDepth() {
   
   if (std === 'sni') {
     refTags = ['SNI 7511:2011', 'SNI 8153:2025'];
-    // SNI 7511:2011 (Tata cara pemasangan pipa PE)
     if (load === 'none') { minCover = 0.6; extraInfo = 'Sesuai SNI, pada area tanpa beban kendaraan, kedalaman 0.6m cukup untuk menghindari kerusakan mekanis ringan.'; }
     else if (load === 'light') { minCover = 0.9; extraInfo = 'Untuk jalan perumahan/kendaraan ringan, diperlukan cover 0.9m untuk distribusi beban.'; }
     else if (load === 'heavy') { minCover = 1.2; extraInfo = 'Untuk jalan raya utama dengan beban truk (H-20), wajib minimum 1.2m cover.'; }
@@ -1252,22 +1258,77 @@ function calcTrenchDepth() {
     }
   } else if (std === 'asnzs') {
     refTags = ['AS/NZS 2566.2', 'PIPA POP201'];
-    // AS/NZS 2566.2 Table 3.1
     if (load === 'none') { minCover = 0.45; extraInfo = 'Area non-vehicular menurut AS/NZS mensyaratkan 0.45m.'; }
     else if (load === 'light') { minCover = 0.6; extraInfo = 'Jalan beraspal/sealed dengan lalu lintas ringan membutuhkan 0.6m.'; }
     else if (load === 'heavy') { minCover = 0.75; extraInfo = 'Jalan beraspal utama membutuhkan minimal 0.75m. (0.9m jika unsealed).'; }
   }
 
+  // Calculate trench width
+  var minWidth = od + 300; // general rule OD + 30cm
+  if (minWidth < 400) minWidth = 400; // minimum workable width for compaction
+  if (od >= 600) minWidth = od + 600; // larger pipes need more side clearance
+  
+  // Create SVG illustration
+  var svgHtml = `
+  <div style="background:rgba(13,27,42,0.6);border:1px solid rgba(0,229,255,0.15);border-radius:8px;padding:16px;margin:16px 0;text-align:center;">
+    <svg viewBox="0 0 400 320" style="width:100%;max-width:320px;display:inline-block;overflow:visible;">
+      <defs>
+        <pattern id="soil-pattern" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 0 0 L 10 10 M 10 0 L 20 10" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+        </pattern>
+        <pattern id="bedding-pattern" width="10" height="10" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1" fill="rgba(0,230,118,0.4)"/>
+          <circle cx="7" cy="6" r="1.5" fill="rgba(0,230,118,0.2)"/>
+        </pattern>
+        <marker id="arrow-cover" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#00e5ff"/>
+        </marker>
+        <marker id="arrow-width" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#00e676"/>
+        </marker>
+      </defs>
+      
+      <!-- Ground / Native Soil -->
+      <rect x="0" y="40" width="400" height="280" fill="url(#soil-pattern)" />
+      <!-- Surface Line -->
+      <line x1="0" y1="40" x2="400" y2="40" stroke="#8E9BB0" stroke-width="2"/>
+      <text x="10" y="30" fill="#8E9BB0" font-size="12" font-family="monospace">Permukaan Tanah</text>
+      
+      <!-- Trench Cutout -->
+      <path d="M 110 40 L 110 270 L 290 270 L 290 40" fill="#1A2130" stroke="rgba(0,229,255,0.3)" stroke-width="2" stroke-dasharray="4"/>
+      
+      <!-- Pipe Bedding -->
+      <rect x="110" y="190" width="180" height="80" fill="url(#bedding-pattern)"/>
+      
+      <!-- Pipe -->
+      <circle cx="200" cy="180" r="45" fill="#0B0F19" stroke="#E2E8F0" stroke-width="4"/>
+      <circle cx="200" cy="180" r="40" fill="rgba(255,255,255,0.05)"/>
+      <text x="200" y="184" fill="#E2E8F0" font-size="11" text-anchor="middle" font-family="monospace">OD ${od}</text>
+      
+      <!-- Cover (H) Dimension -->
+      <line x1="200" y1="40" x2="200" y2="135" stroke="#00e5ff" stroke-width="2" marker-end="url(#arrow-cover)" marker-start="url(#arrow-cover)"/>
+      <text x="210" y="90" fill="#00e5ff" font-size="14" font-weight="bold">Cover (H) = ${minCover.toFixed(2)}m</text>
+      
+      <!-- Trench Width (W) Dimension -->
+      <line x1="110" y1="295" x2="290" y2="295" stroke="#00e676" stroke-width="2" marker-end="url(#arrow-width)" marker-start="url(#arrow-width)"/>
+      <text x="200" y="315" fill="#00e676" font-size="14" font-weight="bold" text-anchor="middle">Lebar (W) = ${(minWidth/1000).toFixed(2)}m</text>
+    </svg>
+  </div>
+  `;
+
   var html = `
-  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M2 12h20"/><path d="M7 12v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6"/></svg> Rekomendasi Kedalaman Parit</div>
+  <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M2 12h20"/><path d="M7 12v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6"/></svg> Rekomendasi Galian Pipa</div>
   ${refBadges(refTags)}
   
+  ${svgHtml}
+
   <div class="result-grid">
     <div class="result-item"><div class="rk">Beban Lalu Lintas</div><div class="rv">${load === 'none' ? 'Tidak Ada' : (load === 'light' ? 'Ringan' : 'Berat (H-20)')}</div></div>
     <div class="result-item"><div class="rk">Minimum Cover (H)</div><div class="rv" style="color:#00e5ff">${minCover.toFixed(2)}<span class="ru"> m</span></div></div>
+    <div class="result-item" style="grid-column: 1 / -1;"><div class="rk">Rekomendasi Lebar (W)</div><div class="rv" style="color:#00e676">${minWidth}<span class="ru"> mm</span></div></div>
   </div></div>
   ${extraInfo ? smartWarn('info', extraInfo, 'Catatan Standar') : ''}
-  ${smartWarn('caution', 'Minimum cover diukur dari permukaan tanah atas hingga ke punggung pipa (crown). Pastikan bedding material sesuai standar.', 'Instalasi')}
+  ${smartWarn('caution', 'Minimum cover diukur dari permukaan tanah atas hingga ke punggung pipa (crown).', 'Instalasi')}
   `;
 
   E('eng-results').innerHTML = html;
