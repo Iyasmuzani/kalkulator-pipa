@@ -1268,6 +1268,10 @@ function calcTrenchDepth() {
   if (minWidth < 400) minWidth = 400; // minimum workable width for compaction
   if (od >= 600) minWidth = od + 600; // larger pipes need more side clearance
   
+  // Calculate Bedding thickness
+  var minBedding = 100; // 100 mm default
+  if (od >= 250) minBedding = 150; // larger pipes need thicker bedding
+  
   // Create SVG illustration
   var svgHtml = `
   <div style="background:rgba(13,27,42,0.6);border:1px solid rgba(0,229,255,0.15);border-radius:8px;padding:16px;margin:16px 0;text-align:center;">
@@ -1285,6 +1289,9 @@ function calcTrenchDepth() {
         </marker>
         <marker id="arrow-width" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" fill="#00e676"/>
+        </marker>
+        <marker id="arrow-bedding" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#ffaa00"/>
         </marker>
       </defs>
       
@@ -1309,6 +1316,11 @@ function calcTrenchDepth() {
       <line x1="200" y1="40" x2="200" y2="135" stroke="#00e5ff" stroke-width="2" marker-end="url(#arrow-cover)" marker-start="url(#arrow-cover)"/>
       <text x="210" y="90" fill="#00e5ff" font-size="14" font-weight="bold">Cover (H) = ${minCover.toFixed(2)}m</text>
       
+      <!-- Bedding (B) Dimension -->
+      <!-- Pipe bottom is at 180 + 45 = 225. Trench bottom is at 270. -->
+      <line x1="200" y1="225" x2="200" y2="270" stroke="#ffaa00" stroke-width="2" marker-end="url(#arrow-bedding)" marker-start="url(#arrow-bedding)"/>
+      <text x="210" y="253" fill="#ffaa00" font-size="12" font-weight="bold">Bedding (B)</text>
+      
       <!-- Trench Width (W) Dimension -->
       <line x1="110" y1="295" x2="290" y2="295" stroke="#00e676" stroke-width="2" marker-end="url(#arrow-width)" marker-start="url(#arrow-width)"/>
       <text x="200" y="315" fill="#00e676" font-size="14" font-weight="bold" text-anchor="middle">Lebar (W) = ${(minWidth/1000).toFixed(2)}m</text>
@@ -1325,7 +1337,8 @@ function calcTrenchDepth() {
   <div class="result-grid">
     <div class="result-item"><div class="rk">Beban Lalu Lintas</div><div class="rv">${load === 'none' ? 'Tidak Ada' : (load === 'light' ? 'Ringan' : 'Berat (H-20)')}</div></div>
     <div class="result-item"><div class="rk">Minimum Cover (H)</div><div class="rv" style="color:#00e5ff">${minCover.toFixed(2)}<span class="ru"> m</span></div></div>
-    <div class="result-item" style="grid-column: 1 / -1;"><div class="rk">Rekomendasi Lebar (W)</div><div class="rv" style="color:#00e676">${minWidth}<span class="ru"> mm</span></div></div>
+    <div class="result-item"><div class="rk">Tebal Bedding (B)</div><div class="rv" style="color:#ffaa00">${minBedding}<span class="ru"> mm</span></div></div>
+    <div class="result-item"><div class="rk">Rekomendasi Lebar (W)</div><div class="rv" style="color:#00e676">${minWidth}<span class="ru"> mm</span></div></div>
   </div></div>
   ${extraInfo ? smartWarn('info', extraInfo, 'Catatan Standar') : ''}
   ${smartWarn('caution', 'Minimum cover diukur dari permukaan tanah atas hingga ke punggung pipa (crown).', 'Instalasi')}
