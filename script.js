@@ -295,7 +295,7 @@ function switchEngTool(tool) {
       title: 'Kedalaman Galian (Trench)',
       desc: 'Memberikan rekomendasi <strong>kedalaman parit (trench depth) minimum</strong> untuk instalasi pipa plastik tanam (underground), dengan mempertimbangkan beban tanah dan beban lalu lintas (live load) di atasnya.',
       formula: 'Kedalaman aman agar defleksi pipa < 5% (Metode Spangler)',
-      standards: ['AWWA M55', 'AWWA M23', 'AASHTO H-20'],
+      standards: ['SNI 7511:2011', 'AWWA M55', 'AS/NZS 2566.2', 'AASHTO H-20'],
       useCase: 'Perencanaan galian (excavation) di proyek infrastruktur jalan atau drainase bawah tanah agar pipa aman saat dilindas kendaraan berat.'
     },
     unitconv: {

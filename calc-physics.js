@@ -1202,7 +1202,7 @@ function buildTrenchDepthForm() {
   
   <div class="form-group"><label class="form-label">Standar Acuan</label>
   <select class="form-control" id="trench-std" onchange="calcTrenchDepth()">
-    <option value="sni" selected>SNI 7511:2011 / SNI 8153:2025</option>
+    <option value="sni" selected>SNI 7511:2011 (Tata Cara Pemasangan)</option>
     <option value="awwa">AWWA M55 / M23</option>
     <option value="asnzs">AS/NZS 2566.2 / PIPA POP201</option>
   </select></div>
@@ -1241,8 +1241,9 @@ function calcTrenchDepth() {
   var extraInfo = '';
   
   if (std === 'sni') {
-    refTags = ['SNI 7511:2011', 'SNI 8153:2025'];
-    if (load === 'none') { minCover = 0.6; extraInfo = 'Sesuai SNI, pada area tanpa beban kendaraan, kedalaman 0.6m cukup untuk menghindari kerusakan mekanis ringan.'; }
+    refTags = ['SNI 7511:2011'];
+    // SNI 7511:2011 (Tata cara pemasangan pipa PE)
+    if (load === 'none') { minCover = 0.6; extraInfo = 'Sesuai SNI 7511:2011, pada area tanpa beban kendaraan, kedalaman 0.6m cukup untuk menghindari kerusakan mekanis ringan.'; }
     else if (load === 'light') { minCover = 0.9; extraInfo = 'Untuk jalan perumahan/kendaraan ringan, diperlukan cover 0.9m untuk distribusi beban.'; }
     else if (load === 'heavy') { minCover = 1.2; extraInfo = 'Untuk jalan raya utama dengan beban truk (H-20), wajib minimum 1.2m cover.'; }
   } else if (std === 'awwa') {
