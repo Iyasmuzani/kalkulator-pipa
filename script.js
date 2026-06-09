@@ -176,6 +176,8 @@ function switchToEngTools() {
 
   document.getElementById('hdr-title').textContent = 'Engineering Tools';
   document.getElementById('hdr-sub').textContent = 'Kalkulator teknis perpipaan';
+  if (document.getElementById('hdr-badge')) document.getElementById('hdr-badge').textContent = 'Kalkulasi & Utilitas';
+  if (document.getElementById('hdr-icon')) document.getElementById('hdr-icon').innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>';
 
   // Ensure eng group is open
   var grpEng = document.getElementById('grp-eng');
@@ -378,6 +380,8 @@ function switchToLibrary() {
 
   document.getElementById('hdr-title').textContent = 'Library';
   document.getElementById('hdr-sub').textContent = 'Kumpulan dokumen dan standar acuan perpipaan';
+  if (document.getElementById('hdr-badge')) document.getElementById('hdr-badge').textContent = 'Referensi & Standar';
+  if (document.getElementById('hdr-icon')) document.getElementById('hdr-icon').innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/></svg>';
 
   // Ensure lib group is open
   var grpLib = document.getElementById('grp-lib');
