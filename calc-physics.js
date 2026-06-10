@@ -330,10 +330,10 @@ function toggleLdSDR() {
       sdrList = [26, 29, 34.4, 41, 45.8, 51, 65];
       defaultSdr = 41;
     }
-    
+
     var currentSdr = parseFloat(E('ld-sdr').value);
     if (!sdrList.includes(currentSdr)) currentSdr = defaultSdr;
-    
+
     E('ld-sdr').innerHTML = sdrList.map(s => {
       var label = `SDR ${s}`;
       if (type === 'pvc') {
@@ -402,7 +402,7 @@ function calcPipeLoad() {
     var Ep = 800000; // kPa (HDPE Modulus of Elasticity, short-medium term)
     if (type === 'pvc') Ep = 3000000; // PVC-U Modulus of Elasticity (~3 GPa)
     if (type === 'pvco') Ep = 4000000; // PVC-O Modulus of Elasticity (~4 GPa)
-    
+
     var I_pipe = (en * en * en) / 12; // m^4/m
 
     // Ring Stiffness (8*E*I / D^3) in kPa
@@ -504,13 +504,13 @@ function calcRainfall() {
 }
 
 function buildTensileForm() {
-  var dOpts = [20,25,32,40,50,63,75,90,110,125,140,160,180,200,225,250,280,315,355,400,450,500,560,630,710,800,900,1000,1200];
+  var dOpts = [20, 25, 32, 40, 50, 63, 75, 90, 110, 125, 140, 160, 180, 200, 225, 250, 280, 315, 355, 400, 450, 500, 560, 630, 710, 800, 900, 1000, 1200];
   E('eng-form').innerHTML = `
   <div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 8h2"/><path d="M9 12h2"/></svg> Tensile Yield HDPE Rucika</div>
   <div class="form-group"><label class="form-label">Tegangan (Tensile Strength) (MPa)</label><input type="number" class="form-control" id="ts-sigma" min="1" max="100" value="20" title="Kuat tarik (Tensile strength at yield). Standar untuk HDPE PE100 umumnya 20 MPa"></div>
   <div class="form-group"><label class="form-label">Diameter Pipa (OD) (mm)</label>
   <select class="form-control" id="ts-od">
-    ${dOpts.map(d => `<option value="${d}" ${d==90?'selected':''}>DN ${d} mm</option>`).join('')}
+    ${dOpts.map(d => `<option value="${d}" ${d == 90 ? 'selected' : ''}>DN ${d} mm</option>`).join('')}
   </select></div>
   <button class="calc-btn" onclick="calcTensile()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Gaya Tarik</button>`;
 }
@@ -518,7 +518,7 @@ function buildTensileForm() {
 function calcTensile() {
   var sigma = parseFloat(E('ts-sigma').value);
   var od = parseFloat(E('ts-od').value);
-  
+
   var sdrList = [
     { sdr: 9, pn: 'PN20' },
     { sdr: 11, pn: 'PN16' },
@@ -530,15 +530,15 @@ function calcTensile() {
 
   function getThickness(od, sdr) {
     const e = {
-      '11': {20:1.9, 25:2.3, 32:2.9, 40:3.7, 50:4.6, 63:5.8, 75:6.8, 90:8.2, 110:10.0, 125:11.4, 140:12.7, 160:14.6, 180:16.4, 200:18.2, 225:20.5, 250:22.7, 280:25.4, 315:28.6, 355:32.2, 400:36.3, 450:40.9, 500:45.4, 560:50.8, 630:57.2, 710:64.5, 800:72.6, 900:81.7, 1000:90.2, 1200:99.4},
-      '9': {20:2.3, 25:2.8, 32:3.6, 40:4.5, 50:5.6, 63:7.1, 75:8.4, 90:10.1, 110:12.3, 125:14.0, 140:15.7, 160:17.9, 180:20.1, 200:22.4, 225:25.2, 250:27.9, 280:31.3, 315:35.2, 355:39.7, 400:44.7, 450:50.3, 500:55.8, 560:62.2, 630:70.0, 710:79.3, 800:89.3, 900:100.4, 1000:111.5, 1200:133.8},
-      '13.6': {50:3.7, 63:4.7, 75:5.5, 90:6.6, 110:8.1, 125:9.2, 140:10.3, 160:11.8, 180:13.3, 200:14.7, 225:16.6, 250:18.4, 280:20.5, 315:23.2, 355:26.1, 400:29.4, 450:33.1, 500:36.8, 560:41.2, 630:46.3, 710:52.2, 800:58.8, 900:66.2, 1000:72.5, 1200:88.2},
-      '17': {50:3.0, 63:3.8, 75:4.5, 90:5.4, 110:6.6, 125:7.4, 140:8.3, 160:9.5, 180:10.7, 200:11.9, 225:13.4, 250:14.8, 280:16.6, 315:18.7, 355:21.1, 400:23.7, 450:26.7, 500:29.6, 560:33.2, 630:37.3, 710:42.1, 800:47.4, 900:53.3, 1000:59.3, 1200:67.9},
-      '21': {75:3.6, 90:4.3, 110:5.3, 125:6.0, 140:6.7, 160:7.7, 180:8.6, 200:9.6, 225:10.8, 250:11.9, 280:13.4, 315:15.0, 355:16.9, 400:19.1, 450:21.5, 500:23.9, 560:26.7, 630:30.0, 710:33.9, 800:38.1, 900:42.9, 1000:47.7, 1200:57.2},
-      '26': {90:3.5, 110:4.3, 125:4.8, 140:5.4, 160:6.2, 180:6.9, 200:7.7, 225:8.6, 250:9.6, 280:10.7, 315:12.1, 355:13.6, 400:15.3, 450:17.2, 500:19.1, 560:21.4, 630:24.1, 710:27.2, 800:30.6, 900:34.4, 1000:38.2, 1200:45.9}
+      '11': { 20: 1.9, 25: 2.3, 32: 2.9, 40: 3.7, 50: 4.6, 63: 5.8, 75: 6.8, 90: 8.2, 110: 10.0, 125: 11.4, 140: 12.7, 160: 14.6, 180: 16.4, 200: 18.2, 225: 20.5, 250: 22.7, 280: 25.4, 315: 28.6, 355: 32.2, 400: 36.3, 450: 40.9, 500: 45.4, 560: 50.8, 630: 57.2, 710: 64.5, 800: 72.6, 900: 81.7, 1000: 90.2, 1200: 99.4 },
+      '9': { 20: 2.3, 25: 2.8, 32: 3.6, 40: 4.5, 50: 5.6, 63: 7.1, 75: 8.4, 90: 10.1, 110: 12.3, 125: 14.0, 140: 15.7, 160: 17.9, 180: 20.1, 200: 22.4, 225: 25.2, 250: 27.9, 280: 31.3, 315: 35.2, 355: 39.7, 400: 44.7, 450: 50.3, 500: 55.8, 560: 62.2, 630: 70.0, 710: 79.3, 800: 89.3, 900: 100.4, 1000: 111.5, 1200: 133.8 },
+      '13.6': { 50: 3.7, 63: 4.7, 75: 5.5, 90: 6.6, 110: 8.1, 125: 9.2, 140: 10.3, 160: 11.8, 180: 13.3, 200: 14.7, 225: 16.6, 250: 18.4, 280: 20.5, 315: 23.2, 355: 26.1, 400: 29.4, 450: 33.1, 500: 36.8, 560: 41.2, 630: 46.3, 710: 52.2, 800: 58.8, 900: 66.2, 1000: 72.5, 1200: 88.2 },
+      '17': { 50: 3.0, 63: 3.8, 75: 4.5, 90: 5.4, 110: 6.6, 125: 7.4, 140: 8.3, 160: 9.5, 180: 10.7, 200: 11.9, 225: 13.4, 250: 14.8, 280: 16.6, 315: 18.7, 355: 21.1, 400: 23.7, 450: 26.7, 500: 29.6, 560: 33.2, 630: 37.3, 710: 42.1, 800: 47.4, 900: 53.3, 1000: 59.3, 1200: 67.9 },
+      '21': { 75: 3.6, 90: 4.3, 110: 5.3, 125: 6.0, 140: 6.7, 160: 7.7, 180: 8.6, 200: 9.6, 225: 10.8, 250: 11.9, 280: 13.4, 315: 15.0, 355: 16.9, 400: 19.1, 450: 21.5, 500: 23.9, 560: 26.7, 630: 30.0, 710: 33.9, 800: 38.1, 900: 42.9, 1000: 47.7, 1200: 57.2 },
+      '26': { 90: 3.5, 110: 4.3, 125: 4.8, 140: 5.4, 160: 6.2, 180: 6.9, 200: 7.7, 225: 8.6, 250: 9.6, 280: 10.7, 315: 12.1, 355: 13.6, 400: 15.3, 450: 17.2, 500: 19.1, 560: 21.4, 630: 24.1, 710: 27.2, 800: 30.6, 900: 34.4, 1000: 38.2, 1200: 45.9 }
     };
-    if(e[sdr] && e[sdr][od]) return e[sdr][od];
-    return Math.ceil((od/sdr)*10)/10;
+    if (e[sdr] && e[sdr][od]) return e[sdr][od];
+    return Math.ceil((od / sdr) * 10) / 10;
   }
 
   let html = `<div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Gaya Tarik Maksimum (ton)</div>
@@ -562,7 +562,7 @@ function calcTensile() {
     let e = getThickness(od, item.sdr);
     let id = od - 2 * e;
     let area = (Math.PI / 4) * (Math.pow(od, 2) - Math.pow(id, 2));
-    
+
     let force_ton = (area * sigma) / 10000;
     let force_display = force_ton < 100 ? force_ton.toFixed(1) : Math.round(force_ton);
 
@@ -576,7 +576,7 @@ function calcTensile() {
   html += `</table></div>
   <div class="fusion-warn" style="margin-top:10px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg> <strong>Catatan Teknis:</strong><br>
   Tabel ini digunakan untuk mengetahui beban tarik maksimum saat proses penarikan pipa (misal: <em>Horizontal Directional Drilling (HDD)</em>). Ketebalan mengacu pada standar minimum pipa PE100 SNI 4829:2015.</div>`;
-  
+
   E('eng-results').innerHTML = html;
   if (typeof animateValues === 'function') animateValues();
 }
@@ -608,13 +608,13 @@ function buildThermalExpForm() {
 function updateThermalOD() {
   var mat = E('te-mat').value;
   var sizes = {
-    ppr:  [20, 25, 32, 40, 50, 63, 75, 90, 110, 160],
+    ppr: [20, 25, 32, 40, 50, 63, 75, 90, 110, 160],
     hdpe: [20, 25, 32, 40, 50, 63, 75, 90, 110, 125, 160, 200, 250, 315, 400, 500, 630],
-    pvc:  [20, 25, 32, 40, 50, 63, 75, 90, 110, 125, 160, 200, 250, 315, 400]
+    pvc: [20, 25, 32, 40, 50, 63, 75, 90, 110, 125, 160, 200, 250, 315, 400]
   };
   var list = sizes[mat] || sizes.ppr;
   var sel = E('te-od');
-  sel.innerHTML = list.map(function(d) {
+  sel.innerHTML = list.map(function (d) {
     return '<option value="' + d + '"' + (d === 63 ? ' selected' : '') + '>DN ' + d + ' mm</option>';
   }).join('');
 }
@@ -631,9 +631,9 @@ function calcThermalExp() {
 
   // Material properties
   var props = {
-    ppr:  { alpha: 0.15, name: 'PPR', E_mpa: 800,  color: '#00e676', maxTemp: 70, sdrWall: {20:3.4, 25:4.2, 32:5.4, 40:6.7, 50:8.4, 63:10.5, 75:12.5, 90:15.0, 110:18.3, 160:26.6} },
-    hdpe: { alpha: 0.20, name: 'HDPE PE100', E_mpa: 800,  color: '#00bcd4', maxTemp: 60, sdrWall: {20:1.9, 25:2.3, 32:2.9, 40:3.7, 50:4.6, 63:5.8, 75:6.8, 90:8.2, 110:10.0, 125:11.4, 160:14.6, 200:18.2, 250:22.7, 315:28.6, 400:36.3, 500:45.4, 630:57.2} },
-    pvc:  { alpha: 0.06, name: 'PVC-U', E_mpa: 3000, color: '#aa66ff', maxTemp: 45, sdrWall: {20:1.5, 25:1.9, 32:2.4, 40:3.0, 50:3.7, 63:4.7, 75:5.6, 90:6.7, 110:8.2, 125:9.2, 160:11.8, 200:14.7, 250:18.4, 315:23.2, 400:29.4} }
+    ppr: { alpha: 0.15, name: 'PPR', E_mpa: 800, color: '#00e676', maxTemp: 70, sdrWall: { 20: 3.4, 25: 4.2, 32: 5.4, 40: 6.7, 50: 8.4, 63: 10.5, 75: 12.5, 90: 15.0, 110: 18.3, 160: 26.6 } },
+    hdpe: { alpha: 0.20, name: 'HDPE PE100', E_mpa: 800, color: '#00bcd4', maxTemp: 60, sdrWall: { 20: 1.9, 25: 2.3, 32: 2.9, 40: 3.7, 50: 4.6, 63: 5.8, 75: 6.8, 90: 8.2, 110: 10.0, 125: 11.4, 160: 14.6, 200: 18.2, 250: 22.7, 315: 28.6, 400: 36.3, 500: 45.4, 630: 57.2 } },
+    pvc: { alpha: 0.06, name: 'PVC-U', E_mpa: 3000, color: '#aa66ff', maxTemp: 45, sdrWall: { 20: 1.5, 25: 1.9, 32: 2.4, 40: 3.0, 50: 3.7, 63: 4.7, 75: 5.6, 90: 6.7, 110: 8.2, 125: 9.2, 160: 11.8, 200: 14.7, 250: 18.4, 315: 23.2, 400: 29.4 } }
   };
   var p = props[mat];
   var alpha = p.alpha; // mm/m/°C
@@ -667,7 +667,7 @@ function calcThermalExp() {
   var Lloop_total = Math.sqrt(3 * od * dL_total);
 
   // Guide/support spacing recommendations
-  var guideSpacing = { ppr: {h: 0.7, v: 1.0}, hdpe: {h: 1.0, v: 1.2}, pvc: {h: 1.0, v: 1.5} };
+  var guideSpacing = { ppr: { h: 0.7, v: 1.0 }, hdpe: { h: 1.0, v: 1.2 }, pvc: { h: 1.0, v: 1.5 } };
   var baseSpacing = guideSpacing[mat];
   // Adjust for larger diameters
   var spacingFactor = od <= 32 ? 1.0 : od <= 63 ? 1.2 : od <= 110 ? 1.4 : 1.6;
@@ -797,7 +797,7 @@ function calcThermalExp() {
     { name: 'Baja Karbon', alpha: 0.012, color: '#aaaaaa' },
     { name: 'Tembaga', alpha: 0.017, color: '#ff8a65' }
   ];
-  compMats.forEach(function(m) {
+  compMats.forEach(function (m) {
     var dl = m.alpha * L * Math.abs(dT_exp);
     var ll = Math.sqrt(3 * od * dl);
     var isActive = m.name.toLowerCase().indexOf(p.name.toLowerCase().split(' ')[0].toLowerCase()) >= 0 && m.name.indexOf('CT') < 0;
@@ -925,7 +925,7 @@ function buildSDRPNForm() {
 }
 
 // Make sure toggleSDRPNInput is available globally
-window.toggleSDRPNInput = function() {
+window.toggleSDRPNInput = function () {
   var mode = E('sdrpn-mode').value;
   var label = E('sdrpn-label');
   var input = E('sdrpn-val');
@@ -984,9 +984,9 @@ function calcSDRPN() {
     <div class="result-item"><div class="rk">Safety Factor (C)</div><div class="rv">${C}</div></div>
   </div>
   <div class="result-grid" style="margin-top:8px">
-    <div class="result-item" style="${mode==='sdr'?'background:rgba(255,255,255,.05)':''}"><div class="rk">SDR</div><div class="rv" style="color:#00e5ff">${sdr.toFixed(1)}</div></div>
-    <div class="result-item" style="${mode==='pn'?'background:rgba(255,255,255,.05)':''}"><div class="rk">PN (Nominal Pressure)</div><div class="rv" style="color:#00ff9d">${pn.toFixed(1)}<span class="ru"> bar</span></div></div>
-    <div class="result-item" style="${mode==='series'?'background:rgba(255,255,255,.05)':''}"><div class="rk">Pipe Series (S)</div><div class="rv" style="color:#ffaa00">${s.toFixed(2)}</div></div>
+    <div class="result-item" style="${mode === 'sdr' ? 'background:rgba(255,255,255,.05)' : ''}"><div class="rk">SDR</div><div class="rv" style="color:#00e5ff">${sdr.toFixed(1)}</div></div>
+    <div class="result-item" style="${mode === 'pn' ? 'background:rgba(255,255,255,.05)' : ''}"><div class="rk">PN (Nominal Pressure)</div><div class="rv" style="color:#00ff9d">${pn.toFixed(1)}<span class="ru"> bar</span></div></div>
+    <div class="result-item" style="${mode === 'series' ? 'background:rgba(255,255,255,.05)' : ''}"><div class="rk">Pipe Series (S)</div><div class="rv" style="color:#ffaa00">${s.toFixed(2)}</div></div>
   </div></div>`;
 
   E('eng-results').innerHTML = html;
@@ -1022,15 +1022,15 @@ function calcDerating() {
   if (!pn || !temp) return;
 
   var factor = 1.0;
-  
+
   // Fungsi helper untuk interpolasi linear
   function getFactor(t, table) {
     if (t <= table[0][0]) return table[0][1];
     if (t >= table[table.length - 1][0]) return table[table.length - 1][1];
     for (var i = 0; i < table.length - 1; i++) {
-      if (t >= table[i][0] && t <= table[i+1][0]) {
+      if (t >= table[i][0] && t <= table[i + 1][0]) {
         var t1 = table[i][0], f1 = table[i][1];
-        var t2 = table[i+1][0], f2 = table[i+1][1];
+        var t2 = table[i + 1][0], f2 = table[i + 1][1];
         return f1 + ((t - t1) / (t2 - t1)) * (f2 - f1);
       }
     }
@@ -1236,16 +1236,42 @@ function calcTrenchDepth() {
   var load = E('trench-load').value;
   var od = parseFloat(E('trench-od').value) || 110;
 
-  var minCover = 0.6; // meter
+  // Base calculations
+  var minWidth = od + 300; // default general rule
+  var minBedding = 100; // default 100 mm
+  var minCover = 0.6; // default meter
   var refTags = [];
   var extraInfo = '';
-  
+
   if (std === 'sni') {
-    refTags = ['SNI 7511:2011'];
-    // SNI 7511:2011 (Tata cara pemasangan pipa PE)
-    if (load === 'none') { minCover = 0.6; extraInfo = 'Sesuai SNI 7511:2011, pada area tanpa beban kendaraan, kedalaman 0.6m cukup untuk menghindari kerusakan mekanis ringan.'; }
-    else if (load === 'light') { minCover = 0.9; extraInfo = 'Untuk jalan perumahan/kendaraan ringan, diperlukan cover 0.9m untuk distribusi beban.'; }
-    else if (load === 'heavy') { minCover = 1.2; extraInfo = 'Untuk jalan raya utama dengan beban truk (H-20), wajib minimum 1.2m cover.'; }
+    if (mat === 'pvc') {
+      refTags = ['RSNI T-17-2004 (PVC)'];
+      // Cover depths based on user image for PVC
+      if (load === 'none') { minCover = 0.45; extraInfo = 'Untuk permukaan tanah biasa min 300mm. Di luar jalur jalan min 450mm.'; }
+      else if (load === 'light') { minCover = 0.45; extraInfo = 'Di bawah permukaan jalan kecil / sisi jalan min 450mm.'; }
+      else if (load === 'heavy') { minCover = 0.6; extraInfo = 'Di bawah jalan besar dengan perkerasan (aspal) min 600mm. (Gunakan 750mm jika tanpa perkerasan).'; }
+
+      // Width based on Table Gambar 3 & Gambar 1 for PVC
+      if (od >= 80 && od <= 100) minWidth = 400;
+      else if (od > 100 && od <= 200) minWidth = 450;
+      else if (od > 200 && od <= 300) minWidth = 500;
+      else if (od > 300 && od <= 450) minWidth = 750;
+      else if (od > 450 && od <= 600) minWidth = 850;
+      else minWidth = od + 200; // Text says minimum W = OD + 200mm (clearance 100mm per side)
+
+      minBedding = 100; // Lapisan Dasar 100mm explicitly in Gambar 3
+    } else {
+      // HDPE (SNI 7511:2011)
+      refTags = ['SNI 7511:2011 (HDPE)'];
+      if (load === 'none') { minCover = 0.6; extraInfo = 'Sesuai SNI 7511:2011, pada area tanpa beban kendaraan, kedalaman 0.6m cukup untuk menghindari kerusakan mekanis.'; }
+      else if (load === 'light') { minCover = 0.9; extraInfo = 'Untuk jalan perumahan/kendaraan ringan, diperlukan cover 0.9m untuk distribusi beban.'; }
+      else if (load === 'heavy') { minCover = 1.2; extraInfo = 'Untuk jalan raya utama dengan beban truk (H-20), wajib minimum 1.2m cover.'; }
+
+      minWidth = od + 300;
+      if (minWidth < 400) minWidth = 400;
+      if (od >= 600) minWidth = od + 600;
+      minBedding = (od >= 250) ? 150 : 100;
+    }
   } else if (std === 'awwa') {
     refTags = ['AWWA M55', 'AWWA M23'];
     if (mat === 'hdpe') {
@@ -1257,22 +1283,21 @@ function calcTrenchDepth() {
       else if (load === 'light') minCover = 0.8;
       else if (load === 'heavy') minCover = 1.0;
     }
+    minWidth = od + 300;
+    if (minWidth < 400) minWidth = 400;
+    if (od >= 600) minWidth = od + 600;
+    minBedding = (od >= 250) ? 150 : 100;
   } else if (std === 'asnzs') {
     refTags = ['AS/NZS 2566.2', 'PIPA POP201'];
     if (load === 'none') { minCover = 0.45; extraInfo = 'Area non-vehicular menurut AS/NZS mensyaratkan 0.45m.'; }
     else if (load === 'light') { minCover = 0.6; extraInfo = 'Jalan beraspal/sealed dengan lalu lintas ringan membutuhkan 0.6m.'; }
     else if (load === 'heavy') { minCover = 0.75; extraInfo = 'Jalan beraspal utama membutuhkan minimal 0.75m. (0.9m jika unsealed).'; }
+    minWidth = od + 300;
+    if (minWidth < 400) minWidth = 400;
+    if (od >= 600) minWidth = od + 600;
+    minBedding = (od >= 250) ? 150 : 100;
   }
 
-  // Calculate trench width
-  var minWidth = od + 300; // general rule OD + 30cm
-  if (minWidth < 400) minWidth = 400; // minimum workable width for compaction
-  if (od >= 600) minWidth = od + 600; // larger pipes need more side clearance
-  
-  // Calculate Bedding thickness
-  var minBedding = 100; // 100 mm default
-  if (od >= 250) minBedding = 150; // larger pipes need thicker bedding
-  
   // Create SVG illustration
   var svgHtml = `
   <div style="background:rgba(13,27,42,0.6);border:1px solid rgba(0,229,255,0.15);border-radius:8px;padding:16px;margin:16px 0;text-align:center;">
@@ -1324,7 +1349,7 @@ function calcTrenchDepth() {
       
       <!-- Trench Width (W) Dimension -->
       <line x1="110" y1="295" x2="290" y2="295" stroke="#00e676" stroke-width="2" marker-end="url(#arrow-width)" marker-start="url(#arrow-width)"/>
-      <text x="200" y="315" fill="#00e676" font-size="14" font-weight="bold" text-anchor="middle">Lebar (W) = ${(minWidth/1000).toFixed(2)}m</text>
+      <text x="200" y="315" fill="#00e676" font-size="14" font-weight="bold" text-anchor="middle">Lebar (W) = ${(minWidth / 1000).toFixed(2)}m</text>
     </svg>
   </div>
   `;
