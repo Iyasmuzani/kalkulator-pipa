@@ -458,6 +458,8 @@ const pipeStandards = {
       { std: 'AS/NZS 1477:2017', pdf: 'standards/pvc/asnzs_14772017.pdf', title: 'PVC Pipes and Fittings for Pressure Applications', scope: 'Standar Australia/NZ untuk pipa PVC bertekanan (Series 1 & 2, DN15–DN750).', type: 'AS/NZS' },
       { std: 'BS EN 1401-1:2019', pdf: 'standards/pvc/bs_en_1401-12019.pdf', title: 'PVC-U Piping Systems for Non-Pressure Underground Drainage', scope: 'Sistem perpipaan PVC-U non-tekanan untuk drainase bawah tanah.', type: 'BS EN' },
       { std: 'ISO/TR 4191:2014', pdf: 'standards/pvc/iso_tr_4191_2014.pdf', title: 'Plastics piping systems for water supply — PVC-U and PVC-O — Guidance for installation', scope: 'Panduan instalasi sistem perpipaan plastik untuk suplai air, khusus untuk pipa PVC-U dan PVC-O.', type: 'ISO' },
+      { std: 'ISO 4435:2003', pdf: 'standards/pvc/iso_44352003.pdf', title: 'Plastics piping systems for non-pressure underground drainage and sewerage — PVC-U', scope: 'Spesifikasi pipa, fitting, dan sistem perpipaan PVC-U untuk drainase dan air limbah bawah tanah non-tekanan.', type: 'ISO' },
+      { std: 'ISO 4633:2023', pdf: 'standards/pvc/iso_46332023.pdf', title: 'Rubber seals — Joint rings for water supply, drainage and sewerage pipelines', scope: 'Spesifikasi material cincin karet (Rubber Ring Joint/RRJ) untuk saluran suplai air, drainase, dan air limbah.', type: 'ISO' },
     ]
   },
   'PVC-O (Oriented PVC)': {
