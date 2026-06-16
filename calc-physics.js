@@ -285,6 +285,7 @@ function buildPipeLoadForm() {
     <option value="pvco">Flexible (PVC-O)</option>
     <option value="rigid">Rigid (Beton/Baja)</option>
   </select></div>
+  <div class="form-group" id="ld-ep-wrap"><label class="form-label">Modulus Elastisitas Pipa (Ep) MPa${infoTip('Modulus elastisitas material pipa.\nHDPE: ~800 MPa (Short term), ~200 MPa (Long term).\nPVC-U: ~3000 MPa.\nBisa diubah secara manual jika ada data pabrikan.')}</label><input type="number" class="form-control" id="ld-ep" min="50" max="10000" step="10" value="800"></div>
   <div class="form-group"><label class="form-label">Diameter Luar (OD) mm</label><input type="number" class="form-control" id="ld-od" min="50" max="2000" value="315"></div>
   <div class="form-group" id="ld-sdr-wrap"><label class="form-label">SDR Pipa (Kekakuan)${infoTip('SDR menentukan pipe stiffness (EI/D³).\nSDR rendah = dinding tebal = lebih kaku.\nSumber: AWWA M23 §4.3')}</label>
   <select class="form-control" id="ld-sdr">${sdrOpts}</select></div>
@@ -335,10 +336,15 @@ function toggleLdSDR() {
   var type = E('ld-type').value;
   var isFlex = (type === 'hdpe' || type === 'pvc' || type === 'pvco');
   E('ld-sdr-wrap').style.display = isFlex ? 'block' : 'none';
+  E('ld-ep-wrap').style.display = isFlex ? 'block' : 'none';
   E('ld-dl').disabled = !isFlex;
   E('ld-soil-e').disabled = !isFlex;
 
   if (isFlex) {
+    if (type === 'hdpe') E('ld-ep').value = 800;
+    else if (type === 'pvc') E('ld-ep').value = 3000;
+    else if (type === 'pvco') E('ld-ep').value = 4000;
+
     var sdrList = [];
     var defaultSdr = 17;
     if (type === 'hdpe') {
@@ -421,9 +427,7 @@ function calcPipeLoad() {
   if (isFlex) {
     var en = od / sdr; // meter
     var D_mean = od - en; // meter
-    var Ep = 800000; // kPa (HDPE Modulus of Elasticity, short-medium term)
-    if (type === 'pvc') Ep = 3000000; // PVC-U Modulus of Elasticity (~3 GPa)
-    if (type === 'pvco') Ep = 4000000; // PVC-O Modulus of Elasticity (~4 GPa)
+    var Ep = Vf('ld-ep') * 1000; // Convert user input MPa to kPa
 
     var I_pipe = (en * en * en) / 12; // m^4/m
 
