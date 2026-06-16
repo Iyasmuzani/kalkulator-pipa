@@ -291,6 +291,25 @@ function buildPipeLoadForm() {
   <div class="form-group"><label class="form-label">Kedalaman Tanam (H) m${infoTip('Kedalaman dari permukaan tanah ke mahkota pipa.\nMin 0.6m di bawah jalan (AASHTO).\nMin 0.3m di taman/lahan kosong.')}</label><input type="number" class="form-control" id="ld-h" min="0.3" max="15" step="0.1" value="1.5"></div>
   <div class="form-group"><label class="form-label">Lebar Galian (Bd) m${infoTip('Lebar trench di atas pipa.\nMin OD + 30cm (tiap sisi 15cm).\nMempengaruhi Marston load coefficient (Cd).\nSumber: AWWA M23 §4.2')}</label><input type="number" class="form-control" id="ld-bd" min="0.3" max="5" step="0.1" value="0.8"></div>
   
+  <div class="form-group"><label class="form-label">Material Tanah Urugan (γ)${infoTip('Berat volume tanah (Unit Weight).\nBerdasarkan referensi tabel Soil Unit Weight.')}</label>
+  <select class="form-control" id="ld-gamma" onchange="document.getElementById('ld-gamma-custom-wrap').style.display = this.value === 'custom' ? 'block' : 'none'">
+    <option value="12.0">Dirt, loose dry (1220 kg/m³ / 12.0 kN/m³)</option>
+    <option value="12.3">Dirt, loose moist (1250 kg/m³ / 12.3 kN/m³)</option>
+    <option value="15.7">Clay, dry (1600 kg/m³ / 15.7 kN/m³)</option>
+    <option value="17.3">Clay, wet (1760 kg/m³ / 17.3 kN/m³)</option>
+    <option value="16.5">Gravel, dry (1680 kg/m³ / 16.5 kN/m³)</option>
+    <option value="19.6">Gravel, wet (2000 kg/m³ / 19.6 kN/m³)</option>
+    <option value="12.6">Loam (1280 kg/m³ / 12.6 kN/m³)</option>
+    <option value="17.0">Mud, flowing (1730 kg/m³ / 17.0 kN/m³)</option>
+    <option value="18.1" selected>Mud, steady (1840 kg/m³ / 18.1 kN/m³)</option>
+    <option value="15.3">Sand, dry (1555 kg/m³ / 15.3 kN/m³)</option>
+    <option value="18.7">Sand, wet (1905 kg/m³ / 18.7 kN/m³)</option>
+    <option value="25.1">Limestone (2560 kg/m³ / 25.1 kN/m³)</option>
+    <option value="24.3">Rock, well blasted (2480 kg/m³ / 24.3 kN/m³)</option>
+    <option value="custom">Input Manual (kN/m³)...</option>
+  </select></div>
+  <div class="form-group" id="ld-gamma-custom-wrap" style="display:none;"><label class="form-label">Berat Volume Tanah Manual (kN/m³)</label><input type="number" class="form-control" id="ld-gamma-custom" min="5" max="50" step="0.1" value="18.0"></div>
+  
   <div class="form-group"><label class="form-label">Kepadatan Tanah Sekeliling (E\')${infoTip('Modulus reaksi tanah sekeliling pipa.\nSemakin padat dan berbutir kasar, E\' semakin besar.\nPengaruh sangat besar terhadap defleksi.\nSumber: AWWA M23 Table 4-5')}</label>
   <select class="form-control" id="ld-soil-e">
     <option value="2000">Ringan / Uncompacted (E' = 2 MPa)</option>
@@ -359,7 +378,8 @@ function calcPipeLoad() {
   var P_live = E('ld-live').value === 'custom' ? Vf('ld-live-custom') : Vf('ld-live'); // kN (point load)
   var Dl = Vf('ld-dl');
 
-  var gamma = 18; // kN/m³ typical soil weight
+  var gammaOpt = E('ld-gamma').value;
+  var gamma = gammaOpt === 'custom' ? Vf('ld-gamma-custom') : parseFloat(gammaOpt);
 
   // 1. DEAD LOAD (Wd)
   var Wd = 0;
@@ -421,7 +441,7 @@ function calcPipeLoad() {
   <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg> Analisis Beban Tanah & Lalin</div>
   ${refBadges(['AWWA M23 / M55', 'Modified Iowa Eq.', 'Boussinesq'])}
   <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace;font-size:11px;line-height:1.6;">
-    ${isFlex ? `<strong>Detail Dead Load (Prism Load):</strong><br>W<sub>d</sub> = γ<sub>tanah</sub> × H × OD<br>W<sub>d</sub> = 18 kN/m³ × ${H.toFixed(2)} m × ${od.toFixed(3)} m = <strong>${Wd.toFixed(2)} kN/m</strong>` : `<strong>Detail Dead Load (Marston):</strong><br>W<sub>d</sub> = C<sub>d</sub> × γ<sub>tanah</sub> × B<sub>d</sub>²<br>W<sub>d</sub> = ${Cd.toFixed(3)} × 18 kN/m³ × (${Bd.toFixed(2)} m)² = <strong>${Wd.toFixed(2)} kN/m</strong>`}
+    ${isFlex ? `<strong>Detail Dead Load (Prism Load):</strong><br>W<sub>d</sub> = γ<sub>tanah</sub> × H × OD<br>W<sub>d</sub> = ${gamma.toFixed(1)} kN/m³ × ${H.toFixed(2)} m × ${od.toFixed(3)} m = <strong>${Wd.toFixed(2)} kN/m</strong>` : `<strong>Detail Dead Load (Marston):</strong><br>W<sub>d</sub> = C<sub>d</sub> × γ<sub>tanah</sub> × B<sub>d</sub>²<br>W<sub>d</sub> = ${Cd.toFixed(3)} × ${gamma.toFixed(1)} kN/m³ × (${Bd.toFixed(2)} m)² = <strong>${Wd.toFixed(2)} kN/m</strong>`}
   </div>
   <div class="result-grid">
     <div class="result-item"><div class="rk">Beban Mati (Dead Load)</div><div class="rv">${Wd.toFixed(2)}<span class="ru"> kN/m</span></div></div>
