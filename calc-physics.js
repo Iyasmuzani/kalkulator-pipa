@@ -299,12 +299,14 @@ function buildPipeLoadForm() {
     <option value="20000">Sangat Padat / Kerikil (E' = 20 MPa)</option>
   </select></div>
   <div class="form-group"><label class="form-label">Beban Lalu Lintas (Live Load)${infoTip('Beban roda kendaraan di atas jalur pipa.\nDihitung dengan distribusi Boussinesq.\nSumber: AASHTO H-20 | AWWA M23')}</label>
-  <select class="form-control" id="ld-live">
+  <select class="form-control" id="ld-live" onchange="document.getElementById('ld-live-custom-wrap').style.display = this.value === 'custom' ? 'block' : 'none'">
     <option value="0">Tanpa beban (Taman/Lahan kosong)</option>
     <option value="10">Pedestrian / Ringan (10 kN)</option>
     <option value="72">Truk H-20 (72 kN / roda belakang)</option>
     <option value="100">Alat Berat (100 kN)</option>
+    <option value="custom">Input Manual (kN)...</option>
   </select></div>
+  <div class="form-group" id="ld-live-custom-wrap" style="display:none;"><label class="form-label">Beban Titik / Roda Manual (kN)</label><input type="number" class="form-control" id="ld-live-custom" min="0" max="1000" step="1" value="50"></div>
   <div class="form-group"><label class="form-label">Deflection Lag Factor (Dl)${infoTip('Faktor yang memperhitungkan creep jangka panjang.\n1.0 = beban sesaat (instalasi).\n1.5 = beban jangka panjang (operasi).\nSumber: AWWA M23 §4.4')}</label>
   <select class="form-control" id="ld-dl"><option value="1.0">1.0 (Jangka Pendek)</option><option value="1.5" selected>1.5 (Jangka Panjang / Creep)</option></select></div>
   <button class="calc-btn" onclick="calcPipeLoad()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Pipe Load & Defleksi</button>`;
@@ -354,7 +356,7 @@ function calcPipeLoad() {
   var H = Vf('ld-h');
   var Bd = Vf('ld-bd');
   var E_soil = Vf('ld-soil-e'); // kPa
-  var P_live = Vf('ld-live'); // kN (point load)
+  var P_live = E('ld-live').value === 'custom' ? Vf('ld-live-custom') : Vf('ld-live'); // kN (point load)
   var Dl = Vf('ld-dl');
 
   var gamma = 18; // kN/m³ typical soil weight
@@ -418,6 +420,9 @@ function calcPipeLoad() {
   E('eng-results').innerHTML = `
   <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg> Analisis Beban Tanah & Lalin</div>
   ${refBadges(['AWWA M23 / M55', 'Modified Iowa Eq.', 'Boussinesq'])}
+  <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace;font-size:11px;line-height:1.6;">
+    ${isFlex ? \`<strong>Detail Dead Load (Prism Load):</strong><br>W<sub>d</sub> = γ<sub>tanah</sub> × H × OD<br>W<sub>d</sub> = 18 kN/m³ × \${H.toFixed(2)} m × \${od.toFixed(3)} m = <strong>\${Wd.toFixed(2)} kN/m</strong>\` : \`<strong>Detail Dead Load (Marston):</strong><br>W<sub>d</sub> = C<sub>d</sub> × γ<sub>tanah</sub> × B<sub>d</sub>²<br>W<sub>d</sub> = \${Cd.toFixed(3)} × 18 kN/m³ × (\${Bd.toFixed(2)} m)² = <strong>\${Wd.toFixed(2)} kN/m</strong>\`}
+  </div>
   <div class="result-grid">
     <div class="result-item"><div class="rk">Beban Mati (Dead Load)</div><div class="rv">${Wd.toFixed(2)}<span class="ru"> kN/m</span></div></div>
     <div class="result-item"><div class="rk">Beban Lalin (Live Load)</div><div class="rv">${Wl.toFixed(2)}<span class="ru"> kN/m</span></div></div>
