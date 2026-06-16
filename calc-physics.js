@@ -399,15 +399,15 @@ function calcPipeLoad() {
   // 2. LIVE LOAD (Wl) - Boussinesq point load approximation
   var Wl = 0;
   var Pl_kPa = 0;
+  var If_val = 1.0;
   if (P_live > 0) {
-    var If = 1.0;
-    if (H < 0.6) If = 1.3;
-    else if (H < 0.9) If = 1.2;
-    else if (H < 1.2) If = 1.1;
+    if (H < 0.6) If_val = 1.3;
+    else if (H < 0.9) If_val = 1.2;
+    else if (H < 1.2) If_val = 1.1;
 
     // Boussinesq pressure directly under point load (R=0)
     // Pz = (3 * P * If) / (2 * PI * H^2)
-    Pl_kPa = (3 * P_live * If) / (2 * Math.PI * H * H);
+    Pl_kPa = (3 * P_live * If_val) / (2 * Math.PI * H * H);
     Wl = Pl_kPa * od; // kN/m
   }
 
@@ -437,11 +437,20 @@ function calcPipeLoad() {
     deflPct = (dX / D_mean) * 100;
   }
 
+  var deadLoadDetails = isFlex 
+    ? `<strong>Detail Dead Load (Prism Load):</strong><br>W<sub>d</sub> = γ<sub>tanah</sub> × H × OD<br>W<sub>d</sub> = ${gamma.toFixed(1)} kN/m³ × ${H.toFixed(2)} m × ${od.toFixed(3)} m = <strong>${Wd.toFixed(2)} kN/m</strong>` 
+    : `<strong>Detail Dead Load (Marston):</strong><br>W<sub>d</sub> = C<sub>d</sub> × γ<sub>tanah</sub> × B<sub>d</sub>²<br>W<sub>d</sub> = ${Cd.toFixed(3)} × ${gamma.toFixed(1)} kN/m³ × (${Bd.toFixed(2)} m)² = <strong>${Wd.toFixed(2)} kN/m</strong>`;
+
+  var liveLoadDetails = P_live > 0
+    ? `<br><br><strong>Detail Live Load (Boussinesq):</strong><br>P<sub>z</sub> = (3 × P<sub>live</sub> × I<sub>f</sub>) / (2π × H²)<br>P<sub>z</sub> = (3 × ${P_live.toFixed(1)} kN × ${If_val.toFixed(1)}) / (2π × (${H.toFixed(2)} m)²) = ${Pl_kPa.toFixed(2)} kPa<br>W<sub>l</sub> = P<sub>z</sub> × OD = ${Pl_kPa.toFixed(2)} kPa × ${od.toFixed(3)} m = <strong>${Wl.toFixed(2)} kN/m</strong>`
+    : `<br><br><strong>Detail Live Load:</strong> 0 kN/m (Tidak ada beban)`;
+
   E('eng-results').innerHTML = `
   <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M16 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M2 16l3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg> Analisis Beban Tanah & Lalin</div>
   ${refBadges(['AWWA M23 / M55', 'Modified Iowa Eq.', 'Boussinesq'])}
   <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace;font-size:11px;line-height:1.6;">
-    ${isFlex ? `<strong>Detail Dead Load (Prism Load):</strong><br>W<sub>d</sub> = γ<sub>tanah</sub> × H × OD<br>W<sub>d</sub> = ${gamma.toFixed(1)} kN/m³ × ${H.toFixed(2)} m × ${od.toFixed(3)} m = <strong>${Wd.toFixed(2)} kN/m</strong>` : `<strong>Detail Dead Load (Marston):</strong><br>W<sub>d</sub> = C<sub>d</sub> × γ<sub>tanah</sub> × B<sub>d</sub>²<br>W<sub>d</sub> = ${Cd.toFixed(3)} × ${gamma.toFixed(1)} kN/m³ × (${Bd.toFixed(2)} m)² = <strong>${Wd.toFixed(2)} kN/m</strong>`}
+    ${deadLoadDetails}
+    ${liveLoadDetails}
   </div>
   <div class="result-grid">
     <div class="result-item"><div class="rk">Beban Mati (Dead Load)</div><div class="rv">${Wd.toFixed(2)}<span class="ru"> kN/m</span></div></div>
