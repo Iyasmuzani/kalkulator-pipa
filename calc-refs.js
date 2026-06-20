@@ -98,20 +98,44 @@ function velocityWarnings(v, context) {
 }
 
 // ===== DEFLECTION WARNINGS =====
-function deflectionWarnings(deflPct) {
+function deflectionWarnings(deflPct, sdr, type) {
   var html = '';
-  if (deflPct > 7.5) {
-    html += smartWarn('danger',
-      'Defleksi ' + deflPct.toFixed(2) + '% <strong>JAUH melebihi batas!</strong> Desain tidak aman. Harus redesign: gunakan SDR lebih rendah atau perbaiki bedding.',
-      'AWWA M23 §4.5: Batas defleksi maks 7.5% (tanpa liner) | AWWA M55 §8.4');
-  } else if (deflPct > 5) {
-    html += smartWarn('caution',
-      'Defleksi ' + deflPct.toFixed(2) + '% — melebihi batas aman 5%. Perbaiki tanah urug (E\' lebih besar) dan/atau padatkan >90% Proctor.',
-      'AWWA M23 §4.5: Batas defleksi 5% (dengan liner) | ASTM D3034');
-  } else if (deflPct <= 5 && deflPct > 0) {
-    html += smartWarn('ok',
-      'Defleksi ' + deflPct.toFixed(2) + '% — <strong>aman</strong>, di bawah batas 5%.',
-      'AWWA M23 §4.5 | ISO 21138-2: Defleksi maks 5%');
+  
+  if (type === 'hdpe' && sdr) {
+    var maxDefl = 5;
+    if (sdr >= 21) maxDefl = 7.5;
+    else if (sdr >= 13.5) maxDefl = 6.0;
+    else if (sdr >= 11) maxDefl = 5.0;
+    else if (sdr >= 9) maxDefl = 4.0;
+    else maxDefl = 3.0;
+
+    if (deflPct > maxDefl) {
+      html += smartWarn('danger',
+        'Defleksi ' + deflPct.toFixed(2) + '% <strong>melebihi batas aman ' + maxDefl.toFixed(1) + '% untuk SDR ' + sdr + '!</strong> Desain tidak aman. Harus redesign: gunakan SDR lebih rendah atau perbaiki bedding.',
+        'AWWA M55 Table 5-11: Batas defleksi pipa tekanan HDPE SDR ' + sdr + ' = ' + maxDefl.toFixed(1) + '%');
+    } else if (deflPct > maxDefl * 0.8) {
+      html += smartWarn('caution',
+        'Defleksi ' + deflPct.toFixed(2) + '% — mendekati batas maksimal ' + maxDefl.toFixed(1) + '%. Pastikan tanah urug dipadatkan dengan baik.',
+        'AWWA M55 Table 5-11: Batas defleksi SDR ' + sdr + ' = ' + maxDefl.toFixed(1) + '%');
+    } else if (deflPct > 0) {
+      html += smartWarn('ok',
+        'Defleksi ' + deflPct.toFixed(2) + '% — <strong>aman</strong>, di bawah batas ' + maxDefl.toFixed(1) + '%.',
+        'AWWA M55 Table 5-11: Batas defleksi SDR ' + sdr + ' = ' + maxDefl.toFixed(1) + '%');
+    }
+  } else {
+    if (deflPct > 7.5) {
+      html += smartWarn('danger',
+        'Defleksi ' + deflPct.toFixed(2) + '% <strong>JAUH melebihi batas!</strong> Desain tidak aman. Harus redesign: gunakan SDR lebih kuat atau perbaiki bedding.',
+        'AWWA M23 §4.5: Batas defleksi maks 7.5% (tanpa liner)');
+    } else if (deflPct > 5) {
+      html += smartWarn('caution',
+        'Defleksi ' + deflPct.toFixed(2) + '% — melebihi batas aman 5%. Perbaiki tanah urug (E\' lebih besar) dan/atau padatkan >90% Proctor.',
+        'AWWA M23 §4.5: Batas defleksi 5% (dengan liner) | ASTM D3034');
+    } else if (deflPct <= 5 && deflPct > 0) {
+      html += smartWarn('ok',
+        'Defleksi ' + deflPct.toFixed(2) + '% — <strong>aman</strong>, di bawah batas 5%.',
+        'AWWA M23 §4.5 | ISO 21138-2: Defleksi maks 5%');
+    }
   }
   return html;
 }

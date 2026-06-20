@@ -441,6 +441,18 @@ function calcPipeLoad() {
     deflPct = (dX / D_mean) * 100;
   }
 
+    // Calculate dynamic max deflection for UI coloring
+    var maxDefl = 5;
+    if (type === 'hdpe') {
+      if (sdr >= 21) maxDefl = 7.5;
+      else if (sdr >= 13.5) maxDefl = 6.0;
+      else if (sdr >= 11) maxDefl = 5.0;
+      else if (sdr >= 9) maxDefl = 4.0;
+      else maxDefl = 3.0;
+    } else {
+      maxDefl = 5; // default for others
+    }
+
   var deadLoadDetails = isFlex 
     ? `<strong>Detail Dead Load (Prism Load):</strong><br>W<sub>d</sub> = γ<sub>tanah</sub> × H × OD<br>W<sub>d</sub> = ${gamma.toFixed(1)} kN/m³ × ${H.toFixed(2)} m × ${od.toFixed(3)} m = <strong>${Wd.toFixed(2)} kN/m</strong>` 
     : `<strong>Detail Dead Load (Marston):</strong><br>W<sub>d</sub> = C<sub>d</sub> × γ<sub>tanah</sub> × B<sub>d</sub>²<br>W<sub>d</sub> = ${Cd.toFixed(3)} × ${gamma.toFixed(1)} kN/m³ × (${Bd.toFixed(2)} m)² = <strong>${Wd.toFixed(2)} kN/m</strong>`;
@@ -472,9 +484,9 @@ function calcPipeLoad() {
     <div class="result-item"><div class="rk">Modulus Tanah (E')</div><div class="rv">${(E_soil / 1000).toFixed(1)}<span class="ru"> MPa</span></div></div>
     <div class="result-item"><div class="rk">Kekakuan Pipa (8EI/D³)</div><div class="rv">${PS_kpa.toFixed(1)}<span class="ru"> kPa</span></div></div>
     <div class="result-item"><div class="rk">Lag Factor (Dl)</div><div class="rv">${Dl}</div></div>
-    <div class="result-item"><div class="rk">Est. Defleksi (ΔX/D)</div><div class="rv" style="color:${deflPct > 5 ? '#ff5555' : '#00ff9d'};font-weight:700">${deflPct.toFixed(2)}<span class="ru"> %</span></div></div>
+    <div class="result-item"><div class="rk">Est. Defleksi (ΔX/D)</div><div class="rv" style="color:${deflPct > maxDefl ? '#ff5555' : '#00ff9d'};font-weight:700">${deflPct.toFixed(2)}<span class="ru"> %</span></div></div>
   </div>
-  ${deflectionWarnings(deflPct)}
+  ${deflectionWarnings(deflPct, sdr, type)}
   </div>` :
       `${smartWarn('info', 'Pipa Rigid (beton/baja) dihitung berdasarkan Marston (Cd = ' + Cd.toFixed(2) + '). Bandingkan Total Beban ' + Wtotal.toFixed(2) + ' kN/m dengan kuat hancur (Crushing Strength) dari pabrikan. Defleksi tidak dihitung.', 'AWWA M9 | ASCE Manual 37')}`}
   ${getRefTable('soilModulus')}
