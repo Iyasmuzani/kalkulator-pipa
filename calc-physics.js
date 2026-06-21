@@ -313,10 +313,28 @@ function buildPipeLoadForm() {
   
   <div class="form-group"><label class="form-label">Kepadatan Tanah Sekeliling (E\')${infoTip('Modulus reaksi tanah sekeliling pipa.\nSemakin padat dan berbutir kasar, E\' semakin besar.\nPengaruh sangat besar terhadap defleksi.\nSumber: AWWA M23 Table 4-5')}</label>
   <select class="form-control" id="ld-soil-e">
-    <option value="2000">Ringan / Uncompacted (E' = 2 MPa)</option>
-    <option value="7000" selected>Sedang / 85% Proctor (E' = 7 MPa)</option>
-    <option value="14000">Padat / >90% Proctor (E' = 14 MPa)</option>
-    <option value="20000">Sangat Padat / Kerikil (E' = 20 MPa)</option>
+    <optgroup label="Fine-Grained (Tanah Liat/Lanau)">
+      <option value="350">Dumped/Uncompacted (E' = 0.35 MPa)</option>
+      <option value="1400">Sedang / 85% Proctor (E' = 1.4 MPa)</option>
+      <option value="2800">Padat / 90% Proctor (E' = 2.8 MPa)</option>
+      <option value="6900">Sangat Padat / >95% (E' = 6.9 MPa)</option>
+    </optgroup>
+    <optgroup label="Coarse w/ Fines (Pasir/Kerikil Berlanau)">
+      <option value="700">Dumped/Uncompacted (E' = 0.7 MPa)</option>
+      <option value="2800">Sedang / 85% Proctor (E' = 2.8 MPa)</option>
+      <option value="6900">Padat / 90% Proctor (E' = 6.9 MPa)</option>
+      <option value="13800">Sangat Padat / >95% (E' = 13.8 MPa)</option>
+    </optgroup>
+    <optgroup label="Coarse Clean (Pasir/Kerikil Bersih)">
+      <option value="1400">Dumped/Uncompacted (E' = 1.4 MPa)</option>
+      <option value="6900" selected>Sedang / 85% Proctor (E' = 6.9 MPa)</option>
+      <option value="13800">Padat / 90% Proctor (E' = 13.8 MPa)</option>
+      <option value="20700">Sangat Padat / >95% (E' = 20.7 MPa)</option>
+    </optgroup>
+    <optgroup label="Crushed Rock (Batu Pecah)">
+      <option value="6900">Dumped/Uncompacted (E' = 6.9 MPa)</option>
+      <option value="20700">Dipadatkan (E' = 20.7 MPa)</option>
+    </optgroup>
   </select></div>
   <div class="form-group"><label class="form-label">Beban Lalu Lintas (Live Load)${infoTip('Beban roda kendaraan di atas jalur pipa.\nDihitung dengan distribusi Boussinesq.\nSumber: AASHTO H-20 | AWWA M23')}</label>
   <select class="form-control" id="ld-live" onchange="document.getElementById('ld-live-custom-wrap').style.display = this.value === 'custom' ? 'block' : 'none'">

@@ -193,14 +193,13 @@ var REF_TABLES = {
     ]
   },
   soilModulus: {
-    title: 'Tabel Modulus Tanah E\' (Modified Iowa)',
-    headers: ['Jenis Tanah', 'Compaction', 'E\' (MPa)', 'Sumber'],
+    title: 'Tabel Modulus Tanah E\' (AWWA M23/M55)',
+    headers: ['Jenis Tanah', 'Uncompacted', '85% Proctor', '90% Proctor', '>95% Proctor'],
     rows: [
-      ['Tanah lepas', 'Uncompacted', '2', 'AWWA M23 Table 4-5'],
-      ['Pasir halus', '85% Proctor', '7', 'AWWA M23 Table 4-5'],
-      ['Pasir kasar', '90% Proctor', '14', 'AWWA M23 Table 4-5'],
-      ['Kerikil berpasir', '95% Proctor', '20', 'AWWA M23 Table 4-5'],
-      ['Crushed rock', '>95% Proctor', '24', 'AASHTO LRFD'],
+      ['Fine-Grained (Liat/Lanau)', '0.35 MPa', '1.4 MPa', '2.8 MPa', '6.9 MPa'],
+      ['Coarse w/ Fines (Pasir Berlanau)', '0.7 MPa', '2.8 MPa', '6.9 MPa', '13.8 MPa'],
+      ['Coarse Clean (Pasir/Kerikil)', '1.4 MPa', '6.9 MPa', '13.8 MPa', '20.7 MPa'],
+      ['Crushed Rock (Batu Pecah)', '6.9 MPa', '20.7 MPa', '20.7 MPa', '20.7 MPa'],
     ]
   },
   liveLoad: {
