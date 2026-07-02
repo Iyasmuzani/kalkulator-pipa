@@ -214,8 +214,29 @@ function calcWaterHammer() {
   </div>
   ${waterHammerWarnings(Ptotal, Pw, dPbar, mat)}
   </div>
+  <div class="eng-section">
+    <div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg> Visualisasi Fenomena Water Hammer</div>
+    <div style="background:rgba(0,15,30,.5);border-radius:10px;padding:12px;border:1px solid rgba(0,229,255,.1);margin-bottom:10px">
+      <canvas id="wh-anim-canvas" style="width:100%;height:180px;border-radius:6px;display:block"></canvas>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:8px;flex-wrap:wrap">
+        <div id="wh-anim-status" style="font-size:11px;color:#6dd5ed;font-family:'JetBrains Mono',monospace"></div>
+        <div style="display:flex;gap:6px">
+          <button onclick="whAnimRestart()" style="font-size:10px;padding:4px 10px;border-radius:5px;background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.2);color:#00e5ff;cursor:pointer;font-weight:600;font-family:'Space Grotesk',sans-serif;transition:all .2s" onmouseenter="this.style.background='rgba(0,229,255,.2)'" onmouseleave="this.style.background='rgba(0,229,255,.1)'">↻ Ulang</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:rgba(142,155,176,.7)"><span style="width:10px;height:10px;border-radius:2px;background:#00e5ff;display:inline-block"></span> Aliran Normal</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:rgba(142,155,176,.7)"><span style="width:10px;height:10px;border-radius:2px;background:#ff5555;display:inline-block"></span> Zona Tekanan Tinggi</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:rgba(142,155,176,.7)"><span style="width:10px;height:10px;border-radius:2px;background:#4488ff;display:inline-block"></span> Zona Tekanan Rendah</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:9px;color:rgba(142,155,176,.7)"><span style="width:10px;height:10px;border-radius:2px;background:#ff8c42;display:inline-block"></span> Katup</div>
+      </div>
+    </div>
+  </div>
+  <div class="chart-wrap"><div class="chart-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> Osilasi Tekanan Transien</div><div style="height:220px"><canvas id="chart-wh-oscillation"></canvas></div></div>
   ${getRefTable('elasticity')}`;
   if (typeof animateValues === 'function') animateValues();
+  if (typeof startWaterHammerAnim === 'function') startWaterHammerAnim(a, v, Pw, dPbar, Ptotal, Tr, L, mat);
+  if (typeof chartWHOscillation === 'function') chartWHOscillation('chart-wh-oscillation', Pw, dPbar, Tr, mat);
 }
 
 // ===== 4. FRICTION LOSS (Darcy-Weisbach) =====
