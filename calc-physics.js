@@ -1229,7 +1229,7 @@ function buildFlangeTorqueForm() {
   });
 
   E('eng-form').innerHTML = `
-  <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Flange Bolt Torque — ASME PCC-1</div>
+  <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Flange Bolt Torque — PPI TN-38</div>
   
   <div class="form-group"><label class="form-label">Diameter Pipa (OD) — mm</label>
   <select class="form-control" id="flange-od">
@@ -1375,11 +1375,10 @@ function calcFlangeTorque() {
   var pass3 = T_target;
 
   // ===== Build reference badges =====
-  var badgeRefs = ['ASME PCC-1:2022'];
+  var badgeRefs = ['PPI TN-38', 'ASME PCC-1'];
   if (pn === '16') badgeRefs.push('EN 1092-1', 'ISO 7005-1');
   else if (pn.indexOf('jis') >= 0) badgeRefs.push('JIS B 2220');
   else if (pn === 'ansi150') badgeRefs.push('ASME B16.5');
-  badgeRefs.push('PPI TN-38');
 
   // ===== Labels =====
   var pnLabel = pn;
@@ -1421,12 +1420,18 @@ function calcFlangeTorque() {
 
   // Torque calculation formula display
   html += '<div style="margin-top:12px;padding:10px 12px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.1);border-radius:7px;font-size:11px;color:var(--text2);line-height:1.8">';
-  html += '<div style="font-weight:600;color:#00e5ff;margin-bottom:4px;font-size:10px;letter-spacing:0.5px">RUMUS ASME PCC-1:2022</div>';
+  html += '<div style="font-weight:600;color:#00e5ff;margin-bottom:4px;font-size:10px;letter-spacing:0.5px">RUMUS PERHITUNGAN (ASME PCC-1)</div>';
   html += '<div><strong style="color:#e0e0e0">T</strong> = K × d × F<sub>bolt</sub></div>';
   html += '<div><strong style="color:#e0e0e0">F<sub>bolt</sub></strong> = σ<sub>y</sub> × A<sub>s</sub> × UF = ' + sigma_y + ' × ' + As + ' × ' + utilizationFactor + ' = <strong style="color:#00e5ff">' + Math.round(F_bolt).toLocaleString() + ' N</strong></div>';
   html += '<div><strong style="color:#e0e0e0">T<sub>calc</sub></strong> = ' + K + ' × ' + (d/1000).toFixed(4) + ' × ' + Math.round(F_bolt).toLocaleString() + ' = <strong style="color:#00e5ff">' + T_calc + ' Nm</strong></div>';
   if (isLimited) {
-    html += '<div style="color:#ffaa00"><strong>T<sub>max-stub</sub></strong> = ' + T_max_stub + ' Nm (batas aman stub end HDPE) → <strong>T<sub>target</sub> = ' + T_target + ' Nm</strong></div>';
+    html += '<div style="margin-top:8px;padding-top:8px;border-top:1px dashed rgba(255,170,0,0.3)">';
+    html += '<div style="font-weight:600;color:#ffaa00;margin-bottom:4px;font-size:10px;letter-spacing:0.5px">SAFETY LIMIT PPI TN-38 (HDPE STUB END)</div>';
+    html += '<div><span style="color:#e0e0e0">F<sub>max-total</sub></span> = Max_Stress × Area = ' + maxStubStress.toFixed(1) + ' × ' + gasketArea.toLocaleString() + ' = <span style="color:#ffaa00">' + Math.round(F_max_total).toLocaleString() + ' N</span></div>';
+    html += '<div><span style="color:#e0e0e0">F<sub>max/bolt</sub></span> = ' + Math.round(F_max_total).toLocaleString() + ' N ÷ ' + fData.bolts + ' baut = <span style="color:#ffaa00">' + Math.round(F_max_per_bolt).toLocaleString() + ' N</span></div>';
+    html += '<div style="color:#ffaa00;margin-top:4px"><strong>T<sub>max-stub</sub></strong> = ' + K + ' × ' + (d/1000).toFixed(4) + ' × ' + Math.round(F_max_per_bolt).toLocaleString() + ' = <strong>' + T_max_stub + ' Nm</strong></div>';
+    html += '<div style="color:#ffaa00;margin-top:2px"><strong>T<sub>target</sub> = ' + T_target + ' Nm</strong></div>';
+    html += '</div>';
   }
   html += '</div>';
   html += '</div>';
