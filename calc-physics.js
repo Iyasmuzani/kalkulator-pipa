@@ -1176,15 +1176,15 @@ function calcDerating() {
 // Bolt material database
 var _boltMaterials = {
   'hdg88': { name: 'Baut HDG Grade 8.8', shortName: 'HDG 8.8', sigma_y: 640, K: 0.22, color: '#ffaa00',
-    desc: 'Hot-Dip Galvanized, ISO 898-1 Gr.8.8 — Umum untuk flange pipa outdoor' },
+    desc: 'Hot-Dip Galvanized, ISO 898-1 Gr.8.8 — Umum untuk flange pipa outdoor', ref: 'ISO 898-1' },
   'ss_a270': { name: 'Stainless Steel A2-70', shortName: 'SS A2-70', sigma_y: 450, K: 0.30, color: '#b0bec5',
-    desc: 'AISI 304, ISO 3506-1 — Tahan korosi, untuk lingkungan korosif' },
+    desc: 'AISI 304, ISO 3506-1 — Tahan korosi, untuk lingkungan korosif', ref: 'ISO 3506-1' },
   'ss_a480': { name: 'Stainless Steel A4-80', shortName: 'SS A4-80', sigma_y: 600, K: 0.30, color: '#90a4ae',
-    desc: 'AISI 316, ISO 3506-1 — Tahan korosi superior, coastal/chemical' },
+    desc: 'AISI 316, ISO 3506-1 — Tahan korosi superior, coastal/chemical', ref: 'ISO 3506-1' },
   'cs46': { name: 'Carbon Steel Grade 4.6', shortName: 'CS 4.6', sigma_y: 240, K: 0.20, color: '#8d6e63',
-    desc: 'Mild steel, ISO 898-1 Gr.4.6 — Ekonomis, beban ringan' },
+    desc: 'Mild steel, ISO 898-1 Gr.4.6 — Ekonomis, beban ringan', ref: 'ISO 898-1' },
   'cs109': { name: 'Carbon Steel Grade 10.9', shortName: 'CS 10.9', sigma_y: 900, K: 0.18, color: '#ef5350',
-    desc: 'High-strength, ISO 898-1 Gr.10.9 — Heavy duty (HATI-HATI pada plastik!)' }
+    desc: 'High-strength, ISO 898-1 Gr.10.9 — Heavy duty (HATI-HATI pada plastik!)', ref: 'ISO 898-1' }
 };
 
 // Gasket types
@@ -1413,7 +1413,7 @@ function calcFlangeTorque() {
   html += '<div class="result-item"><div class="rk">Jumlah Baut</div><div class="rv" style="color:#ffaa00">' + fData.bolts + ' pcs</div></div>';
   html += '<div class="result-item"><div class="rk">Ukuran Baut</div><div class="rv" style="color:#ffaa00">' + fData.size + '</div></div>';
   html += '<div class="result-item"><div class="rk">Stress Area (As)</div><div class="rv">' + As + '<span class="ru"> mm²</span></div></div>';
-  html += '<div class="result-item"><div class="rk">Yield Strength (σy)</div><div class="rv">' + sigma_y + '<span class="ru"> MPa</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Yield Strength (σy)</div><div class="rv">' + sigma_y + '<span class="ru"> MPa</span> <span style="font-size:9px;color:var(--text2);margin-left:4px">(' + bolt.ref + ')</span></div></div>';
   html += '<div class="result-item"><div class="rk">Nut Factor (K)</div><div class="rv">' + K + '</div></div>';
   html += '<div class="result-item"><div class="rk">Gasket</div><div class="rv" style="font-size:11px">' + gasket.name.split('—')[0].trim() + '</div></div>';
   html += '<div class="result-item"><div class="rk">Tekanan Gasket</div><div class="rv" style="color:' + (actualGasketStress > maxStubStress ? '#ff5252' : '#00e676') + '">' + actualGasketStress.toFixed(1) + '<span class="ru"> MPa</span></div></div>';
