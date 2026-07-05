@@ -1503,10 +1503,6 @@ function calcFlangeTorque() {
   html += '</div>';
 
   // Warnings
-  if (isLimited) {
-    html += smartWarn('caution', '<strong>Torsi dibatasi!</strong> Torsi penuh baut ' + bolt.shortName + ' (' + T_calc + ' Nm) akan merusak stub end HDPE. Torsi dibatasi ke ' + T_target + ' Nm agar tekanan pada permukaan HDPE tidak melebihi ' + maxStubStress + ' MPa (batas creep PE100).', 'ASME PCC-1 / PPI TN-38');
-  }
-
   if (boltKey === 'cs109') {
     html += smartWarn('danger', '<strong>Baut Grade 10.9</strong> memiliki kekuatan sangat tinggi. Pada aplikasi flange HDPE, risiko merusak stub end plastik sangat besar. Pertimbangkan menggunakan Grade 8.8 atau A2-70 kecuali ada alasan khusus.', 'PPI TN-38');
   }
