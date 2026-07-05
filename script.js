@@ -285,11 +285,11 @@ function switchEngTool(tool) {
       useCase: 'Mendesain sistem perpipaan di area industri atau terpapar sinar matahari langsung (above ground) agar pipa tidak pecah akibat melemahnya material.'
     },
     flange: {
-      title: 'Flange Tightening Torque',
-      desc: 'Memberikan panduan spesifikasi baut dan <strong>torsi pengencangan (torque)</strong> untuk sambungan Flange Adaptor HDPE dengan Backing Ring. Mengencangkan terlalu keras bisa mematahkan stub end plastik.',
-      formula: 'Torsi dihitung berdasar kelas tekanan flange, jumlah baut, dan material gasket',
-      standards: ['ASME B16.5', 'EN 1092-1', 'PPI TN-38'],
-      useCase: 'Digunakan oleh teknisi instalasi di lapangan saat menyambung pipa HDPE ke katup (valve) atau ke pipa baja menggunakan kunci torsi (torque wrench).'
+      title: 'Flange Bolt Torque (ASME PCC-1)',
+      desc: 'Menghitung <strong>torsi pengencangan baut (torque)</strong> untuk sambungan Flange Adaptor HDPE dengan Backing Ring berdasarkan rumus <strong>ASME PCC-1:2022</strong> (T = K × d × F). Mendukung pemilihan <strong>material baut</strong> (HDG 8.8, SS A2-70, SS A4-80, CS 4.6, CS 10.9) dan <strong>jenis gasket</strong> (EPDM, PTFE). Dilengkapi batas aman otomatis untuk mencegah kerusakan stub end HDPE.',
+      formula: 'T = K × d × F — F = σy × As × UF (utilization 50%)',
+      standards: ['ASME PCC-1:2022', 'ASME B16.5', 'EN 1092-1', 'JIS B 2220', 'PPI TN-38'],
+      useCase: 'Digunakan oleh teknisi instalasi di lapangan saat menyambung pipa HDPE ke katup (valve) atau ke pipa baja menggunakan kunci torsi (torque wrench). Mendukung flange ISO PN16, JIS 10K, JIS 16K, dan ANSI Class 150.'
     },
     trench: {
       title: 'Kedalaman Galian (Trench)',
