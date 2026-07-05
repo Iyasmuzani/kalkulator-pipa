@@ -1194,15 +1194,10 @@ var _gasketTypes = {
   'ptfe': { name: 'PTFE (Teflon)', minStress: 5.0, maxStress: 15.0, m: 2.0, y: 0 }
 };
 
-// Bolt stress area (As in mm²) — ISO 898-1 / ASTM
-var _boltStressArea = {
-  'M16': { d: 16, pitch: 2.0, As: 157 },
-  'M20': { d: 20, pitch: 2.5, As: 245 },
-  'M22': { d: 22, pitch: 2.5, As: 303 },
-  'M24': { d: 24, pitch: 3.0, As: 353 },
-  '5/8"': { d: 15.875, pitch: 1.954, As: 145 },
-  '3/4"': { d: 19.05, pitch: 2.54, As: 215 },
-  '7/8"': { d: 22.225, pitch: 2.822, As: 295 }
+// Nominal bolt diameters (d) in mm
+var _boltDiameters = {
+  'M16': 16, 'M20': 20, 'M22': 22, 'M24': 24,
+  '5/8"': 15.875, '3/4"': 19.05, '7/8"': 22.225
 };
 
 // Flange gasket seating area approximations (mm²) for HDPE stub end flanges
@@ -1258,7 +1253,12 @@ function buildFlangeTorqueForm() {
   <div class="form-group"><label class="form-label">Jenis Gasket</label>
   <select class="form-control" id="flange-gasket">${gasketOpts}</select></div>
 
-  <button class="calc-btn" onclick="calcFlangeTorque()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Torsi Flange</button>`;
+  <div class="form-group"><label class="form-label">Target Interfacial Pressure (IFP)</label>
+  <div style="display:flex;align-items:center"><input type="number" step="0.1" class="form-control" id="flange-ifp" value="7.0" style="flex:1;font-family:monospace;font-weight:bold;color:#00e5ff;background:rgba(0,229,255,0.05);border-color:rgba(0,229,255,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)">MPa</span></div>
+  <div style="font-size:10px;color:var(--text2);margin-top:4px">Batas kompresi muka HDPE (PE100). PPI merekomendasikan IFP yang sesuai dengan SDR pipa agar tidak rusak (*creep*). Standar aman: <strong>7.0 MPa</strong>. Contoh di dokumen PPI TN-38 memakai 1800 psi (~<strong>12.4 MPa</strong>).</div>
+  </div>
+
+  <button class="calc-btn" onclick="calcFlangeTorque()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Torsi (PPI TN-38)</button>`;
 
   // Update bolt hint on change
   var boltSel = E('flange-bolt');
@@ -1275,6 +1275,8 @@ function calcFlangeTorque() {
   var pn = E('flange-pn').value;
   var boltKey = E('flange-bolt').value;
   var gasketKey = E('flange-gasket').value;
+
+  var ifp = parseFloat(E('flange-ifp').value) || 7.0;
 
   var bolt = _boltMaterials[boltKey];
   var gasket = _gasketTypes[gasketKey];
@@ -1323,51 +1325,29 @@ function calcFlangeTorque() {
   var fData = flangeData[key];
   if (!fData) return;
 
-  var boltSpec = _boltStressArea[fData.size];
-  if (!boltSpec) return;
+  var d = _boltDiameters[fData.size];
+  if (!d) return;
 
-  // ===== ASME PCC-1 Torque Calculation =====
-  // Utilization factor: 50% of yield — conservative for HDPE flange applications
-  var utilizationFactor = 0.50;
-  var As = boltSpec.As;        // mm²
-  var sigma_y = bolt.sigma_y;  // MPa
+  // ===== PPI TN-38 Torque Calculation (Metric) =====
   var K = bolt.K;              // nut factor
-  var d = boltSpec.d;          // mm
+  var n = fData.bolts;
+  var gasketArea = _flangeGasketArea[od] || 5000; // mm² (Interfacial contact area)
 
-  // Target bolt load per bolt (N)
-  // F = σy × As × utilization / 1 (MPa × mm² = N)
-  var F_bolt = sigma_y * As * utilizationFactor;
+  // Target Total Force (Newtons)
+  var F_total = gasketArea * ifp;
+  // Force per bolt (Newtons)
+  var F_per_bolt = F_total / n;
 
-  // Torque per bolt: T = K × d × F (Nm)
-  // d in meters: d/1000
-  var T_calc = K * (d / 1000) * F_bolt;
-
-  // ===== Safety limit for HDPE stub end =====
-  // Maximum compressive stress on HDPE stub end face: ~7 MPa (creep limit PE100 at 20°C)
-  var maxStubStress = 7.0; // MPa
-  var gasketArea = _flangeGasketArea[od] || 5000;
-
-  // Maximum total bolt load allowed by stub end
-  var F_max_total = maxStubStress * gasketArea; // N
-  var F_max_per_bolt = F_max_total / fData.bolts;
-
-  // Maximum torque per bolt (limited by stub end)
-  var T_max_stub = K * (d / 1000) * F_max_per_bolt;
-
-  // Apply the lower of calculated torque and stub end limit
-  var isLimited = T_calc > T_max_stub;
-  var T_target = isLimited ? T_max_stub : T_calc;
-
-  // Round to nearest integer
+  // Torque per bolt: T = K × d × F_per_bolt
+  // Convert 'd' from mm to meters for Torque in Nm
+  var T_target = K * (d / 1000) * F_per_bolt;
   T_target = Math.round(T_target);
-  T_calc = Math.round(T_calc);
-  T_max_stub = Math.round(T_max_stub);
 
   // Convert to ft-lbs
   var T_ftlb = (T_target * 0.7376).toFixed(1);
 
-  // Gasket stress check
-  var actualGasketStress = (fData.bolts * (T_target / (K * (d / 1000)))) / gasketArea;
+  // Actual gasket stress check (re-calculating from rounded torque)
+  var actualGasketStress = (n * (T_target / (K * (d / 1000)))) / gasketArea;
 
   // Multi-pass torque values
   var pass1 = Math.round(T_target * 0.30);
@@ -1375,10 +1355,11 @@ function calcFlangeTorque() {
   var pass3 = T_target;
 
   // ===== Build reference badges =====
-  var badgeRefs = ['PPI TN-38', 'ASME PCC-1'];
+  var badgeRefs = ['PPI TN-38'];
   if (pn === '16') badgeRefs.push('EN 1092-1', 'ISO 7005-1');
   else if (pn.indexOf('jis') >= 0) badgeRefs.push('JIS B 2220');
   else if (pn === 'ansi150') badgeRefs.push('ASME B16.5');
+  badgeRefs.push('ASME PCC-1'); // As secondary mechanics reference
 
   // ===== Labels =====
   var pnLabel = pn;
@@ -1391,17 +1372,15 @@ function calcFlangeTorque() {
   var html = '';
 
   // Section 1: Spesifikasi Baut & Torsi
-  html += '<div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Spesifikasi Baut &amp; Target Torsi</div>';
+  html += '<div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Initial Bolt Torque (PPI TN-38)</div>';
   html += refBadges(badgeRefs);
 
   // Main torque display
   html += '<div style="text-align:center;padding:20px 0;background:rgba(0,229,255,.05);border-radius:8px;margin:12px 0">';
   html += '<div style="font-size:12px;color:var(--text2);margin-bottom:4px">Target Torque per Baut</div>';
-  html += '<div style="font-size:36px;font-weight:700;color:' + (isLimited ? '#ffaa00' : '#00e5ff') + ';font-family:\'Fira Code\',monospace">' + T_target + '<span style="font-size:14px;margin-left:6px;color:var(--text2)">Nm</span></div>';
+  html += '<div style="font-size:36px;font-weight:700;color:#00e5ff;font-family:\'Fira Code\',monospace">' + T_target + '<span style="font-size:14px;margin-left:6px;color:var(--text2)">Nm</span></div>';
   html += '<div style="font-size:11px;color:var(--text2);margin-top:4px">' + T_ftlb + ' ft·lbs</div>';
-  if (isLimited) {
-    html += '<div style="font-size:10px;color:#ffaa00;margin-top:6px;display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Dibatasi oleh kekuatan stub end HDPE (maks ' + T_max_stub + ' Nm)</div>';
-  }
+  html += '<div style="font-size:10px;color:var(--text2);margin-top:6px;display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Diukur untuk IFP ' + ifp.toFixed(1) + ' MPa</div>';
   html += '</div>';
 
   // Result grid
@@ -1409,31 +1388,26 @@ function calcFlangeTorque() {
   html += '<div class="result-item"><div class="rk">Diameter Pipa</div><div class="rv">DN ' + od + '</div></div>';
   html += '<div class="result-item"><div class="rk">Standar Flange</div><div class="rv">' + pnLabel + '</div></div>';
   html += '<div class="result-item"><div class="rk">Material Baut</div><div class="rv" style="color:' + bolt.color + '">' + bolt.shortName + '</div></div>';
-  html += '<div class="result-item"><div class="rk">Jumlah Baut</div><div class="rv" style="color:#ffaa00">' + fData.bolts + ' pcs</div></div>';
-  html += '<div class="result-item"><div class="rk">Ukuran Baut</div><div class="rv" style="color:#ffaa00">' + fData.size + '</div></div>';
-  html += '<div class="result-item"><div class="rk">Stress Area (As)</div><div class="rv">' + As + '<span class="ru"> mm²</span></div></div>';
-  html += '<div class="result-item"><div class="rk">Yield Strength (σy)</div><div class="rv">' + sigma_y + '<span class="ru"> MPa</span> <span style="font-size:9px;color:var(--text2);margin-left:4px">(' + bolt.ref + ')</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Jumlah Baut (n)</div><div class="rv" style="color:#ffaa00">' + n + ' pcs</div></div>';
+  html += '<div class="result-item"><div class="rk">Ukuran Baut (d)</div><div class="rv" style="color:#ffaa00">' + fData.size + '</div></div>';
+  html += '<div class="result-item"><div class="rk">Interfacial Area</div><div class="rv">' + gasketArea.toLocaleString() + '<span class="ru"> mm²</span></div></div>';
   html += '<div class="result-item"><div class="rk">Nut Factor (K)</div><div class="rv">' + K + '</div></div>';
   html += '<div class="result-item"><div class="rk">Gasket</div><div class="rv" style="font-size:11px">' + gasket.name.split('—')[0].trim() + '</div></div>';
-  html += '<div class="result-item"><div class="rk">Tekanan Gasket</div><div class="rv" style="color:' + (actualGasketStress > maxStubStress ? '#ff5252' : '#00e676') + '">' + actualGasketStress.toFixed(1) + '<span class="ru"> MPa</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Target IFP</div><div class="rv" style="color:#00e5ff">' + ifp.toFixed(1) + '<span class="ru"> MPa</span></div></div>';
   html += '</div>';
 
-  // Torque calculation formula display
-  html += '<div style="margin-top:12px;padding:10px 12px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.1);border-radius:7px;font-size:11px;color:var(--text2);line-height:1.8">';
-  html += '<div style="font-weight:600;color:#00e5ff;margin-bottom:4px;font-size:10px;letter-spacing:0.5px">RUMUS PERHITUNGAN (ASME PCC-1)</div>';
-  html += '<div><strong style="color:#e0e0e0">T</strong> = K × d × F<sub>bolt</sub></div>';
-  html += '<div><strong style="color:#e0e0e0">F<sub>bolt</sub></strong> = σ<sub>y</sub> × A<sub>s</sub> × UF = ' + sigma_y + ' × ' + As + ' × ' + utilizationFactor + ' = <strong style="color:#00e5ff">' + Math.round(F_bolt).toLocaleString() + ' N</strong></div>';
-  html += '<div><strong style="color:#e0e0e0">T<sub>calc</sub></strong> = ' + K + ' × ' + (d/1000).toFixed(4) + ' × ' + Math.round(F_bolt).toLocaleString() + ' = <strong style="color:#00e5ff">' + T_calc + ' Nm</strong></div>';
-  if (isLimited) {
-    html += '<div style="margin-top:8px;padding-top:8px;border-top:1px dashed rgba(255,170,0,0.3)">';
-    html += '<div style="font-weight:600;color:#ffaa00;margin-bottom:4px;font-size:10px;letter-spacing:0.5px">SAFETY LIMIT PPI TN-38 (HDPE STUB END)</div>';
-    html += '<div><span style="color:#e0e0e0">F<sub>max-total</sub></span> = Max_Stress × Area = ' + maxStubStress.toFixed(1) + ' × ' + gasketArea.toLocaleString() + ' = <span style="color:#ffaa00">' + Math.round(F_max_total).toLocaleString() + ' N</span></div>';
-    html += '<div><span style="color:#e0e0e0">F<sub>max/bolt</sub></span> = ' + Math.round(F_max_total).toLocaleString() + ' N ÷ ' + fData.bolts + ' baut = <span style="color:#ffaa00">' + Math.round(F_max_per_bolt).toLocaleString() + ' N</span></div>';
-    html += '<div style="color:#ffaa00;margin-top:4px"><strong>T<sub>max-stub</sub></strong> = ' + K + ' × ' + (d/1000).toFixed(4) + ' × ' + Math.round(F_max_per_bolt).toLocaleString() + ' = <strong>' + T_max_stub + ' Nm</strong></div>';
-    html += '<div style="color:#ffaa00;margin-top:2px"><strong>T<sub>target</sub> = ' + T_target + ' Nm</strong></div>';
-    html += '</div>';
-  }
+  // PPI TN-38 Formula display
+  html += '<div style="margin-top:12px;padding:12px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.1);border-radius:7px;font-size:11px;color:var(--text2);line-height:1.8;font-family:monospace">';
+  html += '<div style="font-weight:600;color:#00e5ff;margin-bottom:8px;font-size:10px;letter-spacing:0.5px;font-family:sans-serif">RUMUS INITIAL BOLT TORQUE (PPI TN-38)</div>';
+  html += '<div style="text-align:center;color:#e0e0e0;margin-bottom:8px">';
+  html += '<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;K × d × Area × IFP</div>';
+  html += '<div>T = ----------------------</div>';
+  html += '<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n × 1000</div>';
   html += '</div>';
+  
+  html += '<div>T = [' + K + ' × ' + d + ' mm × ' + gasketArea.toLocaleString() + ' mm² × ' + ifp.toFixed(1) + ' MPa] / (' + n + ' × 1000)</div>';
+  html += '<div>T = <strong style="color:#00e5ff">' + Math.round((K * d * gasketArea * ifp)/1000).toLocaleString() + '</strong> / (' + n + ')</div>';
+  html += '<div>T = <strong style="color:#00e5ff">' + T_target + ' Nm</strong></div>';
   html += '</div>';
 
   // Section 2: Multi-Pass Torque Table
