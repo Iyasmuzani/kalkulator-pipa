@@ -444,6 +444,7 @@ const pipeStandards = {
       { std: 'AWWA M55', pdf: 'standards/hdpe/awwa_m55.pdf', title: 'PE Pipe — Design and Installation', scope: 'Manual desain dan instalasi pipa PE untuk air (flotation, deflection, thrust restraint).', type: 'AWWA' },
       { std: 'AWWA C906', pdf: 'standards/hdpe/awwa_c906.pdf', title: 'PE Pressure Pipe and Fittings, 4 in. through 65 in.', scope: 'Standar material dan pengujian pipa PE bertekanan diameter besar.', type: 'AWWA' },
       { std: 'AS/NZS 4130:2018', pdf: 'standards/hdpe/asnzs_41302018.pdf', title: 'PE Pipes for Pressure Applications', scope: 'Standar Australia/NZ untuk pipa PE bertekanan (series 1 & 2).', type: 'AS/NZS' },
+      { std: 'BS 5114:1975', pdf: '#', title: 'Specification for performance requirements for joints and compression fittings for use with polyethylene pipes', scope: 'Standar Inggris yang menetapkan persyaratan performa untuk sambungan dan fitting kompresi pada pipa PE. Rujukan utama uji hidrostatik dan pull-out resistance.', type: 'BSI' },
     ]
   },
   'PVC (Polyvinyl Chloride)': {
