@@ -1159,7 +1159,6 @@ function calcDerating() {
   <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
     MAOP = PN × Faktor Derating (${temp}°C)
   </div>
-
   <div class="result-grid">
     <div class="result-item"><div class="rk">Suhu Operasional</div><div class="rv">${temp}°C</div></div>
     <div class="result-item"><div class="rk">Faktor Derating ($f_T$)</div><div class="rv">${factor.toFixed(2)}</div></div>
@@ -1173,18 +1172,43 @@ function calcDerating() {
 
 // ===== 12. FLANGE TORQUE (Enhanced — ASME PCC-1 2022) =====
 
-// Bolt material database
+// Nut Factors (K) based on Table 7.1 Bickford (2007) - Max values used for conservatism
 var _boltMaterials = {
-  'hdg88': { name: 'Baut HDG Grade 8.8', shortName: 'HDG 8.8', sigma_y: 640, K: 0.22, color: '#ffaa00',
-    desc: 'Hot-Dip Galvanized, ISO 898-1 Gr.8.8 — Umum untuk flange pipa outdoor', ref: 'ISO 898-1' },
-  'ss_a270': { name: 'Stainless Steel A2-70', shortName: 'SS A2-70', sigma_y: 450, K: 0.30, color: '#b0bec5',
-    desc: 'AISI 304, ISO 3506-1 — Tahan korosi, untuk lingkungan korosif', ref: 'ISO 3506-1' },
-  'ss_a480': { name: 'Stainless Steel A4-80', shortName: 'SS A4-80', sigma_y: 600, K: 0.30, color: '#90a4ae',
-    desc: 'AISI 316, ISO 3506-1 — Tahan korosi superior, coastal/chemical', ref: 'ISO 3506-1' },
-  'cs46': { name: 'Carbon Steel Grade 4.6', shortName: 'CS 4.6', sigma_y: 240, K: 0.20, color: '#8d6e63',
-    desc: 'Mild steel, ISO 898-1 Gr.4.6 — Ekonomis, beban ringan', ref: 'ISO 898-1' },
-  'cs109': { name: 'Carbon Steel Grade 10.9', shortName: 'CS 10.9', sigma_y: 900, K: 0.18, color: '#ef5350',
-    desc: 'High-strength, ISO 898-1 Gr.10.9 — Heavy duty (HATI-HATI pada plastik!)', ref: 'ISO 898-1' }
+  'pure_al': { name: 'Pure Aluminum Coating on AISI 8740', shortName: 'Pure Al', K: 0.62, color: '#b0bec5' },
+  'electro_al': { name: 'Electroplated Aluminum on AISI 8740', shortName: 'Electroplated Al', K: 0.52, color: '#b0bec5' },
+  'mild_steel': { name: 'As-received, mild or alloy steel on steel', shortName: 'Mild/Alloy Steel', K: 0.267, color: '#8d6e63' },
+  'ss_on_steel': { name: 'As-received, stainless steel on mild/alloy steel', shortName: 'SS on Steel', K: 0.30, color: '#90a4ae' },
+  'a490_as_rec': { name: 'As-received, 1 in. dia. A490', shortName: 'A490 As-rec', K: 0.179, color: '#ef5350' },
+  'rusty': { name: 'Very rusty', shortName: 'Very rusty', K: 0.389, color: '#ff7043' },
+  'johnson_wax': { name: 'With Johnson 140 stick wax', shortName: 'Johnson 140 wax', K: 0.275, color: '#ffd54f' },
+  'black_ox_rusty': { name: 'Black oxided 7/8 A325 and A490, slightly rusty', shortName: 'Black Oxide Rusty', K: 0.22, color: '#546e7a' },
+  'black_ox': { name: 'Black oxide', shortName: 'Black Oxide', K: 0.279, color: '#37474f' },
+  'cad_dry': { name: 'Cadmium plate (dry)', shortName: 'Cadmium (dry)', K: 0.328, color: '#e0e0e0' },
+  'cad_chromate': { name: 'Vacuum cadmium + chromate', shortName: 'Cadmium+Chromate', K: 0.21, color: '#dcedc8' },
+  'cu_antiseize': { name: 'Copper-based antiseize', shortName: 'Cu Antiseize', K: 0.23, color: '#ffb74d' },
+  'cad_waxed': { name: 'Cadmium plate (waxed)', shortName: 'Cadmium (waxed)', K: 0.198, color: '#e0e0e0' },
+  'cad_a286': { name: 'Cadmium-plated A286 nuts and bolts', shortName: 'Cad A286', K: 0.23, color: '#e0e0e0' },
+  'cad_cetyl': { name: 'Cadmium plate + cetyl alcohol on A286', shortName: 'Cad A286+Cetyl', K: 0.16, color: '#e0e0e0' },
+  'cad_mp35n': { name: 'Cadmium-plated nuts with MP35N bolts', shortName: 'Cad MP35N', K: 0.29, color: '#e0e0e0' },
+  'dag_graphite': { name: 'Dag (graphite + binder)', shortName: 'Graphite Dag', K: 0.28, color: '#424242' },
+  'dicronite': { name: 'Dicronite (tungsten carbide)', shortName: 'Dicronite', K: 0.075, color: '#bcaaa4' },
+  'emralon': { name: 'Emralon (PTFE + resin)', shortName: 'PTFE Emralon', K: 0.15, color: '#81d4fa' },
+  'everlube_810': { name: 'Everlube 810 (MoS2/graphite in silicone)', shortName: 'Everlube 810', K: 0.115, color: '#9e9e9e' },
+  'everlube_811': { name: 'Everlube 811 (MoS2/graphite in silicate)', shortName: 'Everlube 811', K: 0.115, color: '#9e9e9e' },
+  'everlube_6108': { name: 'Everlube 6108 (PTFE in phenolic binder)', shortName: 'Everlube 6108', K: 0.13, color: '#81d4fa' },
+  'everlube_6109': { name: 'Everlube 6109 (PTFE in epoxy binder)', shortName: 'Everlube 6109', K: 0.14, color: '#81d4fa' },
+  'everlube_6122': { name: 'Everlube 6122', shortName: 'Everlube 6122', K: 0.103, color: '#9e9e9e' },
+  'felpro_c54': { name: 'Fel-Pro C54', shortName: 'Fel-Pro C54', K: 0.23, color: '#8d6e63' },
+  'felpro_c670': { name: 'Fel-Pro C-670', shortName: 'Fel-Pro C-670', K: 0.15, color: '#8d6e63' },
+  'felpro_n5000': { name: 'Fel-Pro N 5000 (paste)', shortName: 'Fel-Pro N5000', K: 0.27, color: '#8d6e63' },
+  'mech_galv_asrec': { name: 'Mechanically galvanized A325: As received', shortName: 'Mech Galv As-rec', K: 0.49, color: '#90a4ae' },
+  'mech_galv_clean': { name: 'Mechanically galvanized A325: Clean & dry', shortName: 'Mech Galv Clean', K: 0.46, color: '#90a4ae' },
+  'mech_galv_rusty': { name: 'Mechanically galvanized A325: Slightly rusty', shortName: 'Mech Galv Rusty', K: 0.39, color: '#ffcc80' },
+  'mech_galv_lubed': { name: 'Mechanically galvanized A325: Lubed (water/wax)', shortName: 'Mech Galv Lubed', K: 0.26, color: '#90a4ae' },
+  'hdg_asrec': { name: 'Hot-dip galvanized 7/8 A325: As received', shortName: 'HDG As-received', K: 0.31, color: '#ffaa00' },
+  'hdg_rusty': { name: 'Hot-dip galvanized 7/8 A325: Slightly rusty', shortName: 'HDG Rusty', K: 0.17, color: '#ffcc80' },
+  'hdg_clean': { name: 'Hot-dip galvanized 7/8 A325: Clean and dry', shortName: 'HDG Clean', K: 0.37, color: '#ffaa00' },
+  'hdg_lubed': { name: 'Hot-dip galvanized 7/8 A325: Lubed (water/wax)', shortName: 'HDG Lubed', K: 0.16, color: '#ffaa00' }
 };
 
 // Gasket types
@@ -1211,8 +1235,8 @@ function buildFlangeTorqueForm() {
   var boltOpts = '';
   Object.keys(_boltMaterials).forEach(function(k) {
     var m = _boltMaterials[k];
-    var sel = k === 'hdg88' ? ' selected' : '';
-    boltOpts += '<option value="' + k + '"' + sel + '>' + m.name + ' (σy=' + m.sigma_y + ' MPa)</option>';
+    var sel = k === 'mild_steel' ? ' selected' : '';
+    boltOpts += '<option value="' + k + '"' + sel + '>' + m.name + ' (K=' + m.K + ')</option>';
   });
 
   // Build gasket options
@@ -1355,7 +1379,7 @@ function calcFlangeTorque() {
   var pass3 = T_target;
 
   // ===== Build reference badges =====
-  var badgeRefs = ['PPI TN-38'];
+  var badgeRefs = ['PPI TN-38', 'Bickford (2007)'];
   if (pn === '16') badgeRefs.push('EN 1092-1', 'ISO 7005-1');
   else if (pn.indexOf('jis') >= 0) badgeRefs.push('JIS B 2220');
   else if (pn === 'ansi150') badgeRefs.push('ASME B16.5');
@@ -1391,7 +1415,7 @@ function calcFlangeTorque() {
   html += '<div class="result-item"><div class="rk">Jumlah Baut (n)</div><div class="rv" style="color:#ffaa00">' + n + ' pcs</div></div>';
   html += '<div class="result-item"><div class="rk">Ukuran Baut (d)</div><div class="rv" style="color:#ffaa00">' + fData.size + '</div></div>';
   html += '<div class="result-item"><div class="rk">Interfacial Area</div><div class="rv">' + gasketArea.toLocaleString() + '<span class="ru"> mm²</span></div></div>';
-  html += '<div class="result-item"><div class="rk">Nut Factor (K)</div><div class="rv">' + K + '</div></div>';
+  html += '<div class="result-item"><div class="rk">Nut Factor (K)</div><div class="rv">' + K + ' <span style="font-size:9px;color:var(--text2);margin-left:4px">(Bickford 2007)</span></div></div>';
   html += '<div class="result-item"><div class="rk">Gasket</div><div class="rv" style="font-size:11px">' + gasket.name.split('—')[0].trim() + '</div></div>';
   html += '<div class="result-item"><div class="rk">Target IFP</div><div class="rv" style="color:#00e5ff">' + ifp.toFixed(1) + '<span class="ru"> MPa</span></div></div>';
   html += '</div>';
@@ -1503,8 +1527,8 @@ function calcFlangeTorque() {
   html += '</div>';
 
   // Warnings
-  if (boltKey === 'cs109') {
-    html += smartWarn('danger', '<strong>Baut Grade 10.9</strong> memiliki kekuatan sangat tinggi. Pada aplikasi flange HDPE, risiko merusak stub end plastik sangat besar. Pertimbangkan menggunakan Grade 8.8 atau A2-70 kecuali ada alasan khusus.', 'PPI TN-38');
+  if (boltKey === 'rusty' || boltKey === 'hdg_rusty' || boltKey === 'mech_galv_rusty' || boltKey === 'black_ox_rusty') {
+    html += smartWarn('danger', '<strong>Peringatan Karat!</strong> Material pengikat dengan kondisi berkarat memiliki friction / nut factor yang sangat tinggi dan bervariasi. Torsi yang dikerahkan kemungkinan besar akan habis untuk melawan friksi ulir, sehingga sambungan kekurangan tegangan. Disarankan mengganti baut atau melumasinya dengan baik.', 'Bickford (2007)');
   }
 
   if (gasketKey === 'ptfe' && actualGasketStress < 5.0) {
