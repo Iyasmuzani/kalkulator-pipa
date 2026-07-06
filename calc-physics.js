@@ -1282,17 +1282,45 @@ function buildFlangeTorqueForm() {
   <div style="font-size:10px;color:var(--text2);margin-top:4px">Batas kompresi muka HDPE (PE100). PPI merekomendasikan IFP yang sesuai dengan SDR pipa agar tidak rusak (*creep*). Standar aman: <strong>7.0 MPa</strong>. Contoh di dokumen PPI TN-38 memakai 1800 psi (~<strong>12.4 MPa</strong>).</div>
   </div>
 
+  <div class="form-group"><label class="form-label">Metode Perhitungan Area</label>
+  <select class="form-control" id="flange-area-method" onchange="toggleFlangeAreaMethod()">
+    <option value="auto">Otomatis (Hampiran Area Stub End)</option>
+    <option value="manual">Manual (Input Gasket OD & ID)</option>
+  </select></div>
+
+  <div id="flange-area-manual" style="display:none;margin-bottom:16px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;">
+    <div style="text-align:center;margin-bottom:12px;">
+      <img src="gasket_diagram.png" style="max-width:100%;border-radius:4px;opacity:0.9;">
+    </div>
+    <div style="display:flex;gap:12px;">
+      <div style="flex:1;">
+        <label class="form-label" style="font-size:11px">Gasket OD (mm)</label>
+        <input type="number" class="form-control" id="flange-gasket-od" value="162">
+      </div>
+      <div style="flex:1;">
+        <label class="form-label" style="font-size:11px">Gasket ID (mm)</label>
+        <input type="number" class="form-control" id="flange-gasket-id" value="110">
+      </div>
+    </div>
+    <div style="font-size:10px;color:var(--text2);margin-top:6px;line-height:1.4">Ukur diameter luar (OD) dan dalam (ID) dari area karet yang benar-benar terjepit di antara dua muka stub end.</div>
+  </div>
+
   <button class="calc-btn" onclick="calcFlangeTorque()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Torsi (PPI TN-38)</button>`;
 
   // Update bolt hint on change
   var boltSel = E('flange-bolt');
   function updateBoltHint() {
     var m = _boltMaterials[boltSel.value];
-    if (m) E('bolt-desc-hint').textContent = m.desc;
+    if (m) E('bolt-desc-hint').textContent = m.desc || m.name;
   }
   boltSel.addEventListener('change', updateBoltHint);
   updateBoltHint();
 }
+
+window.toggleFlangeAreaMethod = function() {
+  var method = document.getElementById('flange-area-method').value;
+  document.getElementById('flange-area-manual').style.display = method === 'manual' ? 'block' : 'none';
+};
 
 function calcFlangeTorque() {
   var od = E('flange-od').value;
@@ -1355,7 +1383,17 @@ function calcFlangeTorque() {
   // ===== PPI TN-38 Torque Calculation (Metric) =====
   var K = bolt.K;              // nut factor
   var n = fData.bolts;
+  
   var gasketArea = _flangeGasketArea[od] || 5000; // mm² (Interfacial contact area)
+  var areaMethod = E('flange-area-method') ? E('flange-area-method').value : 'auto';
+  
+  if (areaMethod === 'manual') {
+    var gOD = parseFloat(E('flange-gasket-od').value) || 0;
+    var gID = parseFloat(E('flange-gasket-id').value) || 0;
+    if (gOD > gID) {
+      gasketArea = (Math.PI / 4) * (Math.pow(gOD, 2) - Math.pow(gID, 2));
+    }
+  }
 
   // Target Total Force (Newtons)
   var F_total = gasketArea * ifp;
