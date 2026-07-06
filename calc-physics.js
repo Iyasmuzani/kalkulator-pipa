@@ -1273,14 +1273,16 @@ var _gasketTypes = {
 
 // Nominal bolt diameters (d) in mm
 var _boltDiameters = {
-  'M16': 16, 'M20': 20, 'M22': 22, 'M24': 24,
-  '5/8"': 15.875, '3/4"': 19.05, '7/8"': 22.225
+  'M16': 16, 'M20': 20, 'M22': 22, 'M24': 24, 'M27': 27, 'M30': 30, 'M33': 33, 'M36': 36,
+  '5/8"': 15.875, '3/4"': 19.05, '7/8"': 22.225, '1"': 25.4, '1 1/8"': 28.575, '1 1/4"': 31.75, '1 1/2"': 38.1
 };
 
 // Flange gasket seating area approximations (mm²) for HDPE stub end flanges
 var _flangeGasketArea = {
-  '63': 2400, '90': 4200, '110': 5800,
-  '160': 11500, '200': 17000, '250': 25000, '315': 38000
+  '63': 2400, '75': 3200, '90': 4200, '110': 5800, '125': 7200, '140': 9000, 
+  '160': 11500, '180': 14000, '200': 17000, '225': 21000, '250': 25000, 
+  '280': 31000, '315': 38000, '355': 48000, '400': 60000, '450': 75000, 
+  '500': 92000, '560': 115000, '630': 145000, '710': 185000, '800': 235000
 };
 
 function buildFlangeTorqueForm() {
@@ -1300,18 +1302,19 @@ function buildFlangeTorqueForm() {
     gasketOpts += '<option value="' + k + '"' + sel + '>' + g.name + '</option>';
   });
 
+  var odList = [63, 75, 90, 110, 125, 140, 160, 180, 200, 225, 250, 280, 315, 355, 400, 450, 500, 560, 630, 710, 800];
+  var odOpts = '';
+  odList.forEach(function(d) {
+    var sel = d === 110 ? ' selected' : '';
+    odOpts += '<option value="' + d + '"' + sel + '>DN ' + d + ' mm</option>';
+  });
+
   E('eng-form').innerHTML = `
   <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Flange Bolt Torque — PPI TN-38</div>
   
   <div class="form-group"><label class="form-label">Diameter Pipa (OD) — mm</label>
   <select class="form-control" id="flange-od">
-    <option value="63">DN 63 (2")</option>
-    <option value="90">DN 90 (3")</option>
-    <option value="110" selected>DN 110 (4")</option>
-    <option value="160">DN 160 (6")</option>
-    <option value="200">DN 200 (8")</option>
-    <option value="250">DN 250 (10")</option>
-    <option value="315">DN 315 (12")</option>
+    ${odOpts}
   </select></div>
 
   <div class="form-group"><label class="form-label">Standar Flange</label>
@@ -1387,48 +1390,90 @@ function calcFlangeTorque() {
   var gasket = _gasketTypes[gasketKey];
   if (!bolt || !gasket) return;
 
-  // Flange bolt configuration data (bolts count & size per standard)
-  var flangeData = {
-    // ISO PN16
-    "63_16": { bolts: 4, size: "M16" },
-    "90_16": { bolts: 8, size: "M16" },
-    "110_16": { bolts: 8, size: "M16" },
-    "160_16": { bolts: 8, size: "M20" },
-    "200_16": { bolts: 12, size: "M20" },
-    "250_16": { bolts: 12, size: "M24" },
-    "315_16": { bolts: 12, size: "M24" },
+  // Helper to get flange spec by OD and standard (PN)
+  function getFlangeSpec(od_str, pn_str) {
+    var odToDN = {
+      63: 50, 75: 65, 90: 80, 110: 100, 125: 100, 140: 125, 160: 150, 180: 150,
+      200: 200, 225: 200, 250: 250, 280: 250, 315: 300, 355: 350, 400: 400,
+      450: 400, 500: 500, 560: 600, 630: 600, 710: 700, 800: 800
+    };
+    var dn = odToDN[od_str] || parseInt(od_str);
+    
+    var specs = {
+      // ISO PN16
+      "50_16": { bolts: 4, size: "M16" },
+      "65_16": { bolts: 4, size: "M16" }, 
+      "80_16": { bolts: 8, size: "M16" },
+      "100_16": { bolts: 8, size: "M16" },
+      "125_16": { bolts: 8, size: "M16" },
+      "150_16": { bolts: 8, size: "M20" },
+      "200_16": { bolts: 12, size: "M20" },
+      "250_16": { bolts: 12, size: "M24" },
+      "300_16": { bolts: 12, size: "M24" },
+      "350_16": { bolts: 16, size: "M24" },
+      "400_16": { bolts: 16, size: "M27" },
+      "500_16": { bolts: 20, size: "M30" },
+      "600_16": { bolts: 20, size: "M33" },
+      "700_16": { bolts: 24, size: "M33" },
+      "800_16": { bolts: 24, size: "M36" },
 
-    // JIS 10K
-    "63_jis10k": { bolts: 4, size: "M16" },
-    "90_jis10k": { bolts: 8, size: "M16" },
-    "110_jis10k": { bolts: 8, size: "M16" },
-    "160_jis10k": { bolts: 8, size: "M20" },
-    "200_jis10k": { bolts: 12, size: "M20" },
-    "250_jis10k": { bolts: 12, size: "M22" },
-    "315_jis10k": { bolts: 16, size: "M22" },
+      // JIS 10K
+      "50_jis10k": { bolts: 4, size: "M16" },
+      "65_jis10k": { bolts: 4, size: "M16" },
+      "80_jis10k": { bolts: 8, size: "M16" },
+      "100_jis10k": { bolts: 8, size: "M16" },
+      "125_jis10k": { bolts: 8, size: "M20" },
+      "150_jis10k": { bolts: 8, size: "M20" },
+      "200_jis10k": { bolts: 12, size: "M20" },
+      "250_jis10k": { bolts: 12, size: "M22" },
+      "300_jis10k": { bolts: 16, size: "M22" },
+      "350_jis10k": { bolts: 16, size: "M22" },
+      "400_jis10k": { bolts: 16, size: "M24" },
+      "500_jis10k": { bolts: 20, size: "M24" },
+      "600_jis10k": { bolts: 24, size: "M30" },
+      "700_jis10k": { bolts: 24, size: "M30" },
+      "800_jis10k": { bolts: 28, size: "M30" },
 
-    // JIS 16K
-    "63_jis16k": { bolts: 8, size: "M16" },
-    "90_jis16k": { bolts: 8, size: "M20" },
-    "110_jis16k": { bolts: 8, size: "M20" },
-    "160_jis16k": { bolts: 12, size: "M22" },
-    "200_jis16k": { bolts: 12, size: "M22" },
-    "250_jis16k": { bolts: 12, size: "M24" },
-    "315_jis16k": { bolts: 16, size: "M24" },
+      // JIS 16K
+      "50_jis16k": { bolts: 8, size: "M16" },
+      "65_jis16k": { bolts: 8, size: "M16" },
+      "80_jis16k": { bolts: 8, size: "M20" },
+      "100_jis16k": { bolts: 8, size: "M20" },
+      "125_jis16k": { bolts: 8, size: "M22" },
+      "150_jis16k": { bolts: 12, size: "M22" },
+      "200_jis16k": { bolts: 12, size: "M22" },
+      "250_jis16k": { bolts: 12, size: "M24" },
+      "300_jis16k": { bolts: 16, size: "M24" },
+      "350_jis16k": { bolts: 16, size: "M30" }, 
+      "400_jis16k": { bolts: 16, size: "M30" },
+      "500_jis16k": { bolts: 20, size: "M30" },
+      "600_jis16k": { bolts: 24, size: "M36" },
+      
+      // ANSI 150
+      "50_ansi150": { bolts: 4, size: '5/8"' },
+      "65_ansi150": { bolts: 4, size: '5/8"' },
+      "80_ansi150": { bolts: 4, size: '5/8"' },
+      "100_ansi150": { bolts: 8, size: '5/8"' },
+      "125_ansi150": { bolts: 8, size: '3/4"' },
+      "150_ansi150": { bolts: 8, size: '3/4"' },
+      "200_ansi150": { bolts: 8, size: '3/4"' },
+      "250_ansi150": { bolts: 12, size: '7/8"' },
+      "300_ansi150": { bolts: 12, size: '7/8"' },
+      "350_ansi150": { bolts: 12, size: '1"' },
+      "400_ansi150": { bolts: 16, size: '1"' },
+      "500_ansi150": { bolts: 20, size: '1 1/8"' },
+      "600_ansi150": { bolts: 20, size: '1 1/4"' },
+      "700_ansi150": { bolts: 28, size: '1 1/4"' },
+      "800_ansi150": { bolts: 28, size: '1 1/2"' }
+    };
+    return specs[dn + "_" + pn_str];
+  }
 
-    // ANSI B16.5 Class 150
-    "63_ansi150": { bolts: 4, size: '5/8"' },
-    "90_ansi150": { bolts: 4, size: '5/8"' },
-    "110_ansi150": { bolts: 8, size: '5/8"' },
-    "160_ansi150": { bolts: 8, size: '3/4"' },
-    "200_ansi150": { bolts: 8, size: '3/4"' },
-    "250_ansi150": { bolts: 12, size: '7/8"' },
-    "315_ansi150": { bolts: 12, size: '7/8"' }
-  };
-
-  var key = od + "_" + pn;
-  var fData = flangeData[key];
-  if (!fData) return;
+  var fData = getFlangeSpec(od, pn);
+  if (!fData) {
+    E('eng-results').innerHTML = '<div style="color:#ff5252;padding:12px;background:rgba(255,82,82,0.1);border-radius:6px;font-size:12px;border:1px solid rgba(255,82,82,0.2)">Data baut untuk pipa ukuran ini dengan kombinasi standar flange tersebut belum tersedia.</div>';
+    return;
+  }
 
   var d = _boltDiameters[fData.size];
   if (!d) return;
