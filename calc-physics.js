@@ -1290,7 +1290,7 @@ function buildFlangeTorqueForm() {
 
   <div id="flange-area-manual" style="display:none;margin-bottom:16px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;">
     <div style="text-align:center;margin-bottom:12px;">
-      <img src="gasket_diagram.png" style="max-width:100%;border-radius:4px;opacity:0.9;">
+      <img src="gasket_diagram.png" style="max-width:100%;border-radius:4px;filter:invert(1) hue-rotate(180deg) brightness(1.1) contrast(1.2);mix-blend-mode:screen;">
     </div>
     <div style="display:flex;gap:12px;">
       <div style="flex:1;">
