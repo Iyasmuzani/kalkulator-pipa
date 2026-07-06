@@ -962,10 +962,63 @@ function calcBending() {
 
   var R_min = (od * multiplier) / 1000; // in meters
 
+  var svgAnim = `
+  <div style="text-align:center; margin: 16px 0; background:rgba(0,0,0,0.2); padding: 16px; border-radius: 8px; position:relative; overflow:hidden;">
+    <svg width="100%" height="220" viewBox="0 0 300 280" style="max-width:320px; overflow:visible;">
+      <defs>
+        <marker id="arrow-cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#00e5ff" />
+        </marker>
+        <marker id="arrow-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--text2)" />
+        </marker>
+        <linearGradient id="pipeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="rgba(0, 229, 255, 0.4)" />
+          <stop offset="100%" stop-color="rgba(0, 100, 255, 0.1)" />
+        </linearGradient>
+      </defs>
+
+      <!-- Pipe Body -->
+      <path d="M 50,30 L 50,100 A 150,150 0 0,0 200,250 L 270,250" fill="none" stroke="url(#pipeGrad)" stroke-width="40" stroke-linecap="butt" />
+      
+      <!-- Outer & Inner Lines for 3D realism -->
+      <path d="M 30,30 L 30,100 A 170,170 0 0,0 200,270 L 270,270" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
+      <path d="M 70,30 L 70,100 A 130,130 0 0,0 200,230 L 270,230" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
+
+      <!-- Animated Neutral Axis -->
+      <path d="M 50,30 L 50,100 A 150,150 0 0,0 200,250 L 270,250" fill="none" stroke="#fff" stroke-width="1.5" stroke-dasharray="8 6" class="flowing-dash" />
+
+      <!-- Bend Radius Center & Guidelines -->
+      <circle cx="200" cy="100" r="3" fill="#00e5ff" />
+      <line x1="200" y1="100" x2="50" y2="100" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="3 3" />
+      <line x1="200" y1="100" x2="200" y2="250" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="3 3" />
+      
+      <!-- R Arrow -->
+      <line x1="200" y1="100" x2="100" y2="200" stroke="#00e5ff" stroke-width="2" marker-end="url(#arrow-cyan)" />
+      <text x="140" y="145" fill="#00e5ff" font-family="sans-serif" font-size="22" font-weight="bold">R</text>
+
+      <!-- Annotations -->
+      <text x="50" y="10" fill="var(--text2)" font-family="sans-serif" font-size="11" text-anchor="middle">Neutral Axis</text>
+      <line x1="50" y1="15" x2="50" y2="30" stroke="var(--text2)" stroke-width="1" marker-end="url(#arrow-grey)" />
+      
+      <!-- OD / t Markers -->
+      <line x1="260" y1="230" x2="260" y2="270" stroke="var(--text2)" stroke-width="1" />
+      <line x1="255" y1="230" x2="265" y2="230" stroke="var(--text2)" stroke-width="1" />
+      <line x1="255" y1="270" x2="265" y2="270" stroke="var(--text2)" stroke-width="1" />
+      <text x="270" y="254" fill="var(--text2)" font-family="sans-serif" font-size="11">OD (t)</text>
+    </svg>
+    <style>
+      .flowing-dash { animation: dashFlow 1.5s linear infinite; }
+      @keyframes dashFlow { from { stroke-dashoffset: 28; } to { stroke-dashoffset: 0; } }
+    </style>
+  </div>`;
+
   var html = `
   <div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M21 16.5A8.5 8.5 0 0 0 12.5 8H3"/><path d="M21 16.5A8.5 8.5 0 0 1 12.5 25H3"/><path d="M21 16.5V22"/></svg> Minimum Bending Radius</div>
   ${refBadges(['AWWA M55', 'PPI Handbook Ch.7'])}
   
+  ${svgAnim}
+
   <div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">
     R_min = OD × Multiplier (berdasar SDR)
   </div>
