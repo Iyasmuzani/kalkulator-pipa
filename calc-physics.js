@@ -2167,7 +2167,8 @@ function buildFlangeTorqueForm_POP() {
   E('eng-form').innerHTML = '<div class="form-title">'+_gearSvg+' Flange Bolt Torque \u2014 POP 007 (PIPA)</div>' +
     _buildRefSelector('pop007') +
     '<div class="form-group"><label class="form-label">Diameter Pipa (OD) \u2014 mm</label><select class="form-control" id="pop-od">'+odOpts+'</select></div>' +
-    '<div class="form-group"><label class="form-label">Standar Flange</label><select class="form-control" id="pop-pn"><option value="16" selected>ISO / EN 1092-1 PN16</option><option value="jis10k">JIS B 2220 \u2014 10K</option><option value="jis16k">JIS B 2220 \u2014 16K</option><option value="ansi150">ANSI / ASME B16.5 \u2014 Class 150</option></select></div>' +
+    '<div class="form-group"><label class="form-label">Standar Flange (Default)</label><select class="form-control" id="pop-pn" onchange="calcFlangeTorque_POP()"><option value="16" selected>ISO / EN 1092-1 PN16</option><option value="jis10k">JIS B 2220 \u2014 10K</option><option value="jis16k">JIS B 2220 \u2014 16K</option><option value="ansi150">ANSI / ASME B16.5 \u2014 Class 150</option></select></div>' +
+    '<div class="form-group"><label class="form-label">Override Baut (Opsi untuk Standar Lain spt AS/NZS)</label><div style="display:flex;gap:8px"><select class="form-control" id="pop-bolt-size" style="flex:1"><option value="">-- Ukuran Baut (Otomatis) --</option><option value="M12">M12</option><option value="M16">M16</option><option value="M20">M20</option><option value="M22">M22</option><option value="M24">M24</option><option value="M27">M27</option><option value="M30">M30</option><option value="M33">M33</option><option value="M36">M36</option></select><input type="number" class="form-control" id="pop-bolt-n" placeholder="Jml (Otomatis)" style="flex:1"></div><div style="font-size:10px;color:var(--text2);margin-top:4px">Kosongkan untuk mengikuti standar flange di atas.</div></div>' +
     '<div class="form-group"><label class="form-label">Tekanan Uji (Test Pressure)</label><div style="display:flex;align-items:center"><input type="number" step="0.1" class="form-control" id="pop-ptest" value="2.0" style="flex:1;font-family:monospace;font-weight:bold;color:#4caf50;background:rgba(76,175,80,0.05);border-color:rgba(76,175,80,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)">MPa</span></div><div style="font-size:10px;color:var(--text2);margin-top:4px">Tekanan uji hidrostatik sistem pipa (biasanya 1.25x P_operasi). Contoh: PN16 \u2192 P_test = 2.0 MPa.</div></div>' +
     '<div class="form-group"><label class="form-label">Transient Surge Factor (TSF)</label><div style="display:flex;align-items:center"><input type="number" step="0.1" class="form-control" id="pop-tsf" value="1.0" style="flex:1;font-family:monospace;font-weight:bold;color:#4caf50;background:rgba(76,175,80,0.05);border-color:rgba(76,175,80,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)"></span></div><div style="font-size:10px;color:var(--text2);margin-top:4px">Faktor surge: 1.0 (jika surge tidak signifikan atau ter-cover test pressure), 1.2 (dengan surge).</div></div>' +
     '<div class="form-group"><label class="form-label">Jenis Gasket</label><select class="form-control" id="pop-gasket" onchange="(function(){var pd=_pop007Defaults[document.getElementById(\'pop-gasket\').value]||{sigma:4};document.getElementById(\'pop-sigma\').value=pd.sigma;})()">'+gasketOpts+'</select></div>' +
@@ -2193,10 +2194,17 @@ function calcFlangeTorque_POP() {
   if (!gasket) return;
 
   var fData = _getFlangeSpecGlobal(od, pn);
-  if (!fData) { E('eng-results').innerHTML = '<div style="color:#ff5252;padding:12px;background:rgba(255,82,82,0.1);border-radius:6px;font-size:12px;border:1px solid rgba(255,82,82,0.2)">Data baut untuk ukuran ini belum tersedia.</div>'; return; }
+  var fSize = fData ? fData.size : 'M16';
+  var fBoltCount = fData ? fData.bolts : 8;
 
-  var d = _boltDiameters[fData.size]; if (!d) return;
-  var n = fData.bolts;
+  var boltSizeOverride = E('pop-bolt-size').value;
+  var boltNOverride = parseInt(E('pop-bolt-n').value);
+
+  if (boltSizeOverride) fSize = boltSizeOverride;
+  if (!isNaN(boltNOverride) && boltNOverride > 0) fBoltCount = boltNOverride;
+
+  var d = _boltDiameters[fSize] || 16;
+  var n = fBoltCount;
 
   // Get dimensions for area calculation
   var od_seal, id_water;
@@ -2253,11 +2261,10 @@ function calcFlangeTorque_POP() {
   html += '<div style="font-size:10px;color:var(--text2);margin-top:6px;display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> P_test = '+P_test+' MPa &nbsp;|&nbsp; \u03c3g = '+sigma_g.toFixed(1)+' MPa</div>';
   html += '</div>';
 
-  // Result grid
   html += '<div class="result-grid">';
   html += '<div class="result-item"><div class="rk">Diameter Pipa</div><div class="rv">DN '+od+'</div></div>';
   html += '<div class="result-item"><div class="rk">Standar Flange</div><div class="rv">'+pnLabel+'</div></div>';
-  html += '<div class="result-item"><div class="rk">Jumlah & Ukuran Baut</div><div class="rv" style="color:#ffaa00">'+n+' \u00d7 '+fData.size+'</div></div>';
+  html += '<div class="result-item"><div class="rk">Jumlah & Ukuran Baut</div><div class="rv" style="color:#ffaa00">'+n+' \u00d7 '+fSize+'</div></div>';
   html += '<div class="result-item"><div class="rk">Nut Factor (K)</div><div class="rv">'+K+'</div></div>';
   html += '<div class="result-item"><div class="rk">Test Pressure \u00d7 TSF</div><div class="rv">'+P_test.toFixed(1)+' \u00d7 '+TSF.toFixed(1)+'</div></div>';
   html += '<div class="result-item"><div class="rk">Waterway Area (Awway)</div><div class="rv">'+Math.round(A_wway).toLocaleString()+'<span class="ru"> mm\u00b2</span></div></div>';
