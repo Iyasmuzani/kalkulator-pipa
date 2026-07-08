@@ -1286,6 +1286,10 @@ var _flangeGasketArea = {
 };
 
 function buildFlangeTorqueForm() {
+  var _curRef = document.getElementById('flange-ref') ? document.getElementById('flange-ref').value : 'ppitn38';
+  if (_curRef === 'asmepcc1') { buildFlangeTorqueForm_ASME(); return; }
+  if (_curRef === 'pop007') { buildFlangeTorqueForm_POP(); return; }
+
   // Build bolt material options
   var boltOpts = '';
   Object.keys(_boltMaterials).forEach(function(k) {
@@ -1311,7 +1315,9 @@ function buildFlangeTorqueForm() {
 
   E('eng-form').innerHTML = `
   <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Flange Bolt Torque — PPI TN-38</div>
-  
+
+  ${_buildRefSelector('ppitn38')}
+
   <div class="form-group"><label class="form-label">Diameter Pipa (OD) — mm</label>
   <select class="form-control" id="flange-od">
     ${odOpts}
@@ -1672,6 +1678,418 @@ function calcFlangeTorque() {
   }
 
   html += smartWarn('info', 'Gunakan <strong>kunci torsi terkalibrasi</strong> (torque wrench). Kencangkan dengan pola menyilang (star/cross pattern) dalam 3 tahap. Setelah 24 jam, lakukan <strong>re-torque</strong> ke 100% karena gasket dan stub end HDPE mengalami relaksasi (creep).', 'ASME PCC-1:2022 §5');
+
+  E('eng-results').innerHTML = html;
+  if (typeof animateValues === 'function') animateValues();
+}
+
+// ===== SHARED FLANGE TORQUE HELPERS =====
+
+var _gearSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+
+function _buildRefSelector(selected) {
+  return '<div class="form-group" style="margin-bottom:16px;padding:12px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.15);border-radius:8px">' +
+    '<label class="form-label" style="font-size:11px;color:#00e5ff;letter-spacing:0.5px;font-weight:600">METODE PERHITUNGAN</label>' +
+    '<select class="form-control" id="flange-ref" onchange="buildFlangeTorqueForm()" style="border-color:rgba(0,229,255,.3)">' +
+    '<option value="ppitn38"' + (selected === 'ppitn38' ? ' selected' : '') + '>PPI TN-38 \u2014 Plastics Pipe Institute</option>' +
+    '<option value="asmepcc1"' + (selected === 'asmepcc1' ? ' selected' : '') + '>ASME PCC-1:2022 \u2014 Pressure Equipment Assembly</option>' +
+    '<option value="pop007"' + (selected === 'pop007' ? ' selected' : '') + '>POP 007 \u2014 PIPA Australia (Flanged Joints for PE)</option>' +
+    '</select></div>';
+}
+
+function _getFlangeSpecGlobal(od_str, pn_str) {
+  var odToDN = {63:50,75:65,90:80,110:100,125:100,140:125,160:150,180:150,200:200,225:200,250:250,280:250,315:300,355:350,400:400,450:400,500:500,560:600,630:600,710:700,800:800};
+  var dn = odToDN[od_str] || parseInt(od_str);
+  var specs = {
+    "50_16":{bolts:4,size:"M16"},"65_16":{bolts:4,size:"M16"},"80_16":{bolts:8,size:"M16"},"100_16":{bolts:8,size:"M16"},
+    "125_16":{bolts:8,size:"M16"},"150_16":{bolts:8,size:"M20"},"200_16":{bolts:12,size:"M20"},"250_16":{bolts:12,size:"M24"},
+    "300_16":{bolts:12,size:"M24"},"350_16":{bolts:16,size:"M24"},"400_16":{bolts:16,size:"M27"},"500_16":{bolts:20,size:"M30"},
+    "600_16":{bolts:20,size:"M33"},"700_16":{bolts:24,size:"M33"},"800_16":{bolts:24,size:"M36"},
+    "50_jis10k":{bolts:4,size:"M16"},"65_jis10k":{bolts:4,size:"M16"},"80_jis10k":{bolts:8,size:"M16"},
+    "100_jis10k":{bolts:8,size:"M16"},"125_jis10k":{bolts:8,size:"M20"},"150_jis10k":{bolts:8,size:"M20"},
+    "200_jis10k":{bolts:12,size:"M20"},"250_jis10k":{bolts:12,size:"M22"},"300_jis10k":{bolts:16,size:"M22"},
+    "350_jis10k":{bolts:16,size:"M22"},"400_jis10k":{bolts:16,size:"M24"},"500_jis10k":{bolts:20,size:"M24"},
+    "600_jis10k":{bolts:24,size:"M30"},"700_jis10k":{bolts:24,size:"M30"},"800_jis10k":{bolts:28,size:"M30"},
+    "50_jis16k":{bolts:8,size:"M16"},"65_jis16k":{bolts:8,size:"M16"},"80_jis16k":{bolts:8,size:"M20"},
+    "100_jis16k":{bolts:8,size:"M20"},"125_jis16k":{bolts:8,size:"M22"},"150_jis16k":{bolts:12,size:"M22"},
+    "200_jis16k":{bolts:12,size:"M22"},"250_jis16k":{bolts:12,size:"M24"},"300_jis16k":{bolts:16,size:"M24"},
+    "350_jis16k":{bolts:16,size:"M30"},"400_jis16k":{bolts:16,size:"M30"},"500_jis16k":{bolts:20,size:"M30"},
+    "600_jis16k":{bolts:24,size:"M36"},
+    "50_ansi150":{bolts:4,size:'5/8"'},"65_ansi150":{bolts:4,size:'5/8"'},"80_ansi150":{bolts:4,size:'5/8"'},
+    "100_ansi150":{bolts:8,size:'5/8"'},"125_ansi150":{bolts:8,size:'3/4"'},"150_ansi150":{bolts:8,size:'3/4"'},
+    "200_ansi150":{bolts:8,size:'3/4"'},"250_ansi150":{bolts:12,size:'7/8"'},"300_ansi150":{bolts:12,size:'7/8"'},
+    "350_ansi150":{bolts:12,size:'1"'},"400_ansi150":{bolts:16,size:'1"'},"500_ansi150":{bolts:20,size:'1 1/8"'},
+    "600_ansi150":{bolts:20,size:'1 1/4"'},"700_ansi150":{bolts:28,size:'1 1/4"'},"800_ansi150":{bolts:28,size:'1 1/2"'}
+  };
+  return specs[dn + "_" + pn_str];
+}
+
+// Approximate gasket OD/ID dimensions matching _flangeGasketArea values
+var _flangeGasketDims = {
+  '63':{gOD:84,gID:63},'75':{gOD:99,gID:75},'90':{gOD:116,gID:90},'110':{gOD:140,gID:110},
+  '125':{gOD:158,gID:125},'140':{gOD:176,gID:140},'160':{gOD:201,gID:160},'180':{gOD:224,gID:180},
+  '200':{gOD:248,gID:200},'225':{gOD:278,gID:225},'250':{gOD:307,gID:250},'280':{gOD:343,gID:280},
+  '315':{gOD:384,gID:315},'355':{gOD:433,gID:355},'400':{gOD:486,gID:400},'450':{gOD:546,gID:450},
+  '500':{gOD:606,gID:500},'560':{gOD:678,gID:560},'630':{gOD:763,gID:630},'710':{gOD:860,gID:710},
+  '800':{gOD:969,gID:800}
+};
+
+var _asmeGasketData = {
+  'epdm_ff': { m: 0.5, y: 0, desc: 'Elastomer tanpa penguat kain (ASME Table 2-5.1)' },
+  'epdm_ring': { m: 1.0, y: 1.4, desc: 'Elastomer dengan fabric insert (ASME Table 2-5.1)' },
+  'ptfe': { m: 2.0, y: 11.0, desc: 'PTFE virgin, flat ring gasket (ASME Table 2-5.1)' }
+};
+
+var _pop007Defaults = {
+  'epdm_ff': { sigma: 5.0, desc: 'EPDM Full Face \u2014 \u03c3g = 5.0 MPa (POP 007 Table 3)' },
+  'epdm_ring': { sigma: 5.0, desc: 'EPDM Ring Type \u2014 \u03c3g = 5.0 MPa (POP 007 Table 3)' },
+  'ptfe': { sigma: 10.0, desc: 'PTFE \u2014 \u03c3g = 10.0 MPa (POP 007 Table 3)' }
+};
+
+function _buildStarPatternHTML(nBolts, passDesc) {
+  var svgR = 60, svgCx = 90, svgCy = 80, svgW = 180, svgH = 170;
+  var h = '<div style="background:rgba(13,27,42,0.6);border:1px solid rgba(0,229,255,0.12);border-radius:8px;padding:16px;margin:12px 0;text-align:center">';
+  h += '<div style="font-size:10px;color:var(--text2);margin-bottom:8px;letter-spacing:0.5px">POLA PENGENCANGAN MENYILANG (STAR PATTERN)</div>';
+  h += '<svg viewBox="0 0 '+svgW+' '+svgH+'" style="width:100%;max-width:200px;display:inline-block">';
+  h += '<circle cx="'+svgCx+'" cy="'+svgCy+'" r="'+(svgR+12)+'" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="18"/>';
+  h += '<circle cx="'+svgCx+'" cy="'+svgCy+'" r="'+(svgR-12)+'" fill="rgba(0,229,255,0.03)" stroke="rgba(0,229,255,0.15)" stroke-width="1"/>';
+  var bp = [];
+  for (var i = 0; i < nBolts; i++) {
+    var a = (2*Math.PI*i/nBolts) - Math.PI/2;
+    bp.push({x: svgCx + svgR*Math.cos(a), y: svgCy + svgR*Math.sin(a)});
+  }
+  var so = [], used = {};
+  for (var s = 0; s < nBolts; s++) {
+    var c; if(s===0) c=0; else if(s%2===1) c=(so[s-1]+Math.floor(nBolts/2))%nBolts; else c=(so[s-2]+1)%nBolts;
+    var t=0; while(used[c]&&t<nBolts){c=(c+1)%nBolts;t++;} so.push(c); used[c]=true;
+  }
+  for (var li = 0; li < so.length-1; li++) {
+    var fr=bp[so[li]], to=bp[so[li+1]];
+    h += '<line x1="'+fr.x.toFixed(1)+'" y1="'+fr.y.toFixed(1)+'" x2="'+to.x.toFixed(1)+'" y2="'+to.y.toFixed(1)+'" stroke="rgba(0,229,255,0.2)" stroke-width="1" stroke-dasharray="3,2"/>';
+  }
+  so.forEach(function(bIdx, order) {
+    var p=bp[bIdx], fc=order===0?'#00e5ff':(order<nBolts/2?'rgba(0,229,255,0.6)':'rgba(0,229,255,0.3)');
+    h += '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="9" fill="'+fc+'" stroke="#0d1b2a" stroke-width="1.5"/>';
+    h += '<text x="'+p.x.toFixed(1)+'" y="'+(p.y+3.5).toFixed(1)+'" text-anchor="middle" fill="#0d1b2a" font-size="8" font-weight="700" font-family="monospace">'+(order+1)+'</text>';
+  });
+  h += '</svg>';
+  h += '<div style="font-size:10px;color:var(--text2);margin-top:6px;line-height:1.5">'+nBolts+' baut \u2014 Kencangkan sesuai nomor urut.<br>'+(passDesc||'Ulangi urutan untuk setiap pass.')+'</div>';
+  h += '</div>';
+  return h;
+}
+
+function _buildPnLabel(pn) {
+  if (pn === '16') return 'ISO PN16 (EN 1092-1)';
+  if (pn === 'jis10k') return 'JIS 10K';
+  if (pn === 'jis16k') return 'JIS 16K';
+  if (pn === 'ansi150') return 'Class 150 (ANSI/ASME)';
+  return pn;
+}
+
+// ===== 12b. ASME PCC-1:2022 FLANGE TORQUE CALCULATOR =====
+
+function buildFlangeTorqueForm_ASME() {
+  var boltOpts = '';
+  Object.keys(_boltMaterials).forEach(function(k) {
+    var m = _boltMaterials[k]; var sel = k === 'mild_steel' ? ' selected' : '';
+    boltOpts += '<option value="'+k+'"'+sel+'>'+m.name+' (K='+m.K+')</option>';
+  });
+  var gasketOpts = '';
+  Object.keys(_gasketTypes).forEach(function(k) {
+    var g = _gasketTypes[k]; var ad = _asmeGasketData[k] || {m:1,y:0}; var sel = k === 'epdm_ff' ? ' selected' : '';
+    gasketOpts += '<option value="'+k+'"'+sel+'>'+g.name+' (m='+ad.m+', y='+ad.y+')</option>';
+  });
+  var odList = [63,75,90,110,125,140,160,180,200,225,250,280,315,355,400,450,500,560,630,710,800];
+  var odOpts = ''; odList.forEach(function(d) { odOpts += '<option value="'+d+'"'+(d===110?' selected':'')+'>DN '+d+' mm</option>'; });
+
+  E('eng-form').innerHTML = '<div class="form-title">'+_gearSvg+' Flange Bolt Torque \u2014 ASME PCC-1:2022</div>' +
+    _buildRefSelector('asmepcc1') +
+    '<div class="form-group"><label class="form-label">Diameter Pipa (OD) \u2014 mm</label><select class="form-control" id="asme-od">'+odOpts+'</select></div>' +
+    '<div class="form-group"><label class="form-label">Standar Flange</label><select class="form-control" id="asme-pn"><option value="16" selected>ISO / EN 1092-1 PN16</option><option value="jis10k">JIS B 2220 \u2014 10K</option><option value="jis16k">JIS B 2220 \u2014 16K</option><option value="ansi150">ANSI / ASME B16.5 \u2014 Class 150</option></select></div>' +
+    '<div class="form-group"><label class="form-label">Tekanan Desain (P)</label><div style="display:flex;align-items:center"><input type="number" step="0.1" class="form-control" id="asme-pressure" value="1.6" style="flex:1;font-family:monospace;font-weight:bold;color:#ff9800;background:rgba(255,152,0,0.05);border-color:rgba(255,152,0,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)">MPa</span></div><div style="font-size:10px;color:var(--text2);margin-top:4px">Tekanan kerja desain sistem perpipaan. PN16 = 1.6 MPa, PN10 = 1.0 MPa, PN6.3 = 0.63 MPa.</div></div>' +
+    '<div class="form-group"><label class="form-label">Jenis Gasket</label><select class="form-control" id="asme-gasket" onchange="(function(){var ad=_asmeGasketData[document.getElementById(\'asme-gasket\').value];if(ad)document.getElementById(\'asme-gasket-hint\').textContent=ad.desc;})()">'+gasketOpts+'</select><div id="asme-gasket-hint" style="font-size:10px;color:var(--text2);margin-top:4px;padding:4px 8px;background:rgba(255,255,255,.03);border-radius:4px"></div></div>' +
+    '<div class="form-group"><label class="form-label">Material Baut</label><select class="form-control" id="asme-bolt" onchange="(function(){var m=_boltMaterials[document.getElementById(\'asme-bolt\').value];if(m)document.getElementById(\'asme-bolt-hint\').textContent=m.desc||m.name;})()">'+boltOpts+'</select><div id="asme-bolt-hint" style="font-size:10px;color:var(--text2);margin-top:4px;padding:4px 8px;background:rgba(255,255,255,.03);border-radius:4px"></div></div>' +
+    '<div class="form-group"><label class="form-label">Metode Dimensi Gasket</label><select class="form-control" id="asme-area-method" onchange="document.getElementById(\'asme-area-manual\').style.display=this.value===\'manual\'?\'block\':\'none\'"><option value="auto">Otomatis (Estimasi dari OD Pipa)</option><option value="manual">Manual (Input Gasket OD & ID)</option></select></div>' +
+    '<div id="asme-area-manual" style="display:none;margin-bottom:16px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px"><div style="text-align:center;margin-bottom:12px"><img src="gasket_diagram.png" style="max-width:100%;border-radius:4px;filter:invert(1) hue-rotate(180deg) brightness(1.1) contrast(1.2);mix-blend-mode:screen"></div><div style="display:flex;gap:12px"><div style="flex:1"><label class="form-label" style="font-size:11px">Gasket OD (mm)</label><input type="number" class="form-control" id="asme-gasket-od" value="162"></div><div style="flex:1"><label class="form-label" style="font-size:11px">Gasket ID (mm)</label><input type="number" class="form-control" id="asme-gasket-id" value="110"></div></div></div>' +
+    '<button class="calc-btn" onclick="calcFlangeTorque_ASME()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Torsi (ASME PCC-1)</button>';
+
+  E('eng-results').innerHTML = '';
+  // Init hints
+  var ad0 = _asmeGasketData['epdm_ff']; if(ad0) E('asme-gasket-hint').textContent = ad0.desc;
+  var bm0 = _boltMaterials['mild_steel']; if(bm0) E('asme-bolt-hint').textContent = bm0.desc || bm0.name;
+}
+
+function calcFlangeTorque_ASME() {
+  var od = E('asme-od').value;
+  var pn = E('asme-pn').value;
+  var boltKey = E('asme-bolt').value;
+  var gasketKey = E('asme-gasket').value;
+  var P = parseFloat(E('asme-pressure').value) || 1.6;
+
+  var bolt = _boltMaterials[boltKey];
+  var gasket = _gasketTypes[gasketKey];
+  var asmeG = _asmeGasketData[gasketKey] || {m:1, y:0};
+  if (!bolt || !gasket) return;
+
+  var fData = _getFlangeSpecGlobal(od, pn);
+  if (!fData) { E('eng-results').innerHTML = '<div style="color:#ff5252;padding:12px;background:rgba(255,82,82,0.1);border-radius:6px;font-size:12px;border:1px solid rgba(255,82,82,0.2)">Data baut untuk ukuran ini belum tersedia.</div>'; return; }
+
+  var d = _boltDiameters[fData.size]; if (!d) return;
+  var K = bolt.K;
+  var n = fData.bolts;
+  var m = asmeG.m;
+  var y = asmeG.y;
+
+  // Get gasket dimensions
+  var gOD, gID;
+  var areaMethod = E('asme-area-method') ? E('asme-area-method').value : 'auto';
+  if (areaMethod === 'manual') {
+    gOD = parseFloat(E('asme-gasket-od').value) || 140;
+    gID = parseFloat(E('asme-gasket-id').value) || 110;
+  } else {
+    var dims = _flangeGasketDims[od] || {gOD:140, gID:110};
+    gOD = dims.gOD; gID = dims.gID;
+  }
+
+  // ASME Gasket Geometry
+  var N_width = (gOD - gID) / 2;
+  var b_eff = N_width <= 6.35 ? N_width / 2 : 2.53 * Math.sqrt(N_width);
+  var G_mean = (gOD + gID) / 2;
+
+  // ASME Required Bolt Loads
+  var W_m1 = Math.PI * b_eff * G_mean * m * P + (Math.PI / 4) * G_mean * G_mean * P;
+  var W_m2 = Math.PI * b_eff * G_mean * y;
+  var W_m = Math.max(W_m1, W_m2);
+  var governing = W_m1 >= W_m2 ? 'Operating (W_m1)' : 'Gasket Seating (W_m2)';
+
+  var F_per_bolt = W_m / n;
+  var T_target = K * (d / 1000) * F_per_bolt;
+  T_target = Math.round(T_target);
+  var T_ftlb = (T_target * 0.7376).toFixed(1);
+
+  // Multi-pass (ASME PCC-1 Legacy Method: Snug, 30%, 70%, 100%)
+  var pass1 = Math.round(T_target * 0.30);
+  var pass2 = Math.round(T_target * 0.70);
+  var pass3 = T_target;
+
+  var pnLabel = _buildPnLabel(pn);
+  var badgeRefs = ['ASME PCC-1:2022', 'ASME B16.20'];
+  if (pn === '16') badgeRefs.push('EN 1092-1');
+  else if (pn.indexOf('jis') >= 0) badgeRefs.push('JIS B 2220');
+  else if (pn === 'ansi150') badgeRefs.push('ASME B16.5');
+
+  var html = '';
+  html += '<div class="eng-section"><div class="eng-section-title">'+_gearSvg+' ASME PCC-1:2022 Bolt Torque</div>';
+  html += refBadges(badgeRefs);
+
+  // Main torque display
+  html += '<div style="text-align:center;padding:20px 0;background:rgba(255,152,0,.05);border-radius:8px;margin:12px 0">';
+  html += '<div style="font-size:12px;color:var(--text2);margin-bottom:4px">Target Torque per Baut</div>';
+  html += '<div style="font-size:36px;font-weight:700;color:#ff9800;font-family:\'Fira Code\',monospace">'+T_target+'<span style="font-size:14px;margin-left:6px;color:var(--text2)">Nm</span></div>';
+  html += '<div style="font-size:11px;color:var(--text2);margin-top:4px">'+T_ftlb+' ft\u00b7lbs</div>';
+  html += '<div style="font-size:10px;color:var(--text2);margin-top:6px;display:inline-flex;align-items:center;gap:4px"><span style="color:#ff9800">\u25cf</span> Kondisi penentu: <strong style="color:#ff9800">'+governing+'</strong></div>';
+  html += '</div>';
+
+  // Result grid
+  html += '<div class="result-grid">';
+  html += '<div class="result-item"><div class="rk">Diameter Pipa</div><div class="rv">DN '+od+'</div></div>';
+  html += '<div class="result-item"><div class="rk">Standar Flange</div><div class="rv">'+pnLabel+'</div></div>';
+  html += '<div class="result-item"><div class="rk">Baut</div><div class="rv" style="color:'+bolt.color+'">'+bolt.shortName+'</div></div>';
+  html += '<div class="result-item"><div class="rk">Jumlah & Ukuran Baut</div><div class="rv" style="color:#ffaa00">'+n+' \u00d7 '+fData.size+'</div></div>';
+  html += '<div class="result-item"><div class="rk">Nut Factor (K)</div><div class="rv">'+K+'</div></div>';
+  html += '<div class="result-item"><div class="rk">Tekanan Desain (P)</div><div class="rv" style="color:#ff9800">'+P.toFixed(1)+'<span class="ru"> MPa</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Gasket Factor (m)</div><div class="rv">'+m+'</div></div>';
+  html += '<div class="result-item"><div class="rk">Min Seating Stress (y)</div><div class="rv">'+y+'<span class="ru"> MPa</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Gasket OD / ID</div><div class="rv">'+gOD+' / '+gID+'<span class="ru"> mm</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Lebar Efektif Gasket (b)</div><div class="rv">'+b_eff.toFixed(2)+'<span class="ru"> mm</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Mean Diameter (G)</div><div class="rv">'+G_mean.toFixed(1)+'<span class="ru"> mm</span></div></div>';
+  html += '<div class="result-item"><div class="rk">W_m1 (Operating)</div><div class="rv">'+(W_m1/1000).toFixed(1)+'<span class="ru"> kN</span></div></div>';
+  html += '<div class="result-item"><div class="rk">W_m2 (Gasket Seat)</div><div class="rv">'+(W_m2/1000).toFixed(1)+'<span class="ru"> kN</span></div></div>';
+  html += '<div class="result-item"><div class="rk">W_m (Governing)</div><div class="rv" style="color:#ff9800">'+(W_m/1000).toFixed(1)+'<span class="ru"> kN</span></div></div>';
+  html += '</div>';
+
+  // Formula display
+  html += '<div style="margin-top:12px;padding:12px;background:rgba(255,152,0,.04);border:1px solid rgba(255,152,0,.1);border-radius:7px;font-size:11px;color:var(--text2);line-height:1.8;font-family:monospace">';
+  html += '<div style="font-weight:600;color:#ff9800;margin-bottom:8px;font-size:10px;letter-spacing:0.5px;font-family:sans-serif">RUMUS ASME PCC-1:2022 (Gasket Seating Method)</div>';
+  html += '<div>W_m1 = \u03c0\u00d7b\u00d7G\u00d7m\u00d7P + (\u03c0/4)\u00d7G\u00b2\u00d7P &nbsp; <span style="color:#666">[Operating]</span></div>';
+  html += '<div>W_m1 = \u03c0\u00d7'+b_eff.toFixed(2)+'\u00d7'+G_mean.toFixed(1)+'\u00d7'+m+'\u00d7'+P.toFixed(1)+' + (\u03c0/4)\u00d7'+G_mean.toFixed(1)+'\u00b2\u00d7'+P.toFixed(1)+'</div>';
+  html += '<div>W_m1 = <strong style="color:#ff9800">'+(W_m1/1000).toFixed(2)+' kN</strong></div>';
+  html += '<div style="margin-top:6px">W_m2 = \u03c0\u00d7b\u00d7G\u00d7y &nbsp; <span style="color:#666">[Gasket Seating]</span></div>';
+  html += '<div>W_m2 = \u03c0\u00d7'+b_eff.toFixed(2)+'\u00d7'+G_mean.toFixed(1)+'\u00d7'+y+'</div>';
+  html += '<div>W_m2 = <strong style="color:#ff9800">'+(W_m2/1000).toFixed(2)+' kN</strong></div>';
+  html += '<div style="margin-top:6px">W_m = max(W_m1, W_m2) = <strong style="color:#ff9800">'+(W_m/1000).toFixed(2)+' kN</strong></div>';
+  html += '<div style="margin-top:6px">T = K \u00d7 d \u00d7 (W_m / n) / 1000</div>';
+  html += '<div>T = '+K+' \u00d7 '+d+' \u00d7 ('+(W_m/1000).toFixed(2)+' / '+n+') / 1000</div>';
+  html += '<div>T = <strong style="color:#ff9800">'+T_target+' Nm</strong></div>';
+  html += '</div>';
+  html += '</div>';
+
+  // Multi-pass table
+  html += '<div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></svg> Prosedur Pengencangan (ASME PCC-1 Legacy Method)</div>';
+  html += '<div style="overflow-x:auto;margin:12px 0"><table style="width:100%;border-collapse:collapse;font-size:12px;font-family:\'Fira Code\',monospace">';
+  html += '<thead><tr style="border-bottom:2px solid rgba(255,152,0,.2)"><th style="text-align:left;padding:8px 10px;color:#ff9800;font-weight:600;font-size:10px">PASS</th><th style="text-align:center;padding:8px 10px;color:#ff9800;font-weight:600;font-size:10px">% TARGET</th><th style="text-align:right;padding:8px 10px;color:#ff9800;font-weight:600;font-size:10px">TORSI (Nm)</th><th style="text-align:right;padding:8px 10px;color:#ff9800;font-weight:600;font-size:10px">TORSI (ft\u00b7lbs)</th></tr></thead><tbody>';
+  var asmePasses = [
+    {label:'Pass 1 \u2014 Snug',pct:'Snug',nm:Math.round(T_target*0.10)},
+    {label:'Pass 2 \u2014 30%',pct:'30%',nm:pass1},
+    {label:'Pass 3 \u2014 70%',pct:'70%',nm:pass2},
+    {label:'Pass 4 \u2014 Final (100%)',pct:'100%',nm:pass3}
+  ];
+  asmePasses.forEach(function(p,i) {
+    var bg = i===3 ? 'rgba(255,152,0,.06)' : 'transparent';
+    var fw = i===3 ? '700' : '400';
+    var tc = i===3 ? '#ff9800' : '#e0e0e0';
+    html += '<tr style="background:'+bg+';border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:8px 10px;color:'+tc+'">'+p.label+'</td><td style="text-align:center;padding:8px 10px;color:var(--text2)">'+p.pct+'</td><td style="text-align:right;padding:8px 10px;color:'+tc+';font-weight:'+fw+'">'+p.nm+'</td><td style="text-align:right;padding:8px 10px;color:var(--text2)">'+(p.nm*0.7376).toFixed(1)+'</td></tr>';
+  });
+  html += '</tbody></table></div>';
+
+  // Star pattern
+  html += _buildStarPatternHTML(n, 'Ulangi urutan: Snug \u2192 30% \u2192 70% \u2192 100%');
+  html += '</div>';
+
+  // Warnings
+  if (boltKey.indexOf('rusty') >= 0) {
+    html += smartWarn('danger', '<strong>Peringatan Karat!</strong> Baut berkarat memiliki nut factor tinggi dan bervariasi. Disarankan mengganti baut atau melumasi.', 'Bickford (2007)');
+  }
+  html += smartWarn('info', 'Gunakan <strong>kunci torsi terkalibrasi</strong>. Setelah 24 jam, lakukan <strong>re-torque</strong> ke 100% karena gasket dan HDPE mengalami relaksasi (creep).', 'ASME PCC-1:2022 \u00a75');
+
+  E('eng-results').innerHTML = html;
+  if (typeof animateValues === 'function') animateValues();
+}
+
+// ===== 12c. POP 007 FLANGE TORQUE CALCULATOR =====
+
+function buildFlangeTorqueForm_POP() {
+  var gasketOpts = '';
+  Object.keys(_gasketTypes).forEach(function(k) {
+    var g = _gasketTypes[k]; var pd = _pop007Defaults[k] || {sigma:5}; var sel = k === 'epdm_ff' ? ' selected' : '';
+    gasketOpts += '<option value="'+k+'"'+sel+'>'+g.name+' (\u03c3g='+pd.sigma+' MPa)</option>';
+  });
+  var odList = [63,75,90,110,125,140,160,180,200,225,250,280,315,355,400,450,500,560,630,710,800];
+  var odOpts = ''; odList.forEach(function(d) { odOpts += '<option value="'+d+'"'+(d===110?' selected':'')+'>DN '+d+' mm</option>'; });
+
+  E('eng-form').innerHTML = '<div class="form-title">'+_gearSvg+' Flange Bolt Torque \u2014 POP 007 (PIPA)</div>' +
+    _buildRefSelector('pop007') +
+    '<div class="form-group"><label class="form-label">Diameter Pipa (OD) \u2014 mm</label><select class="form-control" id="pop-od">'+odOpts+'</select></div>' +
+    '<div class="form-group"><label class="form-label">Standar Flange</label><select class="form-control" id="pop-pn"><option value="16" selected>ISO / EN 1092-1 PN16</option><option value="jis10k">JIS B 2220 \u2014 10K</option><option value="jis16k">JIS B 2220 \u2014 16K</option><option value="ansi150">ANSI / ASME B16.5 \u2014 Class 150</option></select></div>' +
+    '<div class="form-group"><label class="form-label">Jenis Gasket</label><select class="form-control" id="pop-gasket" onchange="(function(){var pd=_pop007Defaults[document.getElementById(\'pop-gasket\').value];if(pd){document.getElementById(\'pop-sigma\').value=pd.sigma;document.getElementById(\'pop-gasket-hint\').textContent=pd.desc;}})()">'+gasketOpts+'</select><div id="pop-gasket-hint" style="font-size:10px;color:var(--text2);margin-top:4px;padding:4px 8px;background:rgba(255,255,255,.03);border-radius:4px"></div></div>' +
+    '<div class="form-group"><label class="form-label">Target Gasket Stress (\u03c3g)</label><div style="display:flex;align-items:center"><input type="number" step="0.5" class="form-control" id="pop-sigma" value="5.0" style="flex:1;font-family:monospace;font-weight:bold;color:#4caf50;background:rgba(76,175,80,0.05);border-color:rgba(76,175,80,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)">MPa</span></div><div style="font-size:10px;color:var(--text2);margin-top:4px">POP 007 merekomendasikan 5.0 MPa untuk EPDM dan 10.0 MPa untuk PTFE (Table 3).</div></div>' +
+    '<div class="form-group"><label class="form-label">Nut Factor (K)</label><div style="display:flex;align-items:center"><input type="number" step="0.01" class="form-control" id="pop-K" value="0.20" style="flex:1;font-family:monospace;font-weight:bold;color:#4caf50;background:rgba(76,175,80,0.05);border-color:rgba(76,175,80,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)">dimensionless</span></div><div style="font-size:10px;color:var(--text2);margin-top:4px">POP 007: K=0.20 (baut terlumasi standar), K=0.15 (pelumas MoS\u2082/grafit).</div></div>' +
+    '<div class="form-group"><label class="form-label">Metode Perhitungan Area</label><select class="form-control" id="pop-area-method" onchange="document.getElementById(\'pop-area-manual\').style.display=this.value===\'manual\'?\'block\':\'none\'"><option value="auto">Otomatis (Hampiran Area Stub End)</option><option value="manual">Manual (Input Gasket OD & ID)</option></select></div>' +
+    '<div id="pop-area-manual" style="display:none;margin-bottom:16px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px"><div style="text-align:center;margin-bottom:12px"><img src="gasket_diagram.png" style="max-width:100%;border-radius:4px;filter:invert(1) hue-rotate(180deg) brightness(1.1) contrast(1.2);mix-blend-mode:screen"></div><div style="display:flex;gap:12px"><div style="flex:1"><label class="form-label" style="font-size:11px">Gasket OD (mm)</label><input type="number" class="form-control" id="pop-gasket-od" value="162"></div><div style="flex:1"><label class="form-label" style="font-size:11px">Gasket ID (mm)</label><input type="number" class="form-control" id="pop-gasket-id" value="110"></div></div></div>' +
+    '<button class="calc-btn" onclick="calcFlangeTorque_POP()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Torsi (POP 007)</button>';
+
+  E('eng-results').innerHTML = '';
+  var pd0 = _pop007Defaults['epdm_ff']; if(pd0) E('pop-gasket-hint').textContent = pd0.desc;
+}
+
+function calcFlangeTorque_POP() {
+  var od = E('pop-od').value;
+  var pn = E('pop-pn').value;
+  var gasketKey = E('pop-gasket').value;
+  var sigma_g = parseFloat(E('pop-sigma').value) || 5.0;
+  var K = parseFloat(E('pop-K').value) || 0.20;
+
+  var gasket = _gasketTypes[gasketKey];
+  if (!gasket) return;
+
+  var fData = _getFlangeSpecGlobal(od, pn);
+  if (!fData) { E('eng-results').innerHTML = '<div style="color:#ff5252;padding:12px;background:rgba(255,82,82,0.1);border-radius:6px;font-size:12px;border:1px solid rgba(255,82,82,0.2)">Data baut untuk ukuran ini belum tersedia.</div>'; return; }
+
+  var d = _boltDiameters[fData.size]; if (!d) return;
+  var n = fData.bolts;
+
+  // Get gasket area
+  var gasketArea = _flangeGasketArea[od] || 5000;
+  var areaMethod = E('pop-area-method') ? E('pop-area-method').value : 'auto';
+  if (areaMethod === 'manual') {
+    var gOD = parseFloat(E('pop-gasket-od').value) || 0;
+    var gID = parseFloat(E('pop-gasket-id').value) || 0;
+    if (gOD > gID) gasketArea = (Math.PI / 4) * (Math.pow(gOD, 2) - Math.pow(gID, 2));
+  }
+
+  // POP 007: F_b = (A_g × σ_g) / n
+  var F_total = gasketArea * sigma_g;
+  var F_b = F_total / n;
+
+  // T = K × d × F_b / 1000
+  var T_target = K * (d / 1000) * F_b;
+  T_target = Math.round(T_target);
+  var T_ftlb = (T_target * 0.7376).toFixed(1);
+
+  // Multi-pass (POP 007: finger-tight, 50%, 100%)
+  var pass1 = Math.round(T_target * 0.50);
+  var pass2 = T_target;
+
+  var pnLabel = _buildPnLabel(pn);
+  var badgeRefs = ['POP 007', 'PIPA Australia'];
+  if (pn === '16') badgeRefs.push('EN 1092-1');
+  else if (pn.indexOf('jis') >= 0) badgeRefs.push('JIS B 2220');
+  else if (pn === 'ansi150') badgeRefs.push('ASME B16.5');
+
+  var html = '';
+  html += '<div class="eng-section"><div class="eng-section-title">'+_gearSvg+' POP 007 Bolt Torque</div>';
+  html += refBadges(badgeRefs);
+
+  // Main torque display
+  html += '<div style="text-align:center;padding:20px 0;background:rgba(76,175,80,.05);border-radius:8px;margin:12px 0">';
+  html += '<div style="font-size:12px;color:var(--text2);margin-bottom:4px">Target Torque per Baut</div>';
+  html += '<div style="font-size:36px;font-weight:700;color:#4caf50;font-family:\'Fira Code\',monospace">'+T_target+'<span style="font-size:14px;margin-left:6px;color:var(--text2)">Nm</span></div>';
+  html += '<div style="font-size:11px;color:var(--text2);margin-top:4px">'+T_ftlb+' ft\u00b7lbs</div>';
+  html += '<div style="font-size:10px;color:var(--text2);margin-top:6px;display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> \u03c3g = '+sigma_g.toFixed(1)+' MPa &nbsp;|&nbsp; K = '+K+'</div>';
+  html += '</div>';
+
+  // Result grid
+  html += '<div class="result-grid">';
+  html += '<div class="result-item"><div class="rk">Diameter Pipa</div><div class="rv">DN '+od+'</div></div>';
+  html += '<div class="result-item"><div class="rk">Standar Flange</div><div class="rv">'+pnLabel+'</div></div>';
+  html += '<div class="result-item"><div class="rk">Jumlah & Ukuran Baut</div><div class="rv" style="color:#ffaa00">'+n+' \u00d7 '+fData.size+'</div></div>';
+  html += '<div class="result-item"><div class="rk">Nut Factor (K)</div><div class="rv">'+K+'</div></div>';
+  html += '<div class="result-item"><div class="rk">Gasket Contact Area (Ag)</div><div class="rv">'+gasketArea.toLocaleString()+'<span class="ru"> mm\u00b2</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Target Gasket Stress (\u03c3g)</div><div class="rv" style="color:#4caf50">'+sigma_g.toFixed(1)+'<span class="ru"> MPa</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Total Clamp Force</div><div class="rv">'+(F_total/1000).toFixed(1)+'<span class="ru"> kN</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Force per Bolt (Fb)</div><div class="rv">'+(F_b/1000).toFixed(2)+'<span class="ru"> kN</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Gasket</div><div class="rv" style="font-size:11px">'+gasket.name.split('\u2014')[0].trim()+'</div></div>';
+  html += '</div>';
+
+  // Formula display
+  html += '<div style="margin-top:12px;padding:12px;background:rgba(76,175,80,.04);border:1px solid rgba(76,175,80,.1);border-radius:7px;font-size:11px;color:var(--text2);line-height:1.8;font-family:monospace">';
+  html += '<div style="font-weight:600;color:#4caf50;margin-bottom:8px;font-size:10px;letter-spacing:0.5px;font-family:sans-serif">RUMUS POP 007 (Target Gasket Stress Method)</div>';
+  html += '<div>F_b = (A_g \u00d7 \u03c3_g) / n</div>';
+  html += '<div>F_b = ('+gasketArea.toLocaleString()+' \u00d7 '+sigma_g.toFixed(1)+') / '+n+'</div>';
+  html += '<div>F_b = <strong style="color:#4caf50">'+(F_b/1000).toFixed(2)+' kN</strong></div>';
+  html += '<div style="margin-top:6px">T = K \u00d7 d \u00d7 F_b / 1000</div>';
+  html += '<div>T = '+K+' \u00d7 '+d+' mm \u00d7 '+(F_b/1000).toFixed(2)+' kN / 1000</div>';
+  html += '<div>T = <strong style="color:#4caf50">'+T_target+' Nm</strong></div>';
+  html += '</div>';
+  html += '</div>';
+
+  // Multi-pass table
+  html += '<div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></svg> Prosedur Pengencangan (POP 007 Section 5)</div>';
+  html += '<div style="overflow-x:auto;margin:12px 0"><table style="width:100%;border-collapse:collapse;font-size:12px;font-family:\'Fira Code\',monospace">';
+  html += '<thead><tr style="border-bottom:2px solid rgba(76,175,80,.2)"><th style="text-align:left;padding:8px 10px;color:#4caf50;font-weight:600;font-size:10px">PASS</th><th style="text-align:center;padding:8px 10px;color:#4caf50;font-weight:600;font-size:10px">% TARGET</th><th style="text-align:right;padding:8px 10px;color:#4caf50;font-weight:600;font-size:10px">TORSI (Nm)</th><th style="text-align:right;padding:8px 10px;color:#4caf50;font-weight:600;font-size:10px">TORSI (ft\u00b7lbs)</th></tr></thead><tbody>';
+  var popPasses = [
+    {label:'Pass 1 \u2014 Finger-tight (Snug)',pct:'Snug',nm:Math.round(T_target*0.10)},
+    {label:'Pass 2 \u2014 50%',pct:'50%',nm:pass1},
+    {label:'Pass 3 \u2014 Final (100%)',pct:'100%',nm:pass2}
+  ];
+  popPasses.forEach(function(p,i) {
+    var bg = i===2 ? 'rgba(76,175,80,.06)' : 'transparent';
+    var fw = i===2 ? '700' : '400';
+    var tc = i===2 ? '#4caf50' : '#e0e0e0';
+    html += '<tr style="background:'+bg+';border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:8px 10px;color:'+tc+'">'+p.label+'</td><td style="text-align:center;padding:8px 10px;color:var(--text2)">'+p.pct+'</td><td style="text-align:right;padding:8px 10px;color:'+tc+';font-weight:'+fw+'">'+p.nm+'</td><td style="text-align:right;padding:8px 10px;color:var(--text2)">'+(p.nm*0.7376).toFixed(1)+'</td></tr>';
+  });
+  html += '</tbody></table></div>';
+
+  // Star pattern
+  html += _buildStarPatternHTML(n, 'Ulangi urutan: Snug \u2192 50% \u2192 100%');
+  html += '</div>';
+
+  // Warnings
+  html += smartWarn('info', 'POP 007 merekomendasikan pengencangan dengan <strong>kunci torsi terkalibrasi</strong> dalam pola menyilang. Setelah <strong>24 jam</strong>, lakukan re-torque ke 100% karena relaksasi material PE.', 'POP 007 \u00a75.3');
+
+  if (sigma_g > 7.0 && gasketKey !== 'ptfe') {
+    html += smartWarn('caution', 'Target gasket stress <strong>'+sigma_g.toFixed(1)+' MPa</strong> melebihi batas aman HDPE (7 MPa). Pastikan desain stub end dapat menahan tekanan ini tanpa deformasi plastis.', 'POP 007 Table 3');
+  }
 
   E('eng-results').innerHTML = html;
   if (typeof animateValues === 'function') animateValues();
