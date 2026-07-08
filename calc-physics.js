@@ -481,20 +481,20 @@ function calcPipeLoad() {
     deflPct = (dX / D_mean) * 100;
   }
 
-    // Calculate dynamic max deflection for UI coloring
-    var maxDefl = 5;
-    if (type === 'hdpe') {
-      if (sdr >= 21) maxDefl = 7.5;
-      else if (sdr >= 13.5) maxDefl = 6.0;
-      else if (sdr >= 11) maxDefl = 5.0;
-      else if (sdr >= 9) maxDefl = 4.0;
-      else maxDefl = 3.0;
-    } else {
-      maxDefl = 5; // default for others
-    }
+  // Calculate dynamic max deflection for UI coloring
+  var maxDefl = 5;
+  if (type === 'hdpe') {
+    if (sdr >= 21) maxDefl = 7.5;
+    else if (sdr >= 13.5) maxDefl = 6.0;
+    else if (sdr >= 11) maxDefl = 5.0;
+    else if (sdr >= 9) maxDefl = 4.0;
+    else maxDefl = 3.0;
+  } else {
+    maxDefl = 5; // default for others
+  }
 
-  var deadLoadDetails = isFlex 
-    ? `<strong>Detail Dead Load (Prism Load):</strong><br>W<sub>d</sub> = γ<sub>tanah</sub> × H × OD<br>W<sub>d</sub> = ${gamma.toFixed(1)} kN/m³ × ${H.toFixed(2)} m × ${od.toFixed(3)} m = <strong>${Wd.toFixed(2)} kN/m</strong>` 
+  var deadLoadDetails = isFlex
+    ? `<strong>Detail Dead Load (Prism Load):</strong><br>W<sub>d</sub> = γ<sub>tanah</sub> × H × OD<br>W<sub>d</sub> = ${gamma.toFixed(1)} kN/m³ × ${H.toFixed(2)} m × ${od.toFixed(3)} m = <strong>${Wd.toFixed(2)} kN/m</strong>`
     : `<strong>Detail Dead Load (Marston):</strong><br>W<sub>d</sub> = C<sub>d</sub> × γ<sub>tanah</sub> × B<sub>d</sub>²<br>W<sub>d</sub> = ${Cd.toFixed(3)} × ${gamma.toFixed(1)} kN/m³ × (${Bd.toFixed(2)} m)² = <strong>${Wd.toFixed(2)} kN/m</strong>`;
 
   var liveLoadDetails = P_live > 0
@@ -1237,9 +1237,9 @@ var _boltGrades = {
 };
 
 var _boltStressAreas = {
-  'M12': 84.3, 'M16': 157, 'M20': 245, 'M22': 303, 'M24': 353, 
+  'M12': 84.3, 'M16': 157, 'M20': 245, 'M22': 303, 'M24': 353,
   'M27': 459, 'M30': 561, 'M33': 694, 'M36': 817,
-  '5/8"': 145.8, '3/4"': 215.4, '7/8"': 298, '1"': 391, 
+  '5/8"': 145.8, '3/4"': 215.4, '7/8"': 298, '1"': 391,
   '1 1/8"': 492, '1 1/4"': 625, '1 1/2"': 906
 };
 
@@ -1296,9 +1296,9 @@ var _boltDiameters = {
 
 // Flange gasket seating area approximations (mm²) for HDPE stub end flanges
 var _flangeGasketArea = {
-  '63': 2400, '75': 3200, '90': 4200, '110': 5800, '125': 7200, '140': 9000, 
-  '160': 11500, '180': 14000, '200': 17000, '225': 21000, '250': 25000, 
-  '280': 31000, '315': 38000, '355': 48000, '400': 60000, '450': 75000, 
+  '63': 2400, '75': 3200, '90': 4200, '110': 5800, '125': 7200, '140': 9000,
+  '160': 11500, '180': 14000, '200': 17000, '225': 21000, '250': 25000,
+  '280': 31000, '315': 38000, '355': 48000, '400': 60000, '450': 75000,
   '500': 92000, '560': 115000, '630': 145000, '710': 185000, '800': 235000
 };
 
@@ -1309,7 +1309,7 @@ function buildFlangeTorqueForm() {
 
   // Build bolt material options
   var boltOpts = '';
-  Object.keys(_boltMaterials).forEach(function(k) {
+  Object.keys(_boltMaterials).forEach(function (k) {
     var m = _boltMaterials[k];
     var sel = k === 'mild_steel' ? ' selected' : '';
     boltOpts += '<option value="' + k + '"' + sel + '>' + m.name + ' (K=' + m.K + ')</option>';
@@ -1317,7 +1317,7 @@ function buildFlangeTorqueForm() {
 
   // Build gasket options
   var gasketOpts = '';
-  Object.keys(_gasketTypes).forEach(function(k) {
+  Object.keys(_gasketTypes).forEach(function (k) {
     var g = _gasketTypes[k];
     var sel = k === 'epdm_ff' ? ' selected' : '';
     gasketOpts += '<option value="' + k + '"' + sel + '>' + g.name + '</option>';
@@ -1325,7 +1325,7 @@ function buildFlangeTorqueForm() {
 
   var odList = [63, 75, 90, 110, 125, 140, 160, 180, 200, 225, 250, 280, 315, 355, 400, 450, 500, 560, 630, 710, 800];
   var odOpts = '';
-  odList.forEach(function(d) {
+  odList.forEach(function (d) {
     var sel = d === 110 ? ' selected' : '';
     odOpts += '<option value="' + d + '"' + sel + '>DN ' + d + ' mm</option>';
   });
@@ -1396,7 +1396,7 @@ function buildFlangeTorqueForm() {
   updateBoltHint();
 }
 
-window.toggleFlangeAreaMethod = function() {
+window.toggleFlangeAreaMethod = function () {
   var method = document.getElementById('flange-area-method').value;
   document.getElementById('flange-area-manual').style.display = method === 'manual' ? 'block' : 'none';
 };
@@ -1421,11 +1421,11 @@ function calcFlangeTorque() {
       450: 400, 500: 500, 560: 600, 630: 600, 710: 700, 800: 800
     };
     var dn = odToDN[od_str] || parseInt(od_str);
-    
+
     var specs = {
       // ISO PN16
       "50_16": { bolts: 4, size: "M16" },
-      "65_16": { bolts: 4, size: "M16" }, 
+      "65_16": { bolts: 4, size: "M16" },
       "80_16": { bolts: 8, size: "M16" },
       "100_16": { bolts: 8, size: "M16" },
       "125_16": { bolts: 8, size: "M16" },
@@ -1467,11 +1467,11 @@ function calcFlangeTorque() {
       "200_jis16k": { bolts: 12, size: "M22" },
       "250_jis16k": { bolts: 12, size: "M24" },
       "300_jis16k": { bolts: 16, size: "M24" },
-      "350_jis16k": { bolts: 16, size: "M30" }, 
+      "350_jis16k": { bolts: 16, size: "M30" },
       "400_jis16k": { bolts: 16, size: "M30" },
       "500_jis16k": { bolts: 20, size: "M30" },
       "600_jis16k": { bolts: 24, size: "M36" },
-      
+
       // ANSI 150
       "50_ansi150": { bolts: 4, size: '5/8"' },
       "65_ansi150": { bolts: 4, size: '5/8"' },
@@ -1504,10 +1504,10 @@ function calcFlangeTorque() {
   // ===== PPI TN-38 Torque Calculation (Metric) =====
   var K = bolt.K;              // nut factor
   var n = fData.bolts;
-  
+
   var gasketArea = _flangeGasketArea[od] || 5000; // mm² (Interfacial contact area)
   var areaMethod = E('flange-area-method') ? E('flange-area-method').value : 'auto';
-  
+
   if (areaMethod === 'manual') {
     var gOD = parseFloat(E('flange-gasket-od').value) || 0;
     var gID = parseFloat(E('flange-gasket-id').value) || 0;
@@ -1587,9 +1587,9 @@ function calcFlangeTorque() {
   html += '<div>T = ----------------------</div>';
   html += '<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n × 1000</div>';
   html += '</div>';
-  
+
   html += '<div>T = [' + K + ' × ' + d + ' mm × ' + gasketArea.toLocaleString() + ' mm² × ' + ifp.toFixed(1) + ' MPa] / (' + n + ' × 1000)</div>';
-  html += '<div>T = <strong style="color:#00e5ff">' + Math.round((K * d * gasketArea * ifp)/1000).toLocaleString() + '</strong> / (' + n + ')</div>';
+  html += '<div>T = <strong style="color:#00e5ff">' + Math.round((K * d * gasketArea * ifp) / 1000).toLocaleString() + '</strong> / (' + n + ')</div>';
   html += '<div>T = <strong style="color:#00e5ff">' + T_target + ' Nm</strong></div>';
   html += '</div>';
 
@@ -1611,7 +1611,7 @@ function calcFlangeTorque() {
     { label: 'Pass 2 — Intermediate', pct: '60%', nm: pass2 },
     { label: 'Pass 3 — Final', pct: '100%', nm: pass3 }
   ];
-  passes.forEach(function(p, idx) {
+  passes.forEach(function (p, idx) {
     var bgColor = idx === 2 ? 'rgba(0,229,255,.06)' : 'transparent';
     var fontWeight = idx === 2 ? '700' : '400';
     var textColor = idx === 2 ? '#00e5ff' : '#e0e0e0';
@@ -1673,7 +1673,7 @@ function calcFlangeTorque() {
   }
 
   // Draw bolts with numbers
-  starOrder.forEach(function(bIdx, order) {
+  starOrder.forEach(function (bIdx, order) {
     var bp = boltPositions[bIdx];
     var fillColor = order === 0 ? '#00e5ff' : (order < nBolts / 2 ? 'rgba(0,229,255,0.6)' : 'rgba(0,229,255,0.3)');
     html += '<circle cx="' + bp.x.toFixed(1) + '" cy="' + bp.y.toFixed(1) + '" r="9" fill="' + fillColor + '" stroke="#0d1b2a" stroke-width="1.5"/>';
@@ -1715,40 +1715,40 @@ function _buildRefSelector(selected) {
 }
 
 function _getFlangeSpecGlobal(od_str, pn_str) {
-  var odToDN = {63:50,75:65,90:80,110:100,125:100,140:125,160:150,180:150,200:200,225:200,250:250,280:250,315:300,355:350,400:400,450:400,500:500,560:600,630:600,710:700,800:800};
+  var odToDN = { 63: 50, 75: 65, 90: 80, 110: 100, 125: 100, 140: 125, 160: 150, 180: 150, 200: 200, 225: 200, 250: 250, 280: 250, 315: 300, 355: 350, 400: 400, 450: 400, 500: 500, 560: 600, 630: 600, 710: 700, 800: 800 };
   var dn = odToDN[od_str] || parseInt(od_str);
   var specs = {
-    "50_16":{bolts:4,size:"M16"},"65_16":{bolts:4,size:"M16"},"80_16":{bolts:8,size:"M16"},"100_16":{bolts:8,size:"M16"},
-    "125_16":{bolts:8,size:"M16"},"150_16":{bolts:8,size:"M20"},"200_16":{bolts:12,size:"M20"},"250_16":{bolts:12,size:"M24"},
-    "300_16":{bolts:12,size:"M24"},"350_16":{bolts:16,size:"M24"},"400_16":{bolts:16,size:"M27"},"500_16":{bolts:20,size:"M30"},
-    "600_16":{bolts:20,size:"M33"},"700_16":{bolts:24,size:"M33"},"800_16":{bolts:24,size:"M36"},
-    "50_jis10k":{bolts:4,size:"M16"},"65_jis10k":{bolts:4,size:"M16"},"80_jis10k":{bolts:8,size:"M16"},
-    "100_jis10k":{bolts:8,size:"M16"},"125_jis10k":{bolts:8,size:"M20"},"150_jis10k":{bolts:8,size:"M20"},
-    "200_jis10k":{bolts:12,size:"M20"},"250_jis10k":{bolts:12,size:"M22"},"300_jis10k":{bolts:16,size:"M22"},
-    "350_jis10k":{bolts:16,size:"M22"},"400_jis10k":{bolts:16,size:"M24"},"500_jis10k":{bolts:20,size:"M24"},
-    "600_jis10k":{bolts:24,size:"M30"},"700_jis10k":{bolts:24,size:"M30"},"800_jis10k":{bolts:28,size:"M30"},
-    "50_jis16k":{bolts:8,size:"M16"},"65_jis16k":{bolts:8,size:"M16"},"80_jis16k":{bolts:8,size:"M20"},
-    "100_jis16k":{bolts:8,size:"M20"},"125_jis16k":{bolts:8,size:"M22"},"150_jis16k":{bolts:12,size:"M22"},
-    "200_jis16k":{bolts:12,size:"M22"},"250_jis16k":{bolts:12,size:"M24"},"300_jis16k":{bolts:16,size:"M24"},
-    "350_jis16k":{bolts:16,size:"M30"},"400_jis16k":{bolts:16,size:"M30"},"500_jis16k":{bolts:20,size:"M30"},
-    "600_jis16k":{bolts:24,size:"M36"},
-    "50_ansi150":{bolts:4,size:'5/8"'},"65_ansi150":{bolts:4,size:'5/8"'},"80_ansi150":{bolts:4,size:'5/8"'},
-    "100_ansi150":{bolts:8,size:'5/8"'},"125_ansi150":{bolts:8,size:'3/4"'},"150_ansi150":{bolts:8,size:'3/4"'},
-    "200_ansi150":{bolts:8,size:'3/4"'},"250_ansi150":{bolts:12,size:'7/8"'},"300_ansi150":{bolts:12,size:'7/8"'},
-    "350_ansi150":{bolts:12,size:'1"'},"400_ansi150":{bolts:16,size:'1"'},"500_ansi150":{bolts:20,size:'1 1/8"'},
-    "600_ansi150":{bolts:20,size:'1 1/4"'},"700_ansi150":{bolts:28,size:'1 1/4"'},"800_ansi150":{bolts:28,size:'1 1/2"'}
+    "50_16": { bolts: 4, size: "M16" }, "65_16": { bolts: 4, size: "M16" }, "80_16": { bolts: 8, size: "M16" }, "100_16": { bolts: 8, size: "M16" },
+    "125_16": { bolts: 8, size: "M16" }, "150_16": { bolts: 8, size: "M20" }, "200_16": { bolts: 12, size: "M20" }, "250_16": { bolts: 12, size: "M24" },
+    "300_16": { bolts: 12, size: "M24" }, "350_16": { bolts: 16, size: "M24" }, "400_16": { bolts: 16, size: "M27" }, "500_16": { bolts: 20, size: "M30" },
+    "600_16": { bolts: 20, size: "M33" }, "700_16": { bolts: 24, size: "M33" }, "800_16": { bolts: 24, size: "M36" },
+    "50_jis10k": { bolts: 4, size: "M16" }, "65_jis10k": { bolts: 4, size: "M16" }, "80_jis10k": { bolts: 8, size: "M16" },
+    "100_jis10k": { bolts: 8, size: "M16" }, "125_jis10k": { bolts: 8, size: "M20" }, "150_jis10k": { bolts: 8, size: "M20" },
+    "200_jis10k": { bolts: 12, size: "M20" }, "250_jis10k": { bolts: 12, size: "M22" }, "300_jis10k": { bolts: 16, size: "M22" },
+    "350_jis10k": { bolts: 16, size: "M22" }, "400_jis10k": { bolts: 16, size: "M24" }, "500_jis10k": { bolts: 20, size: "M24" },
+    "600_jis10k": { bolts: 24, size: "M30" }, "700_jis10k": { bolts: 24, size: "M30" }, "800_jis10k": { bolts: 28, size: "M30" },
+    "50_jis16k": { bolts: 8, size: "M16" }, "65_jis16k": { bolts: 8, size: "M16" }, "80_jis16k": { bolts: 8, size: "M20" },
+    "100_jis16k": { bolts: 8, size: "M20" }, "125_jis16k": { bolts: 8, size: "M22" }, "150_jis16k": { bolts: 12, size: "M22" },
+    "200_jis16k": { bolts: 12, size: "M22" }, "250_jis16k": { bolts: 12, size: "M24" }, "300_jis16k": { bolts: 16, size: "M24" },
+    "350_jis16k": { bolts: 16, size: "M30" }, "400_jis16k": { bolts: 16, size: "M30" }, "500_jis16k": { bolts: 20, size: "M30" },
+    "600_jis16k": { bolts: 24, size: "M36" },
+    "50_ansi150": { bolts: 4, size: '5/8"' }, "65_ansi150": { bolts: 4, size: '5/8"' }, "80_ansi150": { bolts: 4, size: '5/8"' },
+    "100_ansi150": { bolts: 8, size: '5/8"' }, "125_ansi150": { bolts: 8, size: '3/4"' }, "150_ansi150": { bolts: 8, size: '3/4"' },
+    "200_ansi150": { bolts: 8, size: '3/4"' }, "250_ansi150": { bolts: 12, size: '7/8"' }, "300_ansi150": { bolts: 12, size: '7/8"' },
+    "350_ansi150": { bolts: 12, size: '1"' }, "400_ansi150": { bolts: 16, size: '1"' }, "500_ansi150": { bolts: 20, size: '1 1/8"' },
+    "600_ansi150": { bolts: 20, size: '1 1/4"' }, "700_ansi150": { bolts: 28, size: '1 1/4"' }, "800_ansi150": { bolts: 28, size: '1 1/2"' }
   };
   return specs[dn + "_" + pn_str];
 }
 
 // Approximate gasket OD/ID dimensions matching _flangeGasketArea values
 var _flangeGasketDims = {
-  '63':{gOD:84,gID:63},'75':{gOD:99,gID:75},'90':{gOD:116,gID:90},'110':{gOD:140,gID:110},
-  '125':{gOD:158,gID:125},'140':{gOD:176,gID:140},'160':{gOD:201,gID:160},'180':{gOD:224,gID:180},
-  '200':{gOD:248,gID:200},'225':{gOD:278,gID:225},'250':{gOD:307,gID:250},'280':{gOD:343,gID:280},
-  '315':{gOD:384,gID:315},'355':{gOD:433,gID:355},'400':{gOD:486,gID:400},'450':{gOD:546,gID:450},
-  '500':{gOD:606,gID:500},'560':{gOD:678,gID:560},'630':{gOD:763,gID:630},'710':{gOD:860,gID:710},
-  '800':{gOD:969,gID:800}
+  '63': { gOD: 84, gID: 63 }, '75': { gOD: 99, gID: 75 }, '90': { gOD: 116, gID: 90 }, '110': { gOD: 140, gID: 110 },
+  '125': { gOD: 158, gID: 125 }, '140': { gOD: 176, gID: 140 }, '160': { gOD: 201, gID: 160 }, '180': { gOD: 224, gID: 180 },
+  '200': { gOD: 248, gID: 200 }, '225': { gOD: 278, gID: 225 }, '250': { gOD: 307, gID: 250 }, '280': { gOD: 343, gID: 280 },
+  '315': { gOD: 384, gID: 315 }, '355': { gOD: 433, gID: 355 }, '400': { gOD: 486, gID: 400 }, '450': { gOD: 546, gID: 450 },
+  '500': { gOD: 606, gID: 500 }, '560': { gOD: 678, gID: 560 }, '630': { gOD: 763, gID: 630 }, '710': { gOD: 860, gID: 710 },
+  '800': { gOD: 969, gID: 800 }
 };
 
 var _asmeGasketData = {
@@ -1767,30 +1767,30 @@ function _buildStarPatternHTML(nBolts, passDesc) {
   var svgR = 60, svgCx = 90, svgCy = 80, svgW = 180, svgH = 170;
   var h = '<div style="background:rgba(13,27,42,0.6);border:1px solid rgba(0,229,255,0.12);border-radius:8px;padding:16px;margin:12px 0;text-align:center">';
   h += '<div style="font-size:10px;color:var(--text2);margin-bottom:8px;letter-spacing:0.5px">POLA PENGENCANGAN MENYILANG (STAR PATTERN)</div>';
-  h += '<svg viewBox="0 0 '+svgW+' '+svgH+'" style="width:100%;max-width:200px;display:inline-block">';
-  h += '<circle cx="'+svgCx+'" cy="'+svgCy+'" r="'+(svgR+12)+'" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="18"/>';
-  h += '<circle cx="'+svgCx+'" cy="'+svgCy+'" r="'+(svgR-12)+'" fill="rgba(0,229,255,0.03)" stroke="rgba(0,229,255,0.15)" stroke-width="1"/>';
+  h += '<svg viewBox="0 0 ' + svgW + ' ' + svgH + '" style="width:100%;max-width:200px;display:inline-block">';
+  h += '<circle cx="' + svgCx + '" cy="' + svgCy + '" r="' + (svgR + 12) + '" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="18"/>';
+  h += '<circle cx="' + svgCx + '" cy="' + svgCy + '" r="' + (svgR - 12) + '" fill="rgba(0,229,255,0.03)" stroke="rgba(0,229,255,0.15)" stroke-width="1"/>';
   var bp = [];
   for (var i = 0; i < nBolts; i++) {
-    var a = (2*Math.PI*i/nBolts) - Math.PI/2;
-    bp.push({x: svgCx + svgR*Math.cos(a), y: svgCy + svgR*Math.sin(a)});
+    var a = (2 * Math.PI * i / nBolts) - Math.PI / 2;
+    bp.push({ x: svgCx + svgR * Math.cos(a), y: svgCy + svgR * Math.sin(a) });
   }
   var so = [], used = {};
   for (var s = 0; s < nBolts; s++) {
-    var c; if(s===0) c=0; else if(s%2===1) c=(so[s-1]+Math.floor(nBolts/2))%nBolts; else c=(so[s-2]+1)%nBolts;
-    var t=0; while(used[c]&&t<nBolts){c=(c+1)%nBolts;t++;} so.push(c); used[c]=true;
+    var c; if (s === 0) c = 0; else if (s % 2 === 1) c = (so[s - 1] + Math.floor(nBolts / 2)) % nBolts; else c = (so[s - 2] + 1) % nBolts;
+    var t = 0; while (used[c] && t < nBolts) { c = (c + 1) % nBolts; t++; } so.push(c); used[c] = true;
   }
-  for (var li = 0; li < so.length-1; li++) {
-    var fr=bp[so[li]], to=bp[so[li+1]];
-    h += '<line x1="'+fr.x.toFixed(1)+'" y1="'+fr.y.toFixed(1)+'" x2="'+to.x.toFixed(1)+'" y2="'+to.y.toFixed(1)+'" stroke="rgba(0,229,255,0.2)" stroke-width="1" stroke-dasharray="3,2"/>';
+  for (var li = 0; li < so.length - 1; li++) {
+    var fr = bp[so[li]], to = bp[so[li + 1]];
+    h += '<line x1="' + fr.x.toFixed(1) + '" y1="' + fr.y.toFixed(1) + '" x2="' + to.x.toFixed(1) + '" y2="' + to.y.toFixed(1) + '" stroke="rgba(0,229,255,0.2)" stroke-width="1" stroke-dasharray="3,2"/>';
   }
-  so.forEach(function(bIdx, order) {
-    var p=bp[bIdx], fc=order===0?'#00e5ff':(order<nBolts/2?'rgba(0,229,255,0.6)':'rgba(0,229,255,0.3)');
-    h += '<circle cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="9" fill="'+fc+'" stroke="#0d1b2a" stroke-width="1.5"/>';
-    h += '<text x="'+p.x.toFixed(1)+'" y="'+(p.y+3.5).toFixed(1)+'" text-anchor="middle" fill="#0d1b2a" font-size="8" font-weight="700" font-family="monospace">'+(order+1)+'</text>';
+  so.forEach(function (bIdx, order) {
+    var p = bp[bIdx], fc = order === 0 ? '#00e5ff' : (order < nBolts / 2 ? 'rgba(0,229,255,0.6)' : 'rgba(0,229,255,0.3)');
+    h += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="9" fill="' + fc + '" stroke="#0d1b2a" stroke-width="1.5"/>';
+    h += '<text x="' + p.x.toFixed(1) + '" y="' + (p.y + 3.5).toFixed(1) + '" text-anchor="middle" fill="#0d1b2a" font-size="8" font-weight="700" font-family="monospace">' + (order + 1) + '</text>';
   });
   h += '</svg>';
-  h += '<div style="font-size:10px;color:var(--text2);margin-top:6px;line-height:1.5">'+nBolts+' baut \u2014 Kencangkan sesuai nomor urut.<br>'+(passDesc||'Ulangi urutan untuk setiap pass.')+'</div>';
+  h += '<div style="font-size:10px;color:var(--text2);margin-top:6px;line-height:1.5">' + nBolts + ' baut \u2014 Kencangkan sesuai nomor urut.<br>' + (passDesc || 'Ulangi urutan untuk setiap pass.') + '</div>';
   h += '</div>';
   return h;
 }
@@ -1994,39 +1994,39 @@ function _buildPnLabel(pn) {
 
 function buildFlangeTorqueForm_ASME() {
   var boltOpts = '';
-  Object.keys(_boltMaterials).forEach(function(k) {
+  Object.keys(_boltMaterials).forEach(function (k) {
     var m = _boltMaterials[k]; var sel = k === 'mild_steel' ? ' selected' : '';
-    boltOpts += '<option value="'+k+'"'+sel+'>'+m.name+' (K='+m.K+')</option>';
+    boltOpts += '<option value="' + k + '"' + sel + '>' + m.name + ' (K=' + m.K + ')</option>';
   });
   var gasketOpts = '';
-  Object.keys(_gasketTypes).forEach(function(k) {
-    var g = _gasketTypes[k]; var ad = _asmeGasketData[k] || {m:1,y:0}; var sel = k === 'epdm_ff' ? ' selected' : '';
-    gasketOpts += '<option value="'+k+'"'+sel+'>'+g.name+' (m='+ad.m+', y='+ad.y+')</option>';
+  Object.keys(_gasketTypes).forEach(function (k) {
+    var g = _gasketTypes[k]; var ad = _asmeGasketData[k] || { m: 1, y: 0 }; var sel = k === 'epdm_ff' ? ' selected' : '';
+    gasketOpts += '<option value="' + k + '"' + sel + '>' + g.name + ' (m=' + ad.m + ', y=' + ad.y + ')</option>';
   });
   var gradeOpts = '';
-  Object.keys(_boltGrades).forEach(function(k) {
+  Object.keys(_boltGrades).forEach(function (k) {
     var g = _boltGrades[k];
-    gradeOpts += '<option value="'+k+'"'+(k==='g88'?' selected':'')+'>'+g.name+' (Yield: '+g.yield+' MPa)</option>';
+    gradeOpts += '<option value="' + k + '"' + (k === 'g88' ? ' selected' : '') + '>' + g.name + ' (Yield: ' + g.yield + ' MPa)</option>';
   });
-  var odList = [63,75,90,110,125,140,160,180,200,225,250,280,315,355,400,450,500,560,630,710,800];
-  var odOpts = ''; odList.forEach(function(d) { odOpts += '<option value="'+d+'"'+(d===110?' selected':'')+'>DN '+d+' mm</option>'; });
+  var odList = [63, 75, 90, 110, 125, 140, 160, 180, 200, 225, 250, 280, 315, 355, 400, 450, 500, 560, 630, 710, 800];
+  var odOpts = ''; odList.forEach(function (d) { odOpts += '<option value="' + d + '"' + (d === 110 ? ' selected' : '') + '>DN ' + d + ' mm</option>'; });
 
-  E('eng-form').innerHTML = '<div class="form-title">'+_gearSvg+' Flange Bolt Torque \u2014 ASME PCC-1:2022</div>' +
+  E('eng-form').innerHTML = '<div class="form-title">' + _gearSvg + ' Flange Bolt Torque \u2014 ASME PCC-1:2022</div>' +
     _buildRefSelector('asmepcc1') +
-    '<div class="form-group"><label class="form-label">Diameter Pipa (OD) \u2014 mm</label><select class="form-control" id="asme-od">'+odOpts+'</select></div>' +
+    '<div class="form-group"><label class="form-label">Diameter Pipa (OD) \u2014 mm</label><select class="form-control" id="asme-od">' + odOpts + '</select></div>' +
     '<div class="form-group"><label class="form-label">Standar Flange</label><select class="form-control" id="asme-pn"><option value="16" selected>ISO / EN 1092-1 PN16</option><option value="jis10k">JIS B 2220 \u2014 10K</option><option value="jis16k">JIS B 2220 \u2014 16K</option><option value="ansi150">ANSI / ASME B16.5 \u2014 Class 150</option></select></div>' +
     '<div class="form-group"><label class="form-label">Tekanan Desain (P)</label><div style="display:flex;align-items:center"><input type="number" step="0.1" class="form-control" id="asme-pressure" value="1.6" style="flex:1;font-family:monospace;font-weight:bold;color:#ff9800;background:rgba(255,152,0,0.05);border-color:rgba(255,152,0,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)">MPa</span></div><div style="font-size:10px;color:var(--text2);margin-top:4px">Tekanan kerja desain sistem perpipaan. PN16 = 1.6 MPa, PN10 = 1.0 MPa, PN6.3 = 0.63 MPa.</div></div>' +
-    '<div class="form-group"><label class="form-label">Jenis Gasket</label><select class="form-control" id="asme-gasket" onchange="(function(){var ad=_asmeGasketData[document.getElementById(\'asme-gasket\').value];if(ad)document.getElementById(\'asme-gasket-hint\').textContent=ad.desc;})()">'+gasketOpts+'</select><div id="asme-gasket-hint" style="font-size:10px;color:var(--text2);margin-top:4px;padding:4px 8px;background:rgba(255,255,255,.03);border-radius:4px"></div></div>' +
-    '<div class="form-group"><label class="form-label">Grade Material Baut (% Proof Stress Check)</label><select class="form-control" id="asme-bolt-grade">'+gradeOpts+'</select></div>' +
-    '<div class="form-group"><label class="form-label">Material Baut / Nut Factor (K)</label><select class="form-control" id="asme-bolt" onchange="(function(){var m=_boltMaterials[document.getElementById(\'asme-bolt\').value];if(m)document.getElementById(\'asme-bolt-hint\').textContent=m.desc||m.name;})()">'+boltOpts+'</select><div id="asme-bolt-hint" style="font-size:10px;color:var(--text2);margin-top:4px;padding:4px 8px;background:rgba(255,255,255,.03);border-radius:4px"></div></div>' +
+    '<div class="form-group"><label class="form-label">Jenis Gasket</label><select class="form-control" id="asme-gasket" onchange="(function(){var ad=_asmeGasketData[document.getElementById(\'asme-gasket\').value];if(ad)document.getElementById(\'asme-gasket-hint\').textContent=ad.desc;})()">' + gasketOpts + '</select><div id="asme-gasket-hint" style="font-size:10px;color:var(--text2);margin-top:4px;padding:4px 8px;background:rgba(255,255,255,.03);border-radius:4px"></div></div>' +
+    '<div class="form-group"><label class="form-label">Grade Material Baut (% Proof Stress Check)</label><select class="form-control" id="asme-bolt-grade">' + gradeOpts + '</select></div>' +
+    '<div class="form-group"><label class="form-label">Material Baut / Nut Factor (K)</label><select class="form-control" id="asme-bolt" onchange="(function(){var m=_boltMaterials[document.getElementById(\'asme-bolt\').value];if(m)document.getElementById(\'asme-bolt-hint\').textContent=m.desc||m.name;})()">' + boltOpts + '</select><div id="asme-bolt-hint" style="font-size:10px;color:var(--text2);margin-top:4px;padding:4px 8px;background:rgba(255,255,255,.03);border-radius:4px"></div></div>' +
     '<div class="form-group"><label class="form-label">Metode Dimensi Gasket</label><select class="form-control" id="asme-area-method" onchange="document.getElementById(\'asme-area-manual\').style.display=this.value===\'manual\'?\'block\':\'none\'"><option value="auto">Otomatis (Estimasi dari OD Pipa)</option><option value="manual">Manual (Input Gasket OD & ID)</option></select></div>' +
     '<div id="asme-area-manual" style="display:none;margin-bottom:16px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px"><div style="text-align:center;margin-bottom:12px">' + _buildAsmeDimSVG() + '</div><div style="display:flex;gap:12px"><div style="flex:1"><label class="form-label" style="font-size:11px">Gasket OD (mm)</label><input type="number" class="form-control" id="asme-gasket-od" value="162"></div><div style="flex:1"><label class="form-label" style="font-size:11px">Gasket ID (mm)</label><input type="number" class="form-control" id="asme-gasket-id" value="110"></div></div></div>' +
     '<button class="calc-btn" onclick="calcFlangeTorque_ASME()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Torsi (ASME PCC-1)</button>';
 
   E('eng-results').innerHTML = '';
   // Init hints
-  var ad0 = _asmeGasketData['epdm_ff']; if(ad0) E('asme-gasket-hint').textContent = ad0.desc;
-  var bm0 = _boltMaterials['mild_steel']; if(bm0) E('asme-bolt-hint').textContent = bm0.desc || bm0.name;
+  var ad0 = _asmeGasketData['epdm_ff']; if (ad0) E('asme-gasket-hint').textContent = ad0.desc;
+  var bm0 = _boltMaterials['mild_steel']; if (bm0) E('asme-bolt-hint').textContent = bm0.desc || bm0.name;
 }
 
 function calcFlangeTorque_ASME() {
@@ -2038,7 +2038,7 @@ function calcFlangeTorque_ASME() {
 
   var bolt = _boltMaterials[boltKey];
   var gasket = _gasketTypes[gasketKey];
-  var asmeG = _asmeGasketData[gasketKey] || {m:1, y:0};
+  var asmeG = _asmeGasketData[gasketKey] || { m: 1, y: 0 };
   if (!bolt || !gasket) return;
 
   var fData = _getFlangeSpecGlobal(od, pn);
@@ -2057,7 +2057,7 @@ function calcFlangeTorque_ASME() {
     gOD = parseFloat(E('asme-gasket-od').value) || 140;
     gID = parseFloat(E('asme-gasket-id').value) || 110;
   } else {
-    var dims = _flangeGasketDims[od] || {gOD:140, gID:110};
+    var dims = _flangeGasketDims[od] || { gOD: 140, gID: 110 };
     gOD = dims.gOD; gID = dims.gID;
   }
 
@@ -2080,7 +2080,7 @@ function calcFlangeTorque_ASME() {
   // Proof stress check
   var bGradeKey = E('asme-bolt-grade') ? E('asme-bolt-grade').value : 'g88';
   var boltGrade = _boltGrades[bGradeKey] || { yield: 640 };
-  var As = _boltStressAreas[fData.size] || ((Math.PI/4) * Math.pow(d*0.8, 2));
+  var As = _boltStressAreas[fData.size] || ((Math.PI / 4) * Math.pow(d * 0.8, 2));
   var boltStress = F_per_bolt / As;
   var pctYield = (boltStress / boltGrade.yield) * 100;
   var stressColor = pctYield > 85 ? '#ff5252' : (pctYield < 30 ? '#ffaa00' : '#4caf50');
@@ -2098,46 +2098,46 @@ function calcFlangeTorque_ASME() {
   else if (pn === 'ansi150') badgeRefs.push('ASME B16.5');
 
   var html = '';
-  html += '<div class="eng-section"><div class="eng-section-title">'+_gearSvg+' ASME PCC-1:2022 Bolt Torque</div>';
+  html += '<div class="eng-section"><div class="eng-section-title">' + _gearSvg + ' ASME PCC-1:2022 Bolt Torque</div>';
   html += refBadges(badgeRefs);
 
   // Main torque display
   html += '<div style="text-align:center;padding:20px 0;background:rgba(255,152,0,.05);border-radius:8px;margin:12px 0">';
   html += '<div style="font-size:12px;color:var(--text2);margin-bottom:4px">Target Torque per Baut</div>';
-  html += '<div style="font-size:36px;font-weight:700;color:#ff9800;font-family:\'Fira Code\',monospace">'+T_target+'<span style="font-size:14px;margin-left:6px;color:var(--text2)">Nm</span></div>';
-  html += '<div style="font-size:11px;color:var(--text2);margin-top:4px">'+T_ftlb+' ft\u00b7lbs</div>';
-  html += '<div style="font-size:10px;color:var(--text2);margin-top:6px;display:inline-flex;align-items:center;gap:4px"><span style="color:#ff9800">\u25cf</span> Kondisi penentu: <strong style="color:#ff9800">'+governing+'</strong></div>';
+  html += '<div style="font-size:36px;font-weight:700;color:#ff9800;font-family:\'Fira Code\',monospace">' + T_target + '<span style="font-size:14px;margin-left:6px;color:var(--text2)">Nm</span></div>';
+  html += '<div style="font-size:11px;color:var(--text2);margin-top:4px">' + T_ftlb + ' ft\u00b7lbs</div>';
+  html += '<div style="font-size:10px;color:var(--text2);margin-top:6px;display:inline-flex;align-items:center;gap:4px"><span style="color:#ff9800">\u25cf</span> Kondisi penentu: <strong style="color:#ff9800">' + governing + '</strong></div>';
   html += '</div>';
 
   // Result grid
   html += '<div class="result-grid">';
-  html += '<div class="result-item"><div class="rk">Diameter Pipa</div><div class="rv">DN '+od+'</div></div>';
-  html += '<div class="result-item"><div class="rk">Standar Flange</div><div class="rv">'+pnLabel+'</div></div>';
-  html += '<div class="result-item"><div class="rk">Baut</div><div class="rv" style="color:'+bolt.color+'">'+bolt.shortName+'</div></div>';
-  html += '<div class="result-item"><div class="rk">Jumlah & Ukuran Baut</div><div class="rv" style="color:#ffaa00">'+n+' \u00d7 '+fData.size+'</div></div>';
-  html += '<div class="result-item"><div class="rk">Nut Factor (K)</div><div class="rv">'+K+'</div></div>';
-  html += '<div class="result-item"><div class="rk">Tekanan Desain (P)</div><div class="rv" style="color:#ff9800">'+P.toFixed(1)+'<span class="ru"> MPa</span></div></div>';
-  html += '<div class="result-item"><div class="rk">Gasket Factor (m)</div><div class="rv">'+m+'</div></div>';
-  html += '<div class="result-item"><div class="rk">Min Seating Stress (y)</div><div class="rv">'+y+'<span class="ru"> MPa</span></div></div>';
-  html += '<div class="result-item"><div class="rk">Tensile Stress Area (As)</div><div class="rv">'+As.toFixed(1)+'<span class="ru"> mm\u00b2</span></div></div>';
-  html += '<div class="result-item"><div class="rk">Bolt Stress</div><div class="rv">'+boltStress.toFixed(1)+'<span class="ru"> MPa</span></div></div>';
-  html += '<div class="result-item" style="border-left:3px solid '+stressColor+'"><div class="rk">% Yield (Proof Stress)</div><div class="rv" style="color:'+stressColor+'">'+stressIcon+pctYield.toFixed(1)+'<span class="ru"> %</span></div></div>';
-  html += '<div class="result-item"><div class="rk">W_m (Governing)</div><div class="rv" style="color:#ff9800">'+(W_m/1000).toFixed(1)+'<span class="ru"> kN</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Diameter Pipa</div><div class="rv">DN ' + od + '</div></div>';
+  html += '<div class="result-item"><div class="rk">Standar Flange</div><div class="rv">' + pnLabel + '</div></div>';
+  html += '<div class="result-item"><div class="rk">Baut</div><div class="rv" style="color:' + bolt.color + '">' + bolt.shortName + '</div></div>';
+  html += '<div class="result-item"><div class="rk">Jumlah & Ukuran Baut</div><div class="rv" style="color:#ffaa00">' + n + ' \u00d7 ' + fData.size + '</div></div>';
+  html += '<div class="result-item"><div class="rk">Nut Factor (K)</div><div class="rv">' + K + '</div></div>';
+  html += '<div class="result-item"><div class="rk">Tekanan Desain (P)</div><div class="rv" style="color:#ff9800">' + P.toFixed(1) + '<span class="ru"> MPa</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Gasket Factor (m)</div><div class="rv">' + m + '</div></div>';
+  html += '<div class="result-item"><div class="rk">Min Seating Stress (y)</div><div class="rv">' + y + '<span class="ru"> MPa</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Tensile Stress Area (As)</div><div class="rv">' + As.toFixed(1) + '<span class="ru"> mm\u00b2</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Bolt Stress</div><div class="rv">' + boltStress.toFixed(1) + '<span class="ru"> MPa</span></div></div>';
+  html += '<div class="result-item" style="border-left:3px solid ' + stressColor + '"><div class="rk">% Yield (Proof Stress)</div><div class="rv" style="color:' + stressColor + '">' + stressIcon + pctYield.toFixed(1) + '<span class="ru"> %</span></div></div>';
+  html += '<div class="result-item"><div class="rk">W_m (Governing)</div><div class="rv" style="color:#ff9800">' + (W_m / 1000).toFixed(1) + '<span class="ru"> kN</span></div></div>';
   html += '</div>';
 
   // Formula display
   html += '<div style="margin-top:12px;padding:12px;background:rgba(255,152,0,.04);border:1px solid rgba(255,152,0,.1);border-radius:7px;font-size:11px;color:var(--text2);line-height:1.8;font-family:monospace">';
   html += '<div style="font-weight:600;color:#ff9800;margin-bottom:8px;font-size:10px;letter-spacing:0.5px;font-family:sans-serif">RUMUS ASME PCC-1:2022</div>';
   html += '<div>T = K \u00d7 d \u00d7 (W_m / n) / 1000</div>';
-  html += '<div>T = '+K+' \u00d7 '+d+' \u00d7 ('+(W_m/1000).toFixed(2)+' / '+n+') / 1000 = <strong style="color:#ff9800">'+T_target+' Nm</strong></div>';
+  html += '<div>T = ' + K + ' \u00d7 ' + d + ' \u00d7 (' + (W_m / 1000).toFixed(2) + ' / ' + n + ') / 1000 = <strong style="color:#ff9800">' + T_target + ' Nm</strong></div>';
   html += '</div>';
   html += '</div>';
 
   html += _buildFlangeDiagramSVG('asme', {
     accentColor: '#ff9800',
-    fb: (W_m/1000).toFixed(1) + ' kN',
-    fhydro: (W_m1/1000).toFixed(1) + ' kN',
-    fgasket: (W_m2/1000).toFixed(1) + ' kN'
+    fb: (W_m / 1000).toFixed(1) + ' kN',
+    fhydro: (W_m1 / 1000).toFixed(1) + ' kN',
+    fgasket: (W_m2 / 1000).toFixed(1) + ' kN'
   });
 
   // Multi-pass table
@@ -2145,16 +2145,16 @@ function calcFlangeTorque_ASME() {
   html += '<div style="overflow-x:auto;margin:12px 0"><table style="width:100%;border-collapse:collapse;font-size:12px;font-family:\'Fira Code\',monospace">';
   html += '<thead><tr style="border-bottom:2px solid rgba(255,152,0,.2)"><th style="text-align:left;padding:8px 10px;color:#ff9800;font-weight:600;font-size:10px">PASS</th><th style="text-align:center;padding:8px 10px;color:#ff9800;font-weight:600;font-size:10px">% TARGET</th><th style="text-align:right;padding:8px 10px;color:#ff9800;font-weight:600;font-size:10px">TORSI (Nm)</th><th style="text-align:right;padding:8px 10px;color:#ff9800;font-weight:600;font-size:10px">TORSI (ft\u00b7lbs)</th></tr></thead><tbody>';
   var asmePasses = [
-    {label:'Pass 1 \u2014 Snug',pct:'Snug',nm:Math.round(T_target*0.10)},
-    {label:'Pass 2 \u2014 30%',pct:'30%',nm:pass1},
-    {label:'Pass 3 \u2014 70%',pct:'70%',nm:pass2},
-    {label:'Pass 4 \u2014 Final (100%)',pct:'100%',nm:pass3}
+    { label: 'Pass 1 \u2014 Snug', pct: 'Snug', nm: Math.round(T_target * 0.10) },
+    { label: 'Pass 2 \u2014 30%', pct: '30%', nm: pass1 },
+    { label: 'Pass 3 \u2014 70%', pct: '70%', nm: pass2 },
+    { label: 'Pass 4 \u2014 Final (100%)', pct: '100%', nm: pass3 }
   ];
-  asmePasses.forEach(function(p,i) {
-    var bg = i===3 ? 'rgba(255,152,0,.06)' : 'transparent';
-    var fw = i===3 ? '700' : '400';
-    var tc = i===3 ? '#ff9800' : '#e0e0e0';
-    html += '<tr style="background:'+bg+';border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:8px 10px;color:'+tc+'">'+p.label+'</td><td style="text-align:center;padding:8px 10px;color:var(--text2)">'+p.pct+'</td><td style="text-align:right;padding:8px 10px;color:'+tc+';font-weight:'+fw+'">'+p.nm+'</td><td style="text-align:right;padding:8px 10px;color:var(--text2)">'+(p.nm*0.7376).toFixed(1)+'</td></tr>';
+  asmePasses.forEach(function (p, i) {
+    var bg = i === 3 ? 'rgba(255,152,0,.06)' : 'transparent';
+    var fw = i === 3 ? '700' : '400';
+    var tc = i === 3 ? '#ff9800' : '#e0e0e0';
+    html += '<tr style="background:' + bg + ';border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:8px 10px;color:' + tc + '">' + p.label + '</td><td style="text-align:center;padding:8px 10px;color:var(--text2)">' + p.pct + '</td><td style="text-align:right;padding:8px 10px;color:' + tc + ';font-weight:' + fw + '">' + p.nm + '</td><td style="text-align:right;padding:8px 10px;color:var(--text2)">' + (p.nm * 0.7376).toFixed(1) + '</td></tr>';
   });
   html += '</tbody></table></div>';
 
@@ -2176,31 +2176,31 @@ function calcFlangeTorque_ASME() {
 
 function buildFlangeTorqueForm_POP() {
   var gasketOpts = '';
-  Object.keys(_gasketTypes).forEach(function(k) {
-    var g = _gasketTypes[k]; 
-    var pd = _pop007Defaults[k] || {sigma:4}; 
+  Object.keys(_gasketTypes).forEach(function (k) {
+    var g = _gasketTypes[k];
+    var pd = _pop007Defaults[k] || { sigma: 4 };
     if (k.indexOf('epdm') >= 0) pd.sigma = 4.0;
     var sel = k === 'epdm_ff' ? ' selected' : '';
-    gasketOpts += '<option value="'+k+'"'+sel+'>'+g.name+' (\u03c3g='+pd.sigma+' MPa)</option>';
+    gasketOpts += '<option value="' + k + '"' + sel + '>' + g.name + ' (\u03c3g=' + pd.sigma + ' MPa)</option>';
   });
-  var odList = [63,75,90,110,125,140,160,180,200,225,250,280,315,355,400,450,500,560,630,710,800];
-  var odOpts = ''; odList.forEach(function(d) { odOpts += '<option value="'+d+'"'+(d===110?' selected':'')+'>DN '+d+' mm</option>'; });
+  var odList = [63, 75, 90, 110, 125, 140, 160, 180, 200, 225, 250, 280, 315, 355, 400, 450, 500, 560, 630, 710, 800];
+  var odOpts = ''; odList.forEach(function (d) { odOpts += '<option value="' + d + '"' + (d === 110 ? ' selected' : '') + '>DN ' + d + ' mm</option>'; });
 
   var gradeOpts = '';
-  Object.keys(_boltGrades).forEach(function(k) {
+  Object.keys(_boltGrades).forEach(function (k) {
     var g = _boltGrades[k];
-    gradeOpts += '<option value="'+k+'"'+(k==='g88'?' selected':'')+'>'+g.name+' (Yield: '+g.yield+' MPa)</option>';
+    gradeOpts += '<option value="' + k + '"' + (k === 'g88' ? ' selected' : '') + '>' + g.name + ' (Yield: ' + g.yield + ' MPa)</option>';
   });
 
-  E('eng-form').innerHTML = '<div class="form-title">'+_gearSvg+' Flange Bolt Torque \u2014 POP 007 (PIPA)</div>' +
+  E('eng-form').innerHTML = '<div class="form-title">' + _gearSvg + ' Flange Bolt Torque \u2014 POP 007 (PIPA)</div>' +
     _buildRefSelector('pop007') +
-    '<div class="form-group"><label class="form-label">Diameter Pipa (OD) \u2014 mm</label><select class="form-control" id="pop-od">'+odOpts+'</select></div>' +
+    '<div class="form-group"><label class="form-label">Diameter Pipa (OD) \u2014 mm</label><select class="form-control" id="pop-od">' + odOpts + '</select></div>' +
     '<div class="form-group"><label class="form-label">Standar Flange</label><select class="form-control" id="pop-pn" onchange="calcFlangeTorque_POP()"><option value="16" selected>ISO / EN 1092-1 PN16</option><option value="jis10k">JIS B 2220 \u2014 10K</option><option value="jis16k">JIS B 2220 \u2014 16K</option><option value="ansi150">ANSI / ASME B16.5 \u2014 Class 150</option></select></div>' +
     '<div class="form-group"><label class="form-label">Override Baut</label><div style="display:flex;gap:8px"><select class="form-control" id="pop-bolt-size" style="flex:1"><option value="">-- Ukuran Baut (Otomatis) --</option><option value="M12">M12</option><option value="M16">M16</option><option value="M20">M20</option><option value="M22">M22</option><option value="M24">M24</option><option value="M27">M27</option><option value="M30">M30</option><option value="M33">M33</option><option value="M36">M36</option></select><input type="number" class="form-control" id="pop-bolt-n" placeholder="Jml (Otomatis)" style="flex:1"></div></div>' +
     '<div class="form-group"><label class="form-label">Tekanan Uji (Test Pressure)</label><div style="display:flex;align-items:center"><input type="number" step="0.1" class="form-control" id="pop-ptest" value="2.0" style="flex:1;font-family:monospace;font-weight:bold;color:#4caf50;background:rgba(76,175,80,0.05);border-color:rgba(76,175,80,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)">MPa</span></div></div>' +
-    '<div class="form-group"><label class="form-label">Jenis Gasket</label><select class="form-control" id="pop-gasket" onchange="(function(){var pd=_pop007Defaults[document.getElementById(\'pop-gasket\').value]||{sigma:4};document.getElementById(\'pop-sigma\').value=pd.sigma;})()">'+gasketOpts+'</select></div>' +
+    '<div class="form-group"><label class="form-label">Jenis Gasket</label><select class="form-control" id="pop-gasket" onchange="(function(){var pd=_pop007Defaults[document.getElementById(\'pop-gasket\').value]||{sigma:4};document.getElementById(\'pop-sigma\').value=pd.sigma;})()">' + gasketOpts + '</select></div>' +
     '<div class="form-group"><label class="form-label">Gasket Sealing Stress (\u03c3g)</label><div style="display:flex;align-items:center"><input type="number" step="0.1" class="form-control" id="pop-sigma" value="4.0" style="flex:1;font-family:monospace;font-weight:bold;color:#4caf50;background:rgba(76,175,80,0.05);border-color:rgba(76,175,80,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)">MPa</span></div></div>' +
-    '<div class="form-group"><label class="form-label">Grade Material Baut (% Proof Stress Check)</label><select class="form-control" id="pop-bolt-grade">'+gradeOpts+'</select></div>' +
+    '<div class="form-group"><label class="form-label">Grade Material Baut (% Proof Stress Check)</label><select class="form-control" id="pop-bolt-grade">' + gradeOpts + '</select></div>' +
     '<div class="form-group"><label class="form-label">Lubrikasi / Nut Factor (K)</label><input type="number" step="0.01" class="form-control" id="pop-K" value="0.20"></div>' +
     '<div class="form-group"><label class="form-label">Metode Dimensi Kontak</label><select class="form-control" id="pop-area-method" onchange="document.getElementById(\'pop-area-manual\').style.display=this.value===\'manual\'?\'block\':\'none\'"><option value="auto">Otomatis</option><option value="manual" selected>Manual</option></select></div>' +
     '<div id="pop-area-manual" style="display:block;margin-bottom:16px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px"><div style="text-align:center;margin-bottom:12px">' + _buildPopDimSVG() + '</div><div style="display:flex;gap:12px"><div style="flex:1"><label class="form-label" style="font-size:11px">OD Seal (mm)</label><input type="number" class="form-control" id="pop-od-seal" value="212"></div><div style="flex:1"><label class="form-label" style="font-size:11px">ID Water (mm)</label><input type="number" class="form-control" id="pop-id-water" value="161"></div></div></div>' +
@@ -2223,9 +2223,9 @@ function calcFlangeTorque_POP() {
 
   var fSize = fData.size;
   var n = fData.bolts;
-  
-  if(E('pop-bolt-size') && E('pop-bolt-size').value) fSize = E('pop-bolt-size').value;
-  if(E('pop-bolt-n') && parseInt(E('pop-bolt-n').value)) n = parseInt(E('pop-bolt-n').value);
+
+  if (E('pop-bolt-size') && E('pop-bolt-size').value) fSize = E('pop-bolt-size').value;
+  if (E('pop-bolt-n') && parseInt(E('pop-bolt-n').value)) n = parseInt(E('pop-bolt-n').value);
 
   var d = _boltDiameters[fSize] || 16;
   var od_seal = parseFloat(E('pop-od-seal').value) || 212;
@@ -2247,7 +2247,7 @@ function calcFlangeTorque_POP() {
   // Proof stress check
   var bGradeKey = E('pop-bolt-grade') ? E('pop-bolt-grade').value : 'g88';
   var boltGrade = _boltGrades[bGradeKey] || { yield: 640 };
-  var As = _boltStressAreas[fSize] || ((Math.PI/4) * Math.pow(d*0.8, 2));
+  var As = _boltStressAreas[fSize] || ((Math.PI / 4) * Math.pow(d * 0.8, 2));
   var boltStress = F_b / As; // MPa
   var pctYield = (boltStress / boltGrade.yield) * 100;
   var stressColor = pctYield > 85 ? '#ff5252' : (pctYield < 30 ? '#ffaa00' : '#4caf50');
@@ -2264,48 +2264,48 @@ function calcFlangeTorque_POP() {
   else if (pn === 'ansi150') badgeRefs.push('ASME B16.5');
 
   var html = '';
-  html += '<div class="eng-section"><div class="eng-section-title">'+_gearSvg+' POP 007 Bolt Torque</div>';
+  html += '<div class="eng-section"><div class="eng-section-title">' + _gearSvg + ' POP 007 Bolt Torque</div>';
   html += refBadges(badgeRefs);
 
   html += '<div style="text-align:center;padding:20px 0;background:rgba(76,175,80,.05);border-radius:8px;margin:12px 0">';
   html += '<div style="font-size:12px;color:var(--text2);margin-bottom:4px">Target Torque per Baut</div>';
-  html += '<div style="font-size:36px;font-weight:700;color:#4caf50;font-family:\'Fira Code\',monospace">'+T_target+'<span style="font-size:14px;margin-left:6px;color:var(--text2)">Nm</span></div>';
-  html += '<div style="font-size:11px;color:var(--text2);margin-top:4px">'+T_ftlb+' ft\u00b7lbs</div>';
-  html += '<div style="font-size:10px;color:var(--text2);margin-top:6px;display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> P_test = '+P_test+' MPa &nbsp;|&nbsp; \u03c3g = '+sigma_g.toFixed(1)+' MPa</div>';
+  html += '<div style="font-size:36px;font-weight:700;color:#4caf50;font-family:\'Fira Code\',monospace">' + T_target + '<span style="font-size:14px;margin-left:6px;color:var(--text2)">Nm</span></div>';
+  html += '<div style="font-size:11px;color:var(--text2);margin-top:4px">' + T_ftlb + ' ft\u00b7lbs</div>';
+  html += '<div style="font-size:10px;color:var(--text2);margin-top:6px;display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> P_test = ' + P_test + ' MPa &nbsp;|&nbsp; \u03c3g = ' + sigma_g.toFixed(1) + ' MPa</div>';
   html += '</div>';
 
   html += '<div class="result-grid">';
-  html += '<div class="result-item"><div class="rk">Diameter Pipa</div><div class="rv">DN '+od+'</div></div>';
-  html += '<div class="result-item"><div class="rk">Standar Flange</div><div class="rv">'+pnLabel+'</div></div>';
-  html += '<div class="result-item"><div class="rk">Jumlah & Ukuran Baut</div><div class="rv" style="color:#ffaa00">'+n+' \u00d7 '+fSize+'</div></div>';
-  html += '<div class="result-item"><div class="rk">Nut Factor (K)</div><div class="rv">'+K+'</div></div>';
-  html += '<div class="result-item"><div class="rk">Test Pressure \u00d7 TSF</div><div class="rv">'+P_test.toFixed(1)+' \u00d7 '+TSF.toFixed(1)+'</div></div>';
-  html += '<div class="result-item"><div class="rk">Waterway Area (Awway)</div><div class="rv">'+Math.round(A_wway).toLocaleString()+'<span class="ru"> mm\u00b2</span></div></div>';
-  html += '<div class="result-item"><div class="rk">Gasket Area (Aint)</div><div class="rv">'+Math.round(A_interfacial).toLocaleString()+'<span class="ru"> mm\u00b2</span></div></div>';
-  html += '<div class="result-item"><div class="rk">Total Clamp Force</div><div class="rv">'+(F_total/1000).toFixed(1)+'<span class="ru"> kN</span></div></div>';
-  html += '<div class="result-item"><div class="rk">Force per Bolt (Fb)</div><div class="rv" style="color:#4caf50">'+(F_b/1000).toFixed(2)+'<span class="ru"> kN</span></div></div>';
-  html += '<div class="result-item"><div class="rk">Tensile Stress Area (As)</div><div class="rv">'+As.toFixed(1)+'<span class="ru"> mm\u00b2</span></div></div>';
-  html += '<div class="result-item"><div class="rk">Bolt Stress (Fb / As)</div><div class="rv">'+boltStress.toFixed(1)+'<span class="ru"> MPa</span></div></div>';
-  html += '<div class="result-item" style="border-left:3px solid '+stressColor+'"><div class="rk">Keterpakaian Baut (% Yield)</div><div class="rv" style="color:'+stressColor+'">'+stressIcon+pctYield.toFixed(1)+'<span class="ru"> %</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Diameter Pipa</div><div class="rv">DN ' + od + '</div></div>';
+  html += '<div class="result-item"><div class="rk">Standar Flange</div><div class="rv">' + pnLabel + '</div></div>';
+  html += '<div class="result-item"><div class="rk">Jumlah & Ukuran Baut</div><div class="rv" style="color:#ffaa00">' + n + ' \u00d7 ' + fSize + '</div></div>';
+  html += '<div class="result-item"><div class="rk">Nut Factor (K)</div><div class="rv">' + K + '</div></div>';
+  html += '<div class="result-item"><div class="rk">Test Pressure \u00d7 TSF</div><div class="rv">' + P_test.toFixed(1) + ' \u00d7 ' + TSF.toFixed(1) + '</div></div>';
+  html += '<div class="result-item"><div class="rk">Waterway Area (Awway)</div><div class="rv">' + Math.round(A_wway).toLocaleString() + '<span class="ru"> mm\u00b2</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Gasket Area (Aint)</div><div class="rv">' + Math.round(A_interfacial).toLocaleString() + '<span class="ru"> mm\u00b2</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Total Clamp Force</div><div class="rv">' + (F_total / 1000).toFixed(1) + '<span class="ru"> kN</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Force per Bolt (Fb)</div><div class="rv" style="color:#4caf50">' + (F_b / 1000).toFixed(2) + '<span class="ru"> kN</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Tensile Stress Area (As)</div><div class="rv">' + As.toFixed(1) + '<span class="ru"> mm\u00b2</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Bolt Stress (Fb / As)</div><div class="rv">' + boltStress.toFixed(1) + '<span class="ru"> MPa</span></div></div>';
+  html += '<div class="result-item" style="border-left:3px solid ' + stressColor + '"><div class="rk">Keterpakaian Baut (% Yield)</div><div class="rv" style="color:' + stressColor + '">' + stressIcon + pctYield.toFixed(1) + '<span class="ru"> %</span></div></div>';
   html += '</div>';
 
   html += '<div style="margin-top:12px;padding:12px;background:rgba(76,175,80,.04);border:1px solid rgba(76,175,80,.1);border-radius:7px;font-size:11px;color:var(--text2);line-height:1.8;font-family:monospace">';
   html += '<div style="font-weight:600;color:#4caf50;margin-bottom:8px;font-size:10px;letter-spacing:0.5px;font-family:sans-serif">RUMUS POP 007 Appendix B (Bolt Load)</div>';
   html += '<div>F_hydro = P_test \u00d7 TSF \u00d7 A_wway</div>';
-  html += '<div>F_hydro = '+P_test+' \u00d7 '+TSF+' \u00d7 '+Math.round(A_wway).toLocaleString()+' = <span style="color:#4caf50">'+(F_hydro/1000).toFixed(1)+' kN</span></div>';
+  html += '<div>F_hydro = ' + P_test + ' \u00d7 ' + TSF + ' \u00d7 ' + Math.round(A_wway).toLocaleString() + ' = <span style="color:#4caf50">' + (F_hydro / 1000).toFixed(1) + ' kN</span></div>';
   html += '<div style="margin-top:6px">F_gasket = \u03c3_g \u00d7 A_interfacial</div>';
-  html += '<div>F_gasket = '+sigma_g+' \u00d7 '+Math.round(A_interfacial).toLocaleString()+' = <span style="color:#4caf50">'+(F_gasket/1000).toFixed(1)+' kN</span></div>';
+  html += '<div>F_gasket = ' + sigma_g + ' \u00d7 ' + Math.round(A_interfacial).toLocaleString() + ' = <span style="color:#4caf50">' + (F_gasket / 1000).toFixed(1) + ' kN</span></div>';
   html += '<div style="margin-top:6px">F_b = (F_hydro + F_gasket) / n</div>';
-  html += '<div>F_b = ('+(F_hydro/1000).toFixed(1)+' + '+(F_gasket/1000).toFixed(1)+') / '+n+' = <strong style="color:#4caf50">'+(F_b/1000).toFixed(2)+' kN</strong></div>';
+  html += '<div>F_b = (' + (F_hydro / 1000).toFixed(1) + ' + ' + (F_gasket / 1000).toFixed(1) + ') / ' + n + ' = <strong style="color:#4caf50">' + (F_b / 1000).toFixed(2) + ' kN</strong></div>';
   html += '<div style="margin-top:6px">T = K \u00d7 d \u00d7 F_b / 1000</div>';
-  html += '<div>T = '+K+' \u00d7 '+d+' mm \u00d7 '+(F_b/1000).toFixed(2)+' kN / 1000 = <strong style="color:#4caf50">'+T_target+' Nm</strong></div>';
+  html += '<div>T = ' + K + ' \u00d7 ' + d + ' mm \u00d7 ' + (F_b / 1000).toFixed(2) + ' kN / 1000 = <strong style="color:#4caf50">' + T_target + ' Nm</strong></div>';
   html += '</div>';
   html += '</div>';
 
   html += _buildFlangeDiagramSVG('pop', {
     accentColor: '#4caf50',
-    fb: (F_b/1000).toFixed(2) + ' kN',
-    fhydro: (F_hydro/1000).toFixed(1) + ' kN',
+    fb: (F_b / 1000).toFixed(2) + ' kN',
+    fhydro: (F_hydro / 1000).toFixed(1) + ' kN',
     fgasket: sigma_g.toFixed(1) + ' MPa'
   });
 
@@ -2314,15 +2314,15 @@ function calcFlangeTorque_POP() {
   html += '<div style="overflow-x:auto;margin:12px 0"><table style="width:100%;border-collapse:collapse;font-size:12px;font-family:\'Fira Code\',monospace">';
   html += '<thead><tr style="border-bottom:2px solid rgba(76,175,80,.2)"><th style="text-align:left;padding:8px 10px;color:#4caf50;font-weight:600;font-size:10px">PASS</th><th style="text-align:center;padding:8px 10px;color:#4caf50;font-weight:600;font-size:10px">% TARGET</th><th style="text-align:right;padding:8px 10px;color:#4caf50;font-weight:600;font-size:10px">TORSI (Nm)</th><th style="text-align:right;padding:8px 10px;color:#4caf50;font-weight:600;font-size:10px">TORSI (ft\u00b7lbs)</th></tr></thead><tbody>';
   var popPasses = [
-    {label:'Pass 1',pct:'30%',nm:pass1},
-    {label:'Pass 2',pct:'60%',nm:pass2},
-    {label:'Pass 3 (Final)',pct:'100%',nm:pass3}
+    { label: 'Pass 1', pct: '30%', nm: pass1 },
+    { label: 'Pass 2', pct: '60%', nm: pass2 },
+    { label: 'Pass 3 (Final)', pct: '100%', nm: pass3 }
   ];
-  popPasses.forEach(function(p,i) {
-    var bg = i===2 ? 'rgba(76,175,80,.06)' : 'transparent';
-    var fw = i===2 ? '700' : '400';
-    var tc = i===2 ? '#4caf50' : '#e0e0e0';
-    html += '<tr style="background:'+bg+';border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:8px 10px;color:'+tc+'">'+p.label+'</td><td style="text-align:center;padding:8px 10px;color:var(--text2)">'+p.pct+'</td><td style="text-align:right;padding:8px 10px;color:'+tc+';font-weight:'+fw+'">'+p.nm+'</td><td style="text-align:right;padding:8px 10px;color:var(--text2)">'+(p.nm*0.7376).toFixed(1)+'</td></tr>';
+  popPasses.forEach(function (p, i) {
+    var bg = i === 2 ? 'rgba(76,175,80,.06)' : 'transparent';
+    var fw = i === 2 ? '700' : '400';
+    var tc = i === 2 ? '#4caf50' : '#e0e0e0';
+    html += '<tr style="background:' + bg + ';border-bottom:1px solid rgba(255,255,255,.04)"><td style="padding:8px 10px;color:' + tc + '">' + p.label + '</td><td style="text-align:center;padding:8px 10px;color:var(--text2)">' + p.pct + '</td><td style="text-align:right;padding:8px 10px;color:' + tc + ';font-weight:' + fw + '">' + p.nm + '</td><td style="text-align:right;padding:8px 10px;color:var(--text2)">' + (p.nm * 0.7376).toFixed(1) + '</td></tr>';
   });
   html += '</tbody></table></div>';
 
