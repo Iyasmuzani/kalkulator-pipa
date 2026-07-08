@@ -1778,6 +1778,100 @@ function _buildStarPatternHTML(nBolts, passDesc) {
   return h;
 }
 
+function _buildFlangeDiagramSVG(type, params) {
+  var ac = params.accentColor || '#00e5ff';
+  var fbLabel = type === 'pop' ? 'Bolt Load (Fb)' : 'Total Load (W_m)';
+  var hydroLabel = type === 'pop' ? 'Hydrostatic Force' : 'Operating Force';
+  var gasketLabel = type === 'pop' ? 'Gasket Sealing' : 'Gasket Seating';
+  var fbVal = params.fb || '';
+  var hydroVal = params.fhydro || '';
+  var gasketVal = params.fgasket || '';
+
+  return `
+  <div style="background:rgba(13,27,42,0.6); border-radius:12px; margin:16px 0; padding:16px 12px; border:1px solid rgba(255,255,255,0.05)">
+    <div style="text-align:center; font-size:11px; font-weight:600; color:var(--text2); margin-bottom:12px; letter-spacing:0.5px">FREE BODY DIAGRAM \u2014 FLANGE JOINT</div>
+    <svg viewBox="0 0 400 220" style="width:100%; max-width:500px; margin:0 auto; display:block; overflow:hidden;">
+      <defs>
+        <pattern id="pe-hatch-${type}" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+          <line x1="0" y1="0" x2="0" y2="8" stroke="rgba(0, 229, 255, 0.25)" stroke-width="1.5" />
+        </pattern>
+        <pattern id="steel-hatch-${type}" width="6" height="6" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+          <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(255, 255, 255, 0.15)" stroke-width="1" />
+        </pattern>
+      </defs>
+
+      <!-- Centerline -->
+      <line x1="10" y1="180" x2="390" y2="180" stroke="rgba(255,255,255,0.2)" stroke-dasharray="10,6" stroke-width="1.5" />
+      <text x="200" y="195" fill="rgba(255,255,255,0.4)" font-size="10" font-family="monospace" text-anchor="middle" letter-spacing="2">CENTERLINE (PIPE AXIS)</text>
+
+      <!-- Internal fluid -->
+      <rect x="10" y="140" width="380" height="40" fill="rgba(0, 176, 255, 0.1)" />
+
+      <!-- LEFT PE PIPE & STUB END -->
+      <rect x="-10" y="100" width="160" height="40" fill="url(#pe-hatch-${type})" stroke="#00e5ff" stroke-width="2" />
+      <path d="M 150 140 L 150 100 Q 160 100 170 50 L 195 50 L 195 140 Z" fill="url(#pe-hatch-${type})" stroke="#00e5ff" stroke-width="2" stroke-linejoin="round" />
+      
+      <!-- RIGHT PE PIPE & STUB END -->
+      <rect x="250" y="100" width="160" height="40" fill="url(#pe-hatch-${type})" stroke="#00e5ff" stroke-width="2" />
+      <path d="M 250 140 L 250 100 Q 240 100 230 50 L 205 50 L 205 140 Z" fill="url(#pe-hatch-${type})" stroke="#00e5ff" stroke-width="2" stroke-linejoin="round" />
+      
+      <!-- BACKING FLANGES -->
+      <rect x="140" y="15" width="28" height="110" fill="url(#steel-hatch-${type})" stroke="#a0aab5" stroke-width="1.5" rx="3" />
+      <rect x="232" y="15" width="28" height="110" fill="url(#steel-hatch-${type})" stroke="#a0aab5" stroke-width="1.5" rx="3" />
+      
+      <!-- GASKET -->
+      <rect x="195" y="45" width="10" height="95" fill="#ff5252" stroke="#d50000" stroke-width="1.5" />
+      
+      <!-- BOLT -->
+      <rect x="125" y="25" width="150" height="12" fill="#e0e0e0" stroke="#757575" stroke-width="1.5" />
+      <polygon points="125,20 115,22 115,40 125,42" fill="#bdbdbd" stroke="#757575" stroke-width="1.5" stroke-linejoin="round" />
+      <polygon points="275,20 285,22 285,40 275,42" fill="#bdbdbd" stroke="#757575" stroke-width="1.5" stroke-linejoin="round" />
+      <line x1="260" y1="25" x2="260" y2="37" stroke="#757575" stroke-width="1" />
+      <line x1="265" y1="25" x2="265" y2="37" stroke="#757575" stroke-width="1" />
+      <line x1="270" y1="25" x2="270" y2="37" stroke="#757575" stroke-width="1" />
+
+      <!-- ARROWS: 1. Bolt Force (Fb) pulling flanges together -->
+      <g fill="${ac}" font-family="monospace" font-size="10" font-weight="bold">
+        <path d="M 120 12 L 140 12 L 135 7 M 140 12 L 135 17" stroke="${ac}" stroke-width="2" fill="none" />
+        <path d="M 280 12 L 260 12 L 265 7 M 260 12 L 265 17" stroke="${ac}" stroke-width="2" fill="none" />
+        <text x="200" y="10" text-anchor="middle">${fbLabel}</text>
+        <text x="200" y="22" text-anchor="middle">${fbVal}</text>
+        <rect x="145" y="25" width="110" height="12" fill="${ac}">
+          <animate attributeName="opacity" values="0;0.5;0" dur="2s" repeatCount="indefinite" />
+        </rect>
+      </g>
+      
+      <!-- ARROWS: 2. Gasket Stress pushing back -->
+      <g fill="#ff5252" font-family="monospace" font-size="9" font-weight="bold">
+        <path d="M 190 70 L 180 70 L 184 66 M 180 70 L 184 74" stroke="#ff5252" stroke-width="1.5" fill="none" />
+        <path d="M 190 90 L 180 90 L 184 86 M 180 90 L 184 94" stroke="#ff5252" stroke-width="1.5" fill="none" />
+        <path d="M 210 70 L 220 70 L 216 66 M 220 70 L 216 74" stroke="#ff5252" stroke-width="1.5" fill="none" />
+        <path d="M 210 90 L 220 90 L 216 86 M 220 90 L 216 94" stroke="#ff5252" stroke-width="1.5" fill="none" />
+        <text x="200" y="115" text-anchor="middle">${gasketLabel}</text>
+        <text x="200" y="128" text-anchor="middle">${gasketVal}</text>
+        <rect x="195" y="45" width="10" height="95" fill="#ff5252" opacity="0">
+          <animate attributeName="opacity" values="0;0.6;0" dur="2s" begin="1s" repeatCount="indefinite" />
+        </rect>
+      </g>
+
+      <!-- ARROWS: 3. Hydrostatic End Force -->
+      <g fill="#00b0ff" font-family="monospace" font-size="9" font-weight="bold">
+        <path d="M 170 160 L 150 160 L 155 156 M 150 160 L 155 164" stroke="#00b0ff" stroke-width="2" fill="none">
+          <animate attributeName="transform" type="translate" values="0,0; -5,0; 0,0" dur="1.5s" repeatCount="indefinite" />
+        </path>
+        <path d="M 230 160 L 250 160 L 245 156 M 250 160 L 245 164" stroke="#00b0ff" stroke-width="2" fill="none">
+          <animate attributeName="transform" type="translate" values="0,0; 5,0; 0,0" dur="1.5s" repeatCount="indefinite" />
+        </path>
+        <text x="200" y="153" text-anchor="middle">${hydroLabel}</text>
+        <text x="200" y="166" text-anchor="middle">${hydroVal}</text>
+      </g>
+    </svg>
+    <div style="font-size:10px; color:var(--text2); text-align:center; margin-top:8px; line-height:1.5">
+      Gaya hidrostatik dan reaksi gasket memberikan dorongan keluar <b>melawan</b><br>tarikan dari baut yang mengompresi flange.
+    </div>
+  </div>`;
+}
+
 function _buildPnLabel(pn) {
   if (pn === '16') return 'ISO PN16 (EN 1092-1)';
   if (pn === 'jis10k') return 'JIS 10K';
@@ -1924,6 +2018,13 @@ function calcFlangeTorque_ASME() {
   html += '</div>';
   html += '</div>';
 
+  html += _buildFlangeDiagramSVG('asme', {
+    accentColor: '#ff9800',
+    fb: (W_m/1000).toFixed(1) + ' kN',
+    fhydro: (W_m1/1000).toFixed(1) + ' kN',
+    fgasket: (W_m2/1000).toFixed(1) + ' kN'
+  });
+
   // Multi-pass table
   html += '<div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></svg> Prosedur Pengencangan (ASME PCC-1 Legacy Method)</div>';
   html += '<div style="overflow-x:auto;margin:12px 0"><table style="width:100%;border-collapse:collapse;font-size:12px;font-family:\'Fira Code\',monospace">';
@@ -1961,7 +2062,10 @@ function calcFlangeTorque_ASME() {
 function buildFlangeTorqueForm_POP() {
   var gasketOpts = '';
   Object.keys(_gasketTypes).forEach(function(k) {
-    var g = _gasketTypes[k]; var pd = _pop007Defaults[k] || {sigma:5}; var sel = k === 'epdm_ff' ? ' selected' : '';
+    var g = _gasketTypes[k]; 
+    var pd = _pop007Defaults[k] || {sigma:4}; 
+    if (k.indexOf('epdm') >= 0) pd.sigma = 4.0; // Ref: POP007 Worked Example 1 (EDPM = 4MPa)
+    var sel = k === 'epdm_ff' ? ' selected' : '';
     gasketOpts += '<option value="'+k+'"'+sel+'>'+g.name+' (\u03c3g='+pd.sigma+' MPa)</option>';
   });
   var odList = [63,75,90,110,125,140,160,180,200,225,250,280,315,355,400,450,500,560,630,710,800];
@@ -1971,22 +2075,25 @@ function buildFlangeTorqueForm_POP() {
     _buildRefSelector('pop007') +
     '<div class="form-group"><label class="form-label">Diameter Pipa (OD) \u2014 mm</label><select class="form-control" id="pop-od">'+odOpts+'</select></div>' +
     '<div class="form-group"><label class="form-label">Standar Flange</label><select class="form-control" id="pop-pn"><option value="16" selected>ISO / EN 1092-1 PN16</option><option value="jis10k">JIS B 2220 \u2014 10K</option><option value="jis16k">JIS B 2220 \u2014 16K</option><option value="ansi150">ANSI / ASME B16.5 \u2014 Class 150</option></select></div>' +
-    '<div class="form-group"><label class="form-label">Jenis Gasket</label><select class="form-control" id="pop-gasket" onchange="(function(){var pd=_pop007Defaults[document.getElementById(\'pop-gasket\').value];if(pd){document.getElementById(\'pop-sigma\').value=pd.sigma;document.getElementById(\'pop-gasket-hint\').textContent=pd.desc;}})()">'+gasketOpts+'</select><div id="pop-gasket-hint" style="font-size:10px;color:var(--text2);margin-top:4px;padding:4px 8px;background:rgba(255,255,255,.03);border-radius:4px"></div></div>' +
-    '<div class="form-group"><label class="form-label">Target Gasket Stress (\u03c3g)</label><div style="display:flex;align-items:center"><input type="number" step="0.5" class="form-control" id="pop-sigma" value="5.0" style="flex:1;font-family:monospace;font-weight:bold;color:#4caf50;background:rgba(76,175,80,0.05);border-color:rgba(76,175,80,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)">MPa</span></div><div style="font-size:10px;color:var(--text2);margin-top:4px">POP 007 merekomendasikan 5.0 MPa untuk EPDM dan 10.0 MPa untuk PTFE (Table 3).</div></div>' +
-    '<div class="form-group"><label class="form-label">Nut Factor (K)</label><div style="display:flex;align-items:center"><input type="number" step="0.01" class="form-control" id="pop-K" value="0.20" style="flex:1;font-family:monospace;font-weight:bold;color:#4caf50;background:rgba(76,175,80,0.05);border-color:rgba(76,175,80,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)">dimensionless</span></div><div style="font-size:10px;color:var(--text2);margin-top:4px">POP 007: K=0.20 (baut terlumasi standar), K=0.15 (pelumas MoS\u2082/grafit).</div></div>' +
-    '<div class="form-group"><label class="form-label">Metode Perhitungan Area</label><select class="form-control" id="pop-area-method" onchange="document.getElementById(\'pop-area-manual\').style.display=this.value===\'manual\'?\'block\':\'none\'"><option value="auto">Otomatis (Hampiran Area Stub End)</option><option value="manual">Manual (Input Gasket OD & ID)</option></select></div>' +
+    '<div class="form-group"><label class="form-label">Tekanan Uji (Test Pressure)</label><div style="display:flex;align-items:center"><input type="number" step="0.1" class="form-control" id="pop-ptest" value="2.0" style="flex:1;font-family:monospace;font-weight:bold;color:#4caf50;background:rgba(76,175,80,0.05);border-color:rgba(76,175,80,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)">MPa</span></div><div style="font-size:10px;color:var(--text2);margin-top:4px">Tekanan uji hidrostatik sistem pipa (biasanya 1.25x P_operasi). Contoh: PN16 \u2192 P_test = 2.0 MPa.</div></div>' +
+    '<div class="form-group"><label class="form-label">Transient Surge Factor (TSF)</label><div style="display:flex;align-items:center"><input type="number" step="0.1" class="form-control" id="pop-tsf" value="1.0" style="flex:1;font-family:monospace;font-weight:bold;color:#4caf50;background:rgba(76,175,80,0.05);border-color:rgba(76,175,80,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)"></span></div><div style="font-size:10px;color:var(--text2);margin-top:4px">Faktor surge: 1.0 (jika surge tidak signifikan atau ter-cover test pressure), 1.2 (dengan surge).</div></div>' +
+    '<div class="form-group"><label class="form-label">Jenis Gasket</label><select class="form-control" id="pop-gasket" onchange="(function(){var pd=_pop007Defaults[document.getElementById(\'pop-gasket\').value]||{sigma:4};document.getElementById(\'pop-sigma\').value=pd.sigma;})()">'+gasketOpts+'</select></div>' +
+    '<div class="form-group"><label class="form-label">Gasket Sealing Stress (\u03c3g)</label><div style="display:flex;align-items:center"><input type="number" step="0.1" class="form-control" id="pop-sigma" value="4.0" style="flex:1;font-family:monospace;font-weight:bold;color:#4caf50;background:rgba(76,175,80,0.05);border-color:rgba(76,175,80,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)">MPa</span></div><div style="font-size:10px;color:var(--text2);margin-top:4px">POP 007 merekomendasikan ~4.0 MPa untuk EPDM.</div></div>' +
+    '<div class="form-group"><label class="form-label">Nut Factor (K)</label><div style="display:flex;align-items:center"><input type="number" step="0.01" class="form-control" id="pop-K" value="0.20" style="flex:1;font-family:monospace;font-weight:bold;color:#4caf50;background:rgba(76,175,80,0.05);border-color:rgba(76,175,80,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)"></span></div><div style="font-size:10px;color:var(--text2);margin-top:4px">K=0.20 (baut terlumasi ringan), K=0.15 (pelumas molybdenum disulfide/grafit).</div></div>' +
+    '<div class="form-group"><label class="form-label">Metode Dimensi Gasket</label><select class="form-control" id="pop-area-method" onchange="document.getElementById(\'pop-area-manual\').style.display=this.value===\'manual\'?\'block\':\'none\'"><option value="auto">Otomatis (Estimasi dari OD Pipa)</option><option value="manual">Manual (Input Gasket OD & ID)</option></select></div>' +
     '<div id="pop-area-manual" style="display:none;margin-bottom:16px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px"><div style="text-align:center;margin-bottom:12px"><img src="gasket_diagram.png" style="max-width:100%;border-radius:4px;filter:invert(1) hue-rotate(180deg) brightness(1.1) contrast(1.2);mix-blend-mode:screen"></div><div style="display:flex;gap:12px"><div style="flex:1"><label class="form-label" style="font-size:11px">Gasket OD (mm)</label><input type="number" class="form-control" id="pop-gasket-od" value="162"></div><div style="flex:1"><label class="form-label" style="font-size:11px">Gasket ID (mm)</label><input type="number" class="form-control" id="pop-gasket-id" value="110"></div></div></div>' +
     '<button class="calc-btn" onclick="calcFlangeTorque_POP()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Torsi (POP 007)</button>';
 
   E('eng-results').innerHTML = '';
-  var pd0 = _pop007Defaults['epdm_ff']; if(pd0) E('pop-gasket-hint').textContent = pd0.desc;
 }
 
 function calcFlangeTorque_POP() {
   var od = E('pop-od').value;
   var pn = E('pop-pn').value;
   var gasketKey = E('pop-gasket').value;
-  var sigma_g = parseFloat(E('pop-sigma').value) || 5.0;
+  var P_test = parseFloat(E('pop-ptest').value) || 2.0;
+  var TSF = parseFloat(E('pop-tsf').value) || 1.0;
+  var sigma_g = parseFloat(E('pop-sigma').value) || 4.0;
   var K = parseFloat(E('pop-K').value) || 0.20;
 
   var gasket = _gasketTypes[gasketKey];
@@ -1998,27 +2105,42 @@ function calcFlangeTorque_POP() {
   var d = _boltDiameters[fData.size]; if (!d) return;
   var n = fData.bolts;
 
-  // Get gasket area
-  var gasketArea = _flangeGasketArea[od] || 5000;
+  // Get gasket dimensions
+  var gOD, gID;
   var areaMethod = E('pop-area-method') ? E('pop-area-method').value : 'auto';
   if (areaMethod === 'manual') {
-    var gOD = parseFloat(E('pop-gasket-od').value) || 0;
-    var gID = parseFloat(E('pop-gasket-id').value) || 0;
-    if (gOD > gID) gasketArea = (Math.PI / 4) * (Math.pow(gOD, 2) - Math.pow(gID, 2));
+    gOD = parseFloat(E('pop-gasket-od').value) || 162;
+    gID = parseFloat(E('pop-gasket-id').value) || 110;
+  } else {
+    var dims = _flangeGasketDims[od] || {gOD:140, gID:110};
+    gOD = dims.gOD; gID = dims.gID;
   }
 
-  // POP 007: F_b = (A_g × σ_g) / n
-  var F_total = gasketArea * sigma_g;
+  // POP 007 Step 2: Waterway Area (A_wway)
+  // According to POP007: "Waterway Area is defined by the maximum internal diameter of the assembled flanges and gasket"
+  var A_wway = (Math.PI / 4) * Math.pow(gID, 2);
+
+  // POP 007 Step 3: Net Gasket Interfacial Contact Area
+  var A_interfacial = (Math.PI / 4) * (Math.pow(gOD, 2) - Math.pow(gID, 2));
+  if (A_interfacial < 0) A_interfacial = 0;
+
+  // POP 007 Step 5: Bolt Load
+  // Bolt Load = (P_test * TSF * A_wway + sigma_gasket * A_interfacial) / Number of bolts
+  var F_hydro = P_test * TSF * A_wway;
+  var F_gasket = sigma_g * A_interfacial;
+  var F_total = F_hydro + F_gasket;
   var F_b = F_total / n;
 
-  // T = K × d × F_b / 1000
+  // POP 007 Step 8: Estimate Bolt Torque
+  // T = K × d × F_b / 1000  (d is in mm, F_b is in N, dividing by 1000 gives N.m)
   var T_target = K * (d / 1000) * F_b;
   T_target = Math.round(T_target);
   var T_ftlb = (T_target * 0.7376).toFixed(1);
 
-  // Multi-pass (POP 007: finger-tight, 50%, 100%)
-  var pass1 = Math.round(T_target * 0.50);
-  var pass2 = T_target;
+  // Multi-pass (POP 007 Section 2.2: 30%, 50-70%, 100%)
+  var pass1 = Math.round(T_target * 0.30);
+  var pass2 = Math.round(T_target * 0.60);
+  var pass3 = T_target;
 
   var pnLabel = _buildPnLabel(pn);
   var badgeRefs = ['POP 007', 'PIPA Australia'];
@@ -2035,7 +2157,7 @@ function calcFlangeTorque_POP() {
   html += '<div style="font-size:12px;color:var(--text2);margin-bottom:4px">Target Torque per Baut</div>';
   html += '<div style="font-size:36px;font-weight:700;color:#4caf50;font-family:\'Fira Code\',monospace">'+T_target+'<span style="font-size:14px;margin-left:6px;color:var(--text2)">Nm</span></div>';
   html += '<div style="font-size:11px;color:var(--text2);margin-top:4px">'+T_ftlb+' ft\u00b7lbs</div>';
-  html += '<div style="font-size:10px;color:var(--text2);margin-top:6px;display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> \u03c3g = '+sigma_g.toFixed(1)+' MPa &nbsp;|&nbsp; K = '+K+'</div>';
+  html += '<div style="font-size:10px;color:var(--text2);margin-top:6px;display:inline-flex;align-items:center;gap:4px"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> P_test = '+P_test+' MPa &nbsp;|&nbsp; \u03c3g = '+sigma_g.toFixed(1)+' MPa</div>';
   html += '</div>';
 
   // Result grid
@@ -2044,33 +2166,42 @@ function calcFlangeTorque_POP() {
   html += '<div class="result-item"><div class="rk">Standar Flange</div><div class="rv">'+pnLabel+'</div></div>';
   html += '<div class="result-item"><div class="rk">Jumlah & Ukuran Baut</div><div class="rv" style="color:#ffaa00">'+n+' \u00d7 '+fData.size+'</div></div>';
   html += '<div class="result-item"><div class="rk">Nut Factor (K)</div><div class="rv">'+K+'</div></div>';
-  html += '<div class="result-item"><div class="rk">Gasket Contact Area (Ag)</div><div class="rv">'+gasketArea.toLocaleString()+'<span class="ru"> mm\u00b2</span></div></div>';
-  html += '<div class="result-item"><div class="rk">Target Gasket Stress (\u03c3g)</div><div class="rv" style="color:#4caf50">'+sigma_g.toFixed(1)+'<span class="ru"> MPa</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Test Pressure \u00d7 TSF</div><div class="rv">'+P_test.toFixed(1)+' \u00d7 '+TSF.toFixed(1)+'</div></div>';
+  html += '<div class="result-item"><div class="rk">Waterway Area (Awway)</div><div class="rv">'+Math.round(A_wway).toLocaleString()+'<span class="ru"> mm\u00b2</span></div></div>';
+  html += '<div class="result-item"><div class="rk">Gasket Area (Aint)</div><div class="rv">'+Math.round(A_interfacial).toLocaleString()+'<span class="ru"> mm\u00b2</span></div></div>';
   html += '<div class="result-item"><div class="rk">Total Clamp Force</div><div class="rv">'+(F_total/1000).toFixed(1)+'<span class="ru"> kN</span></div></div>';
-  html += '<div class="result-item"><div class="rk">Force per Bolt (Fb)</div><div class="rv">'+(F_b/1000).toFixed(2)+'<span class="ru"> kN</span></div></div>';
-  html += '<div class="result-item"><div class="rk">Gasket</div><div class="rv" style="font-size:11px">'+gasket.name.split('\u2014')[0].trim()+'</div></div>';
+  html += '<div class="result-item"><div class="rk">Force per Bolt (Fb)</div><div class="rv" style="color:#4caf50">'+(F_b/1000).toFixed(2)+'<span class="ru"> kN</span></div></div>';
   html += '</div>';
 
   // Formula display
   html += '<div style="margin-top:12px;padding:12px;background:rgba(76,175,80,.04);border:1px solid rgba(76,175,80,.1);border-radius:7px;font-size:11px;color:var(--text2);line-height:1.8;font-family:monospace">';
-  html += '<div style="font-weight:600;color:#4caf50;margin-bottom:8px;font-size:10px;letter-spacing:0.5px;font-family:sans-serif">RUMUS POP 007 (Target Gasket Stress Method)</div>';
-  html += '<div>F_b = (A_g \u00d7 \u03c3_g) / n</div>';
-  html += '<div>F_b = ('+gasketArea.toLocaleString()+' \u00d7 '+sigma_g.toFixed(1)+') / '+n+'</div>';
-  html += '<div>F_b = <strong style="color:#4caf50">'+(F_b/1000).toFixed(2)+' kN</strong></div>';
+  html += '<div style="font-weight:600;color:#4caf50;margin-bottom:8px;font-size:10px;letter-spacing:0.5px;font-family:sans-serif">RUMUS POP 007 Appendix B (Bolt Load)</div>';
+  html += '<div>F_hydro = P_test \u00d7 TSF \u00d7 A_wway</div>';
+  html += '<div>F_hydro = '+P_test+' \u00d7 '+TSF+' \u00d7 '+Math.round(A_wway).toLocaleString()+' = <span style="color:#4caf50">'+(F_hydro/1000).toFixed(1)+' kN</span></div>';
+  html += '<div style="margin-top:6px">F_gasket = \u03c3_g \u00d7 A_interfacial</div>';
+  html += '<div>F_gasket = '+sigma_g+' \u00d7 '+Math.round(A_interfacial).toLocaleString()+' = <span style="color:#4caf50">'+(F_gasket/1000).toFixed(1)+' kN</span></div>';
+  html += '<div style="margin-top:6px">F_b = (F_hydro + F_gasket) / n</div>';
+  html += '<div>F_b = ('+(F_hydro/1000).toFixed(1)+' + '+(F_gasket/1000).toFixed(1)+') / '+n+' = <strong style="color:#4caf50">'+(F_b/1000).toFixed(2)+' kN</strong></div>';
   html += '<div style="margin-top:6px">T = K \u00d7 d \u00d7 F_b / 1000</div>';
-  html += '<div>T = '+K+' \u00d7 '+d+' mm \u00d7 '+(F_b/1000).toFixed(2)+' kN / 1000</div>';
-  html += '<div>T = <strong style="color:#4caf50">'+T_target+' Nm</strong></div>';
+  html += '<div>T = '+K+' \u00d7 '+d+' mm \u00d7 '+(F_b/1000).toFixed(2)+' kN / 1000 = <strong style="color:#4caf50">'+T_target+' Nm</strong></div>';
   html += '</div>';
   html += '</div>';
 
+  html += _buildFlangeDiagramSVG('pop', {
+    accentColor: '#4caf50',
+    fb: (F_b/1000).toFixed(2) + ' kN',
+    fhydro: (F_hydro/1000).toFixed(1) + ' kN',
+    fgasket: sigma_g.toFixed(1) + ' MPa'
+  });
+
   // Multi-pass table
-  html += '<div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></svg> Prosedur Pengencangan (POP 007 Section 5)</div>';
+  html += '<div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></svg> Prosedur Pengencangan (POP 007 Section 2.2)</div>';
   html += '<div style="overflow-x:auto;margin:12px 0"><table style="width:100%;border-collapse:collapse;font-size:12px;font-family:\'Fira Code\',monospace">';
   html += '<thead><tr style="border-bottom:2px solid rgba(76,175,80,.2)"><th style="text-align:left;padding:8px 10px;color:#4caf50;font-weight:600;font-size:10px">PASS</th><th style="text-align:center;padding:8px 10px;color:#4caf50;font-weight:600;font-size:10px">% TARGET</th><th style="text-align:right;padding:8px 10px;color:#4caf50;font-weight:600;font-size:10px">TORSI (Nm)</th><th style="text-align:right;padding:8px 10px;color:#4caf50;font-weight:600;font-size:10px">TORSI (ft\u00b7lbs)</th></tr></thead><tbody>';
   var popPasses = [
-    {label:'Pass 1 \u2014 Finger-tight (Snug)',pct:'Snug',nm:Math.round(T_target*0.10)},
-    {label:'Pass 2 \u2014 50%',pct:'50%',nm:pass1},
-    {label:'Pass 3 \u2014 Final (100%)',pct:'100%',nm:pass2}
+    {label:'Pass 1',pct:'30%',nm:pass1},
+    {label:'Pass 2',pct:'60%',nm:pass2},
+    {label:'Pass 3 (Final)',pct:'100%',nm:pass3}
   ];
   popPasses.forEach(function(p,i) {
     var bg = i===2 ? 'rgba(76,175,80,.06)' : 'transparent';
@@ -2081,15 +2212,11 @@ function calcFlangeTorque_POP() {
   html += '</tbody></table></div>';
 
   // Star pattern
-  html += _buildStarPatternHTML(n, 'Ulangi urutan: Snug \u2192 50% \u2192 100%');
+  html += _buildStarPatternHTML(n, 'Ulangi urutan: 30% \u2192 60% \u2192 100%');
   html += '</div>';
 
   // Warnings
-  html += smartWarn('info', 'POP 007 merekomendasikan pengencangan dengan <strong>kunci torsi terkalibrasi</strong> dalam pola menyilang. Setelah <strong>24 jam</strong>, lakukan re-torque ke 100% karena relaksasi material PE.', 'POP 007 \u00a75.3');
-
-  if (sigma_g > 7.0 && gasketKey !== 'ptfe') {
-    html += smartWarn('caution', 'Target gasket stress <strong>'+sigma_g.toFixed(1)+' MPa</strong> melebihi batas aman HDPE (7 MPa). Pastikan desain stub end dapat menahan tekanan ini tanpa deformasi plastis.', 'POP 007 Table 3');
-  }
+  html += smartWarn('info', 'POP 007 merekomendasikan pengencangan dalam pola silang. Setelah <strong>4 jam</strong>, re-torque ke 100%. Lakukan lagi setelah <strong>12-24 jam</strong> untuk kompensasi relaksasi PE (creep).', 'POP 007 \u00a72.2');
 
   E('eng-results').innerHTML = html;
   if (typeof animateValues === 'function') animateValues();
