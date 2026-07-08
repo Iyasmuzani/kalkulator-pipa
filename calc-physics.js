@@ -1778,6 +1778,99 @@ function _buildStarPatternHTML(nBolts, passDesc) {
   return h;
 }
 
+function _buildPopDimSVG() {
+  return `
+<svg viewBox="0 0 350 160" style="width:100%; max-width:400px; margin:0 auto; display:block; background:rgba(0,0,0,0.15); border-radius:8px; border:1px solid rgba(255,255,255,0.05); overflow:hidden;">
+  <defs>
+    <pattern id="hatch-pop-svg" width="6" height="6" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(0, 229, 255, 0.2)" stroke-width="1.5" />
+    </pattern>
+    <marker id="arrow-pop1" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4caf50" />
+    </marker>
+    <marker id="arrow-pop2" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#00b0ff" />
+    </marker>
+  </defs>
+
+  <!-- Centerline -->
+  <line x1="10" y1="145" x2="340" y2="145" stroke="rgba(255,255,255,0.3)" stroke-dasharray="6,4" stroke-width="1.5"/>
+  <text x="175" y="157" fill="rgba(255,255,255,0.4)" font-size="9" font-family="monospace" text-anchor="middle">CENTERLINE</text>
+
+  <!-- Left Flange (PE) -->
+  <path d="M 160 110 L 160 50 L 140 50 L 140 80 Q 130 80 120 80 L 10 80 L 10 110 Z" fill="url(#hatch-pop-svg)" stroke="#00e5ff" stroke-width="1.5" stroke-linejoin="round"/>
+  
+  <!-- Right Flange (PE) -->
+  <path d="M 170 100 L 170 30 L 190 30 L 190 80 Q 200 80 210 80 L 340 80 L 340 100 Z" fill="url(#hatch-pop-svg)" stroke="#00e5ff" stroke-width="1.5" stroke-linejoin="round"/>
+  
+  <!-- Gasket -->
+  <rect x="160" y="20" width="10" height="100" fill="rgba(255,82,82,0.8)" stroke="#ff5252" stroke-width="1"/>
+
+  <!-- Dim lines & Arrows for OD Sealing (Minimum OD = y=50) -->
+  <line x1="130" y1="50" x2="160" y2="50" stroke="#4caf50" stroke-dasharray="2,2"/>
+  <line x1="135" y1="145" x2="135" y2="50" stroke="#4caf50" stroke-width="1.5" marker-end="url(#arrow-pop1)" marker-start="url(#arrow-pop1)"/>
+  <text x="130" y="45" fill="#4caf50" font-size="10" font-family="sans-serif" font-weight="bold" text-anchor="end">OD Sealing Surface</text>
+  <text x="130" y="58" fill="#4caf50" font-size="8" font-family="sans-serif" text-anchor="end">(Minimum OD)</text>
+
+  <!-- Dim lines & Arrows for ID Waterway (Maximum ID = y=100) -->
+  <line x1="170" y1="100" x2="220" y2="100" stroke="#00b0ff" stroke-dasharray="2,2"/>
+  <line x1="210" y1="145" x2="210" y2="100" stroke="#00b0ff" stroke-width="1.5" marker-end="url(#arrow-pop2)" marker-start="url(#arrow-pop2)"/>
+  <text x="215" y="105" fill="#00b0ff" font-size="10" font-family="sans-serif" font-weight="bold">ID Waterway</text>
+  <text x="215" y="118" fill="#00b0ff" font-size="8" font-family="sans-serif">(Maximum ID)</text>
+  
+  <!-- Animating overlapping area -->
+  <rect x="160" y="50" width="10" height="50" fill="#4caf50" opacity="0">
+    <animate attributeName="opacity" values="0;0.5;0" dur="2.5s" repeatCount="indefinite" />
+  </rect>
+  <text x="175" y="75" fill="#4caf50" font-size="9" opacity="0" font-weight="bold">
+    <tspan x="180" dy="0">Area</tspan>
+    <tspan x="180" dy="12">Kontak</tspan>
+    <animate attributeName="opacity" values="0;1;0" dur="2.5s" repeatCount="indefinite" />
+  </text>
+</svg>
+  `;
+}
+
+function _buildAsmeDimSVG() {
+  return `
+<svg viewBox="0 0 350 160" style="width:100%; max-width:400px; margin:0 auto; display:block; background:rgba(0,0,0,0.15); border-radius:8px; border:1px solid rgba(255,255,255,0.05); overflow:hidden;">
+  <defs>
+    <pattern id="hatch-asme-svg" width="6" height="6" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(255, 152, 0, 0.2)" stroke-width="1.5" />
+    </pattern>
+    <marker id="arrow-asme1" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ff9800" />
+    </marker>
+  </defs>
+
+  <!-- Centerline -->
+  <line x1="10" y1="145" x2="340" y2="145" stroke="rgba(255,255,255,0.3)" stroke-dasharray="6,4" stroke-width="1.5"/>
+  <text x="175" y="157" fill="rgba(255,255,255,0.4)" font-size="9" font-family="monospace" text-anchor="middle">CENTERLINE</text>
+
+  <!-- Flanges (simplified) -->
+  <path d="M 160 110 L 160 30 L 10 30 L 10 110 Z" fill="url(#hatch-asme-svg)" stroke="#ff9800" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M 170 110 L 170 30 L 340 30 L 340 110 Z" fill="url(#hatch-asme-svg)" stroke="#ff9800" stroke-width="1.5" stroke-linejoin="round"/>
+  
+  <!-- Gasket -->
+  <rect x="160" y="50" width="10" height="60" fill="rgba(255,82,82,0.8)" stroke="#ff5252" stroke-width="1"/>
+
+  <!-- Dim lines & Arrows for Gasket OD (y=50) -->
+  <line x1="170" y1="50" x2="220" y2="50" stroke="#ff9800" stroke-dasharray="2,2"/>
+  <line x1="210" y1="145" x2="210" y2="50" stroke="#ff9800" stroke-width="1.5" marker-end="url(#arrow-asme1)" marker-start="url(#arrow-asme1)"/>
+  <text x="215" y="60" fill="#ff9800" font-size="10" font-family="sans-serif" font-weight="bold">Gasket OD</text>
+
+  <!-- Dim lines & Arrows for Gasket ID (y=110) -->
+  <line x1="170" y1="110" x2="260" y2="110" stroke="#ff9800" stroke-dasharray="2,2"/>
+  <line x1="250" y1="145" x2="250" y2="110" stroke="#ff9800" stroke-width="1.5" marker-end="url(#arrow-asme1)" marker-start="url(#arrow-asme1)"/>
+  <text x="255" y="115" fill="#ff9800" font-size="10" font-family="sans-serif" font-weight="bold">Gasket ID</text>
+  
+  <rect x="160" y="50" width="10" height="60" fill="#ff9800" opacity="0">
+    <animate attributeName="opacity" values="0;0.6;0" dur="2s" repeatCount="indefinite" />
+  </rect>
+</svg>
+  `;
+}
+
 function _buildFlangeDiagramSVG(type, params) {
   var ac = params.accentColor || '#00e5ff';
   var fbLabel = type === 'pop' ? 'Bolt Load (Fb)' : 'Total Load (W_m)';
@@ -1904,7 +1997,7 @@ function buildFlangeTorqueForm_ASME() {
     '<div class="form-group"><label class="form-label">Jenis Gasket</label><select class="form-control" id="asme-gasket" onchange="(function(){var ad=_asmeGasketData[document.getElementById(\'asme-gasket\').value];if(ad)document.getElementById(\'asme-gasket-hint\').textContent=ad.desc;})()">'+gasketOpts+'</select><div id="asme-gasket-hint" style="font-size:10px;color:var(--text2);margin-top:4px;padding:4px 8px;background:rgba(255,255,255,.03);border-radius:4px"></div></div>' +
     '<div class="form-group"><label class="form-label">Material Baut</label><select class="form-control" id="asme-bolt" onchange="(function(){var m=_boltMaterials[document.getElementById(\'asme-bolt\').value];if(m)document.getElementById(\'asme-bolt-hint\').textContent=m.desc||m.name;})()">'+boltOpts+'</select><div id="asme-bolt-hint" style="font-size:10px;color:var(--text2);margin-top:4px;padding:4px 8px;background:rgba(255,255,255,.03);border-radius:4px"></div></div>' +
     '<div class="form-group"><label class="form-label">Metode Dimensi Gasket</label><select class="form-control" id="asme-area-method" onchange="document.getElementById(\'asme-area-manual\').style.display=this.value===\'manual\'?\'block\':\'none\'"><option value="auto">Otomatis (Estimasi dari OD Pipa)</option><option value="manual">Manual (Input Gasket OD & ID)</option></select></div>' +
-    '<div id="asme-area-manual" style="display:none;margin-bottom:16px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px"><div style="text-align:center;margin-bottom:12px"><img src="gasket_diagram.png" style="max-width:100%;border-radius:4px;filter:invert(1) hue-rotate(180deg) brightness(1.1) contrast(1.2);mix-blend-mode:screen"></div><div style="display:flex;gap:12px"><div style="flex:1"><label class="form-label" style="font-size:11px">Gasket OD (mm)</label><input type="number" class="form-control" id="asme-gasket-od" value="162"></div><div style="flex:1"><label class="form-label" style="font-size:11px">Gasket ID (mm)</label><input type="number" class="form-control" id="asme-gasket-id" value="110"></div></div></div>' +
+    '<div id="asme-area-manual" style="display:none;margin-bottom:16px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px"><div style="text-align:center;margin-bottom:12px">' + _buildAsmeDimSVG() + '</div><div style="display:flex;gap:12px"><div style="flex:1"><label class="form-label" style="font-size:11px">Gasket OD (mm)</label><input type="number" class="form-control" id="asme-gasket-od" value="162"></div><div style="flex:1"><label class="form-label" style="font-size:11px">Gasket ID (mm)</label><input type="number" class="form-control" id="asme-gasket-id" value="110"></div></div></div>' +
     '<button class="calc-btn" onclick="calcFlangeTorque_ASME()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Torsi (ASME PCC-1)</button>';
 
   E('eng-results').innerHTML = '';
@@ -2080,8 +2173,8 @@ function buildFlangeTorqueForm_POP() {
     '<div class="form-group"><label class="form-label">Jenis Gasket</label><select class="form-control" id="pop-gasket" onchange="(function(){var pd=_pop007Defaults[document.getElementById(\'pop-gasket\').value]||{sigma:4};document.getElementById(\'pop-sigma\').value=pd.sigma;})()">'+gasketOpts+'</select></div>' +
     '<div class="form-group"><label class="form-label">Gasket Sealing Stress (\u03c3g)</label><div style="display:flex;align-items:center"><input type="number" step="0.1" class="form-control" id="pop-sigma" value="4.0" style="flex:1;font-family:monospace;font-weight:bold;color:#4caf50;background:rgba(76,175,80,0.05);border-color:rgba(76,175,80,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)">MPa</span></div><div style="font-size:10px;color:var(--text2);margin-top:4px">POP 007 merekomendasikan ~4.0 MPa untuk EPDM.</div></div>' +
     '<div class="form-group"><label class="form-label">Nut Factor (K)</label><div style="display:flex;align-items:center"><input type="number" step="0.01" class="form-control" id="pop-K" value="0.20" style="flex:1;font-family:monospace;font-weight:bold;color:#4caf50;background:rgba(76,175,80,0.05);border-color:rgba(76,175,80,0.3)"><span style="margin-left:8px;font-size:12px;color:var(--text2)"></span></div><div style="font-size:10px;color:var(--text2);margin-top:4px">K=0.20 (baut terlumasi ringan), K=0.15 (pelumas molybdenum disulfide/grafit).</div></div>' +
-    '<div class="form-group"><label class="form-label">Metode Dimensi Gasket</label><select class="form-control" id="pop-area-method" onchange="document.getElementById(\'pop-area-manual\').style.display=this.value===\'manual\'?\'block\':\'none\'"><option value="auto">Otomatis (Estimasi dari OD Pipa)</option><option value="manual">Manual (Input Gasket OD & ID)</option></select></div>' +
-    '<div id="pop-area-manual" style="display:none;margin-bottom:16px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px"><div style="text-align:center;margin-bottom:12px"><img src="gasket_diagram.png" style="max-width:100%;border-radius:4px;filter:invert(1) hue-rotate(180deg) brightness(1.1) contrast(1.2);mix-blend-mode:screen"></div><div style="display:flex;gap:12px"><div style="flex:1"><label class="form-label" style="font-size:11px">Gasket OD (mm)</label><input type="number" class="form-control" id="pop-gasket-od" value="162"></div><div style="flex:1"><label class="form-label" style="font-size:11px">Gasket ID (mm)</label><input type="number" class="form-control" id="pop-gasket-id" value="110"></div></div></div>' +
+    '<div class="form-group"><label class="form-label">Metode Dimensi Kontak (Area)</label><select class="form-control" id="pop-area-method" onchange="document.getElementById(\'pop-area-manual\').style.display=this.value===\'manual\'?\'block\':\'none\'"><option value="auto">Otomatis (Estimasi Kasar dari DN)</option><option value="manual" selected>Manual (Input OD Sealing & ID Waterway)</option></select></div>' +
+    '<div id="pop-area-manual" style="display:block;margin-bottom:16px;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px"><div style="text-align:center;margin-bottom:12px">' + _buildPopDimSVG() + '</div><div style="display:flex;gap:12px"><div style="flex:1"><label class="form-label" style="font-size:11px">OD Sealing Surface (mm)</label><input type="number" class="form-control" id="pop-od-seal" value="212"><div style="font-size:9px;color:var(--text2);margin-top:4px">Nilai MINIMUM dari OD Flange, Backing Ring, & Gasket.</div></div><div style="flex:1"><label class="form-label" style="font-size:11px">ID Waterway (mm)</label><input type="number" class="form-control" id="pop-id-water" value="161"><div style="font-size:9px;color:var(--text2);margin-top:4px">Nilai MAXIMUM dari ID Flange, Backing Ring, & Gasket.</div></div></div></div>' +
     '<button class="calc-btn" onclick="calcFlangeTorque_POP()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Hitung Torsi (POP 007)</button>';
 
   E('eng-results').innerHTML = '';
@@ -2092,7 +2185,7 @@ function calcFlangeTorque_POP() {
   var pn = E('pop-pn').value;
   var gasketKey = E('pop-gasket').value;
   var P_test = parseFloat(E('pop-ptest').value) || 2.0;
-  var TSF = parseFloat(E('pop-tsf').value) || 1.0;
+  var TSF = parseFloat(E('pop-tsf').value) || 1.2;
   var sigma_g = parseFloat(E('pop-sigma').value) || 4.0;
   var K = parseFloat(E('pop-K').value) || 0.20;
 
@@ -2105,23 +2198,23 @@ function calcFlangeTorque_POP() {
   var d = _boltDiameters[fData.size]; if (!d) return;
   var n = fData.bolts;
 
-  // Get gasket dimensions
-  var gOD, gID;
-  var areaMethod = E('pop-area-method') ? E('pop-area-method').value : 'auto';
+  // Get dimensions for area calculation
+  var od_seal, id_water;
+  var areaMethod = E('pop-area-method') ? E('pop-area-method').value : 'manual';
   if (areaMethod === 'manual') {
-    gOD = parseFloat(E('pop-gasket-od').value) || 162;
-    gID = parseFloat(E('pop-gasket-id').value) || 110;
+    od_seal = parseFloat(E('pop-od-seal').value) || 212;
+    id_water = parseFloat(E('pop-id-water').value) || 161;
   } else {
     var dims = _flangeGasketDims[od] || {gOD:140, gID:110};
-    gOD = dims.gOD; gID = dims.gID;
+    od_seal = dims.gOD; id_water = dims.gID;
   }
 
   // POP 007 Step 2: Waterway Area (A_wway)
   // According to POP007: "Waterway Area is defined by the maximum internal diameter of the assembled flanges and gasket"
-  var A_wway = (Math.PI / 4) * Math.pow(gID, 2);
+  var A_wway = (Math.PI / 4) * Math.pow(id_water, 2);
 
   // POP 007 Step 3: Net Gasket Interfacial Contact Area
-  var A_interfacial = (Math.PI / 4) * (Math.pow(gOD, 2) - Math.pow(gID, 2));
+  var A_interfacial = (Math.PI / 4) * (Math.pow(od_seal, 2) - Math.pow(id_water, 2));
   if (A_interfacial < 0) A_interfacial = 0;
 
   // POP 007 Step 5: Bolt Load
