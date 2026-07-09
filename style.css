@@ -735,3 +735,41 @@ html{scrollbar-width:thin;scrollbar-color:rgba(0,212,255,.2) rgba(255,255,255,.0
   .content-header{padding:.75rem .75rem .5rem}
   .content-body{padding:.75rem}
 }
+
+
+/* ===== SEGMEN HDPE ANIMATIONS ===== */
+@keyframes anim-pull-left { 0%, 10% { transform: translateX(0); } 40%, 60% { transform: translateX(-4px); } 90%, 100% { transform: translateX(0); } }
+@keyframes anim-pull-right { 0%, 10% { transform: translateX(0); } 40%, 60% { transform: translateX(4px); } 90%, 100% { transform: translateX(0); } }
+@keyframes anim-stretch-center { 0%, 10% { transform: scaleX(1); } 40%, 60% { transform: scaleX(1.4); } 90%, 100% { transform: scaleX(1); } }
+@keyframes anim-break-left { 0%, 20% { transform: translateX(0); } 40%, 50% { transform: translateX(-6px); } 51%, 80% { transform: translateX(-10px); } 90%, 100% { transform: translateX(0); } }
+@keyframes anim-break-right { 0%, 20% { transform: translateX(0); } 40%, 50% { transform: translateX(6px); } 51%, 80% { transform: translateX(10px); } 90%, 100% { transform: translateX(0); } }
+@keyframes anim-break-center { 0%, 40% { transform: scaleX(1); opacity:1; } 50% { transform: scaleX(1.6); opacity:1; } 51%, 80% { opacity:0; } 90%, 100% { transform: scaleX(1); opacity:1; } }
+@keyframes anim-break-crack { 0%, 50% { opacity:0; transform:scale(0); } 51%, 80% { opacity:1; transform:scale(1); } 90%, 100% { opacity:0; transform:scale(0); } }
+@keyframes anim-elongation { 0%, 10% { transform: scaleX(1); } 50%, 60% { transform: scaleX(2.5); } 90%, 100% { transform: scaleX(1); } }
+@keyframes anim-bend-pipe { 0%, 10% { d: path('M15,50 Q50,50 85,50'); } 40%, 60% { d: path('M15,50 Q50,70 85,50'); } 90%, 100% { d: path('M15,50 Q50,50 85,50'); } }
+@keyframes anim-bend-force { 0%, 10% { transform: translateY(-10px); opacity:0; } 40%, 60% { transform: translateY(0); opacity:1; } 90%, 100% { transform: translateY(-10px); opacity:0; } }
+@keyframes anim-pulse-expand { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+@keyframes anim-pendulum { 0%, 10% { transform: rotate(45deg); } 20%, 30% { transform: rotate(0deg); } 40%, 100% { transform: rotate(45deg); } }
+@keyframes anim-pendulum-hit { 0%, 19% { transform: scaleX(1); } 20%, 25% { transform: scaleX(0.95); } 30%, 100% { transform: scaleX(1); } }
+@keyframes anim-ring-compress { 0%, 10% { rx:24; ry:24; } 40%, 60% { rx:28; ry:18; } 90%, 100% { rx:24; ry:24; } }
+@keyframes anim-plate-top { 0%, 10% { transform: translateY(0); } 40%, 60% { transform: translateY(6px); } 90%, 100% { transform: translateY(0); } }
+@keyframes anim-plate-bottom { 0%, 10% { transform: translateY(0); } 40%, 60% { transform: translateY(-6px); } 90%, 100% { transform: translateY(0); } }
+@keyframes anim-scg-crack { 0% { stroke-dasharray: 0, 100; opacity:0; } 10% { opacity:1; } 60%, 80% { stroke-dasharray: 30, 100; opacity:1; } 90%, 100% { opacity:0; stroke-dasharray: 30, 100; } }
+@keyframes anim-rcp-crack { 0%, 10% { stroke-dasharray: 0, 100; opacity:0; } 11% { stroke-dasharray: 70, 100; opacity:1; } 50%, 80% { stroke-dasharray: 70, 100; opacity:1; } 90%, 100% { opacity:0; stroke-dasharray: 70, 100; } }
+@keyframes anim-uv-ray { 0% { transform: translate(-10px, -10px); opacity:0; } 20%, 30% { transform: translate(0, 0); opacity:1; } 40% { transform: translate(10px, -10px); opacity:0; } 100% { opacity:0; } }
+@keyframes anim-dispersion { 0% { transform: scale(0); opacity:0; } 20%, 80% { transform: scale(1); opacity:1; } 100% { transform: scale(1); opacity:0; } }
+@keyframes anim-abrasion-particles { 0% { transform: translateX(-20px); opacity:0; } 20% { opacity:1; } 80% { opacity:1; } 100% { transform: translateX(80px); opacity:0; } }
+@keyframes anim-vicat-needle { 0%, 10% { transform: translateY(-10px); } 40%, 60% { transform: translateY(4px); } 90%, 100% { transform: translateY(-10px); } }
+@keyframes anim-heat-waves { 0% { transform: translateY(0); opacity:0.5; } 50% { transform: translateY(-4px); opacity:1; } 100% { transform: translateY(0); opacity:0.5; } }
+@keyframes anim-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes anim-pressure-arrows { 0% { transform: scale(0.8); opacity:0; } 30%, 70% { transform: scale(1); opacity:1; } 100% { transform: scale(1.1); opacity:0; } }
+@keyframes anim-peel { 0%, 10% { transform: rotate(0); } 40%, 60% { transform: rotate(-15deg); } 90%, 100% { transform: rotate(0); } }
+@keyframes anim-escr-bend { 0%, 10% { d: path('M20,50 Q50,50 80,50'); } 30%, 70% { d: path('M20,50 Q50,75 80,50'); } 90%, 100% { d: path('M20,50 Q50,50 80,50'); } }
+
+.seg-anim-svg {
+  width: 100%;
+  height: 100px;
+  border-radius: 8px;
+  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.15) 100%);
+  border: 1px solid rgba(255,255,255,0.04);
+}
