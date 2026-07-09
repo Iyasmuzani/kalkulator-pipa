@@ -8,8 +8,8 @@ const segmentParams = {
     testStd: 'ISO 527-2 / ASTM D638',
     typical: '22 – 26',
     unit: 'MPa',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><path d="M20,40 L35,40 C45,40 45,45 50,45 C55,45 55,40 65,40 L80,40 L80,60 L65,60 C55,60 55,55 50,55 C45,55 45,60 35,60 L20,60 Z" fill="#00e5ff" opacity="0.5"/><g style="animation: anim-pull-left 3s infinite"><rect x="15" y="35" width="10" height="30" fill="#f44336"/><path d="M25,50 L10,50" stroke="#f44336" stroke-width="2" stroke-dasharray="2,2"/></g><g style="animation: anim-pull-right 3s infinite"><rect x="75" y="35" width="10" height="30" fill="#f44336"/><path d="M75,50 L90,50" stroke="#f44336" stroke-width="2" stroke-dasharray="2,2"/></g><path d="M35,40 C45,40 45,45 50,45 C55,45 55,40 65,40 L65,60 C55,60 55,55 50,55 C45,55 45,60 35,60 Z" fill="#00e5ff" style="transform-origin: 50% 50%; animation: anim-stretch-center 3s infinite"/></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 11h1a3 3 0 0 1 0 6h-1"/><path d="M7 11H6a3 3 0 0 0 0 6h1"/><path d="M7 14h10"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 11h1a3 3 0 0 1 0 6h-1"/><path d="M7 11H6a3 3 0 0 0 0 6h1"/><path d="M7 14h10"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><path d="M20,40 L35,40 C45,40 45,45 50,45 C55,45 55,40 65,40 L80,40 L80,60 L65,60 C55,60 55,55 50,55 C45,55 45,60 35,60 L20,60 Z" fill="#00e5ff" opacity="0.5"/><g style="animation: anim-pull-left 3s infinite"><rect x="15" y="35" width="10" height="30" fill="#f44336"/><path d="M25,50 L10,50" stroke="#f44336" stroke-width="2" stroke-dasharray="2,2"/></g><g style="animation: anim-pull-right 3s infinite"><rect x="75" y="35" width="10" height="30" fill="#f44336"/><path d="M75,50 L90,50" stroke="#f44336" stroke-width="2" stroke-dasharray="2,2"/></g><path d="M35,40 C45,40 45,45 50,45 C55,45 55,40 65,40 L65,60 C55,60 55,55 50,55 C45,55 45,60 35,60 Z" fill="#00e5ff" style="transform-origin: 50% 50%; animation: anim-stretch-center 3s infinite"/></svg>`
   },
   tensile_break: {
     name: 'Tensile Strength at Break',
@@ -17,8 +17,8 @@ const segmentParams = {
     testStd: 'ISO 527-2 / ASTM D638',
     typical: '≥ 35',
     unit: 'MPa',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><g style="animation: anim-break-left 3s infinite"><path d="M20,40 L45,40 L45,60 L20,60 Z" fill="#00e5ff" opacity="0.8"/><rect x="15" y="35" width="10" height="30" fill="#f44336"/></g><g style="animation: anim-break-right 3s infinite"><path d="M55,40 L80,40 L80,60 L55,60 Z" fill="#00e5ff" opacity="0.8"/><rect x="75" y="35" width="10" height="30" fill="#f44336"/></g><path d="M45,40 L55,40 L55,60 L45,60 Z" fill="#00e5ff" style="transform-origin: 50% 50%; animation: anim-break-center 3s infinite"/><path d="M47,38 L53,44 L47,50 L53,56 L47,62" stroke="#f44336" stroke-width="2" fill="none" style="transform-origin: 50% 50%; animation: anim-break-crack 3s infinite"/></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 11h1a3 3 0 0 1 0 6h-1"/><path d="M7 11H6a3 3 0 0 0 0 6h1"/><path d="M7 14h10"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 11h1a3 3 0 0 1 0 6h-1"/><path d="M7 11H6a3 3 0 0 0 0 6h1"/><path d="M7 14h10"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><g style="animation: anim-break-left 3s infinite"><path d="M20,40 L45,40 L45,60 L20,60 Z" fill="#00e5ff" opacity="0.8"/><rect x="15" y="35" width="10" height="30" fill="#f44336"/></g><g style="animation: anim-break-right 3s infinite"><path d="M55,40 L80,40 L80,60 L55,60 Z" fill="#00e5ff" opacity="0.8"/><rect x="75" y="35" width="10" height="30" fill="#f44336"/></g><path d="M45,40 L55,40 L55,60 L45,60 Z" fill="#00e5ff" style="transform-origin: 50% 50%; animation: anim-break-center 3s infinite"/><path d="M47,38 L53,44 L47,50 L53,56 L47,62" stroke="#f44336" stroke-width="2" fill="none" style="transform-origin: 50% 50%; animation: anim-break-crack 3s infinite"/></svg>`
   },
   elongation: {
     name: 'Elongation at Break',
@@ -26,8 +26,8 @@ const segmentParams = {
     testStd: 'ISO 527-2 / ASTM D638',
     typical: '≥ 600',
     unit: '%',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="20" y="45" width="60" height="10" rx="5" fill="#00e5ff" opacity="0.3"/><rect x="45" y="45" width="10" height="10" rx="5" fill="#00e5ff" style="transform-origin: 50% 50%; animation: anim-elongation 3s infinite"/><circle cx="30" cy="50" r="8" fill="#f44336" style="animation: anim-pull-left 3s infinite"/><circle cx="70" cy="50" r="8" fill="#f44336" style="animation: anim-pull-right 3s infinite"/></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="m8 8-4 4 4 4"/><path d="m16 8 4 4-4 4"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16"/><path d="m8 8-4 4 4 4"/><path d="m16 8 4 4-4 4"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="20" y="45" width="60" height="10" rx="5" fill="#00e5ff" opacity="0.3"/><rect x="45" y="45" width="10" height="10" rx="5" fill="#00e5ff" style="transform-origin: 50% 50%; animation: anim-elongation 3s infinite"/><circle cx="30" cy="50" r="8" fill="#f44336" style="animation: anim-pull-left 3s infinite"/><circle cx="70" cy="50" r="8" fill="#f44336" style="animation: anim-pull-right 3s infinite"/></svg>`
   },
   flexural_modulus: {
     name: 'Flexural Modulus (Modulus Lentur)',
@@ -35,8 +35,8 @@ const segmentParams = {
     testStd: 'ISO 178 / ASTM D790',
     typical: '900 – 1100',
     unit: 'MPa',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><polygon points="20,60 15,70 25,70" fill="var(--text2)"/><polygon points="80,60 75,70 85,70" fill="var(--text2)"/><path d="M15,50 Q50,50 85,50" stroke="#00e5ff" stroke-width="12" stroke-linecap="round" fill="none" style="animation: anim-bend-pipe 3s infinite"/><g style="animation: anim-bend-force 3s infinite"><rect x="45" y="20" width="10" height="20" fill="#f44336"/><polygon points="40,40 60,40 50,50" fill="#f44336"/></g></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20c1-3 3-8 8-8s6 5 7 8"/><circle cx="18" cy="8" r="2"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20c1-3 3-8 8-8s6 5 7 8"/><circle cx="18" cy="8" r="2"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><polygon points="20,60 15,70 25,70" fill="var(--text2)"/><polygon points="80,60 75,70 85,70" fill="var(--text2)"/><path d="M15,50 Q50,50 85,50" stroke="#00e5ff" stroke-width="12" stroke-linecap="round" fill="none" style="animation: anim-bend-pipe 3s infinite"/><g style="animation: anim-bend-force 3s infinite"><rect x="45" y="20" width="10" height="20" fill="#f44336"/><polygon points="40,40 60,40 50,50" fill="#f44336"/></g></svg>`
   },
   mrs: {
     name: 'MRS (Minimum Required Strength)',
@@ -44,8 +44,8 @@ const segmentParams = {
     testStd: 'ISO 9080 / ISO 12162',
     typical: '10 (PE100) / 8 (PE80)',
     unit: 'MPa',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" stroke="#00e5ff" stroke-width="8" fill="none"/><circle cx="50" cy="50" r="30" stroke="rgba(0,229,255,0.3)" stroke-width="12" fill="none" style="transform-origin: 50% 50%; animation: anim-pulse-expand 2s infinite"/><text x="50" y="54" fill="#fff" font-size="14" font-family="monospace" text-anchor="middle" font-weight="bold">50 YRS</text></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" stroke="#00e5ff" stroke-width="8" fill="none"/><circle cx="50" cy="50" r="30" stroke="rgba(0,229,255,0.3)" stroke-width="12" fill="none" style="transform-origin: 50% 50%; animation: anim-pulse-expand 2s infinite"/><text x="50" y="54" fill="#fff" font-size="14" font-family="monospace" text-anchor="middle" font-weight="bold">50 YRS</text></svg>`
   },
   lths: {
     name: 'LTHS (Long-Term Hydrostatic Strength)',
@@ -53,8 +53,8 @@ const segmentParams = {
     testStd: 'ISO 9080',
     typical: '≥ 12.4 (PE100)',
     unit: 'MPa',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" stroke="#00e5ff" stroke-width="8" fill="none"/><g style="transform-origin: 50% 50%; animation: anim-pressure-arrows 2s infinite"><path d="M50,25 L45,35 L55,35 Z" fill="#f44336"/><path d="M50,75 L45,65 L55,65 Z" fill="#f44336"/><path d="M25,50 L35,45 L35,55 Z" fill="#f44336"/><path d="M75,50 L65,45 L65,55 Z" fill="#f44336"/></g></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m16 6-4 4-4-4"/><path d="M12 22a8 8 0 0 0 8-8"/><path d="M12 22a8 8 0 0 1-8-8"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m16 6-4 4-4-4"/><path d="M12 22a8 8 0 0 0 8-8"/><path d="M12 22a8 8 0 0 1-8-8"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" stroke="#00e5ff" stroke-width="8" fill="none"/><g style="transform-origin: 50% 50%; animation: anim-pressure-arrows 2s infinite"><path d="M50,25 L45,35 L55,35 Z" fill="#f44336"/><path d="M50,75 L45,65 L55,65 Z" fill="#f44336"/><path d="M25,50 L35,45 L35,55 Z" fill="#f44336"/><path d="M75,50 L65,45 L65,55 Z" fill="#f44336"/></g></svg>`
   },
   hydrostatic_test: {
     name: 'Hydrostatic Pressure Test',
@@ -62,8 +62,8 @@ const segmentParams = {
     testStd: 'ISO 1167-1 / ISO 1167-2',
     typical: '100 jam @ 12.4 MPa (80°C), 1000 jam @ 5.5 MPa (80°C)',
     unit: 'jam @ tekanan',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="20" y="30" width="60" height="40" rx="5" stroke="#00e5ff" stroke-width="4" fill="rgba(0,229,255,0.1)"/><path d="M20,50 L80,50" stroke="rgba(0,229,255,0.4)" stroke-width="36" style="animation: anim-pulse-expand 1.5s infinite"/><rect x="40" y="20" width="20" height="10" fill="#f44336"/><text x="50" y="28" fill="#fff" font-size="8" font-family="monospace" text-anchor="middle">PRESSURE</text></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 12V6"/><path d="M12 2v0"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 12V6"/><path d="M12 2v0"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="20" y="30" width="60" height="40" rx="5" stroke="#00e5ff" stroke-width="4" fill="rgba(0,229,255,0.1)"/><path d="M20,50 L80,50" stroke="rgba(0,229,255,0.4)" stroke-width="36" style="animation: anim-pulse-expand 1.5s infinite"/><rect x="40" y="20" width="20" height="10" fill="#f44336"/><text x="50" y="28" fill="#fff" font-size="8" font-family="monospace" text-anchor="middle">PRESSURE</text></svg>`
   },
   scg_fnct: {
     name: 'SCG — Slow Crack Growth (FNCT)',
@@ -71,8 +71,8 @@ const segmentParams = {
     testStd: 'ISO 16770 (FNCT)',
     typical: '≥ 8760 jam (PE100-RC)',
     unit: 'jam',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="20" y="40" width="60" height="20" rx="2" fill="#00e5ff" opacity="0.5"/><path d="M50,40 L50,55" stroke="#f44336" stroke-width="2" stroke-dasharray="30, 100" style="animation: anim-scg-crack 4s infinite"/><circle cx="80" cy="20" r="10" fill="none" stroke="var(--text2)" stroke-width="2"/><path d="M80,20 L80,14" stroke="#fff" stroke-width="2" style="transform-origin: 80px 20px; animation: anim-pendulum 4s linear infinite"/></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="20" y="40" width="60" height="20" rx="2" fill="#00e5ff" opacity="0.5"/><path d="M50,40 L50,55" stroke="#f44336" stroke-width="2" stroke-dasharray="30, 100" style="animation: anim-scg-crack 4s infinite"/><circle cx="80" cy="20" r="10" fill="none" stroke="var(--text2)" stroke-width="2"/><path d="M80,20 L80,14" stroke="#fff" stroke-width="2" style="transform-origin: 80px 20px; animation: anim-pendulum 4s linear infinite"/></svg>`
   },
   rcp: {
     name: 'RCP — Rapid Crack Propagation (S4 Test)',
@@ -80,8 +80,8 @@ const segmentParams = {
     testStd: 'ISO 13477 (S4) / ISO 13478',
     typical: 'Tc < 0°C (harus di bawah suhu operasi)',
     unit: '°C (suhu kritis)',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="10" y="40" width="80" height="20" fill="#00e5ff" opacity="0.5"/><path d="M10,50 L25,45 L40,55 L55,45 L70,50 L90,50" stroke="#f44336" stroke-width="3" fill="none" stroke-dasharray="100, 100" style="animation: anim-rcp-crack 2s infinite"/></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="10" y="40" width="80" height="20" fill="#00e5ff" opacity="0.5"/><path d="M10,50 L25,45 L40,55 L55,45 L70,50 L90,50" stroke="#f44336" stroke-width="3" fill="none" stroke-dasharray="100, 100" style="animation: anim-rcp-crack 2s infinite"/></svg>`
   },
   oit: {
     name: 'OIT (Oxidation Induction Time)',
@@ -89,8 +89,8 @@ const segmentParams = {
     testStd: 'ISO 11357-6 / ASTM D3895',
     typical: '≥ 20 menit (210°C)',
     unit: 'menit',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" stroke="#00e5ff" stroke-width="4" fill="rgba(0,229,255,0.1)"/><path d="M50,50 L50,25" stroke="#f44336" stroke-width="3" stroke-linecap="round" style="transform-origin: 50% 50%; animation: anim-peel 4s linear infinite"/><circle cx="50" cy="50" r="4" fill="#fff"/><text x="50" y="95" fill="var(--text2)" font-size="10" font-family="monospace" text-anchor="middle">210°C HEAT</text></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" stroke="#00e5ff" stroke-width="4" fill="rgba(0,229,255,0.1)"/><path d="M50,50 L50,25" stroke="#f44336" stroke-width="3" stroke-linecap="round" style="transform-origin: 50% 50%; animation: anim-peel 4s linear infinite"/><circle cx="50" cy="50" r="4" fill="#fff"/><text x="50" y="95" fill="var(--text2)" font-size="10" font-family="monospace" text-anchor="middle">210°C HEAT</text></svg>`
   },
   carbon_black: {
     name: 'Carbon Black Content',
@@ -98,8 +98,8 @@ const segmentParams = {
     testStd: 'ISO 6964',
     typical: '2.0 – 2.5',
     unit: '%',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><circle cx="50" cy="60" r="30" fill="#222" stroke="#555" stroke-width="4"/><g style="animation: anim-uv-ray 3s infinite"><path d="M20,20 L35,35" stroke="#ffc107" stroke-width="3" stroke-linecap="round"/><path d="M35,35 L50,20" stroke="#ffc107" stroke-width="3" stroke-linecap="round"/></g></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><circle cx="50" cy="60" r="30" fill="#222" stroke="#555" stroke-width="4"/><g style="animation: anim-uv-ray 3s infinite"><path d="M20,20 L35,35" stroke="#ffc107" stroke-width="3" stroke-linecap="round"/><path d="M35,35 L50,20" stroke="#ffc107" stroke-width="3" stroke-linecap="round"/></g></svg>`
   },
   carbon_dispersion: {
     name: 'Carbon Black Dispersion',
@@ -107,8 +107,8 @@ const segmentParams = {
     testStd: 'ISO 18553',
     typical: 'Grade ≤ 3',
     unit: 'Grade (1–3)',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="35" stroke="#00e5ff" stroke-width="2" fill="none"/><g style="transform-origin:50% 50%; animation: anim-dispersion 3s infinite"><circle cx="40" cy="40" r="3" fill="#222"/><circle cx="60" cy="45" r="4" fill="#222"/><circle cx="35" cy="60" r="2" fill="#222"/><circle cx="65" cy="65" r="3" fill="#222"/><circle cx="50" cy="35" r="2" fill="#222"/><circle cx="50" cy="50" r="5" fill="#222"/></g></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 18a6 6 0 0 0 0-12"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 18a6 6 0 0 0 0-12"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="35" stroke="#00e5ff" stroke-width="2" fill="none"/><g style="transform-origin:50% 50%; animation: anim-dispersion 3s infinite"><circle cx="40" cy="40" r="3" fill="#222"/><circle cx="60" cy="45" r="4" fill="#222"/><circle cx="35" cy="60" r="2" fill="#222"/><circle cx="65" cy="65" r="3" fill="#222"/><circle cx="50" cy="35" r="2" fill="#222"/><circle cx="50" cy="50" r="5" fill="#222"/></g></svg>`
   },
   density: {
     name: 'Density (Massa Jenis)',
@@ -116,8 +116,8 @@ const segmentParams = {
     testStd: 'ISO 1183-1 / ASTM D792',
     typical: '0.940 – 0.965',
     unit: 'g/cm3',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><path d="M10,60 Q30,50 50,60 T90,60 L90,100 L10,100 Z" fill="rgba(0,229,255,0.2)"/><circle cx="50" cy="45" r="15" fill="#00e5ff" style="animation: anim-float 3s infinite ease-in-out"/><text x="50" y="50" fill="#000" font-size="10" font-family="monospace" text-anchor="middle" font-weight="bold">PE</text></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><path d="M10,60 Q30,50 50,60 T90,60 L90,100 L10,100 Z" fill="rgba(0,229,255,0.2)"/><circle cx="50" cy="45" r="15" fill="#00e5ff" style="animation: anim-float 3s infinite ease-in-out"/><text x="50" y="50" fill="#000" font-size="10" font-family="monospace" text-anchor="middle" font-weight="bold">PE</text></svg>`
   },
   mfr: {
     name: 'MFR (Melt Flow Rate)',
@@ -125,8 +125,8 @@ const segmentParams = {
     testStd: 'ISO 1133 (190°C/5kg)',
     typical: '0.2 – 1.2',
     unit: 'g/10min',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><path d="M30,20 L30,40 L45,50 L45,80 L55,80 L55,50 L70,40 L70,20 Z" fill="#333" stroke="var(--text2)" stroke-width="2"/><path d="M35,20 L35,38 L48,48 L48,80 L52,80 L52,48 L65,38 L65,20 Z" fill="#f44336"/><circle cx="50" cy="85" r="4" fill="#f44336" style="animation: anim-plate-top 2s infinite"/></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6l3 3-3 3v6"/><path d="M8 8l-4 4 4 4"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v6l3 3-3 3v6"/><path d="M8 8l-4 4 4 4"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><path d="M30,20 L30,40 L45,50 L45,80 L55,80 L55,50 L70,40 L70,20 Z" fill="#333" stroke="var(--text2)" stroke-width="2"/><path d="M35,20 L35,38 L48,48 L48,80 L52,80 L52,48 L65,38 L65,20 Z" fill="#f44336"/><circle cx="50" cy="85" r="4" fill="#f44336" style="animation: anim-plate-top 2s infinite"/></svg>`
   },
   abrasion: {
     name: 'Abrasion Resistance (Ketahanan Abrasi)',
@@ -134,8 +134,8 @@ const segmentParams = {
     testStd: 'ASTM G65 / Darmstadt Rig Test',
     typical: 'Volume loss < 50 mm3 (ASTM G65)',
     unit: 'mm3 volume loss',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="10" y="40" width="80" height="20" stroke="#00e5ff" stroke-width="4" fill="none"/><g style="animation: anim-abrasion-particles 2s linear infinite"><circle cx="20" cy="50" r="2" fill="#ffc107"/><circle cx="30" cy="45" r="3" fill="#ffc107"/><circle cx="25" cy="55" r="2" fill="#ffc107"/><circle cx="40" cy="52" r="1.5" fill="#ffc107"/></g></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4"/><path d="M18 12h4"/><path d="M12 2v4"/><path d="M12 18v4"/><circle cx="12" cy="12" r="4"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h4"/><path d="M18 12h4"/><path d="M12 2v4"/><path d="M12 18v4"/><circle cx="12" cy="12" r="4"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="10" y="40" width="80" height="20" stroke="#00e5ff" stroke-width="4" fill="none"/><g style="animation: anim-abrasion-particles 2s linear infinite"><circle cx="20" cy="50" r="2" fill="#ffc107"/><circle cx="30" cy="45" r="3" fill="#ffc107"/><circle cx="25" cy="55" r="2" fill="#ffc107"/><circle cx="40" cy="52" r="1.5" fill="#ffc107"/></g></svg>`
   },
   shore_hardness: {
     name: 'Shore Hardness (Kekerasan)',
@@ -143,8 +143,8 @@ const segmentParams = {
     testStd: 'ISO 868 (Shore D)',
     typical: '60 – 65',
     unit: 'Shore D',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="20" y="60" width="60" height="20" fill="#00e5ff" opacity="0.5"/><path d="M50,20 L50,55" stroke="#f44336" stroke-width="4" stroke-linecap="round"/><polygon points="45,55 55,55 50,65" fill="#f44336" style="animation: anim-plate-top 2s infinite"/></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v10l4 4"/><circle cx="12" cy="18" r="4"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v10l4 4"/><circle cx="12" cy="18" r="4"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="20" y="60" width="60" height="20" fill="#00e5ff" opacity="0.5"/><path d="M50,20 L50,55" stroke="#f44336" stroke-width="4" stroke-linecap="round"/><polygon points="45,55 55,55 50,65" fill="#f44336" style="animation: anim-plate-top 2s infinite"/></svg>`
   },
   impact_charpy: {
     name: 'Impact Strength (Charpy)',
@@ -152,8 +152,8 @@ const segmentParams = {
     testStd: 'ISO 179 / ISO 180',
     typical: 'No break pada suhu ruang',
     unit: 'kJ/m2',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="30" y="60" width="40" height="15" rx="2" fill="#00e5ff" opacity="0.6" style="transform-origin: 50% 67%; animation: anim-pendulum-hit 3s infinite"/><path d="M50,10 L80,40" stroke="#f44336" stroke-width="4" style="transform-origin: 50% 10%; animation: anim-pendulum 3s infinite"/><circle cx="50" cy="10" r="4" fill="#f44336"/><circle cx="80" cy="40" r="8" fill="#f44336" style="transform-origin: 50px 10px; animation: anim-pendulum 3s infinite"/></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="30" y="60" width="40" height="15" rx="2" fill="#00e5ff" opacity="0.6" style="transform-origin: 50% 67%; animation: anim-pendulum-hit 3s infinite"/><path d="M50,10 L80,40" stroke="#f44336" stroke-width="4" style="transform-origin: 50% 10%; animation: anim-pendulum 3s infinite"/><circle cx="50" cy="10" r="4" fill="#f44336"/><circle cx="80" cy="40" r="8" fill="#f44336" style="transform-origin: 50px 10px; animation: anim-pendulum 3s infinite"/></svg>`
   },
   escr: {
     name: 'ESCR (Environmental Stress Crack Resistance)',
@@ -161,8 +161,8 @@ const segmentParams = {
     testStd: 'ASTM D1693 / ISO 22088',
     typical: '≥ 1500 jam (F50)',
     unit: 'jam',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><path d="M20,50 Q50,50 80,50" stroke="#00e5ff" stroke-width="12" stroke-linecap="round" fill="none" style="animation: anim-escr-bend 3s infinite"/><circle cx="50" cy="50" r="30" stroke="rgba(255,193,7,0.3)" stroke-width="4" fill="none" stroke-dasharray="4,4"/><text x="50" y="20" fill="#ffc107" font-size="10" font-family="monospace" text-anchor="middle">CHEMICALS</text></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><path d="M20,50 Q50,50 80,50" stroke="#00e5ff" stroke-width="12" stroke-linecap="round" fill="none" style="animation: anim-escr-bend 3s infinite"/><circle cx="50" cy="50" r="30" stroke="rgba(255,193,7,0.3)" stroke-width="4" fill="none" stroke-dasharray="4,4"/><text x="50" y="20" fill="#ffc107" font-size="10" font-family="monospace" text-anchor="middle">CHEMICALS</text></svg>`
   },
   butt_fusion_tensile: {
     name: 'Butt Fusion Tensile Test',
@@ -170,8 +170,8 @@ const segmentParams = {
     testStd: 'ISO 13953',
     typical: 'Ductile failure (putus di luar las)',
     unit: 'MPa / Mode gagal',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><g style="animation: anim-pull-left 3s infinite"><path d="M10,40 L48,40 L48,60 L10,60 Z" fill="#00e5ff" opacity="0.6"/></g><g style="animation: anim-pull-right 3s infinite"><path d="M52,40 L90,40 L90,60 L52,60 Z" fill="#00e5ff" opacity="0.6"/></g><rect x="48" y="38" width="4" height="24" fill="#f44336" rx="2"/></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18"/><path d="M18 3v18"/><path d="M6 12h12"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18"/><path d="M18 3v18"/><path d="M6 12h12"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><g style="animation: anim-pull-left 3s infinite"><path d="M10,40 L48,40 L48,60 L10,60 Z" fill="#00e5ff" opacity="0.6"/></g><g style="animation: anim-pull-right 3s infinite"><path d="M52,40 L90,40 L90,60 L52,60 Z" fill="#00e5ff" opacity="0.6"/></g><rect x="48" y="38" width="4" height="24" fill="#f44336" rx="2"/></svg>`
   },
   ef_peel: {
     name: 'Electrofusion Peel Test',
@@ -179,8 +179,8 @@ const segmentParams = {
     testStd: 'ISO 13954 / ISO 13955',
     typical: 'Ductile peel (material robek, bukan las)',
     unit: 'N/mm / Mode gagal',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="20" y="50" width="60" height="10" fill="#00e5ff" opacity="0.5"/><rect x="30" y="40" width="40" height="10" fill="#ff9800" opacity="0.8" style="transform-origin: 70px 50px; animation: anim-peel 3s infinite"/><path d="M35,45 L65,45" stroke="#fff" stroke-width="2" stroke-dasharray="2,4"/></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="20" y="50" width="60" height="10" fill="#00e5ff" opacity="0.5"/><rect x="30" y="40" width="40" height="10" fill="#ff9800" opacity="0.8" style="transform-origin: 70px 50px; animation: anim-peel 3s infinite"/><path d="M35,45 L65,45" stroke="#fff" stroke-width="2" stroke-dasharray="2,4"/></svg>`
   },
   thermal_stability: {
     name: 'Thermal Stability (Stabilitas Termal)',
@@ -188,8 +188,8 @@ const segmentParams = {
     testStd: 'ISO 12176 Annex / EN 728',
     typical: '≥ 20 menit @ 200°C',
     unit: 'menit',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="30" y="30" width="40" height="40" fill="#00e5ff" opacity="0.6"/><path d="M20,80 Q35,70 50,80 T80,80" stroke="#f44336" stroke-width="4" fill="none" style="animation: anim-heat-waves 2s infinite"/><path d="M20,90 Q35,80 50,90 T80,90" stroke="#ff9800" stroke-width="4" fill="none" style="animation: anim-heat-waves 2s infinite 1s"/><text x="50" y="20" fill="#f44336" font-size="12" font-family="monospace" text-anchor="middle" font-weight="bold">200°C</text></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="30" y="30" width="40" height="40" fill="#00e5ff" opacity="0.6"/><path d="M20,80 Q35,70 50,80 T80,80" stroke="#f44336" stroke-width="4" fill="none" style="animation: anim-heat-waves 2s infinite"/><path d="M20,90 Q35,80 50,90 T80,90" stroke="#ff9800" stroke-width="4" fill="none" style="animation: anim-heat-waves 2s infinite 1s"/><text x="50" y="20" fill="#f44336" font-size="12" font-family="monospace" text-anchor="middle" font-weight="bold">200°C</text></svg>`
   },
   ring_stiffness: {
     name: 'Ring Stiffness (SN — Kekakuan Cincin)',
@@ -197,8 +197,8 @@ const segmentParams = {
     testStd: 'ISO 9969',
     typical: 'SN 4 – SN 16 (tergantung SDR)',
     unit: 'kN/m2',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="24" ry="24" stroke="#00e5ff" stroke-width="6" fill="none" style="transform-origin: 50% 50%; animation: anim-ring-compress 3s infinite"/><rect x="10" y="15" width="80" height="8" fill="#f44336" style="animation: anim-plate-top 3s infinite"/><rect x="10" y="77" width="80" height="8" fill="#f44336" style="animation: anim-plate-bottom 3s infinite"/></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><ellipse cx="50" cy="50" rx="24" ry="24" stroke="#00e5ff" stroke-width="6" fill="none" style="transform-origin: 50% 50%; animation: anim-ring-compress 3s infinite"/><rect x="10" y="15" width="80" height="8" fill="#f44336" style="animation: anim-plate-top 3s infinite"/><rect x="10" y="77" width="80" height="8" fill="#f44336" style="animation: anim-plate-bottom 3s infinite"/></svg>`
   },
   compressive: {
     name: 'Compressive Strength (Kuat Tekan)',
@@ -206,8 +206,8 @@ const segmentParams = {
     testStd: 'ISO 604 / ASTM D695',
     typical: '18 – 25',
     unit: 'MPa',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="25" stroke="#00e5ff" stroke-width="6" fill="rgba(0,229,255,0.1)" style="transform-origin: 50% 50%; animation: anim-pendulum-hit 2s infinite"/><g style="transform-origin: 50% 50%; animation: anim-pressure-arrows 2s infinite reverse"><path d="M50,15 L45,5 L55,5 Z" fill="#f44336"/><path d="M50,85 L45,95 L55,95 Z" fill="#f44336"/><path d="M15,50 L5,45 L5,55 Z" fill="#f44336"/><path d="M85,50 L95,45 L95,55 Z" fill="#f44336"/></g></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 18 4-4 4 4"/><path d="m8 6 4 4 4-4"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m8 18 4-4 4 4"/><path d="m8 6 4 4 4-4"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="25" stroke="#00e5ff" stroke-width="6" fill="rgba(0,229,255,0.1)" style="transform-origin: 50% 50%; animation: anim-pendulum-hit 2s infinite"/><g style="transform-origin: 50% 50%; animation: anim-pressure-arrows 2s infinite reverse"><path d="M50,15 L45,5 L55,5 Z" fill="#f44336"/><path d="M50,85 L45,95 L55,95 Z" fill="#f44336"/><path d="M15,50 L5,45 L5,55 Z" fill="#f44336"/><path d="M85,50 L95,45 L95,55 Z" fill="#f44336"/></g></svg>`
   },
   vicat: {
     name: 'Vicat Softening Temperature',
@@ -215,8 +215,8 @@ const segmentParams = {
     testStd: 'ISO 306 (Method A)',
     typical: '≥ 124',
     unit: '°C',
-    icon: '<svg xmlns=",
-    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="20" y="60" width="60" height="20" fill="#00e5ff" opacity="0.5"/><path d="M50,10 L50,60" stroke="#f44336" stroke-width="4" stroke-linecap="square" style="animation: anim-vicat-needle 3s infinite"/><path d="M20,90 Q35,80 50,90 T80,90" stroke="#ff9800" stroke-width="3" fill="none" style="animation: anim-heat-waves 2s infinite"/></svg>`http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>'
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>',
+    animation: `<svg class="seg-anim-svg" viewBox="0 0 100 100"><rect x="20" y="60" width="60" height="20" fill="#00e5ff" opacity="0.5"/><path d="M50,10 L50,60" stroke="#f44336" stroke-width="4" stroke-linecap="square" style="animation: anim-vicat-needle 3s infinite"/><path d="M20,90 Q35,80 50,90 T80,90" stroke="#ff9800" stroke-width="3" fill="none" style="animation: anim-heat-waves 2s infinite"/></svg>`
   }
 };
 
@@ -483,6 +483,7 @@ function showSegmentResult() {
       html += '</div>';
 
       html += '</div></div>';
+      
       html += '</div>';
     });
 
