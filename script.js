@@ -311,6 +311,12 @@ function switchEngTool(tool) {
       formula: 'Skor = Σ(bobot kriteria) — Ranking berdasarkan akumulasi skor tertinggi',
       standards: ['SNI 4829:2015 (HDPE)', 'SNI 9324:2024 (PVC)', 'ISO 16422 (PVC-O)', 'ISO 15874 (PPR)'],
       useCase: 'Membantu engineer dan perencana memilih material pipa yang paling sesuai berdasarkan kondisi proyek spesifik, mengurangi risiko salah pilih material.'
+    },
+    segment: {
+      title: 'Segmen Aplikasi HDPE',
+      desc: 'Panduan lengkap <strong>parameter material properties</strong> pipa HDPE PE100 berdasarkan segmen aplikasi: <strong>Water Supply, Gas, Mining, HDD, Marine, Sewerage, Industrial, Landfill</strong>. Setiap parameter dilengkapi penjelasan awam, standar uji acuan, dan nilai tipikal.',
+      standards: ['ISO 4427:2019', 'ISO 4437:2014', 'ISO 527-2', 'ISO 9080', 'ISO 16770'],
+      useCase: 'Membantu engineer memahami parameter material mana yang wajib diperhatikan untuk setiap segmen aplikasi pipa HDPE, lengkap dengan penjelasan yang mudah dipahami.'
     }
   };
 
@@ -360,7 +366,8 @@ function switchEngTool(tool) {
     flange: buildFlangeTorqueForm,
     trench: buildTrenchDepthForm,
     unitconv: buildUnitConverterForm,
-    matguide: buildMaterialGuideForm
+    matguide: buildMaterialGuideForm,
+    segment: buildSegmentGuideForm
   };
   if (builders[tool]) builders[tool]();
   document.getElementById('eng-results').innerHTML = `
