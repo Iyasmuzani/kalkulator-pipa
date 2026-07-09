@@ -74,14 +74,14 @@ function toggleSidebarGroup(groupId) {
 function filterSidebar(val) {
   var items = document.querySelectorAll('.sidebar-item');
   var q = val.toLowerCase().trim();
-  items.forEach(function(it) {
+  items.forEach(function (it) {
     if (!q) { it.style.display = ''; return; }
     var text = it.textContent.toLowerCase();
     it.style.display = text.indexOf(q) >= 0 ? '' : 'none';
   });
   // Also open all groups if searching
   if (q) {
-    document.querySelectorAll('.sidebar-group-items').forEach(function(g) { g.classList.add('open'); });
+    document.querySelectorAll('.sidebar-group-items').forEach(function (g) { g.classList.add('open'); });
   }
 }
 
@@ -92,14 +92,14 @@ function sidebarNav(type, id) {
     switchToEngTools();
     switchEngTool(id);
     // Mark active in sidebar
-    document.querySelectorAll('.sidebar-item').forEach(function(el) { el.classList.remove('active'); });
+    document.querySelectorAll('.sidebar-item').forEach(function (el) { el.classList.remove('active'); });
     var target = document.querySelector('.sidebar-item[data-nav="eng"][data-id="' + id + '"]');
     if (target) target.classList.add('active');
   } else if (type === 'lib') {
     switchToLibrary();
     switchLibraryForm(id);
     // Mark active in sidebar
-    document.querySelectorAll('.sidebar-item').forEach(function(el) { el.classList.remove('active'); });
+    document.querySelectorAll('.sidebar-item').forEach(function (el) { el.classList.remove('active'); });
     var target = document.querySelector('.sidebar-item[data-nav="lib"][data-id="' + id + '"]');
     if (target) target.classList.add('active');
   }
@@ -113,14 +113,14 @@ function sidebarNav(type, id) {
 function sidebarSwitchTab(tab) {
   switchTab(tab);
   // Update sidebar sub-tabs
-  document.querySelectorAll('.sidebar-sub').forEach(function(el) {
+  document.querySelectorAll('.sidebar-sub').forEach(function (el) {
     el.classList.toggle('active', el.getAttribute('data-tab') === tab);
   });
 }
 
 function updateSidebarActive(type, id) {
   // Clear all sidebar items active
-  document.querySelectorAll('.sidebar-item').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.sidebar-item').forEach(function (el) { el.classList.remove('active'); });
   // Set new active
   var target = document.querySelector('.sidebar-item[data-nav="' + type + '"][data-id="' + id + '"]');
   if (target) target.classList.add('active');
@@ -137,7 +137,7 @@ function updateSidebarActive(type, id) {
 function switchSystem(sys) {
   currentSystem = sys;
   document.documentElement.setAttribute('data-system', sys);
-  
+
   // Show system content, hide others
   document.getElementById('content-body').style.display = '';
   document.getElementById('eng-content').style.display = 'none';
@@ -195,7 +195,7 @@ function exitEngTools() {
 function switchEngTool(tool) {
   currentEngTool = tool;
   // Update sidebar active state
-  document.querySelectorAll('.sidebar-item[data-nav="eng"]').forEach(function(el) {
+  document.querySelectorAll('.sidebar-item[data-nav="eng"]').forEach(function (el) {
     el.classList.toggle('active', el.getAttribute('data-id') === tool);
   });
 
@@ -317,10 +317,10 @@ function switchEngTool(tool) {
   const descData = engToolDescriptions[tool];
   const descEl = document.getElementById('eng-tool-desc');
   if (descData && descEl) {
-    const stdBadges = descData.standards.map(s => 
+    const stdBadges = descData.standards.map(s =>
       `<span style="display:inline-block;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.15);color:#6dd5ed;font-size:9px;padding:2px 8px;border-radius:10px;font-family:'JetBrains Mono',monospace;white-space:nowrap">${s}</span>`
     ).join(' ');
-    
+
     descEl.innerHTML = `
       <div class="eng-desc-header">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:#00e5ff"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
@@ -386,7 +386,7 @@ function switchToLibrary() {
   // Ensure lib group is open
   var grpLib = document.getElementById('grp-lib');
   if (grpLib) grpLib.classList.add('open');
-  
+
   switchLibraryForm('standar');
 }
 
@@ -445,7 +445,7 @@ const pipeStandards = {
       { std: 'AWWA C906', pdf: 'standards/hdpe/awwa_c906.pdf', title: 'PE Pressure Pipe and Fittings, 4 in. through 65 in.', scope: 'Standar material dan pengujian pipa PE bertekanan diameter besar.', type: 'AWWA' },
       { std: 'AS/NZS 4130:2018', pdf: 'standards/hdpe/asnzs_41302018.pdf', title: 'PE Pipes for Pressure Applications', scope: 'Standar Australia/NZ untuk pipa PE bertekanan (series 1 & 2).', type: 'AS/NZS' },
       { std: 'BS 5114:1975', pdf: '#', title: 'Specification for performance requirements for joints and compression fittings for use with polyethylene pipes', scope: 'Standar Inggris yang menetapkan persyaratan performa untuk sambungan dan fitting kompresi pada pipa PE. Rujukan utama uji hidrostatik dan pull-out resistance.', type: 'BSI' },
-      { std: 'ISO 9624', pdf: '#', title: 'Thermoplastics piping systems for fluids under pressure — Flange adapters and loose backing flanges — Mating dimensions', scope: 'Spesifikasi dimensi untuk flange adapters dan loose backing flanges pada sistem perpipaan termoplastik bertekanan.', type: 'ISO' }
+      { std: 'ISO 9624', pdf: 'standards/hdpe/iso_9624.pdf', title: 'Thermoplastics piping systems for fluids under pressure — Flange adapters and loose backing flanges — Mating dimensions', scope: 'Spesifikasi dimensi untuk flange adapters dan loose backing flanges pada sistem perpipaan termoplastik bertekanan.', type: 'ISO' }
     ]
   },
   'PVC (Polyvinyl Chloride)': {
@@ -560,7 +560,7 @@ let _standarSearchTimeout = null;
 function _standarSearchHandler(value) {
   clearTimeout(_standarSearchTimeout);
   _standarSearchRaw = value;
-  _standarSearchTimeout = setTimeout(function() {
+  _standarSearchTimeout = setTimeout(function () {
     _standarSearchQuery = value.toLowerCase();
     renderStandarAcuan(_standarActiveFilter || 'all');
   }, 250);
@@ -613,10 +613,10 @@ function renderStandarAcuan(filterKey) {
   for (let i = 0; i < categories.length; i++) {
     const cat = categories[i];
     const d = pipeStandards[cat];
-    const rgb = parseInt(d.color.slice(1,3),16)+','+parseInt(d.color.slice(3,5),16)+','+parseInt(d.color.slice(5,7),16);
+    const rgb = parseInt(d.color.slice(1, 3), 16) + ',' + parseInt(d.color.slice(3, 5), 16) + ',' + parseInt(d.color.slice(5, 7), 16);
     const isActive = activeFilter === cat;
-    const btnStyle = isActive ? 'background:rgba('+rgb+',.15);color:'+d.color+';border-color:rgba('+rgb+',.4)' : 'background:rgba(255,255,255,.03);color:var(--text2);border-color:rgba(255,255,255,.08)';
-    html += '<button onclick="renderStandarAcuan(' + "'" + cat.replace(/'/g,"\\'") + "'" + ')" style="' + btnStyle + ';border:1px solid;padding:5px 14px;border-radius:20px;font-size:11px;font-family:' + "'Space Grotesk'" + ',sans-serif;cursor:pointer;transition:all .2s;font-weight:600">' + d.icon + ' ' + cat.split(' (')[0] + '</button>';
+    const btnStyle = isActive ? 'background:rgba(' + rgb + ',.15);color:' + d.color + ';border-color:rgba(' + rgb + ',.4)' : 'background:rgba(255,255,255,.03);color:var(--text2);border-color:rgba(255,255,255,.08)';
+    html += '<button onclick="renderStandarAcuan(' + "'" + cat.replace(/'/g, "\\'") + "'" + ')" style="' + btnStyle + ';border:1px solid;padding:5px 14px;border-radius:20px;font-size:11px;font-family:' + "'Space Grotesk'" + ',sans-serif;cursor:pointer;transition:all .2s;font-weight:600">' + d.icon + ' ' + cat.split(' (')[0] + '</button>';
   }
   html += '</div>';
 
@@ -631,7 +631,7 @@ function renderStandarAcuan(filterKey) {
     // Filter items by search query
     let filteredItems = data.items;
     if (searchQuery) {
-      filteredItems = data.items.filter(function(item) {
+      filteredItems = data.items.filter(function (item) {
         const haystack = (item.std + ' ' + item.title + ' ' + item.scope + ' ' + item.type + ' ' + category).toLowerCase();
         return haystack.indexOf(searchQuery) !== -1;
       });
@@ -639,37 +639,37 @@ function renderStandarAcuan(filterKey) {
     }
     totalMatchCount += filteredItems.length;
 
-    const rgb = parseInt(data.color.slice(1,3),16)+','+parseInt(data.color.slice(3,5),16)+','+parseInt(data.color.slice(5,7),16);
+    const rgb = parseInt(data.color.slice(1, 3), 16) + ',' + parseInt(data.color.slice(3, 5), 16) + ',' + parseInt(data.color.slice(5, 7), 16);
     contentHtml += '<div class="std-category" style="margin-bottom:24px">';
-    contentHtml += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 14px;background:rgba('+rgb+',.08);border:1px solid rgba('+rgb+',.2);border-radius:8px">';
-    contentHtml += '<span style="color:'+data.color+'">'+data.icon+'</span>';
-    contentHtml += '<span style="font-family:' + "'Space Grotesk'" + ',sans-serif;font-size:15px;font-weight:700;color:'+data.color+'">'+category+'</span>';
-    contentHtml += '<span style="margin-left:auto;font-size:11px;color:var(--text2);font-family:' + "'JetBrains Mono'" + ',monospace">'+filteredItems.length+' dokumen</span>';
+    contentHtml += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:10px 14px;background:rgba(' + rgb + ',.08);border:1px solid rgba(' + rgb + ',.2);border-radius:8px">';
+    contentHtml += '<span style="color:' + data.color + '">' + data.icon + '</span>';
+    contentHtml += '<span style="font-family:' + "'Space Grotesk'" + ',sans-serif;font-size:15px;font-weight:700;color:' + data.color + '">' + category + '</span>';
+    contentHtml += '<span style="margin-left:auto;font-size:11px;color:var(--text2);font-family:' + "'JetBrains Mono'" + ',monospace">' + filteredItems.length + ' dokumen</span>';
     contentHtml += '</div>';
     contentHtml += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px">';
 
     for (const item of filteredItems) {
       const typeColors = {
-        'SNI':'#ff6d00','ISO':'#00bcd4','JIS':'#e91e63','DVS':'#9c27b0','AWWA':'#2196f3',
-        'ASTM':'#ff5722','AS/NZS':'#4caf50','BS EN':'#3f51b5','DIN':'#795548','EN':'#607d8b',
-        'PAS':'#ff9800','BS':'#3f51b5','PPI':'#26c6da','WIS':'#ab47bc'
+        'SNI': '#ff6d00', 'ISO': '#00bcd4', 'JIS': '#e91e63', 'DVS': '#9c27b0', 'AWWA': '#2196f3',
+        'ASTM': '#ff5722', 'AS/NZS': '#4caf50', 'BS EN': '#3f51b5', 'DIN': '#795548', 'EN': '#607d8b',
+        'PAS': '#ff9800', 'BS': '#3f51b5', 'PPI': '#26c6da', 'WIS': '#ab47bc'
       };
       const tc = typeColors[item.type] || '#888';
-      const tcRgb = parseInt(tc.slice(1,3),16)+','+parseInt(tc.slice(3,5),16)+','+parseInt(tc.slice(5,7),16);
+      const tcRgb = parseInt(tc.slice(1, 3), 16) + ',' + parseInt(tc.slice(3, 5), 16) + ',' + parseInt(tc.slice(5, 7), 16);
 
       const displayStd = searchQuery ? _highlightMatch(item.std, searchQuery) : item.std;
       const displayTitle = searchQuery ? _highlightMatch(item.title, searchQuery) : item.title;
       const displayScope = searchQuery ? _highlightMatch(item.scope, searchQuery) : item.scope;
 
-      contentHtml += '<div class="std-card" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px 14px;transition:all .2s;cursor:default' + (searchQuery ? ';animation:fadeUp .3s ease-out' : '') + '" onmouseenter="this.style.borderColor=' + "'rgba("+rgb+',.3)' + "'" + ';this.style.background=' + "'rgba("+rgb+',.04)' + "'" + '" onmouseleave="this.style.borderColor=' + "'rgba(255,255,255,.06)'" + ';this.style.background=' + "'rgba(255,255,255,.03)'" + '">';
+      contentHtml += '<div class="std-card" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px 14px;transition:all .2s;cursor:default' + (searchQuery ? ';animation:fadeUp .3s ease-out' : '') + '" onmouseenter="this.style.borderColor=' + "'rgba(" + rgb + ',.3)' + "'" + ';this.style.background=' + "'rgba(" + rgb + ',.04)' + "'" + '" onmouseleave="this.style.borderColor=' + "'rgba(255,255,255,.06)'" + ';this.style.background=' + "'rgba(255,255,255,.03)'" + '">';
       contentHtml += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
-      contentHtml += '<span style="font-family:' + "'JetBrains Mono'" + ',monospace;font-size:12px;font-weight:700;color:'+data.color+'">'+displayStd+'</span>';
-      contentHtml += '<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba('+tcRgb+',.15);color:'+tc+';font-weight:600;letter-spacing:.5px">'+item.type+'</span>';
+      contentHtml += '<span style="font-family:' + "'JetBrains Mono'" + ',monospace;font-size:12px;font-weight:700;color:' + data.color + '">' + displayStd + '</span>';
+      contentHtml += '<span style="font-size:9px;padding:2px 6px;border-radius:4px;background:rgba(' + tcRgb + ',.15);color:' + tc + ';font-weight:600;letter-spacing:.5px">' + item.type + '</span>';
       contentHtml += '</div>';
-      contentHtml += '<div style="font-size:12.5px;color:#e0e0e0;font-weight:600;margin-bottom:4px;line-height:1.4">'+displayTitle+'</div>';
-      contentHtml += '<div style="font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:8px">'+displayScope+'</div>';
+      contentHtml += '<div style="font-size:12.5px;color:#e0e0e0;font-weight:600;margin-bottom:4px;line-height:1.4">' + displayTitle + '</div>';
+      contentHtml += '<div style="font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:8px">' + displayScope + '</div>';
       if (item.pdf) {
-        contentHtml += '<a href="'+item.pdf+'" target="_blank" class="std-pdf-btn" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;padding:4px 10px;border-radius:5px;background:rgba('+rgb+',.1);border:1px solid rgba('+rgb+',.2);color:'+data.color+';text-decoration:none;font-weight:600;font-family:' + "'Space Grotesk'" + ',sans-serif;transition:all .2s;cursor:pointer" onmouseenter="this.style.background=' + "'rgba("+rgb+",.2)'" + '" onmouseleave="this.style.background=' + "'rgba("+rgb+",.1)'" + '">';
+        contentHtml += '<a href="' + item.pdf + '" target="_blank" class="std-pdf-btn" style="display:inline-flex;align-items:center;gap:5px;font-size:10px;padding:4px 10px;border-radius:5px;background:rgba(' + rgb + ',.1);border:1px solid rgba(' + rgb + ',.2);color:' + data.color + ';text-decoration:none;font-weight:600;font-family:' + "'Space Grotesk'" + ',sans-serif;transition:all .2s;cursor:pointer" onmouseenter="this.style.background=' + "'rgba(" + rgb + ",.2)'" + '" onmouseleave="this.style.background=' + "'rgba(" + rgb + ",.1)'" + '">';
         contentHtml += '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>';
         contentHtml += 'Buka PDF</a>';
       }
@@ -683,12 +683,12 @@ function renderStandarAcuan(filterKey) {
     if (totalMatchCount > 0) {
       html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;padding:8px 14px;background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.12);border-radius:8px;animation:fadeUp .2s ease-out">';
       html += '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
-      html += '<span style="font-size:12px;color:var(--text2)">Ditemukan <strong style="color:#00e5ff">' + totalMatchCount + '</strong> standar untuk "<strong style="color:#fff">' + searchQuery.replace(/</g,'&lt;') + '</strong>"</span>';
+      html += '<span style="font-size:12px;color:var(--text2)">Ditemukan <strong style="color:#00e5ff">' + totalMatchCount + '</strong> standar untuk "<strong style="color:#fff">' + searchQuery.replace(/</g, '&lt;') + '</strong>"</span>';
       html += '</div>';
     } else {
       html += '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;text-align:center;animation:fadeUp .3s ease-out">';
       html += '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:.25;margin-bottom:16px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="8" x2="14" y2="14"/><line x1="14" y1="8" x2="8" y2="14"/></svg>';
-      html += '<div style="font-size:14px;color:var(--text2);font-weight:600;margin-bottom:6px">Tidak ditemukan standar untuk "<span style="color:#fff">' + searchQuery.replace(/</g,'&lt;') + '</span>"</div>';
+      html += '<div style="font-size:14px;color:var(--text2);font-weight:600;margin-bottom:6px">Tidak ditemukan standar untuk "<span style="color:#fff">' + searchQuery.replace(/</g, '&lt;') + '</span>"</div>';
       html += '<div style="font-size:12px;color:rgba(142,155,176,.6);line-height:1.6;max-width:320px">Coba kata kunci lain, misalnya: <span style="color:var(--text2);cursor:pointer;text-decoration:underline" onclick="document.getElementById(\'standar-search-input\').value=\'HDPE\';_standarSearchHandler(\'HDPE\')">HDPE</span>, <span style="color:var(--text2);cursor:pointer;text-decoration:underline" onclick="document.getElementById(\'standar-search-input\').value=\'fusion\';_standarSearchHandler(\'fusion\')">fusion</span>, <span style="color:var(--text2);cursor:pointer;text-decoration:underline" onclick="document.getElementById(\'standar-search-input\').value=\'tekanan\';_standarSearchHandler(\'tekanan\')">tekanan</span>, atau <span style="color:var(--text2);cursor:pointer;text-decoration:underline" onclick="document.getElementById(\'standar-search-input\').value=\'SNI\';_standarSearchHandler(\'SNI\')">SNI</span></div>';
       html += '</div>';
     }
@@ -720,7 +720,7 @@ let _pustakaActiveMat = 'all';
 function _pustakaSearchHandler(value) {
   clearTimeout(_pustakaSearchTimeout);
   _pustakaSearchRaw = value;
-  _pustakaSearchTimeout = setTimeout(function() {
+  _pustakaSearchTimeout = setTimeout(function () {
     _pustakaSearchQuery = value.toLowerCase();
     renderPustakaTeknis();
   }, 250);
@@ -735,7 +735,7 @@ function renderPustakaTeknis(catFilter, matFilter) {
   const sq = _pustakaSearchQuery;
 
   // Filter data
-  let items = pustakaData.filter(function(item) {
+  let items = pustakaData.filter(function (item) {
     if (activeCat !== 'all' && item.cat !== activeCat) return false;
     if (activeMat !== 'all' && item.material !== activeMat) return false;
     if (sq) {
@@ -755,7 +755,7 @@ function renderPustakaTeknis(catFilter, matFilter) {
   html += '<div style="position:relative;margin-bottom:14px">';
   html += '<div style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text2);pointer-events:none;display:flex;align-items:center" id="pustaka-search-icon">';
   html += '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>';
-  html += '<input type="text" id="pustaka-search-input" placeholder="Cari handbook, jurnal, panduan teknis..." value="' + (_pustakaSearchRaw || '').replace(/"/g,'&quot;') + '" ';
+  html += '<input type="text" id="pustaka-search-input" placeholder="Cari handbook, jurnal, panduan teknis..." value="' + (_pustakaSearchRaw || '').replace(/"/g, '&quot;') + '" ';
   html += 'oninput="_pustakaSearchHandler(this.value)" ';
   html += 'onfocus="document.getElementById(\'pustaka-search-icon\').style.color=\'#00e5ff\';this.parentElement.style.boxShadow=\'0 0 0 2px rgba(0,229,255,.2)\'" ';
   html += 'onblur="document.getElementById(\'pustaka-search-icon\').style.color=\'var(--text2)\';this.parentElement.style.boxShadow=\'none\'" ';
@@ -768,25 +768,25 @@ function renderPustakaTeknis(catFilter, matFilter) {
   // Category filter
   html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">';
   html += '<span style="font-size:11px;color:var(--text2)">Kategori:</span>';
-  var catBtnStyle = function(isActive, color) {
+  var catBtnStyle = function (isActive, color) {
     return isActive ? 'background:rgba(' + color + ',.15);color:rgb(' + color + ');border-color:rgba(' + color + ',.4)' : 'background:rgba(255,255,255,.03);color:var(--text2);border-color:rgba(255,255,255,.08)';
   };
-  html += '<button onclick="renderPustakaTeknis(\'all\')" style="' + catBtnStyle(activeCat==='all','255,255,255') + ';border:1px solid;padding:4px 12px;border-radius:20px;font-size:10px;font-family:\'Space Grotesk\',sans-serif;cursor:pointer;font-weight:600">Semua</button>';
-  Object.keys(pustakaCategoryMeta).forEach(function(key) {
+  html += '<button onclick="renderPustakaTeknis(\'all\')" style="' + catBtnStyle(activeCat === 'all', '255,255,255') + ';border:1px solid;padding:4px 12px;border-radius:20px;font-size:10px;font-family:\'Space Grotesk\',sans-serif;cursor:pointer;font-weight:600">Semua</button>';
+  Object.keys(pustakaCategoryMeta).forEach(function (key) {
     var m = pustakaCategoryMeta[key];
-    var r = parseInt(m.color.slice(1,3),16), g = parseInt(m.color.slice(3,5),16), b = parseInt(m.color.slice(5,7),16);
-    html += '<button onclick="renderPustakaTeknis(\'' + key + '\')" style="' + catBtnStyle(activeCat===key, r+','+g+','+b) + ';border:1px solid;padding:4px 12px;border-radius:20px;font-size:10px;font-family:\'Space Grotesk\',sans-serif;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:4px">' + m.icon + ' ' + m.label + '</button>';
+    var r = parseInt(m.color.slice(1, 3), 16), g = parseInt(m.color.slice(3, 5), 16), b = parseInt(m.color.slice(5, 7), 16);
+    html += '<button onclick="renderPustakaTeknis(\'' + key + '\')" style="' + catBtnStyle(activeCat === key, r + ',' + g + ',' + b) + ';border:1px solid;padding:4px 12px;border-radius:20px;font-size:10px;font-family:\'Space Grotesk\',sans-serif;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:4px">' + m.icon + ' ' + m.label + '</button>';
   });
   html += '</div>';
 
   // Material filter
   html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:18px;flex-wrap:wrap">';
   html += '<span style="font-size:11px;color:var(--text2)">Material:</span>';
-  html += '<button onclick="renderPustakaTeknis(undefined,\'all\')" style="' + catBtnStyle(activeMat==='all','255,255,255') + ';border:1px solid;padding:4px 12px;border-radius:20px;font-size:10px;font-family:\'Space Grotesk\',sans-serif;cursor:pointer;font-weight:600">Semua</button>';
-  Object.keys(pustakaMatColors).forEach(function(mat) {
+  html += '<button onclick="renderPustakaTeknis(undefined,\'all\')" style="' + catBtnStyle(activeMat === 'all', '255,255,255') + ';border:1px solid;padding:4px 12px;border-radius:20px;font-size:10px;font-family:\'Space Grotesk\',sans-serif;cursor:pointer;font-weight:600">Semua</button>';
+  Object.keys(pustakaMatColors).forEach(function (mat) {
     var c = pustakaMatColors[mat];
-    var r = parseInt(c.slice(1,3),16), g = parseInt(c.slice(3,5),16), b = parseInt(c.slice(5,7),16);
-    html += '<button onclick="renderPustakaTeknis(undefined,\'' + mat + '\')" style="' + catBtnStyle(activeMat===mat, r+','+g+','+b) + ';border:1px solid;padding:4px 12px;border-radius:20px;font-size:10px;font-family:\'Space Grotesk\',sans-serif;cursor:pointer;font-weight:600">' + mat + '</button>';
+    var r = parseInt(c.slice(1, 3), 16), g = parseInt(c.slice(3, 5), 16), b = parseInt(c.slice(5, 7), 16);
+    html += '<button onclick="renderPustakaTeknis(undefined,\'' + mat + '\')" style="' + catBtnStyle(activeMat === mat, r + ',' + g + ',' + b) + ';border:1px solid;padding:4px 12px;border-radius:20px;font-size:10px;font-family:\'Space Grotesk\',sans-serif;cursor:pointer;font-weight:600">' + mat + '</button>';
   });
   html += '</div>';
 
@@ -810,11 +810,11 @@ function renderPustakaTeknis(catFilter, matFilter) {
     html += '<div style="background:rgba(0,229,255,.06);padding:10px 14px;color:#00e5ff;font-weight:700;font-family:\'Space Grotesk\',sans-serif;letter-spacing:.5px;text-align:center">KATEGORI</div>';
     html += '<div style="background:rgba(0,229,255,.06);padding:10px 14px;color:#00e5ff;font-weight:700;font-family:\'Space Grotesk\',sans-serif;letter-spacing:.5px;text-align:center">AKSES</div>';
 
-    items.forEach(function(item, idx) {
-      var catM = pustakaCategoryMeta[item.cat] || { label:item.cat, color:'#888' };
+    items.forEach(function (item, idx) {
+      var catM = pustakaCategoryMeta[item.cat] || { label: item.cat, color: '#888' };
       var matC = pustakaMatColors[item.material] || '#888';
-      var catR = parseInt(catM.color.slice(1,3),16), catG = parseInt(catM.color.slice(3,5),16), catB = parseInt(catM.color.slice(5,7),16);
-      var matR = parseInt(matC.slice(1,3),16), matG = parseInt(matC.slice(3,5),16), matB = parseInt(matC.slice(5,7),16);
+      var catR = parseInt(catM.color.slice(1, 3), 16), catG = parseInt(catM.color.slice(3, 5), 16), catB = parseInt(catM.color.slice(5, 7), 16);
+      var matR = parseInt(matC.slice(1, 3), 16), matG = parseInt(matC.slice(3, 5), 16), matB = parseInt(matC.slice(5, 7), 16);
       var rowBg = idx % 2 === 0 ? 'rgba(255,255,255,.015)' : 'rgba(255,255,255,.035)';
       var bdr = 'border-bottom:1px solid rgba(255,255,255,.04)';
       var hoverAttr = 'onmouseenter="this.parentElement.querySelectorAll(\'[data-row=row' + idx + ']\').forEach(function(e){e.style.background=\'rgba(0,229,255,.04)\'})" onmouseleave="this.parentElement.querySelectorAll(\'[data-row=row' + idx + ']\').forEach(function(e){e.style.background=\'' + rowBg + '\'})"';
@@ -825,7 +825,7 @@ function renderPustakaTeknis(catFilter, matFilter) {
       html += '<div id="pst-sum-' + idx + '" style="display:none;margin-top:6px;font-size:11px;color:var(--text2);line-height:1.5;padding:6px 8px;background:rgba(255,255,255,.03);border-radius:4px;border-left:2px solid ' + catM.color + '">' + item.summary;
       if (item.tags.length) {
         html += '<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">';
-        item.tags.forEach(function(t) { html += '<span style="font-size:9px;padding:1px 6px;border-radius:3px;background:rgba(255,255,255,.06);color:var(--text2)">' + t + '</span>'; });
+        item.tags.forEach(function (t) { html += '<span style="font-size:9px;padding:1px 6px;border-radius:3px;background:rgba(255,255,255,.06);color:var(--text2)">' + t + '</span>'; });
         html += '</div>';
       }
       html += '</div></div>';
@@ -860,15 +860,15 @@ function renderPustakaTeknis(catFilter, matFilter) {
 
   // Stats footer
   var stats = {};
-  pustakaData.forEach(function(d) { stats[d.cat] = (stats[d.cat]||0) + 1; });
+  pustakaData.forEach(function (d) { stats[d.cat] = (stats[d.cat] || 0) + 1; });
   html += '<div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">';
-  Object.keys(pustakaCategoryMeta).forEach(function(k) {
+  Object.keys(pustakaCategoryMeta).forEach(function (k) {
     var m = pustakaCategoryMeta[k];
-    var r = parseInt(m.color.slice(1,3),16)+','+parseInt(m.color.slice(3,5),16)+','+parseInt(m.color.slice(5,7),16);
-    html += '<div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba('+r+',.06);border:1px solid rgba('+r+',.12);border-radius:6px">';
-    html += '<span style="color:'+m.color+'">'+m.icon+'</span>';
+    var r = parseInt(m.color.slice(1, 3), 16) + ',' + parseInt(m.color.slice(3, 5), 16) + ',' + parseInt(m.color.slice(5, 7), 16);
+    html += '<div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(' + r + ',.06);border:1px solid rgba(' + r + ',.12);border-radius:6px">';
+    html += '<span style="color:' + m.color + '">' + m.icon + '</span>';
     html += '<span style="font-size:11px;color:var(--text2)">' + m.label + '</span>';
-    html += '<span style="font-size:12px;font-weight:700;color:'+m.color+';font-family:\'JetBrains Mono\',monospace">' + (stats[k]||0) + '</span>';
+    html += '<span style="font-size:12px;font-weight:700;color:' + m.color + ';font-family:\'JetBrains Mono\',monospace">' + (stats[k] || 0) + '</span>';
     html += '</div>';
   });
   html += '</div>';
@@ -909,7 +909,7 @@ function switchTab(t) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('tab-' + t).classList.add('active');
   // Update sidebar sub active state
-  document.querySelectorAll('.sidebar-sub').forEach(function(el) {
+  document.querySelectorAll('.sidebar-sub').forEach(function (el) {
     el.classList.toggle('active', el.getAttribute('data-tab') === t);
   });
 }
@@ -1028,23 +1028,23 @@ function toggleDropdown(e) {
   const chevron = document.getElementById('sys-main-chevron');
   if (!content) return;
   const isShowing = content.classList.contains('show');
-  
+
   if (isShowing) {
     content.classList.remove('show');
-    if(chevron) chevron.style.transform = 'rotate(0deg)';
+    if (chevron) chevron.style.transform = 'rotate(0deg)';
   } else {
     content.classList.add('show');
-    if(chevron) chevron.style.transform = 'rotate(180deg)';
+    if (chevron) chevron.style.transform = 'rotate(180deg)';
   }
 }
 
-window.addEventListener('click', function(event) {
+window.addEventListener('click', function (event) {
   if (!event.target.closest('.sys-dropdown')) {
     const content = document.getElementById('sys-dropdown-content');
     const chevron = document.getElementById('sys-main-chevron');
     if (content && content.classList.contains('show')) {
       content.classList.remove('show');
-      if(chevron) chevron.style.transform = 'rotate(0deg)';
+      if (chevron) chevron.style.transform = 'rotate(0deg)';
     }
   }
 });
