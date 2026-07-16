@@ -591,6 +591,13 @@ function calcSiphonic() {
   var vColWarn = parseFloat(vColAct) < 1.0 || parseFloat(vColAct) > 6.0;
   var vDnWarn = parseFloat(vDnAct) < 2.2 || parseFloat(vDnAct) > 6.0;
 
+  // Maximum Negative Pressure Estimation
+  // Max vacuum occurs at the transition from collecting pipe to downpipe.
+  // P_neg = - (Static Head - Downpipe Friction) * 98.1 mbar/m
+  var pNegMbar = - (H - hfDown) * 98.1;
+  var pNegLimit = pipeType === 'vp' ? -450 : -800; // PVC: -450, HDPE: -800
+  var pNegOK = pNegMbar >= pNegLimit; // e.g. -600 >= -800 is OK
+
   // Number of downpipes recommendation
   var nDown = Qtotal > 25 ? Math.ceil(Qtotal / 25) : 1;
   // Max area per outlet (typical: 200-350 m² per outlet)
@@ -598,7 +605,6 @@ function calcSiphonic() {
   var outletWarn = areaPerOut > 350;
 
   var pipeName = pipeType === 'vp' ? 'PVC JIS VP/AW PN 10' : (pipeType === 'hdpe10' ? 'HDPE PN 10' : 'HDPE PN 8');
-
   // --- SVG Layout Generation ---
   var aspect = L / W;
   var cols = Math.round(Math.sqrt(nOut * aspect));
@@ -667,11 +673,11 @@ function calcSiphonic() {
   <div class="result-item"><div class="rk">V. Collecting</div><div class="rv" style="color:${vColWarn ? '#ff5555' : 'var(--sys-accent)'}">${vColAct}<span class="ru"> m/s ${vColWarn ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' : ''}</span></div></div>
   <div class="result-item"><div class="rk">V. Downpipe</div><div class="rv" style="color:${vDnWarn ? '#ff5555' : 'var(--sys-accent)'}">${vDnAct}<span class="ru"> m/s ${vDnWarn ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' : ''}</span></div></div></div></div>
 
-  <div class="result-sec"><div class="result-sec-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> Head Loss Check</div><div class="result-grid">
+  <div class="result-sec"><div class="result-sec-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> Analisis Hidraulik & Vakum</div><div class="result-grid">
   <div class="result-item"><div class="rk">Available Head</div><div class="rv">${H}<span class="ru"> m</span></div></div>
   <div class="result-item"><div class="rk">Total Head Loss</div><div class="rv" style="color:${headOK ? 'var(--sys-accent)' : '#ff5555'}">${hTotal.toFixed(2)}<span class="ru"> m</span></div></div>
-  <div class="result-item"><div class="rk">Status</div><div class="rv" style="color:${headOK ? '#00ff9d' : '#ff5555'};font-size:13px">${headOK ? '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> OK — CUKUP' : '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> HEAD KURANG'}</div></div>
-  <div class="result-item"><div class="rk">Margin</div><div class="rv" style="color:${headMargin > 2 ? '#00ff9d' : headMargin > 0 ? '#ffaa00' : '#ff5555'}">${headMargin.toFixed(2)}<span class="ru"> m</span></div></div></div></div>
+  <div class="result-item"><div class="rk">Max Vakum (Est)</div><div class="rv" style="color:${pNegOK ? 'var(--sys-accent)' : '#ff5555'}">${Math.round(pNegMbar)}<span class="ru"> mbar</span></div></div>
+  <div class="result-item"><div class="rk">Batas Material</div><div class="rv">${pNegLimit}<span class="ru"> mbar</span></div></div></div></div>
   
   ${svgLayout}
 
@@ -679,6 +685,7 @@ function calcSiphonic() {
   <div class="rec-card"><div class="rec-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10" fill="#4488ff" stroke="none"/></svg></div><div class="rec-text">Material: <strong>${pipeName}</strong>. Roughness k=0.007mm. Jumlah downpipe rekomendasi: <strong>${nDown}</strong>. ${nDown > 1 ? 'Bagi collecting pipe menjadi ' + nDown + ' zona, masing-masing ke 1 downpipe.' : ''}</div></div>
   ${outletWarn ? '<div class="rec-card rec-warn"><div class="rec-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="rec-text">Area per outlet <strong>' + Math.round(areaPerOut) + ' m²</strong> melebihi rekomendasi 350 m²/outlet. Tambahkan outlet untuk performa optimal.</div></div>' : ''}
   ${!headOK ? '<div class="rec-card rec-warn"><div class="rec-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="rec-text"><strong>Available head tidak cukup!</strong> Perbesar diameter pipa, kurangi panjang collecting pipe, atau tambah downpipe untuk mengurangi head loss.</div></div>' : ''}
+  ${!pNegOK ? '<div class="rec-card rec-warn"><div class="rec-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><div class="rec-text"><strong>RISIKO KAVITASI!</strong> Tekanan vakum (' + Math.round(pNegMbar) + ' mbar) melebihi batas material (' + pNegLimit + ' mbar). Gunakan material pipa dengan rating PN lebih tinggi, atau bagi sistem menjadi beberapa downpipe.</div></div>' : ''}
   <div class="rec-card"><div class="rec-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><div class="rec-text">Hasil ini bersifat <strong>preliminary sizing</strong>. Desain final WAJIB diverifikasi menggunakan software hidraulik khusus dari <strong>produsen siphonic system</strong> dan engineer berpengalaman.</div></div>
   </div></div>`;
   if (typeof animateValues === 'function') animateValues();
