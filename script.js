@@ -157,6 +157,23 @@ function switchSystem(sys) {
   var grpModul = document.getElementById('grp-modul');
   if (grpModul) grpModul.classList.add('open');
 
+  // Show/hide siphonic viz toggle
+  var vizToggle = document.getElementById('viz-toggle');
+  if (vizToggle) {
+    vizToggle.style.display = (sys === 'siphonic') ? 'flex' : 'none';
+  }
+
+  // Destroy animation if switching away from siphonic
+  if (sys !== 'siphonic' && typeof destroySiphonicAnim === 'function') {
+    destroySiphonicAnim();
+  }
+
+  // Reset to diagram mode
+  var vtDiagram = document.getElementById('vt-diagram');
+  var vtAnimasi = document.getElementById('vt-animasi');
+  if (vtDiagram) vtDiagram.classList.add('active');
+  if (vtAnimasi) vtAnimasi.classList.remove('active');
+
   // Rebuild all content
   buildSVG();
   resetCompPanel();
@@ -164,6 +181,34 @@ function switchSystem(sys) {
   buildGuide();
   buildCalcForm();
   resetCalcResults();
+}
+
+// ==================== SIPHONIC VIZ MODE TOGGLE ====================
+let currentVizMode = 'diagram';
+
+function switchVizMode(mode) {
+  currentVizMode = mode;
+  var vtDiagram = document.getElementById('vt-diagram');
+  var vtAnimasi = document.getElementById('vt-animasi');
+  var wrap = document.getElementById('viz-svg-wrap');
+  var compPanel = document.getElementById('comp-panel');
+
+  vtDiagram.classList.toggle('active', mode === 'diagram');
+  vtAnimasi.classList.toggle('active', mode === 'animasi');
+
+  if (mode === 'diagram') {
+    // Destroy animation, restore SVG
+    if (typeof destroySiphonicAnim === 'function') destroySiphonicAnim();
+    buildSVG();
+    if (compPanel) compPanel.style.display = '';
+  } else {
+    // Show animation, hide comp panel
+    if (typeof initSiphonicAnim === 'function') {
+      wrap.innerHTML = '';
+      initSiphonicAnim(wrap);
+    }
+    if (compPanel) compPanel.style.display = 'none';
+  }
 }
 
 // ==================== ENGINEERING TOOLS ====================

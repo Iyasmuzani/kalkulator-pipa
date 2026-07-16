@@ -773,3 +773,24 @@ html{scrollbar-width:thin;scrollbar-color:rgba(0,212,255,.2) rgba(255,255,255,.0
   background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.15) 100%);
   border: 1px solid rgba(255,255,255,0.04);
 }
+
+/* ===== SIPHONIC VIZ TOGGLE ===== */
+.viz-toggle{
+  display:flex;gap:6px;margin-bottom:10px;
+}
+.vt-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:8px;
+  border:1px solid rgba(0,229,255,0.15);
+  background:rgba(0,229,255,0.04);
+  color:var(--text2);
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:12px;font-weight:600;
+  cursor:pointer;transition:all .25s;
+}
+.vt-btn:hover{border-color:rgba(0,229,255,0.3);color:var(--text);}
+.vt-btn.active{
+  border-color:var(--accent);color:var(--accent);
+  background:rgba(0,229,255,0.1);
+  box-shadow:0 0 12px rgba(0,229,255,0.12);
+}

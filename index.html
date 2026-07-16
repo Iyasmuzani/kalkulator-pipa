@@ -371,6 +371,11 @@
           <div class="viz-layout">
             <div class="building-card">
               <div class="card-label" id="viz-label">Diagram Potongan Bangunan — Klik komponen untuk detail</div>
+              <!-- Siphonic Viz Toggle -->
+              <div class="viz-toggle" id="viz-toggle" style="display:none;">
+                <button class="vt-btn active" id="vt-diagram" onclick="switchVizMode('diagram')"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg> Diagram</button>
+                <button class="vt-btn" id="vt-animasi" onclick="switchVizMode('animasi')"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg> Animasi Cara Kerja</button>
+              </div>
               <div id="viz-svg-wrap"></div>
             </div>
             <div class="comp-panel" id="comp-panel">
@@ -504,6 +509,7 @@
   <script src="calc-tools.js?v=1"></script>
   <script src="calc-segment.js?v=1"></script>
   <script src="data-pustaka.js?v=1"></script>
+  <script src="anim-siphonic.js?v=1"></script>
   <script src="script.js?v=4"></script>
 </body>
 
