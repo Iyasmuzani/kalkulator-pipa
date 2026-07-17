@@ -364,11 +364,11 @@ function switchEngTool(tool) {
       useCase: 'Membantu engineer memahami parameter material mana yang wajib diperhatikan untuk setiap segmen aplikasi pipa HDPE, lengkap dengan penjelasan yang mudah dipahami.'
     },
     collapse: {
-      title: 'Collapse Resistance (Vakum)',
-      desc: 'Menghitung <strong>tekanan kritis (collapse/buckling pressure)</strong> untuk pipa unconstrained akibat tekanan vakum/negatif, berdasarkan persamaan Levy/Timoshenko dan standar ISO 16422 untuk PVC-O.',
+      title: 'Collapse Resistance',
+      desc: 'Menghitung <strong>tekanan kritis (collapse/buckling pressure)</strong> untuk pipa berdasarkan persamaan Levy/Timoshenko. Mendukung dua mode: <strong>Tekanan Vakum</strong> (siphonic, suction pipe) dan <strong>Well Casing</strong> (pipa selubung sumur bor) dengan konversi kedalaman ke tekanan hidrostatik otomatis.',
       formula: 'P<sub>c</sub> = [2E / (1 - ν²)] × [1 / (SDR - 1)]³ × C<sub>o</sub>',
-      standards: ['ISO 16422-2', 'PPI Handbook Ch.6'],
-      useCase: 'Digunakan untuk mengevaluasi apakah spesifikasi pipa (terutama SDR/ketebalan dinding) aman terhadap kondisi vakum akibat pompa (suction) atau siphonic roof drainage.'
+      standards: ['ISO 16422-2', 'ASTM F480', 'PPI Handbook Ch.6'],
+      useCase: 'Mengevaluasi apakah SDR/ketebalan dinding pipa aman terhadap tekanan vakum (pompa/siphonic) atau tekanan hidrostatik eksternal pada sumur bor (well casing).'
     }
   };
 
