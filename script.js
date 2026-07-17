@@ -362,6 +362,13 @@ function switchEngTool(tool) {
       desc: 'Panduan lengkap <strong>parameter material properties</strong> pipa HDPE PE100 berdasarkan segmen aplikasi: <strong>Water Supply, Gas, Mining, HDD, Marine, Sewerage, Industrial, Landfill</strong>. Setiap parameter dilengkapi penjelasan awam, standar uji acuan, dan nilai tipikal.',
       standards: ['ISO 4427:2019', 'ISO 4437:2014', 'ISO 527-2', 'ISO 9080', 'ISO 16770'],
       useCase: 'Membantu engineer memahami parameter material mana yang wajib diperhatikan untuk setiap segmen aplikasi pipa HDPE, lengkap dengan penjelasan yang mudah dipahami.'
+    },
+    collapse: {
+      title: 'Collapse Resistance (Vakum)',
+      desc: 'Menghitung <strong>tekanan kritis (collapse/buckling pressure)</strong> untuk pipa unconstrained akibat tekanan vakum/negatif, berdasarkan persamaan Levy/Timoshenko dan standar ISO 16422 untuk PVC-O.',
+      formula: 'P<sub>c</sub> = [2E / (1 - ν²)] × [1 / (SDR - 1)]³ × C<sub>o</sub>',
+      standards: ['ISO 16422-2', 'PPI Handbook Ch.6'],
+      useCase: 'Digunakan untuk mengevaluasi apakah spesifikasi pipa (terutama SDR/ketebalan dinding) aman terhadap kondisi vakum akibat pompa (suction) atau siphonic roof drainage.'
     }
   };
 
@@ -412,7 +419,8 @@ function switchEngTool(tool) {
     trench: buildTrenchDepthForm,
     unitconv: buildUnitConverterForm,
     matguide: buildMaterialGuideForm,
-    segment: buildSegmentGuideForm
+    segment: buildSegmentGuideForm,
+    collapse: renderCalcCollapse
   };
   if (builders[tool]) builders[tool]();
   document.getElementById('eng-results').innerHTML = `
