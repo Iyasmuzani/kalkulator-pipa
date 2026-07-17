@@ -1,6 +1,7 @@
 // ==========================================
 // KALKULATOR COLLAPSE RESISTANCE
 // Mode: Vakum & Well Casing
+// Input: Diameter Luar (OD) & Tebal Dinding (t)
 // ==========================================
 
 var collapseMode = 'vacuum'; // 'vacuum' or 'well'
@@ -40,27 +41,21 @@ function renderCalcCollapse() {
     '<input type="number" class="form-control" id="col-poisson" value="0.4" step="0.01" disabled></div>' +
     '</div>' +
 
-    // ===== SDR & OVALITY =====
+    // ===== DIMENSI PIPA: OD & t =====
     '<div style="display:flex;gap:16px">' +
-    '<div class="form-group" style="flex:1"><label class="form-label">SDR Pipa</label>' +
-    '<select class="form-control" id="col-sdr">' +
-    '<option value="13.6">SDR 13.6</option>' +
-    '<option value="17">SDR 17</option>' +
-    '<option value="21">SDR 21</option>' +
-    '<option value="26">SDR 26</option>' +
-    '<option value="33">SDR 33</option>' +
-    '<option value="41" selected>SDR 41</option>' +
-    '<option value="51">SDR 51</option>' +
-    '<option value="custom_sdr">Input Manual</option>' +
-    '</select></div>' +
+    '<div class="form-group" style="flex:1"><label class="form-label">Diameter Luar, OD (mm)</label>' +
+    '<input type="number" class="form-control" id="col-od" value="200" step="1" onchange="updateCollapseSDR()"></div>' +
+    '<div class="form-group" style="flex:1"><label class="form-label">Tebal Dinding, t (mm)</label>' +
+    '<input type="number" class="form-control" id="col-thick" value="4.9" step="0.1" onchange="updateCollapseSDR()"></div>' +
+    '</div>' +
+
+    // ===== SDR (auto-calculated, read-only) =====
+    '<div style="display:flex;gap:16px">' +
+    '<div class="form-group" style="flex:1"><label class="form-label">SDR (otomatis: OD / t)</label>' +
+    '<input type="number" class="form-control" id="col-sdr-auto" value="40.8" readonly style="color:#00e5ff"></div>' +
     '<div class="form-group" style="flex:1"><label class="form-label">Ovalitas Awal, q (%)</label>' +
     '<input type="number" class="form-control" id="col-ovality" value="1.0" step="0.1"></div>' +
     '</div>' +
-
-    // ===== SDR manual (hidden by default) =====
-    '<div class="form-group" id="col-sdr-manual-wrap" style="display:none">' +
-    '<label class="form-label">SDR Manual</label>' +
-    '<input type="number" class="form-control" id="col-sdr-manual" value="41" step="0.5"></div>' +
 
     // ===== VACUUM MODE INPUTS =====
     '<div id="col-vacuum-inputs">' +
@@ -115,12 +110,6 @@ function renderCalcCollapse() {
     '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> ' +
     'Hitung Collapse Resistance</button>';
 
-  // Setup SDR dropdown listener
-  document.getElementById('col-sdr').addEventListener('change', function() {
-    var wrap = document.getElementById('col-sdr-manual-wrap');
-    wrap.style.display = this.value === 'custom_sdr' ? '' : 'none';
-  });
-
   // Setup fluid dropdown listener
   document.getElementById('col-fluid').addEventListener('change', function() {
     var wrap = document.getElementById('col-fluid-manual-wrap');
@@ -135,8 +124,22 @@ function renderCalcCollapse() {
     updateWellPressure();
   });
 
+  // Calculate initial SDR
+  updateCollapseSDR();
+
   // Set initial mode styling
   switchCollapseMode('vacuum');
+}
+
+function updateCollapseSDR() {
+  var od = parseFloat(document.getElementById('col-od').value) || 0;
+  var t = parseFloat(document.getElementById('col-thick').value) || 0;
+  var sdrField = document.getElementById('col-sdr-auto');
+  if (t > 0 && od > 0 && od > t) {
+    sdrField.value = (od / t).toFixed(1);
+  } else {
+    sdrField.value = '-';
+  }
 }
 
 function switchCollapseMode(mode) {
@@ -154,7 +157,10 @@ function switchCollapseMode(mode) {
     // Default material for vacuum = PVC-O 500
     document.getElementById('col-material').value = 'pvco500';
     updateCollapseMaterial();
-    document.getElementById('col-sdr').value = '41';
+    // Default OD/t for vacuum (SDR ~41)
+    document.getElementById('col-od').value = '200';
+    document.getElementById('col-thick').value = '4.9';
+    updateCollapseSDR();
   } else {
     vacBtn.style.opacity = '0.5';
     wellBtn.style.opacity = '1';
@@ -163,7 +169,10 @@ function switchCollapseMode(mode) {
     // Default material for well casing = PVC-U
     document.getElementById('col-material').value = 'pvcu';
     updateCollapseMaterial();
-    document.getElementById('col-sdr').value = '21';
+    // Default OD/t for well casing (SDR ~21)
+    document.getElementById('col-od').value = '165';
+    document.getElementById('col-thick').value = '7.9';
+    updateCollapseSDR();
     updateWellPressure();
   }
 }
@@ -216,20 +225,20 @@ function updateCollapseMaterial() {
   }
 }
 
-function getCollapseSDR() {
-  var sel = document.getElementById('col-sdr').value;
-  if (sel === 'custom_sdr') {
-    return parseFloat(document.getElementById('col-sdr-manual').value);
-  }
-  return parseFloat(sel);
-}
-
 function calculateCollapse() {
   var E_val = parseFloat(document.getElementById('col-modulus').value);
   var v = parseFloat(document.getElementById('col-poisson').value);
-  var SDR = getCollapseSDR();
+  var OD = parseFloat(document.getElementById('col-od').value);
+  var t = parseFloat(document.getElementById('col-thick').value);
   var q = parseFloat(document.getElementById('col-ovality').value);
   var SF, targetPressure;
+
+  if (!OD || !t || OD <= t) {
+    alert("Diameter Luar (OD) harus lebih besar dari Tebal Dinding (t).");
+    return;
+  }
+
+  var SDR = OD / t;
 
   if (collapseMode === 'vacuum') {
     targetPressure = Math.abs(parseFloat(document.getElementById('col-vacuum').value));
@@ -239,7 +248,7 @@ function calculateCollapse() {
     SF = parseFloat(document.getElementById('col-sf-well').value);
   }
 
-  if (!E_val || !v || !SDR || isNaN(q) || isNaN(targetPressure) || !SF) {
+  if (!E_val || !v || isNaN(q) || isNaN(targetPressure) || !SF) {
     alert("Mohon lengkapi semua input dengan nilai numerik yang valid.");
     return;
   }
@@ -249,6 +258,7 @@ function calculateCollapse() {
   var Co = Math.pow((1 - q_dec) / Math.pow(1 + q_dec, 2), 3);
 
   // Critical Buckling Pressure: Pc = [2E / (1 - v^2)] * [1/(SDR-1)]^3 * Co
+  // where SDR = OD / t
   var term1 = (2 * E_val) / (1 - Math.pow(v, 2));
   var term2 = Math.pow(1 / (SDR - 1), 3);
   var Pc_MPa = term1 * term2 * Co;
@@ -281,7 +291,14 @@ function calculateCollapse() {
   var contextHtml = '';
   if (collapseMode === 'well') {
     var depth = parseFloat(document.getElementById('col-depth').value) || 0;
-    var maxSafeDepth = (Pa_bar * 100000) / (1000 * 9.81);
+    var fluidSel = document.getElementById('col-fluid').value;
+    var rho;
+    if (fluidSel === 'custom_fluid') {
+      rho = parseFloat(document.getElementById('col-fluid-manual').value) || 1000;
+    } else {
+      rho = parseFloat(fluidSel);
+    }
+    var maxSafeDepth = (Pa_bar * 100000) / (rho * 9.81);
 
     contextHtml = '<div class="result-grid" style="margin-top:12px">' +
       '<div class="result-item"><div class="rk">Kedalaman Sumur</div><div class="rv">' + depth + '<span class="ru"> m</span></div></div>' +
@@ -312,12 +329,13 @@ function calculateCollapse() {
     statusHtml +
 
     '<div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">' +
-    'P<sub>c</sub> = [2E / (1 - \u03BD\u00B2)] \u00D7 [1 / (SDR - 1)]\u00B3 \u00D7 C<sub>o</sub></div>' +
+    'P<sub>c</sub> = [2E / (1 - \u03BD\u00B2)] \u00D7 [1 / (SDR - 1)]\u00B3 \u00D7 C<sub>o</sub>  \u2014  SDR = OD / t</div>' +
 
     '<div class="result-grid">' +
+    '<div class="result-item"><div class="rk">Diameter Luar (OD)</div><div class="rv">' + OD + '<span class="ru"> mm</span></div></div>' +
+    '<div class="result-item"><div class="rk">Tebal Dinding (t)</div><div class="rv">' + t + '<span class="ru"> mm</span></div></div>' +
+    '<div class="result-item"><div class="rk">SDR (OD/t)</div><div class="rv" style="color:#00e5ff">' + SDR.toFixed(1) + '</div></div>' +
     '<div class="result-item"><div class="rk">Modulus Elastisitas (E)</div><div class="rv">' + E_val + '<span class="ru"> MPa</span></div></div>' +
-    '<div class="result-item"><div class="rk">Poisson\'s Ratio (\u03BD)</div><div class="rv">' + v + '</div></div>' +
-    '<div class="result-item"><div class="rk">SDR Pipa</div><div class="rv">' + SDR + '</div></div>' +
     '<div class="result-item"><div class="rk">Faktor Koreksi Ovalitas (C<sub>o</sub>)</div><div class="rv">' + Co.toFixed(4) + '<span class="ru"> (q=' + q + '%)</span></div></div>' +
     '<div class="result-item"><div class="rk">Critical Buckling (P<sub>c</sub>)</div><div class="rv" style="color:var(--text)">' + Pc_bar.toFixed(3) + '<span class="ru"> bar</span></div></div>' +
     '<div class="result-item"><div class="rk">Allowable Pressure (P<sub>a</sub>)</div><div class="rv" style="color:#00e5ff">' + Pa_bar.toFixed(3) + '<span class="ru"> bar</span></div></div>' +
