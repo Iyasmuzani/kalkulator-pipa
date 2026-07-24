@@ -802,7 +802,8 @@ html{scrollbar-width:thin;scrollbar-color:rgba(0,212,255,.2) rgba(255,255,255,.0
   body { background: #fff !important; color: #000 !important; overflow: visible !important; }
   
   /* Hide the ENTIRE application UI during print */
-  .app-shell, .screen-only { display: none !important; }
+  .sidebar, .mobile-header, .sidebar-overlay, .rec-form, #eng-tool-desc, .export-pdf-btn, .content-header, .tab-panel, #content-body, #lib-content, .screen-only { display: none !important; }
+  .app-shell { display: block !important; }
   
   /* Reset container properties to ensure full-page printing without clipping */
   .content-main, #eng-content, .rec-results, #eng-results { 
