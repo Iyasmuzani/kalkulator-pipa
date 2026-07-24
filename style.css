@@ -800,9 +800,10 @@ html{scrollbar-width:thin;scrollbar-color:rgba(0,212,255,.2) rgba(255,255,255,.0
 @media print {
   @page { size: A4 portrait; margin: 1.5cm 1.2cm; }
   body { background: #fff !important; color: #000 !important; overflow: visible !important; }
-  .sidebar, .mobile-header, .sidebar-overlay, .rec-form, #eng-tool-desc, .export-pdf-btn, .content-header, .tab-panel { display: none !important; }
+  .sidebar, .mobile-header, .sidebar-overlay, .rec-form, #eng-tool-desc, .export-pdf-btn, .content-header, .tab-panel, #content-body, #lib-content { display: none !important; }
   .app-shell { display: block !important; }
-  .content-main, .content-body { padding: 0 !important; margin: 0 !important; display: block !important; overflow: visible !important; height: auto !important; }
+  .content-main { padding: 0 !important; margin: 0 !important; display: block !important; overflow: visible !important; height: auto !important; }
+  #eng-content { padding: 0 !important; margin: 0 !important; display: block !important; overflow: visible !important; height: auto !important; }
   .rec-layout { display: block !important; }
   .rec-results, #eng-results { display: block !important; width: 100% !important; max-width: 100% !important; height: auto !important; overflow: visible !important; border: none !important; padding: 0 !important; background: #fff !important; margin-top: 0 !important; }
   
