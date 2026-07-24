@@ -400,6 +400,7 @@ function calcDNSizing() {
         html += smartWarn('ok', 
           'Total tekanan aliran (' + operatingPressureBar.toFixed(1) + ' bar) aman di bawah kapasitas pipa' + derateText + '.', 
           '');
+        printWarnings.push('<li><strong>Operating Pressure:</strong> Total tekanan aliran (' + operatingPressureBar.toFixed(1) + ' bar) terkonfirmasi aman di bawah batas kapasitas pipa' + derateText + '.</li>');
       }
     }
   }
