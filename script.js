@@ -369,6 +369,13 @@ function switchEngTool(tool) {
       formula: 'P<sub>c</sub> = [2E / (1 - ν²)] × [1 / (SDR - 1)]³ × C<sub>o</sub>',
       standards: ['ISO 16422-2', 'ASTM F480', 'PPI Handbook Ch.6'],
       useCase: 'Mengevaluasi apakah SDR/ketebalan dinding pipa aman terhadap tekanan vakum (pompa/siphonic) atau tekanan hidrostatik eksternal pada sumur bor (well casing).'
+    },
+    dnsizing: {
+      title: 'DN Sizing Pipe',
+      desc: 'Menentukan <strong>diameter nominal (DN) pipa</strong> berdasarkan data <strong>debit aliran</strong>, <strong>kecepatan aliran</strong>, <strong>head</strong>, dan <strong>panjang pipa</strong>. Mendukung material HDPE, PVC, PPR, Baja Galvanis, dan Ductile Iron. Dilengkapi perhitungan <strong>daya motor pompa</strong> dan tabel perbandingan 3 ukuran DN.',
+      formula: 'D = √(4Q / πv) — TDH = H<sub>static</sub> + h<sub>f</sub> — P = ρgQH / (η<sub>pump</sub> × η<sub>motor</sub>)',
+      standards: ['ISO 4427-2:2019', 'PPI Handbook Ch.6', 'AWWA M55 §5.4', 'ISO 9906'],
+      useCase: 'Menentukan ukuran pipa optimal untuk proyek perpipaan baru berdasarkan data operasi (debit, kecepatan, head), sekaligus menghitung kebutuhan daya pompa dan ukuran motor standar terdekat.'
     }
   };
 
@@ -420,7 +427,8 @@ function switchEngTool(tool) {
     unitconv: buildUnitConverterForm,
     matguide: buildMaterialGuideForm,
     segment: buildSegmentGuideForm,
-    collapse: renderCalcCollapse
+    collapse: renderCalcCollapse,
+    dnsizing: buildDNSizingForm
   };
   if (builders[tool]) builders[tool]();
   document.getElementById('eng-results').innerHTML = `
