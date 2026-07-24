@@ -794,3 +794,24 @@ html{scrollbar-width:thin;scrollbar-color:rgba(0,212,255,.2) rgba(255,255,255,.0
   background:rgba(0,229,255,0.1);
   box-shadow:0 0 12px rgba(0,229,255,0.12);
 }
+
+/* ===== PRINT STYLES FOR EXPORT PDF ===== */
+@media print {
+  @page { size: A4 portrait; margin: 1cm; }
+  body { background: #fff !important; color: #000 !important; overflow: visible !important; }
+  .sidebar, .mobile-header, .sidebar-overlay, .rec-form, #eng-tool-desc, .export-pdf-btn { display: none !important; }
+  .app-shell { display: block !important; }
+  .content-main, .content-body { padding: 0 !important; margin: 0 !important; display: block !important; overflow: visible !important; height: auto !important; }
+  .rec-layout { display: block !important; }
+  .rec-results, #eng-results { display: block !important; width: 100% !important; max-width: 100% !important; height: auto !important; overflow: visible !important; border: none !important; padding: 0 !important; background: #fff !important; }
+  
+  /* Make text dark and readable */
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; text-shadow: none !important; }
+  .eng-section-title { color: #000 !important; border-bottom: 1px solid #ccc !important; padding-bottom: 5px !important; }
+  .eng-section-title svg { color: #000 !important; }
+  .rk { color: #555 !important; }
+  .rv, .ru { color: #000 !important; }
+  .result-item { background: #f8f9fa !important; border: 1px solid #ddd !important; break-inside: avoid; }
+  .chart-title { color: #000 !important; }
+  .chart-wrap { break-inside: avoid; border: 1px solid #ddd !important; background: #fff !important; }
+}
