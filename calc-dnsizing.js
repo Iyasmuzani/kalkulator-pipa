@@ -65,7 +65,7 @@ function buildDNSizingForm() {
   <input type="number" class="form-control" id="dns-v" min="0.3" max="5.0" step="0.1" value="1.5">
   <div style="font-size:10.5px; color:var(--text2); margin-top:3px">Optimal: 0.6–1.5 m/s · Maks: 3.0 m/s (AWWA M55)</div></div>
 
-  <div class="form-group"><label class="form-label">Panjang Pipa Total (L)${infoTip('Panjang total jalur pipa dari sumber ke tujuan.\\nTermasuk jalur horizontal dan vertikal.')}</label>
+  <div class="form-group"><label class="form-label">Panjang Pipa Total (m)${infoTip('Panjang total jalur pipa dari sumber ke tujuan.\\nTermasuk jalur horizontal dan vertikal.')}</label>
   <input type="number" class="form-control" id="dns-l" min="1" max="100000" value="500"></div>
 
   <div class="form-group"><label class="form-label">Beda Elevasi / Static Head (m)${infoTip('Perbedaan tinggi antara titik awal dan titik akhir.\\nPositif = aliran naik (perlu pompa)\\nNegatif = aliran turun (gravitasi)\\nSumber: AWWA M55 §5.2')}</label>
