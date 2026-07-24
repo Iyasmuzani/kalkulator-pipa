@@ -30,6 +30,9 @@ function buildDNSizingForm() {
   E('eng-form').innerHTML = `
   <div class="form-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> DN Sizing Pipe <span style="font-size:10px;color:var(--text2);font-weight:400">+ Daya Motor Pompa</span></div>
 
+  <div class="form-group"><label class="form-label">Jenis Fluida / Keterangan${infoTip('Keterangan fluida yang dialirkan. Data ini akan dicetak di dalam laporan PDF.')}</label>
+  <input type="text" class="form-control" id="dns-fluid" value="Air Bersih (Clean Water)" placeholder="Contoh: Air Bersih, Lumpur, dll"></div>
+
   <div class="form-group"><label class="form-label">Material Pipa${infoTip('Material menentukan C-Factor (Hazen-Williams) dan kekasaran pipa.\\nHDPE/PVC: C=150 (sangat halus)\\nBaja: C=120\\nSumber: PPI Handbook Ch.6')}</label>
   <select class="form-control" id="dns-mat" onchange="dnUpdateMaterial()">
     <option value="hdpe" selected>HDPE PE100</option>
@@ -208,6 +211,7 @@ function getHDPE_DeratingFactor(T) {
 
 // ===== Main Calculation =====
 function calcDNSizing() {
+  var fluidType = E('dns-fluid') ? E('dns-fluid').value : 'Air Bersih (Clean Water)';
   var mat = E('dns-mat').value;
   var matData = DN_MATERIAL_DATA[mat];
   var C = matData.C;
@@ -513,6 +517,7 @@ function calcDNSizing() {
       <div class="pr-info-grid">
         <div class="pr-info-col">
           <div class="pr-info-row"><span class="pr-label">Sistem Pipa:</span> <span class="pr-val">Jaringan Pemompaan Air</span></div>
+          <div class="pr-info-row"><span class="pr-label">Jenis Fluida:</span> <span class="pr-val">${fluidType}</span></div>
           <div class="pr-info-row"><span class="pr-label">Material Pipa:</span> <span class="pr-val">${matData.label} ${mat === 'hdpe' ? sdrLabel : ''}</span></div>
           <div class="pr-info-row"><span class="pr-label">Hazen-Williams C:</span> <span class="pr-val">${C}</span></div>
         </div>
@@ -520,6 +525,7 @@ function calcDNSizing() {
           <div class="pr-info-row"><span class="pr-label">Tanggal Cetak:</span> <span class="pr-val">${dateStr}</span></div>
           <div class="pr-info-row"><span class="pr-label">Suhu Operasional:</span> <span class="pr-val">${temp} °C</span></div>
           <div class="pr-info-row"><span class="pr-label">Standar Acuan:</span> <span class="pr-val">${mat === 'hdpe' ? 'ISO 4427-2 / SNI 4829-2' : '-'}</span></div>
+          <div class="pr-info-row"><span class="pr-label">Dibuat Oleh:</span> <span class="pr-val">Kalkulator Pipa Pro</span></div>
         </div>
       </div>
       
