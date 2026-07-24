@@ -333,6 +333,15 @@ function calcDNSizing() {
   // 6. Build results HTML
   var html = '';
   
+  var dateStr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  html += `
+    <div class="print-header">
+      <div class="ph-logo">Kalkulator Pipa Pro</div>
+      <h2>Laporan Rekomendasi Ukuran Pipa & Pompa</h2>
+      <div class="ph-meta">Dicetak pada: ${dateStr}</div>
+    </div>
+  `;
+
   html += `<button class="export-pdf-btn" onclick="window.print()" style="float:right; display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:rgba(0,229,255,0.1); border:1px solid rgba(0,229,255,0.3); color:#00e5ff; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; margin-bottom:10px; transition:all 0.2s;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export PDF / Cetak</button><div style="clear:both"></div>`;
 
   // --- Section 1: Selected Pipe ---

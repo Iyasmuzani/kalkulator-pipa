@@ -796,22 +796,31 @@ html{scrollbar-width:thin;scrollbar-color:rgba(0,212,255,.2) rgba(255,255,255,.0
 }
 
 /* ===== PRINT STYLES FOR EXPORT PDF ===== */
+.print-header { display: none; }
 @media print {
-  @page { size: A4 portrait; margin: 1cm; }
+  @page { size: A4 portrait; margin: 1.5cm 1.2cm; }
   body { background: #fff !important; color: #000 !important; overflow: visible !important; }
-  .sidebar, .mobile-header, .sidebar-overlay, .rec-form, #eng-tool-desc, .export-pdf-btn { display: none !important; }
+  .sidebar, .mobile-header, .sidebar-overlay, .rec-form, #eng-tool-desc, .export-pdf-btn, .content-header, .tab-panel { display: none !important; }
   .app-shell { display: block !important; }
   .content-main, .content-body { padding: 0 !important; margin: 0 !important; display: block !important; overflow: visible !important; height: auto !important; }
   .rec-layout { display: block !important; }
-  .rec-results, #eng-results { display: block !important; width: 100% !important; max-width: 100% !important; height: auto !important; overflow: visible !important; border: none !important; padding: 0 !important; background: #fff !important; }
+  .rec-results, #eng-results { display: block !important; width: 100% !important; max-width: 100% !important; height: auto !important; overflow: visible !important; border: none !important; padding: 0 !important; background: #fff !important; margin-top: 0 !important; }
   
   /* Make text dark and readable */
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; text-shadow: none !important; }
-  .eng-section-title { color: #000 !important; border-bottom: 1px solid #ccc !important; padding-bottom: 5px !important; }
+  
+  .print-header { display: block !important; margin-bottom: 25px; border-bottom: 2px solid #222; padding-bottom: 12px; }
+  .print-header h2 { font-size: 22px; color: #000; margin: 0 0 6px 0; font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.3px; }
+  .print-header .ph-meta { font-size: 11px; color: #555; }
+  .print-header .ph-logo { float: right; font-weight: 800; font-size: 15px; color: #0055cc; font-family: 'Space Grotesk', sans-serif; }
+
+  .eng-section { break-inside: avoid; margin-bottom: 20px !important; }
+  .eng-section-title { color: #000 !important; border-bottom: 1px solid #ccc !important; padding-bottom: 8px !important; margin-top: 15px !important; font-size: 15px !important; }
   .eng-section-title svg { color: #000 !important; }
-  .rk { color: #555 !important; }
+  .rk { color: #555 !important; font-size: 11px !important; }
   .rv, .ru { color: #000 !important; }
-  .result-item { background: #f8f9fa !important; border: 1px solid #ddd !important; break-inside: avoid; }
+  .result-item { background: #fafafa !important; border: 1px solid #ddd !important; break-inside: avoid; padding: 12px !important; }
   .chart-title { color: #000 !important; }
-  .chart-wrap { break-inside: avoid; border: 1px solid #ddd !important; background: #fff !important; }
+  .chart-wrap { break-inside: avoid; border: 1px solid #ddd !important; background: #fff !important; margin-top: 20px !important; padding: 15px !important; }
+  .smart-warn { break-inside: avoid; margin-top: 15px !important; border: 1px solid #ccc !important; }
 }
