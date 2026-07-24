@@ -50,6 +50,9 @@ function buildDNSizingForm() {
   </select></div>
   </div>
 
+  <div class="form-group" id="dns-temp-wrap" style="display:none"><label class="form-label">Suhu Operasional Pipa (°C)${infoTip('Suhu fluida / operasional.\\nPipa plastik mengalami penurunan rating tekanan (derating) pada suhu >20°C.\\nBatas maks HDPE: 40°C.')}</label>
+  <input type="number" class="form-control" id="dns-temp" min="20" max="60" value="20"></div>
+
   <div class="form-title" style="margin-top:15px; font-size:12px; margin-bottom:8px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg> Data Hidrolika</div>
 
   <div class="form-group"><label class="form-label">Debit Aliran (Q)${infoTip('Debit desain aliran air.\\nKonversi: 1 L/s = 3.6 m³/jam\\nSumber: PPI Handbook Ch.6')}</label>
@@ -91,9 +94,15 @@ function buildDNSizingForm() {
 // ===== Material change handler =====
 function dnUpdateMaterial() {
   var mat = E('dns-mat').value;
-  var sdrWrap = E('dns-sdr-wrap');
-  // Show SDR selection only for HDPE
-  sdrWrap.style.display = (mat === 'hdpe') ? 'block' : 'none';
+  var isHDPE = (mat === 'hdpe');
+  var isPlastic = (mat === 'hdpe' || mat === 'pvc' || mat === 'ppr');
+  
+  E('dns-sdr-wrap').style.display = isHDPE ? 'block' : 'none';
+  E('dns-temp-wrap').style.display = isPlastic ? 'block' : 'none';
+  
+  if (!isPlastic) {
+    E('dns-temp').value = 20; // reset
+  }
 }
 
 // ===== Q unit conversion =====
@@ -187,12 +196,23 @@ function dnGetPipeSizes(mat, sdr) {
   });
 }
 
+// Derating factor untuk HDPE berdasarkan kurva standar
+function getHDPE_DeratingFactor(T) {
+  if (T <= 20) return 1.0;
+  if (T <= 25) return 1.0 - (T - 20) * 0.015;        // 1.0 -> 0.925
+  if (T <= 30) return 0.925 - (T - 25) * 0.015;      // 0.925 -> 0.85
+  if (T <= 35) return 0.85 - (T - 30) * 0.012;       // 0.85 -> 0.79
+  if (T <= 40) return 0.79 - (T - 35) * 0.012;       // 0.79 -> 0.73
+  return 0; // >40C (Maximum exceeded)
+}
+
 // ===== Main Calculation =====
 function calcDNSizing() {
   var mat = E('dns-mat').value;
   var matData = DN_MATERIAL_DATA[mat];
   var C = matData.C;
   var sdr = (mat === 'hdpe') ? parseFloat(E('dns-sdr').value) : null;
+  var temp = parseFloat(E('dns-temp').value) || 20;
 
   // Parse inputs
   var qUnit = E('dns-q-unit').value;
@@ -348,19 +368,30 @@ function calcDNSizing() {
   // Operating Pressure vs PN Warning
   if (mat === 'hdpe' && sdr) {
     var pnData = SDR_PN_MAP[sdr];
-    var operatingPressureBar = selected.TDH / 10.197; // 1 bar = 10.197 mH2O
-    if (pnData && operatingPressureBar > pnData.pn) {
+    var derating = getHDPE_DeratingFactor(temp);
+    
+    if (derating === 0) {
       html += smartWarn('danger', 
-        'Total tekanan aliran (' + operatingPressureBar.toFixed(1) + ' bar) <strong>melebihi kapasitas tekanan pipa (' + pnData.label + ')!</strong>', 
-        'Bahaya pecah! Pilih SDR/PN yang lebih tinggi.');
-    } else if (pnData && operatingPressureBar > pnData.pn * 0.8) {
-      html += smartWarn('caution', 
-        'Total tekanan aliran (' + operatingPressureBar.toFixed(1) + ' bar) mendekati batas kapasitas tekanan pipa (' + pnData.label + ').', 
-        'Sisakan safety margin minimal 20% untuk surge/water hammer.');
-    } else if (pnData) {
-      html += smartWarn('ok', 
-        'Total tekanan aliran (' + operatingPressureBar.toFixed(1) + ' bar) aman di bawah kapasitas pipa (' + pnData.label + ').', 
-        '');
+        'Suhu operasional (' + temp + ' °C) melebihi batas maksimal pipa HDPE (40 °C)!', 
+        'Pipa HDPE akan kehilangan kekuatan struktural secara drastis pada suhu ini. Gunakan material lain (misal PPR atau Baja).');
+    } else {
+      var pnDerated = pnData.pn * derating;
+      var operatingPressureBar = selected.TDH / 10.197; // 1 bar = 10.197 mH2O
+      var derateText = derating < 1.0 ? ' (setelah derating suhu ' + temp + '°C = ' + pnDerated.toFixed(2) + ' bar)' : '';
+      
+      if (pnData && operatingPressureBar > pnDerated) {
+        html += smartWarn('danger', 
+          'Total tekanan aliran (' + operatingPressureBar.toFixed(1) + ' bar) <strong>melebihi kapasitas tekanan pipa' + derateText + '!</strong>', 
+          'Bahaya pecah! Pilih SDR/PN yang lebih tinggi.');
+      } else if (pnData && operatingPressureBar > pnDerated * 0.8) {
+        html += smartWarn('caution', 
+          'Total tekanan aliran (' + operatingPressureBar.toFixed(1) + ' bar) mendekati batas kapasitas tekanan pipa' + derateText + '.', 
+          'Sisakan safety margin minimal 20% untuk surge/water hammer.');
+      } else if (pnData) {
+        html += smartWarn('ok', 
+          'Total tekanan aliran (' + operatingPressureBar.toFixed(1) + ' bar) aman di bawah kapasitas pipa' + derateText + '.', 
+          '');
+      }
     }
   }
 
