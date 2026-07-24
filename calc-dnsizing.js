@@ -313,6 +313,25 @@ function calcDNSizing() {
   </div>
   ${velocityWarnings(selected.v, 'pressure')}`;
 
+  // Operating Pressure vs PN Warning
+  if (mat === 'hdpe' && sdr) {
+    var pnData = SDR_PN_MAP[sdr];
+    var operatingPressureBar = selected.TDH / 10.197; // 1 bar = 10.197 mH2O
+    if (pnData && operatingPressureBar > pnData.pn) {
+      html += smartWarn('danger', 
+        'Total tekanan aliran (' + operatingPressureBar.toFixed(1) + ' bar) <strong>melebihi kapasitas tekanan pipa (' + pnData.label + ')!</strong>', 
+        'Bahaya pecah! Pilih SDR/PN yang lebih tinggi.');
+    } else if (pnData && operatingPressureBar > pnData.pn * 0.8) {
+      html += smartWarn('caution', 
+        'Total tekanan aliran (' + operatingPressureBar.toFixed(1) + ' bar) mendekati batas kapasitas tekanan pipa (' + pnData.label + ').', 
+        'Sisakan safety margin minimal 20% untuk surge/water hammer.');
+    } else if (pnData) {
+      html += smartWarn('ok', 
+        'Total tekanan aliran (' + operatingPressureBar.toFixed(1) + ' bar) aman di bawah kapasitas pipa (' + pnData.label + ').', 
+        '');
+    }
+  }
+
   // Head loss per 100m warning
   if (selected.hfPer100 > 10) {
     html += smartWarn('caution', 'Head loss ' + selected.hfPer100.toFixed(2) + ' m/100m cukup tinggi. Pertimbangkan diameter lebih besar untuk mengurangi friction loss.', 'AWWA M55 §5.4');
@@ -418,7 +437,6 @@ function dnRenderChart(candidates, selectedIdx) {
   var labels = subset.map(function(c) { return 'DN' + c.dn; });
   var dataHL = subset.map(function(c) { return c.hf_total; });
   var dataPower = subset.map(function(c) { return c.P_motor_kW; });
-  var dataVel = subset.map(function(c) { return c.v; });
 
   // Color bars by selection
   var bgHL = dataHL.map(function(h, i) {
@@ -470,22 +488,6 @@ function dnRenderChart(candidates, selectedIdx) {
           borderWidth: 2,
           yAxisID: 'y1',
           order: 1
-        },
-        {
-          label: 'Kecepatan (m/s)',
-          data: dataVel,
-          type: 'line',
-          borderColor: '#00e676',
-          backgroundColor: 'rgba(0,230,118,.1)',
-          fill: false,
-          tension: 0.3,
-          pointRadius: 3,
-          pointBackgroundColor: dataVel.map(function(v, i) { return i === adjustedSelIdx ? '#00e676' : 'rgba(0,230,118,.4)'; }),
-          borderWidth: 1.5,
-          borderDash: [4, 3],
-          yAxisID: 'y1',
-          order: 0,
-          hidden: true
         }
       ]
     },
