@@ -342,7 +342,7 @@ function calcDNSizing() {
   ${refBadges(['Hazen-Williams', 'ISO 4427-2:2019', 'PPI Handbook Ch.6'])}
   <div class="result-grid">
     <div class="result-item" style="grid-column:span 2;background:rgba(0,229,255,.08);border-color:var(--sys-accent)">
-      <div class="rk">Diameter Pipa Terpilih</div>
+      <div class="rk">Rekomendasi Diameter Pipa</div>
       <div class="rv" style="font-size:28px;color:#00e5ff">DN${selected.dn}<span class="ru"> mm</span></div>
     </div>
     <div class="result-item"><div class="rk">OD × en</div><div class="rv">${selected.od} × ${selected.en.toFixed(1)}<span class="ru"> mm</span></div></div>
