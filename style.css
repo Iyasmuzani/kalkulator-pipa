@@ -801,12 +801,11 @@ html{scrollbar-width:thin;scrollbar-color:rgba(0,212,255,.2) rgba(255,255,255,.0
   @page { size: A4 portrait; margin: 1.5cm 1.5cm; }
   body { background: #fff !important; color: #000 !important; overflow: visible !important; }
   
-  /* Hide the ENTIRE application UI during print */
-  .sidebar, .mobile-header, .sidebar-overlay, .rec-form, #eng-tool-desc, .export-pdf-btn, .content-header, .tab-panel, #content-body, #lib-content, .screen-only { display: none !important; }
-  .app-shell { display: block !important; }
+  /* Hide all UI elements */
+  .sidebar, .mobile-header, .sidebar-overlay, .rec-form, #eng-tool-desc, .export-pdf-btn, .content-header, .tab-panel, .content-body, .screen-only { display: none !important; }
   
-  /* Reset container properties to ensure full-page printing without clipping */
-  .content-main, #eng-content, .rec-results, #eng-results { 
+  /* Make app shell and layout containers blocks so they don't break print rendering */
+  .app-shell, .content-main, #eng-content, .rec-layout, .rec-results, #eng-results { 
     display: block !important; width: 100% !important; max-width: 100% !important; 
     height: auto !important; overflow: visible !important; border: none !important; 
     padding: 0 !important; margin: 0 !important; background: transparent !important; 
