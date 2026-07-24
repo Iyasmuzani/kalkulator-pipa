@@ -370,6 +370,8 @@ function calcDNSizing() {
   ${velocityWarnings(selected.v, 'pressure')}`;
 
   // Operating Pressure vs PN Warning
+  var printWarnings = [];
+
   if (mat === 'hdpe' && sdr) {
     var pnData = SDR_PN_MAP[sdr];
     var derating = getHDPE_DeratingFactor(temp);
@@ -378,6 +380,7 @@ function calcDNSizing() {
       html += smartWarn('danger', 
         'Suhu operasional (' + temp + ' °C) melebihi batas maksimal pipa HDPE (40 °C)!', 
         'Pipa HDPE akan kehilangan kekuatan struktural secara drastis pada suhu ini. Gunakan material lain (misal PPR atau Baja).');
+      printWarnings.push('<li><strong style="color:#d32f2f">Suhu Ekstrem:</strong> Suhu operasional (' + temp + ' °C) melebihi batas maksimal pipa HDPE (40 °C)! Pipa HDPE akan kehilangan kekuatan struktural secara drastis pada suhu ini.</li>');
     } else {
       var pnDerated = pnData.pn * derating;
       var operatingPressureBar = selected.TDH / 10.197; // 1 bar = 10.197 mH2O
@@ -387,10 +390,12 @@ function calcDNSizing() {
         html += smartWarn('danger', 
           'Total tekanan aliran (' + operatingPressureBar.toFixed(1) + ' bar) <strong>melebihi kapasitas tekanan pipa' + derateText + '!</strong>', 
           'Bahaya pecah! Pilih SDR/PN yang lebih tinggi.');
+        printWarnings.push('<li><strong style="color:#d32f2f">Overpressure:</strong> Total tekanan aliran (' + operatingPressureBar.toFixed(1) + ' bar) melebihi batas aman tekanan pipa' + derateText + '! Bahaya pecah, gunakan kelas PN yang lebih tinggi.</li>');
       } else if (pnData && operatingPressureBar > pnDerated * 0.8) {
         html += smartWarn('caution', 
           'Total tekanan aliran (' + operatingPressureBar.toFixed(1) + ' bar) mendekati batas kapasitas tekanan pipa' + derateText + '.', 
           'Sisakan safety margin minimal 20% untuk surge/water hammer.');
+        printWarnings.push('<li><strong style="color:#e65100">Batas Tekanan:</strong> Total tekanan aliran (' + operatingPressureBar.toFixed(1) + ' bar) mendekati batas kapasitas tekanan pipa' + derateText + '. Sisakan margin aman 20% untuk water hammer.</li>');
       } else if (pnData) {
         html += smartWarn('ok', 
           'Total tekanan aliran (' + operatingPressureBar.toFixed(1) + ' bar) aman di bawah kapasitas pipa' + derateText + '.', 
@@ -402,8 +407,17 @@ function calcDNSizing() {
   // Head loss per 100m warning
   if (selected.hfPer100 > 10) {
     html += smartWarn('caution', 'Head loss ' + selected.hfPer100.toFixed(2) + ' m/100m cukup tinggi. Pertimbangkan diameter lebih besar untuk mengurangi friction loss.', 'AWWA M55 §5.4');
+    printWarnings.push('<li><strong style="color:#e65100">Head Loss Tinggi:</strong> Head loss (' + selected.hfPer100.toFixed(2) + ' m/100m) cukup tinggi. Pertimbangkan diameter lebih besar untuk mengurangi pressure loss.</li>');
   } else if (selected.hfPer100 <= 5) {
     html += smartWarn('ok', 'Head loss ' + selected.hfPer100.toFixed(2) + ' m/100m — dalam rentang efisien.', 'AWWA M55: Tipikal ≤ 5 m/100m');
+    printWarnings.push('<li><strong>Head Loss Optimal:</strong> Kehilangan tekanan berada dalam rentang efisien (' + selected.hfPer100.toFixed(2) + ' m/100m).</li>');
+  }
+
+  // Velocity warning for print
+  if (selected.v > 3.0) {
+    printWarnings.push('<li><strong style="color:#d32f2f">Kecepatan Ekstrem:</strong> Kecepatan aliran ' + selected.v.toFixed(2) + ' m/s berpotensi merusak pipa akibat abrasi dan water hammer.</li>');
+  } else if (selected.v < 0.6) {
+    printWarnings.push('<li><strong style="color:#e65100">Kecepatan Rendah:</strong> Kecepatan aliran ' + selected.v.toFixed(2) + ' m/s dapat menyebabkan pengendapan partikel (silting).</li>');
   }
 
   html += '</div>';
@@ -487,13 +501,6 @@ function calcDNSizing() {
   html += '</div>'; // End screen-only
 
   // === PRINT ONLY REPORT ===
-  var deratingWarning = '';
-  if (mat === 'hdpe' && sdr) {
-    var prDerating = getHDPE_DeratingFactor(temp);
-    if (prDerating === 0) deratingWarning = `Suhu operasional (${temp}°C) melampaui batas maksimal HDPE (40°C).`;
-    else if (prDerating < 1.0) deratingWarning = `Kapasitas tekanan pipa menurun akibat suhu operasional (${temp}°C). Pipa bekerja pada tekanan ${(selected.TDH / 10.197).toFixed(1)} bar. Pastikan tidak melebihi kapasitas setelah derating.`;
-  }
-
   html += `
     <div class="print-report-only">
       <div class="pr-header">
@@ -568,10 +575,7 @@ function calcDNSizing() {
       <h3 class="pr-section-title">4. KESIMPULAN & PERINGATAN</h3>
       <div class="pr-notes">
         <ul style="margin:0; padding-left:15px; color:#333;">
-          ${selected.hfPer100 > 10 ? '<li><strong>Head Loss Tinggi:</strong> Kehilangan tekanan > 10 m/100m. Dipertimbangkan memperbesar diameter pipa.</li>' : ''}
-          ${selected.hfPer100 <= 5 ? '<li><strong>Head Loss Optimal:</strong> Kehilangan tekanan berada dalam rentang efisien (≤ 5 m/100m).</li>' : ''}
-          ${selected.v > 3.0 ? '<li><strong style="color:#d32f2f">Kecepatan Ekstrem:</strong> Kecepatan aliran > 3.0 m/s berpotensi merusak pipa akibat abrasi dan water hammer.</li>' : ''}
-          ${deratingWarning ? `<li><strong style="color:#d32f2f">Peringatan Suhu:</strong> ${deratingWarning}</li>` : ''}
+          ${printWarnings.length > 0 ? printWarnings.join('\n          ') : '<li><strong>Status Aman:</strong> Seluruh parameter operasional berada dalam batas desain yang direkomendasikan.</li>'}
         </ul>
       </div>
       
