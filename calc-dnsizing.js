@@ -356,14 +356,14 @@ function calcDNSizing() {
   // --- Section 2: Hydraulic Results ---
   html += `<div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg> Analisis Hidrolika</div>
   <div class="result-grid">
-    <div class="result-item"><div class="rk">Debit Aliran (Q)</div><div class="rv">${Q_ls.toFixed(2)}<span class="ru"> L/s</span></div></div>
-    <div class="result-item"><div class="rk">Debit Volumetrik</div><div class="rv">${Q_m3h.toFixed(1)}<span class="ru"> m³/jam</span></div></div>
-    <div class="result-item"><div class="rk">Kecepatan Aktual</div><div class="rv">${selected.v.toFixed(2)}<span class="ru"> m/s</span></div></div>
-    <div class="result-item"><div class="rk">Reynolds Number</div><div class="rv">${selected.Re > 1e6 ? (selected.Re / 1e6).toFixed(2) + '<span class="ru"> ×10⁶</span>' : Math.round(selected.Re).toLocaleString()}<span class="ru" style="display:${selected.Re > 1e6 ? 'none' : 'inline'}"> (${selected.regime})</span></div></div>
-    <div class="result-item"><div class="rk">Head Loss Mayor</div><div class="rv">${selected.hf_major.toFixed(2)}<span class="ru"> m</span></div></div>
-    <div class="result-item" style="background:rgba(255,140,66,0.1);border-color:var(--warn)"><div class="rk">Head Loss Minor (${(minorPct*100).toFixed(0)}%)</div><div class="rv">${selected.hf_minor.toFixed(2)}<span class="ru"> m</span></div></div>
-    <div class="result-item"><div class="rk">Head Loss Total</div><div class="rv">${selected.hf_total.toFixed(2)}<span class="ru"> m</span></div></div>
-    <div class="result-item"><div class="rk">Head Loss /100m</div><div class="rv">${selected.hfPer100.toFixed(3)}<span class="ru"> m/100m</span></div></div>
+    <div class="result-item"><div class="rk">Flow Rate (Q)</div><div class="rv">${Q_ls.toFixed(2)}<span class="ru"> L/s</span></div></div>
+    <div class="result-item"><div class="rk">Volumetric Flow</div><div class="rv">${Q_m3h.toFixed(1)}<span class="ru"> m³/h</span></div></div>
+    <div class="result-item"><div class="rk">Flow Velocity (v)</div><div class="rv">${selected.v.toFixed(2)}<span class="ru"> m/s</span></div></div>
+    <div class="result-item"><div class="rk">Reynolds Number (Re)</div><div class="rv">${selected.Re > 1e6 ? (selected.Re / 1e6).toFixed(2) + '<span class="ru"> ×10⁶</span>' : Math.round(selected.Re).toLocaleString()}<span class="ru" style="display:${selected.Re > 1e6 ? 'none' : 'inline'}"> (${selected.regime})</span></div></div>
+    <div class="result-item"><div class="rk">Major Head Loss</div><div class="rv">${selected.hf_major.toFixed(2)}<span class="ru"> m</span></div></div>
+    <div class="result-item" style="background:rgba(255,140,66,0.1);border-color:var(--warn)"><div class="rk">Minor Head Loss (${(minorPct*100).toFixed(0)}%)</div><div class="rv">${selected.hf_minor.toFixed(2)}<span class="ru"> m</span></div></div>
+    <div class="result-item"><div class="rk">Total Head Loss</div><div class="rv">${selected.hf_total.toFixed(2)}<span class="ru"> m</span></div></div>
+    <div class="result-item"><div class="rk">Friction Loss / 100m</div><div class="rv">${selected.hfPer100.toFixed(3)}<span class="ru"> m/100m</span></div></div>
     <div class="result-item"><div class="rk">Static Head</div><div class="rv">${Hstatic.toFixed(1)}<span class="ru"> m</span></div></div>
     <div class="result-item" style="grid-column:span 2;background:rgba(0,229,255,.06);border-color:rgba(0,229,255,.3)"><div class="rk">Total Dynamic Head (TDH)</div><div class="rv" style="font-size:24px">${selected.TDH.toFixed(2)}<span class="ru"> m</span></div></div>
   </div>
@@ -426,14 +426,14 @@ function calcDNSizing() {
   html += `<div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6m-7-7h6m6 0h6"/></svg> Daya Motor Pompa</div>
   ${refBadges(['P = ρ×g×Q×H / η', 'ISO 9906', 'IEC 60034-30-1'])}
   <div class="result-grid">
-    <div class="result-item"><div class="rk">Daya Hidrolik (P<sub>water</sub>)</div><div class="rv">${selected.P_water_kW.toFixed(2)}<span class="ru"> kW</span></div></div>
-    <div class="result-item"><div class="rk">Daya Pompa (η=${(effPump*100).toFixed(0)}%)</div><div class="rv">${selected.P_pump_kW.toFixed(2)}<span class="ru"> kW</span></div></div>
+    <div class="result-item"><div class="rk">Hydraulic Power (P<sub>water</sub>)</div><div class="rv">${selected.P_water_kW.toFixed(2)}<span class="ru"> kW</span></div></div>
+    <div class="result-item"><div class="rk">Pump Shaft Power (η=${(effPump*100).toFixed(0)}%)</div><div class="rv">${selected.P_pump_kW.toFixed(2)}<span class="ru"> kW</span></div></div>
     <div class="result-item" style="grid-column:span 2;background:rgba(0,229,255,.08);border-color:var(--sys-accent)">
-      <div class="rk">Daya Motor Kalkulasi (η=${(effMotor*100).toFixed(0)}%)</div>
+      <div class="rk">Motor Power Req. (η=${(effMotor*100).toFixed(0)}%)</div>
       <div class="rv" style="font-size:22px;color:#00e5ff">${selected.P_motor_kW.toFixed(2)}<span class="ru"> kW</span> <span style="font-size:14px;color:var(--text2)">(${selected.P_motor_HP.toFixed(1)} HP)</span></div>
     </div>
     <div class="result-item" style="grid-column:span 2;background:rgba(0,230,118,.08);border-color:rgba(0,230,118,.3)">
-      <div class="rk">Ukuran Motor Standar Terdekat</div>
+      <div class="rk">Standard Motor Size</div>
       <div class="rv" style="font-size:22px;color:#00e676">${selected.P_std_kW}<span class="ru"> kW</span> <span style="font-size:14px;color:var(--text2)">(${selected.P_std_HP.toFixed(1)} HP)</span></div>
     </div>
   </div>`;
@@ -525,35 +525,35 @@ function calcDNSizing() {
       <h3 class="pr-section-title">1. INPUT PARAMETER</h3>
       <table class="pr-table">
         <tr>
-          <td>Debit Aliran (Q)</td><td><strong>${Q_ls.toFixed(2)}</strong> L/s <em>(${Q_m3h.toFixed(1)} m³/jam)</em></td>
-          <td>Kecepatan Target</td><td><strong>${vTarget}</strong> m/s</td>
+          <td>Flow Rate (Q)</td><td><strong>${Q_ls.toFixed(2)}</strong> L/s <em>(${Q_m3h.toFixed(1)} m³/h)</em></td>
+          <td>Target Velocity</td><td><strong>${vTarget}</strong> m/s</td>
         </tr>
         <tr>
-          <td>Panjang Pipa (L)</td><td><strong>${L}</strong> m</td>
-          <td>Beda Elevasi (Static Head)</td><td><strong>${Hstatic.toFixed(1)}</strong> m</td>
+          <td>Pipe Length (L)</td><td><strong>${L}</strong> m</td>
+          <td>Static Head</td><td><strong>${Hstatic.toFixed(1)}</strong> m</td>
         </tr>
         <tr>
-          <td>Minor Loss Factor</td><td><strong>${(minorPct*100).toFixed(0)}%</strong> dari Head Loss Mayor</td>
-          <td>Efisiensi Pompa/Motor</td><td><strong>${(effPump*100).toFixed(0)}%</strong> / <strong>${(effMotor*100).toFixed(0)}%</strong></td>
+          <td>Minor Loss Factor</td><td><strong>${(minorPct*100).toFixed(0)}%</strong> dari Major Head Loss</td>
+          <td>Pump / Motor Efficiency</td><td><strong>${(effPump*100).toFixed(0)}%</strong> / <strong>${(effMotor*100).toFixed(0)}%</strong></td>
         </tr>
       </table>
 
-      <h3 class="pr-section-title">2. HASIL ANALISIS HIDROLIKA (PIPA TERPILIH)</h3>
+      <h3 class="pr-section-title">2. HASIL ANALISIS HIDROLIKA</h3>
       <table class="pr-table">
         <tr class="pr-highlight">
           <td>Rekomendasi Pipa</td><td colspan="3"><strong style="font-size:13px">DN${selected.dn}</strong> (OD ${selected.od} × en ${selected.en.toFixed(1)} mm)</td>
         </tr>
         <tr>
-          <td>Diameter Dalam (ID)</td><td><strong>${selected.id.toFixed(1)}</strong> mm</td>
-          <td>Kecepatan Aliran Aktual</td><td><strong>${selected.v.toFixed(2)}</strong> m/s</td>
+          <td>Inside Diameter (ID)</td><td><strong>${selected.id.toFixed(1)}</strong> mm</td>
+          <td>Flow Velocity (v)</td><td><strong>${selected.v.toFixed(2)}</strong> m/s</td>
         </tr>
         <tr>
-          <td>Reynold Number (Re)</td><td><strong>${Math.round(selected.Re).toLocaleString()}</strong> <em>(${selected.regime})</em></td>
-          <td>Head Loss Total per 100m</td><td><strong>${selected.hfPer100.toFixed(3)}</strong> m / 100m</td>
+          <td>Reynolds Number (Re)</td><td><strong>${Math.round(selected.Re).toLocaleString()}</strong> <em>(${selected.regime})</em></td>
+          <td>Friction Loss per 100m</td><td><strong>${selected.hfPer100.toFixed(3)}</strong> m / 100m</td>
         </tr>
         <tr>
-          <td>Head Loss Mayor</td><td><strong>${selected.hf_major.toFixed(2)}</strong> m</td>
-          <td>Head Loss Minor</td><td><strong>${selected.hf_minor.toFixed(2)}</strong> m</td>
+          <td>Major Head Loss</td><td><strong>${selected.hf_major.toFixed(2)}</strong> m</td>
+          <td>Minor Head Loss</td><td><strong>${selected.hf_minor.toFixed(2)}</strong> m</td>
         </tr>
         <tr class="pr-highlight">
           <td>Total Dynamic Head (TDH)</td><td colspan="3"><strong style="font-size:14px; color:#1a365d">${selected.TDH.toFixed(2)}</strong> m</td>
@@ -563,12 +563,12 @@ function calcDNSizing() {
       <h3 class="pr-section-title">3. KEBUTUHAN DAYA POMPA</h3>
       <table class="pr-table">
         <tr>
-          <td>Daya Hidrolik Air</td><td><strong>${selected.P_water_kW.toFixed(2)}</strong> kW</td>
-          <td>Daya Poros Pompa</td><td><strong>${selected.P_pump_kW.toFixed(2)}</strong> kW</td>
+          <td>Hydraulic Power</td><td><strong>${selected.P_water_kW.toFixed(2)}</strong> kW</td>
+          <td>Pump Shaft Power (BHP)</td><td><strong>${selected.P_pump_kW.toFixed(2)}</strong> kW</td>
         </tr>
         <tr class="pr-highlight">
-          <td>Kebutuhan Daya Motor</td><td><strong>${selected.P_motor_kW.toFixed(2)}</strong> kW <em>(${selected.P_motor_HP.toFixed(1)} HP)</em></td>
-          <td>Rekomendasi Motor Standar</td><td><strong style="font-size:14px; color:#1a365d">${selected.P_std_kW}</strong> kW <em>(${selected.P_std_HP.toFixed(1)} HP)</em></td>
+          <td>Motor Power Req.</td><td><strong>${selected.P_motor_kW.toFixed(2)}</strong> kW <em>(${selected.P_motor_HP.toFixed(1)} HP)</em></td>
+          <td>Standard Motor Size</td><td><strong style="font-size:14px; color:#1a365d">${selected.P_std_kW}</strong> kW <em>(${selected.P_std_HP.toFixed(1)} HP)</em></td>
         </tr>
       </table>
 
