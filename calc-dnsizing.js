@@ -331,17 +331,10 @@ function calcDNSizing() {
   }
 
   // 6. Build results HTML
-  var html = '';
-  
   var dateStr = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-  html += `
-    <div class="print-header">
-      <div class="ph-logo">Kalkulator Pipa Pro</div>
-      <h2>Laporan Rekomendasi Ukuran Pipa & Pompa</h2>
-      <div class="ph-meta">Dicetak pada: ${dateStr}</div>
-    </div>
-  `;
-
+  
+  var html = '<div class="screen-only">';
+  
   html += `<button class="export-pdf-btn" onclick="window.print()" style="float:right; display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:rgba(0,229,255,0.1); border:1px solid rgba(0,229,255,0.3); color:#00e5ff; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; margin-bottom:10px; transition:all 0.2s;"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Export PDF / Cetak</button><div style="clear:both"></div>`;
 
   // --- Section 1: Selected Pipe ---
@@ -490,6 +483,104 @@ function calcDNSizing() {
 
   // --- Section 5: Chart ---
   html += `<div class="chart-wrap"><div class="chart-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg> DN vs Head Loss vs Daya Motor</div><div style="height:280px"><canvas id="chart-dnsizing"></canvas></div></div>`;
+  
+  html += '</div>'; // End screen-only
+
+  // === PRINT ONLY REPORT ===
+  var deratingWarning = '';
+  if (mat === 'hdpe' && sdr) {
+    var prDerating = getHDPE_DeratingFactor(temp);
+    if (prDerating === 0) deratingWarning = `Suhu operasional (${temp}°C) melampaui batas maksimal HDPE (40°C).`;
+    else if (prDerating < 1.0) deratingWarning = `Kapasitas tekanan pipa menurun akibat suhu operasional (${temp}°C). Pipa bekerja pada tekanan ${(selected.TDH / 10.197).toFixed(1)} bar. Pastikan tidak melebihi kapasitas setelah derating.`;
+  }
+
+  html += `
+    <div class="print-report-only">
+      <div class="pr-header">
+        <div class="pr-logo">Kalkulator Pipa Pro</div>
+        <div class="pr-title">HYDRAULIC CALCULATION SHEET</div>
+        <div class="pr-subtitle">Pipe Sizing & Pump Power Recommendation</div>
+      </div>
+      
+      <div class="pr-info-grid">
+        <div class="pr-info-col">
+          <div class="pr-info-row"><span class="pr-label">Sistem Pipa:</span> <span class="pr-val">Jaringan Pemompaan Air</span></div>
+          <div class="pr-info-row"><span class="pr-label">Material Pipa:</span> <span class="pr-val">${matData.label} ${mat === 'hdpe' ? sdrLabel : ''}</span></div>
+          <div class="pr-info-row"><span class="pr-label">Hazen-Williams C:</span> <span class="pr-val">${C}</span></div>
+        </div>
+        <div class="pr-info-col">
+          <div class="pr-info-row"><span class="pr-label">Tanggal Cetak:</span> <span class="pr-val">${dateStr}</span></div>
+          <div class="pr-info-row"><span class="pr-label">Suhu Operasional:</span> <span class="pr-val">${temp} °C</span></div>
+          <div class="pr-info-row"><span class="pr-label">Standar Acuan:</span> <span class="pr-val">${mat === 'hdpe' ? 'ISO 4427-2 / SNI 4829-2' : '-'}</span></div>
+        </div>
+      </div>
+      
+      <h3 class="pr-section-title">1. INPUT PARAMETER</h3>
+      <table class="pr-table">
+        <tr>
+          <td>Debit Aliran (Q)</td><td><strong>${Q_ls.toFixed(2)}</strong> L/s <em>(${Q_m3h.toFixed(1)} m³/jam)</em></td>
+          <td>Kecepatan Target</td><td><strong>${vTarget}</strong> m/s</td>
+        </tr>
+        <tr>
+          <td>Panjang Pipa (L)</td><td><strong>${L}</strong> m</td>
+          <td>Beda Elevasi (Static Head)</td><td><strong>${Hstatic.toFixed(1)}</strong> m</td>
+        </tr>
+        <tr>
+          <td>Minor Loss Factor</td><td><strong>${(minorPct*100).toFixed(0)}%</strong> dari Head Loss Mayor</td>
+          <td>Efisiensi Pompa/Motor</td><td><strong>${(effPump*100).toFixed(0)}%</strong> / <strong>${(effMotor*100).toFixed(0)}%</strong></td>
+        </tr>
+      </table>
+
+      <h3 class="pr-section-title">2. HASIL ANALISIS HIDROLIKA (PIPA TERPILIH)</h3>
+      <table class="pr-table">
+        <tr class="pr-highlight">
+          <td>Rekomendasi Pipa</td><td colspan="3"><strong style="font-size:13px">DN${selected.dn}</strong> (OD ${selected.od} × en ${selected.en.toFixed(1)} mm)</td>
+        </tr>
+        <tr>
+          <td>Diameter Dalam (ID)</td><td><strong>${selected.id.toFixed(1)}</strong> mm</td>
+          <td>Kecepatan Aliran Aktual</td><td><strong>${selected.v.toFixed(2)}</strong> m/s</td>
+        </tr>
+        <tr>
+          <td>Reynold Number (Re)</td><td><strong>${Math.round(selected.Re).toLocaleString()}</strong> <em>(${selected.regime})</em></td>
+          <td>Head Loss Total per 100m</td><td><strong>${selected.hfPer100.toFixed(3)}</strong> m / 100m</td>
+        </tr>
+        <tr>
+          <td>Head Loss Mayor</td><td><strong>${selected.hf_major.toFixed(2)}</strong> m</td>
+          <td>Head Loss Minor</td><td><strong>${selected.hf_minor.toFixed(2)}</strong> m</td>
+        </tr>
+        <tr class="pr-highlight">
+          <td>Total Dynamic Head (TDH)</td><td colspan="3"><strong style="font-size:14px; color:#1a365d">${selected.TDH.toFixed(2)}</strong> m</td>
+        </tr>
+      </table>
+
+      <h3 class="pr-section-title">3. KEBUTUHAN DAYA POMPA</h3>
+      <table class="pr-table">
+        <tr>
+          <td>Daya Hidrolik Air</td><td><strong>${selected.P_water_kW.toFixed(2)}</strong> kW</td>
+          <td>Daya Poros Pompa</td><td><strong>${selected.P_pump_kW.toFixed(2)}</strong> kW</td>
+        </tr>
+        <tr class="pr-highlight">
+          <td>Kebutuhan Daya Motor</td><td><strong>${selected.P_motor_kW.toFixed(2)}</strong> kW <em>(${selected.P_motor_HP.toFixed(1)} HP)</em></td>
+          <td>Rekomendasi Motor Standar</td><td><strong style="font-size:14px; color:#1a365d">${selected.P_std_kW}</strong> kW <em>(${selected.P_std_HP.toFixed(1)} HP)</em></td>
+        </tr>
+      </table>
+
+      <h3 class="pr-section-title">4. KESIMPULAN & PERINGATAN</h3>
+      <div class="pr-notes">
+        <ul style="margin:0; padding-left:15px; color:#333;">
+          ${selected.hfPer100 > 10 ? '<li><strong>Head Loss Tinggi:</strong> Kehilangan tekanan > 10 m/100m. Dipertimbangkan memperbesar diameter pipa.</li>' : ''}
+          ${selected.hfPer100 <= 5 ? '<li><strong>Head Loss Optimal:</strong> Kehilangan tekanan berada dalam rentang efisien (≤ 5 m/100m).</li>' : ''}
+          ${selected.v > 3.0 ? '<li><strong style="color:#d32f2f">Kecepatan Ekstrem:</strong> Kecepatan aliran > 3.0 m/s berpotensi merusak pipa akibat abrasi dan water hammer.</li>' : ''}
+          ${deratingWarning ? `<li><strong style="color:#d32f2f">Peringatan Suhu:</strong> ${deratingWarning}</li>` : ''}
+        </ul>
+      </div>
+      
+      <div class="pr-footer">
+        <p>Dokumen ini dihasilkan secara otomatis oleh <strong>Kalkulator Pipa Pro</strong>.</p>
+        <p style="opacity:0.7">Gunakan sebagai panduan kalkulasi awal (preliminary calculation) dan pastikan untuk divalidasi oleh Engineer yang berwenang.</p>
+      </div>
+    </div>
+  `;
 
   E('eng-results').innerHTML = html;
 

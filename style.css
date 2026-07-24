@@ -796,32 +796,51 @@ html{scrollbar-width:thin;scrollbar-color:rgba(0,212,255,.2) rgba(255,255,255,.0
 }
 
 /* ===== PRINT STYLES FOR EXPORT PDF ===== */
-.print-header { display: none; }
+.print-report-only { display: none; }
 @media print {
-  @page { size: A4 portrait; margin: 1.5cm 1.2cm; }
+  @page { size: A4 portrait; margin: 1.5cm 1.5cm; }
   body { background: #fff !important; color: #000 !important; overflow: visible !important; }
-  .sidebar, .mobile-header, .sidebar-overlay, .rec-form, #eng-tool-desc, .export-pdf-btn, .content-header, .tab-panel, #content-body, #lib-content { display: none !important; }
-  .app-shell { display: block !important; }
-  .content-main { padding: 0 !important; margin: 0 !important; display: block !important; overflow: visible !important; height: auto !important; }
-  #eng-content { padding: 0 !important; margin: 0 !important; display: block !important; overflow: visible !important; height: auto !important; }
-  .rec-layout { display: block !important; }
-  .rec-results, #eng-results { display: block !important; width: 100% !important; max-width: 100% !important; height: auto !important; overflow: visible !important; border: none !important; padding: 0 !important; background: #fff !important; margin-top: 0 !important; }
   
-  /* Make text dark and readable */
+  /* Hide the ENTIRE application UI during print */
+  .app-shell, .screen-only { display: none !important; }
+  
+  /* Reset container properties to ensure full-page printing without clipping */
+  .content-main, #eng-content, .rec-results, #eng-results { 
+    display: block !important; width: 100% !important; max-width: 100% !important; 
+    height: auto !important; overflow: visible !important; border: none !important; 
+    padding: 0 !important; margin: 0 !important; background: transparent !important; 
+  }
+  
+  /* Show only the professional report */
+  .print-report-only { display: block !important; width: 100%; font-family: 'Helvetica Neue', Arial, sans-serif; }
+  
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; text-shadow: none !important; }
   
-  .print-header { display: block !important; margin-bottom: 25px; border-bottom: 2px solid #222; padding-bottom: 12px; }
-  .print-header h2 { font-size: 22px; color: #000; margin: 0 0 6px 0; font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.3px; }
-  .print-header .ph-meta { font-size: 11px; color: #555; }
-  .print-header .ph-logo { float: right; font-weight: 800; font-size: 15px; color: #0055cc; font-family: 'Space Grotesk', sans-serif; }
-
-  .eng-section { break-inside: avoid; margin-bottom: 20px !important; }
-  .eng-section-title { color: #000 !important; border-bottom: 1px solid #ccc !important; padding-bottom: 8px !important; margin-top: 15px !important; font-size: 15px !important; }
-  .eng-section-title svg { color: #000 !important; }
-  .rk { color: #555 !important; font-size: 11px !important; }
-  .rv, .ru { color: #000 !important; }
-  .result-item { background: #fafafa !important; border: 1px solid #ddd !important; break-inside: avoid; padding: 12px !important; }
-  .chart-title { color: #000 !important; }
-  .chart-wrap { break-inside: avoid; border: 1px solid #ddd !important; background: #fff !important; margin-top: 20px !important; padding: 15px !important; }
-  .smart-warn { break-inside: avoid; margin-top: 15px !important; border: 1px solid #ccc !important; }
+  .pr-header { border-bottom: 3px solid #1a365d; padding-bottom: 12px; margin-bottom: 25px; }
+  .pr-logo { float: right; font-weight: 900; font-size: 16px; color: #1a365d; font-family: 'Space Grotesk', sans-serif; }
+  .pr-title { font-size: 20px; font-weight: 800; color: #1a365d; margin: 0 0 6px 0; font-family: 'Space Grotesk', sans-serif; }
+  .pr-subtitle { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+  
+  .pr-info-grid { display: flex; justify-content: space-between; margin-bottom: 25px; font-size: 11px; }
+  .pr-info-col { width: 48%; }
+  .pr-info-row { display: flex; margin-bottom: 5px; border-bottom: 1px solid #eee; padding-bottom: 3px; }
+  .pr-label { width: 130px; color: #555; }
+  .pr-val { font-weight: 600; color: #000; }
+  
+  .pr-section-title { font-size: 11px; color: #fff; background: #1a365d; padding: 6px 10px; margin: 0 0 10px 0; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
+  
+  .pr-table { width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 11px; }
+  .pr-table td { padding: 8px 10px; border: 1px solid #ddd; }
+  .pr-table td:nth-child(odd) { width: 25%; color: #444; background: #f9f9f9; }
+  .pr-table td:nth-child(even) { width: 25%; color: #000; }
+  
+  .pr-highlight td { background: #eef2f6 !important; }
+  .pr-highlight td:nth-child(even) { font-size: 12px; }
+  
+  .pr-notes { border: 1px solid #ddd; padding: 12px 20px; font-size: 11px; margin-bottom: 25px; background: #fafafa; }
+  .pr-notes ul { margin: 0; padding-left: 15px; }
+  .pr-notes li { margin-bottom: 5px; line-height: 1.5; }
+  
+  .pr-footer { font-size: 9px; color: #888; text-align: center; margin-top: 40px; border-top: 1px solid #eee; padding-top: 15px; }
+  .pr-footer p { margin: 0 0 4px 0; }
 }
