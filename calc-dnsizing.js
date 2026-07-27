@@ -33,6 +33,12 @@ function buildDNSizingForm() {
   <div class="form-group"><label class="form-label">Jenis Fluida / Keterangan${infoTip('Keterangan fluida yang dialirkan. Data ini akan dicetak di dalam laporan PDF.')}</label>
   <input type="text" class="form-control" id="dns-fluid" value="Air Bersih (Clean Water)" placeholder="Contoh: Air Bersih, Lumpur, dll"></div>
 
+  <div class="form-group"><label class="form-label">Specific Gravity (SG)${infoTip('Rasio densitas fluida terhadap air murni.\\nAir = 1.0 | Air Laut = 1.03 | Lumpur = 1.1 - 1.4\\nSG mempengaruhi daya motor pompa.')}</label>
+  <input type="number" class="form-control" id="dns-sg" min="0.1" max="5.0" step="0.01" value="1.0"></div>
+
+  <div class="form-group" id="dns-visc-wrap"><label class="form-label">Viskositas Kinematik (cSt)${infoTip('Kekentalan fluida (1 cSt = 1 mm²/s = 10⁻⁶ m²/s).\\nAir 20°C = 1.0 cSt | Air 40°C = 0.66 cSt | Lumpur/Minyak = 5 - 50+ cSt.\\nSangat berpengaruh pada metode Darcy-Weisbach & Bilangan Reynolds.')}</label>
+  <input type="number" class="form-control" id="dns-visc" min="0.1" max="1000" step="0.01" value="1.0"></div>
+
   <div class="form-group"><label class="form-label">Material Pipa${infoTip('Material menentukan C-Factor (Hazen-Williams) dan kekasaran pipa.\\nHDPE/PVC: C=150 (sangat halus)\\nBaja: C=120\\nSumber: PPI Handbook Ch.6')}</label>
   <select class="form-control" id="dns-mat" onchange="dnUpdateMaterial()">
     <option value="hdpe" selected>HDPE PE100</option>
@@ -57,6 +63,12 @@ function buildDNSizingForm() {
   <input type="number" class="form-control" id="dns-temp" min="20" max="60" value="20"></div>
 
   <div class="form-title" style="margin-top:15px; font-size:12px; margin-bottom:8px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg> Data Hidrolika</div>
+
+  <div class="form-group"><label class="form-label">Metode Perhitungan Head Loss${infoTip('Pilih rumus hidrolika:\\n• Hazen-Williams: Standar empiris air bersih suhu normal (cepat & akurat untuk jaringan air minum).\\n• Darcy-Weisbach: Universal untuk semua fluida & temperatur (memperhitungkan viskositas kinematik & kekasaran mutlak dinding pipa).\\nSumber: AWWA M55 / Crane TP 410')}</label>
+  <select class="form-control" id="dns-eq">
+    <option value="hw" selected>Hazen-Williams (Standar Air Bersih)</option>
+    <option value="dw">Darcy-Weisbach (Universal Fluida / Kental)</option>
+  </select></div>
 
   <div class="form-group"><label class="form-label">Debit Aliran (Q)${infoTip('Debit desain aliran air.\\nKonversi: 1 L/s = 3.6 m³/jam\\nSumber: PPI Handbook Ch.6')}</label>
   <div style="display:flex;gap:6px">
@@ -212,6 +224,10 @@ function getHDPE_DeratingFactor(T) {
 // ===== Main Calculation =====
 function calcDNSizing() {
   var fluidType = E('dns-fluid') ? E('dns-fluid').value : 'Air Bersih (Clean Water)';
+  var sg = E('dns-sg') ? parseFloat(E('dns-sg').value) || 1.0 : 1.0;
+  var eqMethod = E('dns-eq') ? E('dns-eq').value : 'hw';
+  var visc_cSt = E('dns-visc') ? parseFloat(E('dns-visc').value) || 1.0 : 1.0;
+  var nu = visc_cSt * 1e-6; // convert cSt (mm²/s) to m²/s
   var mat = E('dns-mat').value;
   var matData = DN_MATERIAL_DATA[mat];
   var C = matData.C;
@@ -250,21 +266,36 @@ function calcDNSizing() {
     var A = Math.PI * id_m * id_m / 4;
     var v_actual = Q_m3s / A;
 
-    // Hazen-Williams head loss
-    var hf_major = 10.67 * Math.pow(Q_m3s, 1.852) / (Math.pow(C, 1.852) * Math.pow(id_m, 4.87)) * L;
+    // Reynolds number (using dynamic kinematic viscosity nu)
+    var Re = v_actual * id_m / nu;
+    var regime = Re < 2300 ? 'Laminar' : (Re < 4000 ? 'Transisi' : 'Turbulen');
+
+    // Head loss calculation
+    var hf_major = 0;
+    var f = 0;
+    if (eqMethod === 'dw') {
+      var epsilon_m = matData.epsilon / 1000; // convert mm to m
+      var relRough = epsilon_m / id_m;
+      if (Re < 2300) {
+        f = 64 / Math.max(Re, 1);
+      } else {
+        // Swamee-Jain equation for friction factor f in Colebrook-White approximation
+        var term = relRough / 3.7 + 5.74 / Math.pow(Math.max(Re, 1), 0.9);
+        f = 0.25 / Math.pow(Math.log10(term), 2);
+      }
+      hf_major = f * (L / id_m) * (v_actual * v_actual / (2 * 9.81));
+    } else {
+      hf_major = 10.67 * Math.pow(Q_m3s, 1.852) / (Math.pow(C, 1.852) * Math.pow(id_m, 4.87)) * L;
+    }
+
     var hf_minor = hf_major * minorPct;
     var hf_total = hf_major + hf_minor;
 
     // Total Dynamic Head
     var TDH = Math.max(0, Hstatic) + hf_total;
 
-    // Reynolds number
-    var nu = 1.004e-6; // kinematic viscosity water 20°C
-    var Re = v_actual * id_m / nu;
-    var regime = Re < 2300 ? 'Laminar' : (Re < 4000 ? 'Transisi' : 'Turbulen');
-
     // Pump power
-    var P_water = 9.81 * 1000 * Q_m3s * TDH; // Watt (ρ×g×Q×H)
+    var P_water = 9.81 * (1000 * sg) * Q_m3s * TDH; // Watt (ρ×g×Q×H)
     var P_pump = P_water / effPump;
     var P_motor = P_pump / effMotor;
     var P_motor_kW = P_motor / 1000;
@@ -293,6 +324,7 @@ function calcDNSizing() {
       hf_total: hf_total,
       hfPer100: hfPer100,
       TDH: TDH,
+      f: f,
       Re: Re,
       regime: regime,
       P_water_kW: P_water / 1000,
@@ -343,7 +375,7 @@ function calcDNSizing() {
 
   // --- Section 1: Selected Pipe ---
   html += `<div class="eng-section"><div class="eng-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> Rekomendasi Ukuran Pipa</div>
-  ${refBadges(['Hazen-Williams', 'ISO 4427-2:2019', 'PPI Handbook Ch.6'])}
+  ${refBadges([eqMethod === 'dw' ? 'Darcy-Weisbach (Colebrook-White)' : 'Hazen-Williams', 'ISO 4427-2:2019', 'PPI Handbook Ch.6'])}
   <div class="result-grid">
     <div class="result-item" style="grid-column:span 2;background:rgba(0,229,255,.08);border-color:var(--sys-accent)">
       <div class="rk">Rekomendasi Diameter Pipa</div>
@@ -352,7 +384,7 @@ function calcDNSizing() {
     <div class="result-item"><div class="rk">OD × en</div><div class="rv">${selected.od} × ${selected.en.toFixed(1)}<span class="ru"> mm</span></div></div>
     <div class="result-item"><div class="rk">Diameter Dalam (ID)</div><div class="rv">${selected.id.toFixed(1)}<span class="ru"> mm</span></div></div>
     <div class="result-item"><div class="rk">Material</div><div class="rv" style="font-size:13px">${matData.label}</div></div>
-    <div class="result-item"><div class="rk">${mat === 'hdpe' ? 'SDR / PN' : 'C-Factor'}</div><div class="rv" style="font-size:13px">${mat === 'hdpe' ? sdrLabel : 'C = ' + C}</div></div>
+    <div class="result-item"><div class="rk">${mat === 'hdpe' ? 'SDR / PN' : (eqMethod === 'dw' ? 'Kekasaran (ε)' : 'C-Factor')}</div><div class="rv" style="font-size:13px">${mat === 'hdpe' ? sdrLabel : (eqMethod === 'dw' ? matData.epsilon + ' mm' : 'C = ' + C)}</div></div>
   </div>
   <div style="font-size:11px;color:var(--text2);margin-top:6px"><em>*Diameter minimum teoritis: ${D_min_mm.toFixed(1)} mm ID (dari Q=${Q_ls.toFixed(1)} L/s, v=${vTarget} m/s)</em></div>
   </div>`;
@@ -446,12 +478,12 @@ function calcDNSizing() {
   // Pump power formula breakdown
   html += `<div style="margin-top:10px;padding:10px 12px;background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.1);border-radius:8px;font-size:11px;color:var(--text2);line-height:1.8">
     <div style="color:#6dd5ed;font-weight:600;margin-bottom:4px">Rincian Perhitungan Total Dynamic Head (TDH):</div>
-    <div>h<sub>mayor</sub> = Hazen-Williams (L=${L}m, C=${C}, ID=${selected.id.toFixed(1)}mm) = <strong>${selected.hf_major.toFixed(2)} m</strong></div>
+    <div>h<sub>mayor</sub> = ${eqMethod === 'dw' ? `Darcy-Weisbach (f=${selected.f.toFixed(4)}, ε=${matData.epsilon}mm, ν=${visc_cSt}cSt)` : `Hazen-Williams (L=${L}m, C=${C}, ID=${selected.id.toFixed(1)}mm)`} = <strong>${selected.hf_major.toFixed(2)} m</strong></div>
     <div>h<sub>minor</sub> = ${(minorPct*100).toFixed(0)}% × h<sub>mayor</sub> = <strong>${selected.hf_minor.toFixed(2)} m</strong></div>
     <div>TDH = Static Head + h<sub>mayor</sub> + h<sub>minor</sub> = ${Hstatic.toFixed(1)} + ${selected.hf_major.toFixed(2)} + ${selected.hf_minor.toFixed(2)} = <strong>${selected.TDH.toFixed(2)} m</strong></div>
     
     <div style="color:#6dd5ed;font-weight:600;margin-top:8px;margin-bottom:4px">Rincian Perhitungan Daya Motor Pompa:</div>
-    <div>P<sub>water</sub> = ρ × g × Q × TDH = 1000 × 9.81 × ${Q_m3s.toFixed(4)} × ${selected.TDH.toFixed(2)} = <strong>${(selected.P_water_kW * 1000).toFixed(1)} W</strong></div>
+    <div>P<sub>water</sub> = ρ × g × Q × TDH = ${Math.round(1000*sg)} × 9.81 × ${Q_m3s.toFixed(4)} × ${selected.TDH.toFixed(2)} = <strong>${(selected.P_water_kW * 1000).toFixed(1)} W</strong></div>
     <div>P<sub>pump</sub> = P<sub>water</sub> / η<sub>pump</sub> = ${(selected.P_water_kW * 1000).toFixed(1)} / ${effPump.toFixed(2)} = <strong>${(selected.P_pump_kW * 1000).toFixed(1)} W</strong></div>
     <div>P<sub>motor</sub> = P<sub>pump</sub> / η<sub>motor</sub> = ${(selected.P_pump_kW * 1000).toFixed(1)} / ${effMotor.toFixed(2)} = <strong>${(selected.P_motor_kW * 1000).toFixed(1)} W = ${selected.P_motor_kW.toFixed(2)} kW</strong></div>
   </div>`;
@@ -517,14 +549,14 @@ function calcDNSizing() {
       <div class="pr-info-grid">
         <div class="pr-info-col">
           <div class="pr-info-row"><span class="pr-label">Sistem Pipa:</span> <span class="pr-val">Jaringan Pemompaan Air</span></div>
-          <div class="pr-info-row"><span class="pr-label">Jenis Fluida:</span> <span class="pr-val">${fluidType}</span></div>
+          <div class="pr-info-row"><span class="pr-label">Jenis Fluida:</span> <span class="pr-val">${fluidType} (SG: ${sg.toFixed(2)})</span></div>
           <div class="pr-info-row"><span class="pr-label">Material Pipa:</span> <span class="pr-val">${matData.label} ${mat === 'hdpe' ? sdrLabel : ''}</span></div>
-          <div class="pr-info-row"><span class="pr-label">Hazen-Williams C:</span> <span class="pr-val">${C}</span></div>
+          <div class="pr-info-row"><span class="pr-label">${eqMethod === 'dw' ? 'Metode & Viskositas:' : 'Hazen-Williams C:'}</span> <span class="pr-val">${eqMethod === 'dw' ? `Darcy-Weisbach (ν=${visc_cSt} cSt, ε=${matData.epsilon}mm)` : C}</span></div>
         </div>
         <div class="pr-info-col">
           <div class="pr-info-row"><span class="pr-label">Tanggal Cetak:</span> <span class="pr-val">${dateStr}</span></div>
           <div class="pr-info-row"><span class="pr-label">Suhu Operasional:</span> <span class="pr-val">${temp} °C</span></div>
-          <div class="pr-info-row"><span class="pr-label">Standar Acuan:</span> <span class="pr-val">${mat === 'hdpe' ? 'ISO 4427-2 / SNI 4829-2' : '-'}</span></div>
+          <div class="pr-info-row"><span class="pr-label">Standar Acuan:</span> <span class="pr-val">${mat === 'hdpe' ? 'ISO 4427-2 / SNI 4829-2' : '-'}${eqMethod === 'dw' ? ' / Crane TP 410' : ''}</span></div>
           <div class="pr-info-row"><span class="pr-label">Dibuat Oleh:</span> <span class="pr-val">Kalkulator Pipa Pro</span></div>
         </div>
       </div>
