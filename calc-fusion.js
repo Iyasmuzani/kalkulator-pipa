@@ -713,8 +713,11 @@ function buildFusionPrintReport(dateStr) {
     var stdTitle = item.std === 'iso' ? ('ISO 21307 — ' + item.fuseLabel + ' (' + item.mode + ')') : 'DVS 2207-1';
     var ipUnit = item.std === 'iso' ? 'MPa' : 'N/mm²';
 
+    // Wrap each pipe detail in a section that avoids splitting across pages
+    html += '<div style="page-break-inside:avoid;margin-top:' + (idx > 0 ? '12' : '0') + 'px">';
+
     // Sub-header per pipe
-    html += '<div style="background:#eef2f6;padding:6px 10px;margin:15px 0 8px 0;font-size:11px;font-weight:700;color:#1a365d;border-left:4px solid #1a365d">';
+    html += '<div style="background:#eef2f6;padding:6px 10px;margin:0 0 8px 0;font-size:11px;font-weight:700;color:#1a365d;border-left:4px solid #1a365d">';
     html += (idx + 1) + '. DN' + item.od + ' — ' + item.sdrLabel + ' (' + item.pnLabel + ') — ' + stdTitle;
     html += '</div>';
 
@@ -754,14 +757,11 @@ function buildFusionPrintReport(dateStr) {
     // Heater Plate
     html += '<tr><td style="border:1px solid #ddd;padding:5px 8px">Heater Plate</td><td style="border:1px solid #ddd;padding:5px 8px" colspan="2"><strong>' + item.Thp + '°C' + (item.ThpTol ? ' ' + item.ThpTol : '') + '</strong></td><td style="border:1px solid #ddd;padding:5px 8px">—</td><td style="border:1px solid #ddd;padding:5px 8px">Cek dengan pyrometer</td></tr>';
     html += '</table>';
-
-    // Page break between pipes (not after the last one)
-    if (idx < fusionBatchData.length - 1 && (idx + 1) % 2 === 0) {
-      html += '<div style="page-break-after:always"></div>';
-    }
+    html += '</div>'; // End page-break-inside:avoid wrapper
   });
 
-  // Section 3: Notes
+  // Section 3: Notes — keep together on same page
+  html += '<div style="page-break-inside:avoid">';
   html += '<h3 class="pr-section-title">3. CATATAN & PERINGATAN</h3>';
   html += '<div class="pr-notes">';
   html += '<ul style="margin:0;padding-left:15px;color:#333">';
@@ -777,6 +777,7 @@ function buildFusionPrintReport(dateStr) {
   }
   html += '</ul>';
   html += '</div>';
+  html += '</div>'; // End page-break-inside:avoid for notes
 
   // Footer
   html += '<div class="pr-footer">';
