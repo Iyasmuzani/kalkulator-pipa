@@ -659,7 +659,7 @@ function exportFusionTechnician(dateStr) {
     html += '<div class="result-item"><div class="rk">Waktu Heat Soak (T2)</div><div class="rv">' + heatMin + 'm ' + heatSec + '<span class="ru">s</span></div></div>';
     html += '<div class="result-item"><div class="rk">Changeover (T3) Maks</div><div class="rv">≤ ' + item.changeoverMax + '<span class="ru">s</span></div></div>';
     html += '<div class="result-item"><div class="rk">Waktu Cooling (T5)</div><div class="rv">' + coolMin + 'm ' + coolSec + '<span class="ru">s</span></div></div>';
-    html += '<div class="result-item"><div class="rk">Bead Min.</div><div class="rv">≥ ' + item.bead + '<span class="ru"> mm</span></div></div>';
+    html += '<div class="result-item"><div class="rk">Bead Min. (T1)</div><div class="rv">≥ ' + item.bead + '<span class="ru"> mm</span></div></div>';
     html += '</div></div>';
   });
   html += '</div>';
@@ -871,7 +871,7 @@ function buildFusionTechnicianReport(dateStr) {
     html += '<div style="font-size: 18px; font-weight: bold; color: #000;">' + item.Thp + '°C</div>';
     html += '</td>';
     html += '<td style="width: 33%; padding: 15px 10px; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">';
-    html += '<div style="font-size: 11px; color: #666; text-transform: uppercase; margin-bottom: 5px;">Tinggi Bead Min.</div>';
+    html += '<div style="font-size: 11px; color: #666; text-transform: uppercase; margin-bottom: 5px;">Tinggi Bead Min. (T1)</div>';
     html += '<div style="font-size: 18px; font-weight: bold; color: #000;">' + item.bead + ' mm</div>';
     html += '</td>';
     html += '<td style="width: 34%; padding: 15px 10px; border-bottom: 1px solid #eee;">';
