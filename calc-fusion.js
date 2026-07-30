@@ -612,14 +612,14 @@ function exportFusionEngineer(dateStr) {
     html += '</div>';
     html += '<table class="fusion-table" style="font-size:11px">';
     html += '<tr><th>Tahap</th><th>IP (' + ipUnit + ')</th><th>Gauge P (bar)</th><th>Waktu</th><th>Keterangan</th></tr>';
-    html += '<tr><td>Bead-up</td><td class="fusion-val">' + item.IP_bead + '</td><td class="fusion-val">' + item.GP_bead.toFixed(1) + '</td><td class="fusion-val">—</td><td>Bead ≥' + item.bead + 'mm</td></tr>';
-    html += '<tr><td>Heat Soak</td><td class="fusion-val">≤ 0.02</td><td class="fusion-val">' + item.GP_heat.toFixed(1) + '</td><td class="fusion-val">' + heatMin + 'm ' + heatSec + 's</td><td>' + item.heatFormula + ' = ' + item.heatSoakTime + 's</td></tr>';
-    html += '<tr><td>Changeover</td><td colspan="2" style="color:var(--warn)">Secepat mungkin</td><td class="fusion-val">≤ ' + item.changeoverMax + 's</td><td></td></tr>';
-    html += '<tr><td>' + (item.std === 'iso' ? 'Fusion Join' : 'Joining') + '</td><td class="fusion-val" style="color:#00e5ff">' + item.IP_fuse + '</td><td class="fusion-val" style="color:#00e5ff">' + item.GP_fuse.toFixed(1) + '</td><td class="fusion-val">' + (typeof item.pressBuildup === 'number' ? item.pressBuildup + 's buildup' : (item.pressBuildup || '—')) + '</td><td>Force: ' + item.F_fuse + ' kN</td></tr>';
+    html += '<tr><td>Bead-up (T1)</td><td class="fusion-val">' + item.IP_bead + '</td><td class="fusion-val">' + item.GP_bead.toFixed(1) + '</td><td class="fusion-val">—</td><td>Bead ≥' + item.bead + 'mm</td></tr>';
+    html += '<tr><td>Heat Soak (T2)</td><td class="fusion-val">≤ 0.02</td><td class="fusion-val">' + item.GP_heat.toFixed(1) + '</td><td class="fusion-val">' + heatMin + 'm ' + heatSec + 's</td><td>' + item.heatFormula + ' = ' + item.heatSoakTime + 's</td></tr>';
+    html += '<tr><td>Changeover (T3)</td><td colspan="2" style="color:var(--warn)">Secepat mungkin</td><td class="fusion-val">≤ ' + item.changeoverMax + 's</td><td></td></tr>';
+    html += '<tr><td>' + (item.std === 'iso' ? 'Fusion Join (T4)' : 'Joining (T4)') + '</td><td class="fusion-val" style="color:#00e5ff">' + item.IP_fuse + '</td><td class="fusion-val" style="color:#00e5ff">' + item.GP_fuse.toFixed(1) + '</td><td class="fusion-val">' + (typeof item.pressBuildup === 'number' ? item.pressBuildup + 's buildup' : (item.pressBuildup || '—')) + '</td><td>Force: ' + item.F_fuse + ' kN</td></tr>';
     if (item.mode === 'DLP' && item.std === 'iso') {
-      html += '<tr><td>Cooling P2</td><td class="fusion-val">' + item.IP_cool + '</td><td class="fusion-val">' + item.GP_cool.toFixed(1) + '</td><td class="fusion-val">' + coolMin + 'm ' + coolSec + 's</td><td>Reduced pressure' + item.tempNotes + '</td></tr>';
+      html += '<tr><td>Cooling P2 (T5)</td><td class="fusion-val">' + item.IP_cool + '</td><td class="fusion-val">' + item.GP_cool.toFixed(1) + '</td><td class="fusion-val">' + coolMin + 'm ' + coolSec + 's</td><td>Reduced pressure' + item.tempNotes + '</td></tr>';
     } else {
-      html += '<tr><td>Cooling</td><td class="fusion-val">' + item.IP_fuse + '</td><td class="fusion-val">' + item.GP_fuse.toFixed(1) + '</td><td class="fusion-val">' + coolMin + 'm ' + coolSec + 's</td><td>' + item.coolFormula + ' = ' + item.coolingTime + 's' + item.tempNotes + '</td></tr>';
+      html += '<tr><td>Cooling (T5)</td><td class="fusion-val">' + item.IP_fuse + '</td><td class="fusion-val">' + item.GP_fuse.toFixed(1) + '</td><td class="fusion-val">' + coolMin + 'm ' + coolSec + 's</td><td>' + item.coolFormula + ' = ' + item.coolingTime + 's' + item.tempNotes + '</td></tr>';
     }
     html += '<tr><td>Heater Plate</td><td colspan="2" class="fusion-val">' + item.Thp + '°C' + (item.ThpTol ? ' ' + item.ThpTol : '') + '</td><td>—</td><td></td></tr>';
     html += '</table></div>';
@@ -652,13 +652,13 @@ function exportFusionTechnician(dateStr) {
     html += '<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:12px;margin-bottom:8px">';
     html += '<div style="font-size:14px;font-weight:700;color:#ffaa00;margin-bottom:8px">' + (idx + 1) + '. DN' + item.od + ' — ' + item.sdrLabel + ' (' + item.pnLabel + ')</div>';
     html += '<div class="result-grid">';
-    html += '<div class="result-item"><div class="rk">Tekanan Bead-up</div><div class="rv">' + item.GP_bead.toFixed(1) + '<span class="ru"> bar</span></div></div>';
-    html += '<div class="result-item"><div class="rk">Tekanan Heat Soak</div><div class="rv">' + item.GP_heat.toFixed(1) + '<span class="ru"> bar</span></div></div>';
-    html += '<div class="result-item" style="background:rgba(0,229,255,.08);border-color:var(--sys-accent)"><div class="rk">Tekanan Fusion</div><div class="rv" style="color:#00e5ff;font-size:18px">' + item.GP_fuse.toFixed(1) + '<span class="ru"> bar</span></div></div>';
+    html += '<div class="result-item"><div class="rk">Tekanan Bead-up (T1)</div><div class="rv">' + item.GP_bead.toFixed(1) + '<span class="ru"> bar</span></div></div>';
+    html += '<div class="result-item"><div class="rk">Tekanan Heat Soak (T2)</div><div class="rv">' + item.GP_heat.toFixed(1) + '<span class="ru"> bar</span></div></div>';
+    html += '<div class="result-item" style="background:rgba(0,229,255,.08);border-color:var(--sys-accent)"><div class="rk">Tekanan Fusion (T4)</div><div class="rv" style="color:#00e5ff;font-size:18px">' + item.GP_fuse.toFixed(1) + '<span class="ru"> bar</span></div></div>';
     html += '<div class="result-item"><div class="rk">Suhu Heater</div><div class="rv">' + item.Thp + '<span class="ru"> °C</span></div></div>';
-    html += '<div class="result-item"><div class="rk">Waktu Heat Soak</div><div class="rv">' + heatMin + 'm ' + heatSec + '<span class="ru">s</span></div></div>';
-    html += '<div class="result-item"><div class="rk">Changeover Maks</div><div class="rv">≤ ' + item.changeoverMax + '<span class="ru">s</span></div></div>';
-    html += '<div class="result-item"><div class="rk">Waktu Cooling</div><div class="rv">' + coolMin + 'm ' + coolSec + '<span class="ru">s</span></div></div>';
+    html += '<div class="result-item"><div class="rk">Waktu Heat Soak (T2)</div><div class="rv">' + heatMin + 'm ' + heatSec + '<span class="ru">s</span></div></div>';
+    html += '<div class="result-item"><div class="rk">Changeover (T3) Maks</div><div class="rv">≤ ' + item.changeoverMax + '<span class="ru">s</span></div></div>';
+    html += '<div class="result-item"><div class="rk">Waktu Cooling (T5)</div><div class="rv">' + coolMin + 'm ' + coolSec + '<span class="ru">s</span></div></div>';
     html += '<div class="result-item"><div class="rk">Bead Min.</div><div class="rv">≥ ' + item.bead + '<span class="ru"> mm</span></div></div>';
     html += '</div></div>';
   });
@@ -769,19 +769,19 @@ function buildFusionPrintReport(dateStr) {
     html += '</tr>';
 
     // Bead-up
-    html += '<tr><td style="border:1px solid #ddd;padding:5px 8px">Bead-up</td><td style="border:1px solid #ddd;padding:5px 8px;font-weight:600">' + item.IP_bead + '</td><td style="border:1px solid #ddd;padding:5px 8px;font-weight:600">' + item.GP_bead.toFixed(1) + '</td><td style="border:1px solid #ddd;padding:5px 8px">—</td><td style="border:1px solid #ddd;padding:5px 8px">Bead ≥' + item.bead + 'mm</td></tr>';
+    html += '<tr><td style="border:1px solid #ddd;padding:5px 8px">Bead-up (T1)</td><td style="border:1px solid #ddd;padding:5px 8px;font-weight:600">' + item.IP_bead + '</td><td style="border:1px solid #ddd;padding:5px 8px;font-weight:600">' + item.GP_bead.toFixed(1) + '</td><td style="border:1px solid #ddd;padding:5px 8px">—</td><td style="border:1px solid #ddd;padding:5px 8px">Bead ≥' + item.bead + 'mm</td></tr>';
     // Heat Soak
-    html += '<tr style="background:#f9f9f9"><td style="border:1px solid #ddd;padding:5px 8px">Heat Soak</td><td style="border:1px solid #ddd;padding:5px 8px">≤ 0.02</td><td style="border:1px solid #ddd;padding:5px 8px">' + item.GP_heat.toFixed(1) + '</td><td style="border:1px solid #ddd;padding:5px 8px;font-weight:600">' + heatMin + 'm ' + heatSec + 's</td><td style="border:1px solid #ddd;padding:5px 8px">' + item.heatFormula + ' = ' + item.heatSoakTime + 's</td></tr>';
+    html += '<tr style="background:#f9f9f9"><td style="border:1px solid #ddd;padding:5px 8px">Heat Soak (T2)</td><td style="border:1px solid #ddd;padding:5px 8px">≤ 0.02</td><td style="border:1px solid #ddd;padding:5px 8px">' + item.GP_heat.toFixed(1) + '</td><td style="border:1px solid #ddd;padding:5px 8px;font-weight:600">' + heatMin + 'm ' + heatSec + 's</td><td style="border:1px solid #ddd;padding:5px 8px">' + item.heatFormula + ' = ' + item.heatSoakTime + 's</td></tr>';
     // Changeover
-    html += '<tr><td style="border:1px solid #ddd;padding:5px 8px">Changeover</td><td style="border:1px solid #ddd;padding:5px 8px" colspan="2"><em>Secepat mungkin</em></td><td style="border:1px solid #ddd;padding:5px 8px;font-weight:600">≤ ' + item.changeoverMax + 's</td><td style="border:1px solid #ddd;padding:5px 8px"></td></tr>';
+    html += '<tr><td style="border:1px solid #ddd;padding:5px 8px">Changeover (T3)</td><td style="border:1px solid #ddd;padding:5px 8px" colspan="2"><em>Secepat mungkin</em></td><td style="border:1px solid #ddd;padding:5px 8px;font-weight:600">≤ ' + item.changeoverMax + 's</td><td style="border:1px solid #ddd;padding:5px 8px"></td></tr>';
     // Fusion Join
-    html += '<tr style="background:#eef6ff"><td style="border:1px solid #ddd;padding:5px 8px;font-weight:700">' + (item.std === 'iso' ? 'Fusion Join' : 'Joining') + '</td><td style="border:1px solid #ddd;padding:5px 8px;font-weight:700;color:#1a365d">' + item.IP_fuse + '</td><td style="border:1px solid #ddd;padding:5px 8px;font-weight:700;color:#1a365d;font-size:12px">' + item.GP_fuse.toFixed(1) + '</td><td style="border:1px solid #ddd;padding:5px 8px">' + (typeof item.pressBuildup === 'number' ? item.pressBuildup + 's buildup' : (item.pressBuildup || '—')) + '</td><td style="border:1px solid #ddd;padding:5px 8px">Force: ' + item.F_fuse + ' kN</td></tr>';
+    html += '<tr style="background:#eef6ff"><td style="border:1px solid #ddd;padding:5px 8px;font-weight:700">' + (item.std === 'iso' ? 'Fusion Join (T4)' : 'Joining (T4)') + '</td><td style="border:1px solid #ddd;padding:5px 8px;font-weight:700;color:#1a365d">' + item.IP_fuse + '</td><td style="border:1px solid #ddd;padding:5px 8px;font-weight:700;color:#1a365d;font-size:12px">' + item.GP_fuse.toFixed(1) + '</td><td style="border:1px solid #ddd;padding:5px 8px">' + (typeof item.pressBuildup === 'number' ? item.pressBuildup + 's buildup' : (item.pressBuildup || '—')) + '</td><td style="border:1px solid #ddd;padding:5px 8px">Force: ' + item.F_fuse + ' kN</td></tr>';
 
     // DLP Cooling P2
     if (item.mode === 'DLP' && item.std === 'iso') {
-      html += '<tr style="background:#f0f7ff"><td style="border:1px solid #ddd;padding:5px 8px">Cooling P2</td><td style="border:1px solid #ddd;padding:5px 8px">' + item.IP_cool + '</td><td style="border:1px solid #ddd;padding:5px 8px">' + item.GP_cool.toFixed(1) + '</td><td style="border:1px solid #ddd;padding:5px 8px;font-weight:600">' + coolMin + 'm ' + coolSec + 's</td><td style="border:1px solid #ddd;padding:5px 8px">Reduced pressure' + item.tempNotes + '</td></tr>';
+      html += '<tr style="background:#f0f7ff"><td style="border:1px solid #ddd;padding:5px 8px">Cooling P2 (T5)</td><td style="border:1px solid #ddd;padding:5px 8px">' + item.IP_cool + '</td><td style="border:1px solid #ddd;padding:5px 8px">' + item.GP_cool.toFixed(1) + '</td><td style="border:1px solid #ddd;padding:5px 8px;font-weight:600">' + coolMin + 'm ' + coolSec + 's</td><td style="border:1px solid #ddd;padding:5px 8px">Reduced pressure' + item.tempNotes + '</td></tr>';
     } else {
-      html += '<tr style="background:#f9f9f9"><td style="border:1px solid #ddd;padding:5px 8px">Cooling</td><td style="border:1px solid #ddd;padding:5px 8px">' + item.IP_fuse + '</td><td style="border:1px solid #ddd;padding:5px 8px">' + item.GP_fuse.toFixed(1) + '</td><td style="border:1px solid #ddd;padding:5px 8px;font-weight:600">' + coolMin + 'm ' + coolSec + 's</td><td style="border:1px solid #ddd;padding:5px 8px">' + item.coolFormula + ' = ' + item.coolingTime + 's' + item.tempNotes + '</td></tr>';
+      html += '<tr style="background:#f9f9f9"><td style="border:1px solid #ddd;padding:5px 8px">Cooling (T5)</td><td style="border:1px solid #ddd;padding:5px 8px">' + item.IP_fuse + '</td><td style="border:1px solid #ddd;padding:5px 8px">' + item.GP_fuse.toFixed(1) + '</td><td style="border:1px solid #ddd;padding:5px 8px;font-weight:600">' + coolMin + 'm ' + coolSec + 's</td><td style="border:1px solid #ddd;padding:5px 8px">' + item.coolFormula + ' = ' + item.coolingTime + 's' + item.tempNotes + '</td></tr>';
     }
 
     // Heater Plate
@@ -875,7 +875,7 @@ function buildFusionTechnicianReport(dateStr) {
     html += '<div style="font-size: 18px; font-weight: bold; color: #000;">' + item.bead + ' mm</div>';
     html += '</td>';
     html += '<td style="width: 34%; padding: 15px 10px; border-bottom: 1px solid #eee;">';
-    html += '<div style="font-size: 11px; color: #666; text-transform: uppercase; margin-bottom: 5px;">Waktu Changeover</div>';
+    html += '<div style="font-size: 11px; color: #666; text-transform: uppercase; margin-bottom: 5px;">Waktu Changeover (T3)</div>';
     html += '<div style="font-size: 18px; font-weight: bold; color: #e53935;">Maks ' + item.changeoverMax + 's</div>';
     html += '</td>';
     html += '</tr>';
@@ -883,15 +883,15 @@ function buildFusionTechnicianReport(dateStr) {
     // Baris 2: Tekanan
     html += '<tr style="background: #fafafa;">';
     html += '<td style="padding: 15px 10px; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">';
-    html += '<div style="font-size: 11px; color: #666; text-transform: uppercase; margin-bottom: 5px;">Tek. Bead-up</div>';
+    html += '<div style="font-size: 11px; color: #666; text-transform: uppercase; margin-bottom: 5px;">Tek. Bead-up (T1)</div>';
     html += '<div style="font-size: 18px; font-weight: bold; color: #000;">' + item.GP_bead.toFixed(1) + ' <span style="font-size:12px;font-weight:normal">bar</span></div>';
     html += '</td>';
     html += '<td style="padding: 15px 10px; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">';
-    html += '<div style="font-size: 11px; color: #666; text-transform: uppercase; margin-bottom: 5px;">Tek. Heat Soak</div>';
+    html += '<div style="font-size: 11px; color: #666; text-transform: uppercase; margin-bottom: 5px;">Tek. Heat Soak (T2)</div>';
     html += '<div style="font-size: 18px; font-weight: bold; color: #000;">' + item.GP_heat.toFixed(1) + ' <span style="font-size:12px;font-weight:normal">bar</span></div>';
     html += '</td>';
     html += '<td style="padding: 15px 10px; border-bottom: 1px solid #eee; background: #fff8e1;">';
-    html += '<div style="font-size: 11px; color: #f57f17; text-transform: uppercase; margin-bottom: 5px; font-weight: bold;">Tekanan Fusion</div>';
+    html += '<div style="font-size: 11px; color: #f57f17; text-transform: uppercase; margin-bottom: 5px; font-weight: bold;">Tekanan Fusion (T4)</div>';
     html += '<div style="font-size: 20px; font-weight: 900; color: #f57f17;">' + item.GP_fuse.toFixed(1) + ' <span style="font-size:12px;font-weight:normal">bar</span></div>';
     html += '</td>';
     html += '</tr>';
@@ -899,11 +899,11 @@ function buildFusionTechnicianReport(dateStr) {
     // Baris 3: Waktu
     html += '<tr>';
     html += '<td colspan="2" style="padding: 15px 10px; border-right: 1px solid #eee;">';
-    html += '<div style="font-size: 11px; color: #666; text-transform: uppercase; margin-bottom: 5px;">Waktu Heat Soak</div>';
+    html += '<div style="font-size: 11px; color: #666; text-transform: uppercase; margin-bottom: 5px;">Waktu Heat Soak (T2)</div>';
     html += '<div style="font-size: 18px; font-weight: bold; color: #000;">' + heatMin + 'm ' + heatSec + 's</div>';
     html += '</td>';
     html += '<td style="padding: 15px 10px; background: #e3f2fd;">';
-    html += '<div style="font-size: 11px; color: #1565c0; text-transform: uppercase; margin-bottom: 5px; font-weight: bold;">Waktu Cooling</div>';
+    html += '<div style="font-size: 11px; color: #1565c0; text-transform: uppercase; margin-bottom: 5px; font-weight: bold;">Waktu Cooling (T5)</div>';
     html += '<div style="font-size: 18px; font-weight: bold; color: #1565c0;">' + coolMin + 'm ' + coolSec + 's</div>';
     html += '</td>';
     html += '</tr>';
