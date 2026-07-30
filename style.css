@@ -843,4 +843,7 @@ html{scrollbar-width:thin;scrollbar-color:rgba(0,212,255,.2) rgba(255,255,255,.0
   
   .pr-footer { font-size: 9px; color: #888; text-align: center; margin-top: 40px; border-top: 1px solid #eee; padding-top: 15px; }
   .pr-footer p { margin: 0 0 4px 0; }
+  
+  /* Fusion multi-column table overrides */
+  .pr-table td[style] { width: auto !important; }
 }
