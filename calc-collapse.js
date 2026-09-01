@@ -317,6 +317,14 @@ function calculateCollapse() {
       'Hasil ini konservatif (worst case). Pastikan pipa casing memenuhi standar ASTM F480 untuk aplikasi sumur.</em>';
   }
 
+  // Determine status for animation
+  var collapseStatus = 'safe';
+  if (targetPressure > Pc_bar) {
+    collapseStatus = 'danger';
+  } else if (targetPressure > Pa_bar) {
+    collapseStatus = 'warning';
+  }
+
   var html = '<div class="eng-section"><div class="eng-section-title">' +
     '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px">' +
     '<circle cx="12" cy="12" r="10"></circle><path d="M12 8v4l3 3"></path></svg> ' +
@@ -327,6 +335,9 @@ function calculateCollapse() {
     refBadges(stdList) +
 
     statusHtml +
+
+    // ===== ANIMATION CONTAINER =====
+    '<div id="collapse-anim-container" style="margin-bottom:14px"></div>' +
 
     '<div class="fusion-warn" style="border-color:rgba(0,229,255,.2);background:rgba(0,229,255,.04);color:#6dd5ed;margin-bottom:12px;font-family:monospace">' +
     'P<sub>c</sub> = [2E / (1 - \u03BD\u00B2)] \u00D7 [1 / (SDR - 1)]\u00B3 \u00D7 C<sub>o</sub>  \u2014  SDR = OD / t</div>' +
@@ -349,4 +360,21 @@ function calculateCollapse() {
 
   document.getElementById('eng-results').innerHTML = html;
   if (typeof animateValues === 'function') animateValues();
+
+  // Initialize collapse animation
+  if (typeof initCollapseAnim === 'function') {
+    var animContainer = document.getElementById('collapse-anim-container');
+    if (animContainer) {
+      initCollapseAnim(animContainer, {
+        mode: collapseMode,
+        OD: OD,
+        t: t,
+        Pc_bar: Pc_bar,
+        Pa_bar: Pa_bar,
+        targetPressure: targetPressure,
+        SDR: SDR,
+        status: collapseStatus
+      });
+    }
+  }
 }

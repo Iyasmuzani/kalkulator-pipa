@@ -239,6 +239,8 @@ function exitEngTools() {
 
 function switchEngTool(tool) {
   currentEngTool = tool;
+  // Cleanup collapse animation if switching away
+  if (typeof destroyCollapseAnim === 'function') destroyCollapseAnim();
   // Update sidebar active state
   document.querySelectorAll('.sidebar-item[data-nav="eng"]').forEach(function (el) {
     el.classList.toggle('active', el.getAttribute('data-id') === tool);
