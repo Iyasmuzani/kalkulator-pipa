@@ -95,6 +95,7 @@ function sidebarNav(type, id) {
     document.querySelectorAll('.sidebar-item').forEach(function (el) { el.classList.remove('active'); });
     var target = document.querySelector('.sidebar-item[data-nav="eng"][data-id="' + id + '"]');
     if (target) target.classList.add('active');
+  }
 
   // Close sidebar on mobile
   if (window.innerWidth <= 900) {
