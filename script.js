@@ -603,8 +603,10 @@ const pipeStandards = {
       { std: 'ISO 3126:2005', pdf: 'standards/pengujian-kualitas/iso_31262005.pdf', title: 'Plastics Piping Systems — Plastics Components — Determination of Dimensions', scope: 'Metode pengukuran dimensi pipa dan fitting plastik: diameter, ketebalan dinding, panjang, dan kesikuan.', type: 'ISO' },
       { std: 'ISO 3127:2016', pdf: 'standards/pengujian-kualitas/iso_31272016.pdf', title: 'Thermoplastics Pipes — Determination of Resistance to External Blows (Drop Impact)', scope: 'Uji ketahanan pipa termoplastik terhadap benturan eksternal (drop-weight impact test/TIR test).', type: 'ISO' },
       { std: 'ISO 2505:2005', pdf: 'standards/pengujian-kualitas/iso_25052005.pdf', title: 'Thermoplastics Pipes — Longitudinal Reversion', scope: 'Uji perubahan dimensi longitudinal pipa setelah dipanaskan (reversion test). Indikator kualitas proses ekstrusi.', type: 'ISO' },
-      { std: 'ISO 9969:2016', pdf: 'standards/pengujian-kualitas/iso_99692016.pdf', title: 'Thermoplastics Pipes — Determination of Ring Stiffness', scope: 'Pengujian kekakuan cincin (ring stiffness) pipa termoplastik. Penting untuk pipa non-tekanan yang ditanam dalam tanah (SN2, SN4, SN8).', type: 'ISO' },
-
+      { std: 'ISO 9969:2016', pdf: 'standards/pengujian-kualitas/iso_99692016.pdf', title: 'Thermoplastics Pipes — Determination of Ring Stiffness', scope: 'Pengujian kekakuan cincin (ring stiffness) pipa termoplastik. Penting untuk pipa non-tekanan yang ditanam dalam tanah (SN2, SN4, SN8).', type: 'ISO' }
+    ]
+  }
+};
 
 function resetCompPanel() {
   const count = Object.keys(systemConfig[currentSystem].compData()).length;
