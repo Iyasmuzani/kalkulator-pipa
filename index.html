@@ -299,38 +299,7 @@
           </div>
         </div>
 
-        <div class="sidebar-divider"></div>
 
-        <!-- GROUP: LIBRARY -->
-        <div class="sidebar-group">
-          <div class="sidebar-group-label" onclick="toggleSidebarGroup('grp-lib')">
-            <span>LIBRARY</span>
-            <svg class="sidebar-chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </div>
-          <div class="sidebar-group-items" id="grp-lib">
-            <div class="sidebar-item" data-nav="lib" data-id="standar" onclick="sidebarNav('lib','standar')">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-              </svg>
-              <span>Standar Acuan</span>
-            </div>
-            <div class="sidebar-item" data-nav="lib" data-id="pustaka" onclick="sidebarNav('lib','pustaka')">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m16 6 4 14" />
-                <path d="M12 6v14" />
-                <path d="M8 8v12" />
-                <path d="M4 4v16" />
-              </svg>
-              <span>Pustaka Teknis</span>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- Sidebar footer -->
@@ -480,18 +449,7 @@
         </div>
       </div>
 
-      <!-- ===== LIBRARY CONTENT ===== -->
-      <div class="content-body" id="lib-content" style="display:none">
-        <div class="library-content" id="library-content"
-          style="width:100%; height:calc(100vh - 120px); overflow:hidden;">
-          <iframe id="library-iframe" src="form-siphonic.html"
-            style="width:100%; height:100%; border:none; border-radius:8px; background:white;"></iframe>
-        </div>
-        <div id="library-standar"
-          style="display:none; width:100%; height:calc(100vh - 120px); overflow-y:auto; padding:16px 0;"></div>
-        <div id="library-pustaka"
-          style="display:none; width:100%; height:calc(100vh - 120px); overflow-y:auto; padding:16px 0;"></div>
-      </div>
+
 
     </main>
   </div>
@@ -515,7 +473,7 @@
   <script src="calc-tools.js?v=1"></script>
   <script src="calc-segment.js?v=1"></script>
   <script src="calc-collapse.js?v=1"></script>
-  <script src="data-pustaka.js?v=1"></script>
+
   <script src="anim-siphonic.js?v=1"></script>
   <script src="anim-collapse.js?v=1"></script>
   <script src="calc-dnsizing.js?v=1"></script>
